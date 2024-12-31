@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "@/styles/globals.tailwind.css";
+import "@/styles/globals.css";
 
 const pretendard = localFont({
   src: "../../public/fonts/PretendardVariable.woff2",

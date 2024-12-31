@@ -1,7 +1,5 @@
-import type { Config } from "tailwindcss";
-
-export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+module.exports = {
+  content: ["./src/**/*.{js,ts,jsx,tsx,css}"],
   theme: {
     extend: {
       colors: {
@@ -18,7 +16,7 @@ export default {
           400: "#1F1F1F",
           500: "#040404",
         },
-        grayscale: {
+        gray: {
           50: "#000000",
           100: "#DEDEDE",
           200: "#C4C4C4",
@@ -26,17 +24,17 @@ export default {
           400: "#999999",
           500: "#808080",
         },
-        "pr-blue": {
+        blue: {
           50: "#F5FAFF",
           100: "#E9F4FF",
           200: "#4DA9FF",
           300: "#1B92FF",
           400: "#242945",
         },
-        "pr-yellow": {
+        yellow: {
           100: "#FFC149",
         },
-        "pr-red": {
+        red: {
           100: "#FFEEF0",
           200: "#FF4F64",
         },
@@ -67,7 +65,7 @@ export default {
       screens: {
         mobile: "375px",
         tablet: "744px",
-        pc: "1400px",
+        pc: "1200px",
       },
       boxShadow: {
         card: "2px 2px 10px 0px rgba(220, 220, 220, 0.14), -2px -2px 10px 0px rgba(220, 220, 220, 0.14)",
@@ -77,4 +75,4 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config;
+};
