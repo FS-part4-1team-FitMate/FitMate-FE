@@ -1,6 +1,6 @@
 enum Role {
   USER = 'USER',
-  INSTRUCTOR = 'INSTRUCTOR',
+  TRAINER = 'TRAINER',
   ADMIN = 'ADMIN',
 }
 
@@ -57,10 +57,29 @@ enum NotificationType {
   NEW_DIRECT_LESSON = 'NEW_DIRECT_LESSON',
 }
 
+type Profile = {
+  id: string;
+  userId: string;
+  nickname: string;
+  profileImage?: string;
+  gender: Gender;
+  lessonType: LessonType[];
+  region: Region[];
+  intro?: string;
+  description?: string;
+  experience?: number;
+  certifications?: string;
+  certificationValidated: boolean;
+  rating?: number;
+  lessonCount?: number;
+  reviewCount?: number;
+}
+
 type User = {
   id: string;
   email: string;
   name: string;
   phone?: string;
   role: Role;
+  profile?: Profile;
 }
