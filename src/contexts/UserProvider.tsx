@@ -17,9 +17,9 @@ export function UserProvider({ children }: Props) {
 	const [user, setUser] = useState<null | User>(null);
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
-		if (storedUser) {
-			setUser(JSON.parse(storedUser).user);
+		const storedUserData = localStorage.getItem('userData');
+		if (storedUserData) {
+			setUser(JSON.parse(storedUserData).user);
 		}
 	}, []);
 
