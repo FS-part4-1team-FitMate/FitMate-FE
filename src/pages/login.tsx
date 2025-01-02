@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import "dotenv/config";
 
 export const EMAIL_REGEX = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
 
@@ -80,9 +81,9 @@ function LogIn() {
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 로그인</div>
         <div className="flex justify-center items-center gap-[8px]">
-          <Image src="/assets/ic/ic_google_sm.svg" alt="google" width={40} height={40} />
-          <Image src="/assets/ic/ic_kakao_sm.svg" alt="kakao" width={40} height={40} />
-          <Image src="/assets/ic/ic_naver_sm.svg" alt="naver" width={40} height={40} />
+          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/google"}><Image src="/assets/ic/ic_google_sm.svg" alt="google" width={40} height={40} /></Link>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/kakao"}><Image src="/assets/ic/ic_kakao_sm.svg" alt="kakao" width={40} height={40} /></Link>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/naver"}><Image src="/assets/ic/ic_naver_sm.svg" alt="naver" width={40} height={40} /></Link>
         </div>
       </div>
       <div className="text-lg">
