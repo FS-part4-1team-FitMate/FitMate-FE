@@ -1,14 +1,15 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/router';
+import 'dotenv/config';
 
 const instance = axios.create({
-	baseURL: `http://localhost:3100`,
+	baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 instance.interceptors.request.use(function (config) {
-	const user = localStorage.getItem("user");
-	if (user) {
-		const accessToken = JSON.parse(user).accessToken;
+	const userData = localStorage.getItem("userData");
+	if (userData) {
+		const accessToken = JSON.parse(userData).accessToken;
 		config.headers.Authorization = `Bearer ${accessToken}`;
 	}
 	return config;
@@ -25,18 +26,18 @@ const retryConfig: CustomAxiosRequestConfig = {
 instance.interceptors.response.use(res => res, async (error) => {
 	const originalRequest = error.config;
 	const response = error.response; // 가로챈 리스폰스
-	const user = localStorage.getItem("user");
-	if (user && (response?.status === 401 || response?.status === 403)) {
-		const userJSON = JSON.parse(user);
+	const userData = localStorage.getItem("userData");
+	if (userData && (response?.status === 401 || response?.status === 403)) {
+		const userDataJSON = JSON.parse(userData);
 		if (!originalRequest._retry) {
-			const res = await instance.post('/auth/refresh-token', { refreshToken: userJSON.refreshToken }, retryConfig);
-			userJSON.accessToken = res.data.accessToken;
-			userJSON.refreshToken = res.data.refreshToken;
-			localStorage.setItem("user", JSON.stringify(userJSON));
+			const res = await instance.post('/auth/refresh-token', { refreshToken: userDataJSON.refreshToken }, retryConfig);
+			userDataJSON.accessToken = res.data.accessToken;
+			userDataJSON.refreshToken = res.data.refreshToken;
+			localStorage.setItem("userData", JSON.stringify(userDataJSON));
 			originalRequest._retry = true;
 			return instance(originalRequest);
 		} else {
-			localStorage.removeItem("user");
+			localStorage.removeItem("userData");
 			const router = useRouter();
 			router.push('/login');
 		}
