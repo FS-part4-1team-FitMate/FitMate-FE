@@ -4,8 +4,8 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-				<link rel="icon" href="/assets/ic/ic_fitness_sm.svg" />
-			</Head>
+        <link rel="icon" href="/assets/ic/ic_fitness_sm.svg" />
+      </Head>
       <body className="antialiased">
         <Main />
         <NextScript />
