@@ -3,6 +3,9 @@ import localFont from "next/font/local";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/globals.css";
+import { UserProvider } from "@/contexts/UserProvider";
+import GNB from "@/components/GNB";
+import ViewportProvider from "@/contexts/ViewportProvider";
 
 const pretendard = localFont({
   src: "../../public/fonts/PretendardVariable.woff2",
@@ -25,9 +28,12 @@ export default function App({ Component, pageProps }: AppProps) {
   );
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={pretendard.className}>
-        <Component {...pageProps} />
-      </div>
+      <UserProvider><ViewportProvider>
+        <div className={pretendard.className}>
+          <GNB />
+          <Component {...pageProps} />
+        </div>
+      </ViewportProvider></UserProvider>
     </QueryClientProvider>
   );
 }
