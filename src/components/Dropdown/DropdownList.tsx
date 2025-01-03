@@ -1,8 +1,7 @@
 import clsx from "clsx";
 
-interface SortListProps {
+interface DropdownListProps {
   options: string[];
-  dropdownWidth?: number;
   onOptionClick: (val: string) => void;
 }
 
@@ -10,19 +9,19 @@ const sort_list = clsx(
   "absolute top-[4.3rem]",
   "flex flex-col justify-center gap-0.5",
   "w-full",
-  "border border-gray-100 rounded-[1.6rem]",
+  "border border-gray-100 rounded-[0.8rem]",
   "bg-gray-50",
 );
 
 const filter_list = clsx(
-  "absolute top-[9.6rem]",
+  "absolute top-[11.3rem]",
   "flex flex-col justify-center gap-2.5",
   "w-full",
   "border border-gray-100 rounded-[1.6rem]",
   "bg-gray-50",
 );
 
-export function SortList({ options, onOptionClick }: SortListProps) {
+export function SortList({ options, onOptionClick }: DropdownListProps) {
   return (
     <div className={sort_list}>
       {options.map((option, index) => (
@@ -38,7 +37,7 @@ export function SortList({ options, onOptionClick }: SortListProps) {
   );
 }
 
-export function FilterList({ options, onOptionClick }: SortListProps) {
+export function FilterList({ options, onOptionClick }: DropdownListProps) {
   return (
     <div className={filter_list}>
       {options.map((option, index) => (

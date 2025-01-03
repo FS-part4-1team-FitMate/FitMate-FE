@@ -4,7 +4,7 @@ import { FilterMenu, SortMenu } from "./DropdownMenu";
 
 interface DropdownProps {
   options: string[];
-  type: "sort" | "filter" | "profile";
+  type: "sort" | "filter";
   filterType?: "service" | "gender";
 }
 
@@ -33,7 +33,7 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
   if (type === "filter") {
     return (
       <div className="relative flex flex-col w-[32.8rem]">
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-[1.6rem]">
           {filterType === "gender" ? (
             <label className="text-2lg font-medium">성별을 선택해주세요</label>
           ) : (
@@ -41,15 +41,6 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
           )}
           <FilterMenu currentFilter={currentFilter} onToggle={() => setIsOpen((prev) => !prev)} />
         </div>
-        {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
-      </div>
-    );
-  }
-
-  if (type === "profile") {
-    return (
-      <div className="flex flex-col w-max">
-        <SortMenu currentSort={currentSort} onToggle={() => setIsOpen((prev) => !prev)} />
         {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
