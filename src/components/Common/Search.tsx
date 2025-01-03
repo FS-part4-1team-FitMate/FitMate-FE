@@ -1,44 +1,71 @@
+import { ic_X_circle_md, ic_search_md } from "@/imageExports";
+import clsx from "clsx";
 import Image from "next/image";
-import { useState } from "react";
-import X from "../../../public/assets/ic/ic_X-circle_md.svg";
-import searchIcon from "../../../public/ic_search_md.svg";
+
+const input = clsx("w-full", "text-xl font-regular", "bg-bg-200", "focus:outline-none");
+const input_empty = clsx(
+  "flex flex-row-reverse items-center gap-[0.8rem]",
+  "w-[95.5rem] h-[6.4rem]",
+  "py-[1.4rem] px-[2.4rem] rounded-[1.6rem]",
+  "bg-bg-200",
+);
+const input_value = clsx(
+  "flex items-center gap-[0.8rem]",
+  "w-[95.5rem] h-[6.4rem]",
+  "py-[1.4rem] px-[2.4rem] rounded-[1.6rem]",
+  "bg-bg-200",
+);
 
 interface SearchProps {
-  onSearch: React.Dispatch<React.SetStateAction<string>>;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  keyword: string;
+  setKeyword: React.Dispatch<React.SetStateAction<string>>;
+  onSearch: () => void;
 }
 
-export default function Search() {
-  const [keyword, setKeyword] = useState<string>("");
+export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newKeyword = e.target.value;
+    setKeyword(newKeyword);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  };
+
   return (
-    <div className="relative flex items-center w-full">
+    <div className={!keyword ? input_empty : input_value}>
       <input
-        className="w-[95.5rem] h-[6.4rem]"
+        className={input}
         type="text"
         placeholder="텍스트를 입력해주세요"
         value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
-      {!keyword && (
-        <Image
-          className="absolute right-0"
-          src={searchIcon}
-          width={36}
-          height={36}
-          alt="검색 아이콘"
-        />
-      )}
+      {!keyword && <Image src={ic_search_md} width={36} height={36} alt="검색 아이콘" />}
 
       {keyword && (
-        <div className="absolute flex">
+        <div className="flex gap-[1.6rem]">
           <Image
-            src={X}
+            className="cursor-pointer"
+            src={ic_X_circle_md}
             width={36}
             height={36}
             alt="검색 초기화 아이콘"
-            onClick={() => setKeyword("")}
+            onClick={() => {
+              setKeyword("");
+            }}
           />
-          <Image src={searchIcon} width={36} height={36} alt="검색 아이콘" />
+          <Image
+            className="cursor-pointer"
+            src={ic_search_md}
+            width={36}
+            height={36}
+            alt="검색 아이콘"
+            onClick={onSearch}
+          />
         </div>
       )}
     </div>
