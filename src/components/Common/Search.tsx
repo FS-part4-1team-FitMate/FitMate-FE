@@ -2,20 +2,6 @@ import { ic_X_circle_md, ic_search_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 
-const input = clsx("w-full", "text-xl font-regular", "bg-bg-200", "focus:outline-none");
-const input_empty = clsx(
-  "flex flex-row-reverse items-center gap-[0.8rem]",
-  "w-[95.5rem] h-[6.4rem]",
-  "py-[1.4rem] px-[2.4rem] rounded-[1.6rem]",
-  "bg-bg-200",
-);
-const input_value = clsx(
-  "flex items-center gap-[0.8rem]",
-  "w-[95.5rem] h-[6.4rem]",
-  "py-[1.4rem] px-[2.4rem] rounded-[1.6rem]",
-  "bg-bg-200",
-);
-
 interface SearchProps {
   keyword: string;
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
@@ -23,6 +9,15 @@ interface SearchProps {
 }
 
 export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
+  const input = clsx("w-full", "text-xl font-regular", "bg-bg-200", "focus:outline-none");
+  const search_wrapper = clsx(
+    "flex items-center gap-[0.8rem]",
+    !keyword && "flex-row-reverse",
+    "w-[95.5rem] h-[6.4rem]",
+    "py-[1.4rem] px-[2.4rem] rounded-[1.6rem]",
+    "bg-bg-200",
+  );
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newKeyword = e.target.value;
     setKeyword(newKeyword);
@@ -35,7 +30,7 @@ export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
   };
 
   return (
-    <div className={!keyword ? input_empty : input_value}>
+    <div className={search_wrapper}>
       <input
         className={input}
         type="text"
