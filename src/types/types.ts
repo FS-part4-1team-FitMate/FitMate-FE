@@ -10,9 +10,9 @@ export enum Gender {
 }
 
 export enum LessonType {
-  SPORTS = 'SPORTS',
-  FITNESS = 'FITNESS',
-  REHAB = 'REHAB',
+  SPORTS = 'SPORTS', // 스포츠
+  FITNESS = 'FITNESS', // 피트니스
+  REHAB = 'REHAB', // 재활치료
 }
 
 export enum Region {
