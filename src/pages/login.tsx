@@ -63,10 +63,10 @@ function LogIn() {
         <div className="relative w-full h-[40px] text-slate-700">
           <input className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
             {...register('password', {
-              required: '암호를 입력해 주세요.',
+              required: '비밀번호를 입력해 주세요.',
               minLength: {
                 value: 8,
-                message: '암호는 최소 8글자 이상이어야 합니다.',
+                message: '비밀번호는 최소 8글자 이상이어야 합니다.',
               },
             })}
             type={pwdIsVisible ? "text" : "password"}
