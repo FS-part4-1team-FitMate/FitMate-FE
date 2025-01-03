@@ -13,7 +13,7 @@ export function postLogin(data: { email: string; password: string }): Promise<{
 	}
 }
 
-export function postSignUp(data: { name: string; email: string; phone: string; password: string; role: Role }): Promise<{
+export function postSignUp(data: { nickname: string; email: string; phone: string; password: string; role: Role }): Promise<{
 	user: User;
 	accessToken: string;
 	refreshToken: string;

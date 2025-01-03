@@ -32,7 +32,7 @@ function SignUpForm({ role }: Props) {
   } = useForm({
     mode: 'all',
     defaultValues: {
-      name: '',
+      nickname: '',
       email: '',
       phone: '',
       password: '',
@@ -40,7 +40,7 @@ function SignUpForm({ role }: Props) {
     }
   });
 
-  const onSubmit = async (data: { name: string; email: string; phone: string; password: string; passwordConfirm: string }) => {
+  const onSubmit = async (data: { nickname: string; email: string; phone: string; password: string; passwordConfirm: string }) => {
     if (data.password !== data.passwordConfirm) {
       setError({ message: '비밀번호가 일치하지 않습니다.' });
       return;
@@ -63,16 +63,16 @@ function SignUpForm({ role }: Props) {
 			? <>강사님 이신가요? <Link href="/trainer/signup" className="text-blue-600">강사님 전용 페이지</Link></>
 			: <>일반회원 이신가요? <Link href="/user/signup" className="text-blue-600">일반회원 전용 페이지</Link></>}</div>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[16px] items-stretch w-full">
-        <label className="w-full text-lg" htmlFor="name">이름</label>
+        <label className="w-full text-lg" htmlFor="nickname">닉네임</label>
         <input className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-          {...register('name', {
-            required: '이름을 입력해 주세요.',
+          {...register('nickname', {
+            required: '닉네임을 입력해 주세요.',
           })}
           type="text"
-          id="name"
-          placeholder="성함을 입력해 주세요."
+          id="nickname"
+          placeholder="닉네임을 입력해 주세요."
         />
-        {errors.name && <p className="text-red-400 text-sm">{errors.name.message}</p>}
+        {errors.nickname && <p className="text-red-400 text-sm">{errors.nickname.message}</p>}
         <label className="w-full text-lg" htmlFor="email">이메일</label>
         <input className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
           {...register('email', {
@@ -136,7 +136,7 @@ function SignUpForm({ role }: Props) {
           <Image className="absolute right-[8px] top-[8px] bottom-[8px]" width={24} height={24} src={pwdCfmIsVisible ? ic_visibility_on : ic_visibility_off} alt="eye" onClick={() => setPwdCfmIsVisible((prev) => !prev)} />
         </div>
         {errors.passwordConfirm && <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>}
-        <button className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600" type="submit" disabled={!!errors.name || !!errors.email || !!errors.phone || !!errors.password || !!errors.passwordConfirm}>{role === Role.USER ? "일반회원 " : "강사님으로 "}가입하기</button>
+        <button className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600" type="submit" disabled={!!errors.nickname || !!errors.email || !!errors.phone || !!errors.password || !!errors.passwordConfirm}>{role === Role.USER ? "일반회원 " : "강사님으로 "}가입하기</button>
       </form>
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 간편 가입하기</div>
