@@ -1,21 +1,21 @@
-enum Role {
+export enum Role {
   USER = 'USER',
   TRAINER = 'TRAINER',
   ADMIN = 'ADMIN',
 }
 
-enum Gender {
+export enum Gender {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
 
-enum LessonType {
+export enum LessonType {
   SPORTS = 'SPORTS',
   FITNESS = 'FITNESS',
   REHAB = 'REHAB',
 }
 
-enum Region {
+export enum Region {
   SEOUL = 'SEOUL',
   GYEONGGI = 'GYEONGGI',
   INCHEON = 'INCHEON',
@@ -30,26 +30,26 @@ enum Region {
   JEJU = 'JEJU',
 }
 
-enum LocationType {
+export enum LocationType {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
 }
 
-enum LessonRequestStatus {
+export enum LessonRequestStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   CANCELED = 'CANCELED',
   EXPIRED = 'EXPIRED',
 }
 
-enum QuoteStatus {
+export enum QuoteStatus {
   PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED',
   CANCELED = 'CANCELED',
 }
 
-enum NotificationType {
+export enum NotificationType {
   CHAT_MESSAGE = 'CHAT_MESSAGE',
   LESSON_CONFIRMATION = 'LESSON_CONFIRMATION',
   LESSON_DATE_REMINDER = 'LESSON_DATE_REMINDER',
@@ -57,7 +57,7 @@ enum NotificationType {
   NEW_DIRECT_LESSON = 'NEW_DIRECT_LESSON',
 }
 
-type Profile = {
+export type Profile = {
   id: string;
   userId: string;
   nickname: string;
@@ -75,7 +75,7 @@ type Profile = {
   reviewCount?: number;
 }
 
-type User = {
+export type User = {
   id: string;
   email: string;
   name: string;

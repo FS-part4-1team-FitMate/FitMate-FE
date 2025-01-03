@@ -1,6 +1,7 @@
 import { useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
 import { ic_alarm_md, ic_menu, ic_profile_default_sm, logo_xl } from "@/imageExports";
+import { Role } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";

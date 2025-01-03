@@ -1,9 +1,8 @@
+import SignUpForm from "@/components/SignUpForm";
+import { Role } from "@/types/types";
+
 function SignUp() {
-	return (
-		<div>
-			<h1>Sign Up</h1>
-		</div>
-	);
+	return <SignUpForm role={Role.TRAINER} />;
 }
 
 export default SignUp;
