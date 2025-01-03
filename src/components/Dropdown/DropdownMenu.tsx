@@ -15,17 +15,17 @@ interface FilterMenuProps {
 }
 
 const sort_menu = clsx(
-  "flex justify-center items-center gap-1.5",
+  "flex justify-center items-center gap-3",
   "w-full",
-  "p-2 rounded-lg",
+  "p-[0.8rem] rounded-[0.8rem]",
   "bg-gray-50",
   "cursor-pointer",
 );
 
 const filter_menu = clsx(
   "flex justify-between items-center",
-  "w-full h-16",
-  "px-6 py-4 border border-gray-100 rounded-2xl",
+  "w-full h-[6.4rem]",
+  "px-[2.4rem] py-[1.6rem] border border-gray-100 rounded-[1.6rem]",
   "bg-gray-50",
   "cursor-pointer",
 );

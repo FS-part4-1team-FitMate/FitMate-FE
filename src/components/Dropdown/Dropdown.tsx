@@ -25,16 +25,14 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
     return (
       <div className="relative flex flex-col w-max">
         <SortMenu currentSort={currentSort} onToggle={() => setIsOpen((prev) => !prev)} />
-        {isOpen && (
-          <SortList className="w-full" options={options} onOptionClick={handleOptionClick} />
-        )}
+        {isOpen && <SortList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
   }
 
   if (type === "filter") {
     return (
-      <div className="relative flex flex-col w-[328px]">
+      <div className="relative flex flex-col w-[32.8rem]">
         <div className="flex flex-col">
           {filterType === "gender" ? (
             <label className="text-2lg font-medium">성별을 선택해주세요</label>
