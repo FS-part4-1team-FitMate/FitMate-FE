@@ -10,8 +10,8 @@ export enum Gender {
 }
 
 export enum LessonType {
-  SPORTS = 'SPORTS', // 스포츠
-  FITNESS = 'FITNESS', // 피트니스
+  SPORTS = 'SPORTS', // 스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
+  FITNESS = 'FITNESS', // 피트니스 (PT, 요가, 필라테스, 식단 관리 등)
   REHAB = 'REHAB', // 재활치료
 }
 
