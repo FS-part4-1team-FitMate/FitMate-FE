@@ -1,6 +1,6 @@
 import CardContainer from "../Common/Card/CardContainer";
+import { VerticalLine } from "../Common/Card/Line";
 import TrainerInfo from "../Common/Card/TrainerInfo";
-import VerticalLine from "../Common/Card/VerticalLine";
 
 export default function PendingLessonCard() {
   return (

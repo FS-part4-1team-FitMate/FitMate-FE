@@ -1,5 +1,5 @@
 import CardContainer from "../Common/Card/CardContainer";
-import VerticalLine from "../Common/Card/VerticalLine";
+import { HorizontalLine, VerticalLine } from "../Common/Card/Line";
 
 export default function RequestLessonCard() {
   return (
@@ -9,6 +9,7 @@ export default function RequestLessonCard() {
         <p className="text-gray-500 text-xs font-normal">1시간 전</p>
       </div>
       <p className="text-xl font-semibold">김고객 고객님</p>
+      <HorizontalLine />
       <div className="flex items-center gap-[1.6rem]">
         <p className="text-2lg font-medium">레슨 시작일: 2025.02.02</p>
         <VerticalLine height="1.6rem" />
