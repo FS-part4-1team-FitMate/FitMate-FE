@@ -1,9 +1,10 @@
 import { useSetUser } from "@/contexts/UserProvider";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
-import { Gender, LessonType, Region } from "@/types/types";
+import { Gender, LessonType, LocationType, Region } from "@/types/types";
 import ImageUploader from "@/components/ImageUploader";
 import PopUp from "@/components/PopUp";
 
@@ -32,6 +33,8 @@ const region_options = [
 ];
 
 function Regist() {
+  const router = useRouter();
+  const { trainerId } = router.query;
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const setUser = useSetUser();
   const [error, setError] = useState<
@@ -50,6 +53,7 @@ function Regist() {
       gender: Gender.MALE,
       lessonType: null,
       region: null,
+      locationType: [LocationType.OFFLINE],
       experience: 0,
       intro: "",
       description: "",
@@ -60,6 +64,7 @@ function Regist() {
       gender: Gender;
       lessonType: LessonType | null;
       region: Region | null;
+      locationType: LocationType[];
       experience?: number;
       intro?: string;
       description?: string;
@@ -72,6 +77,7 @@ function Regist() {
     gender: Gender;
     lessonType: LessonType | null;
     region: Region | null;
+    locationType: LocationType[];
     experience?: number;
     intro?: string;
     description?: string;
@@ -218,6 +224,33 @@ function Regist() {
                 );
               })}
             </label>
+          </div>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className={profile_menu}>
+            <div className="flex flex-col gap-[8px]">
+              <label className="text-lg font-semibold">강의 주소 타입</label>
+              <p className="text-sm">* 반드시 하나 이상을 선택해 주세요!</p>
+            </div>
+            <div className="flex gap-[16px]">
+              <label className="text-lg">
+                <input
+                  {...register("locationType")}
+                  type="checkbox"
+                  name="locationType"
+                  value={LocationType.OFFLINE}
+                />
+                &nbsp;오프라인
+              </label>
+              <label className="text-lg">
+                <input
+                  {...register("locationType")}
+                  type="checkbox"
+                  name="locationType"
+                  value={LocationType.ONLINE}
+                />
+                &nbsp;온라인
+              </label>
+            </div>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className="flex flex-col w-full gap-[12px]">
