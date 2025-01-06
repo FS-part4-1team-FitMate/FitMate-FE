@@ -9,6 +9,7 @@ import {
 } from "@/imageExports";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postSignUp } from "@/lib/api/authService";
@@ -24,6 +25,7 @@ interface Props {
 }
 
 function SignUpForm({ role }: Props) {
+  const router = useRouter();
   const setUser = useSetUser();
   const [error, setError] = useState<
     | null
@@ -67,8 +69,13 @@ function SignUpForm({ role }: Props) {
       const userData = await postSignUp({ ...data, role });
       if ("user" in userData) {
         setUser(userData.user);
+        localStorage.setItem("userData", JSON.stringify(userData));
+        if (userData.user.role === Role.USER) {
+          router.push(`/user/profile/regist`);
+        } else if (userData.user.role === Role.TRAINER) {
+          router.push(`/trainer/${userData.user.id}/profile/regist`);
+        }
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
     } catch (err) {
       setError({ message: (err as Error).message });
     }
