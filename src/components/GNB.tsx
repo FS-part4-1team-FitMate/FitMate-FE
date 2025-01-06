@@ -1,5 +1,7 @@
 import { useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
+import { ic_alarm_md, ic_menu, ic_profile_default_sm, logo_xl } from "@/imageExports";
+import { Role } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -7,14 +9,14 @@ import { useState } from "react";
 function GNB() {
   const viewport = useViewport();
   const user = useUser();
-  let profileImageURL = user?.profile?.profileImage ? user?.profile?.profileImage : "/assets/ic/ic_profile-default-sm.svg";
+  let profileImageURL = user?.profile?.profileImage ? user?.profile?.profileImage : ic_profile_default_sm;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
       <header className="flex justify-between items-center p-[8px] border-b-2 border-solid border-gray-400 pc:px-[200px]">
         <div className="flex justify-start items-center gap-[16px]">
-          <Link className="shrink-0" href="/"><Image src="/assets/img/logo_xl.svg" alt="Logo" width={96} height={32} priority /></Link>
+          <Link className="shrink-0" href="/"><Image src={logo_xl} alt="Logo" width={96} height={32} priority /></Link>
           <ul className="flex justify-start items-center gap-[16px] text-lg">
             {user && user?.role === Role.USER
             ? <>
@@ -33,7 +35,7 @@ function GNB() {
         <div>
           {user && user?.name
           ? <div className="flex justify-end items-center gap-[16px]">
-            <Image src="/assets/ic/ic_alarm_md.svg" alt="alarm" width={24} height={24} />
+            <Image src={ic_alarm_md} alt="alarm" width={24} height={24} />
             <div className="flex justify-end items-center gap-[8px]">
               <Image src={profileImageURL} alt="google" width={24} height={24} />
               <span className="text-2lg font-medium">{user.name}</span>
@@ -47,18 +49,18 @@ function GNB() {
 
   return (<header className="flex justify-between items-center p-[8px] border-b-2 border-solid border-gray-400">
     <div className="flex justify-start items-center">
-      <Link className="shrink-0" href="/"><Image src="/assets/img/logo_xl.svg" alt="Logo" width={96} height={32} priority /></Link>
+      <Link className="shrink-0" href="/"><Image src={logo_xl} alt="Logo" width={96} height={32} priority /></Link>
     </div>
     <div>
       <div className="flex justify-end items-center gap-[16px]">
         {user && user?.id
         ? <>
-          <Image src="/assets/ic/ic_alarm_md.svg" alt="alarm" width={24} height={24} />
+          <Image src={ic_alarm_md} alt="alarm" width={24} height={24} />
           <Image src={profileImageURL} alt="google" width={24} height={24} />
         </>
         : <Link href="/login"><button className="px-[16px] py-[4px] text-lg rounded-xl bg-blue-500 text-white">로그인</button></Link>}
         <div className="relative">
-          <Image src="/assets/ic/ic_menu.svg" alt="menu" width={24} height={24} onClick={() => setMenuIsOpen(prev => !prev)} />
+          <Image src={ic_menu} alt="menu" width={24} height={24} onClick={() => setMenuIsOpen(prev => !prev)} />
           {menuIsOpen && (user && user?.role === Role.USER
           ? <div className="absolute top-[30px] right-0 w-[160px] bg-white border border-gray-300 rounded-xl p-[10px]">
             <div className="w-[140px] h-auto text-lg flex justify-center items-center">

@@ -1,11 +1,13 @@
+import { UserProvider } from "@/contexts/UserProvider";
+import ViewportProvider from "@/contexts/ViewportProvider";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
+import { useRouter } from "next/router";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "@/styles/globals.css";
-import { UserProvider } from "@/contexts/UserProvider";
 import GNB from "@/components/GNB";
-import ViewportProvider from "@/contexts/ViewportProvider";
+import Tab from "@/components/Tab";
+import "@/styles/globals.css";
 
 const pretendard = localFont({
   src: "../../public/fonts/PretendardVariable.woff2",
@@ -14,6 +16,7 @@ const pretendard = localFont({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
@@ -26,14 +29,27 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       }),
   );
+
+  const isActiveTab =
+    router.pathname === "/" ||
+    router.pathname === "/user/my-lesson/active-lesson" ||
+    router.pathname === "/user/my-lesson/past-lesson" ||
+    router.pathname === "/user/lesson-review/awaiting-review" ||
+    router.pathname === "/user/lesson-review/written-review" ||
+    router.pathname === "/trainer/managing-request/sent-request" ||
+    router.pathname === "/trainer/managing-request/rejected-request";
+
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider><ViewportProvider>
-        <div className={pretendard.className}>
-          <GNB />
-          <Component {...pageProps} />
-        </div>
-      </ViewportProvider></UserProvider>
+      <UserProvider>
+        <ViewportProvider>
+          <div className={pretendard.className}>
+            <GNB />
+            {isActiveTab && <Tab />}
+            <Component {...pageProps} />
+          </div>
+        </ViewportProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }
