@@ -16,21 +16,37 @@ const trainer_info = "flex flex-col flex-grow gap-[0.8rem]";
 const trainer_name = "text-2lg font-semibold";
 const info_details = "flex items-center gap-[1.6rem]";
 
-export default function TrainerInfo() {
+interface TrainerInfoProps {
+  rating: number;
+  reviewCount: number;
+  experience: number;
+  lessonCount: number;
+  isFavorited: boolean;
+  favoriteCount: number;
+}
+
+export default function TrainerInfo({
+  rating,
+  reviewCount,
+  experience,
+  lessonCount,
+  isFavorited,
+  favoriteCount,
+}: TrainerInfoProps) {
   return (
     <div className={container}>
       <Image src={ic_profile_default_md} width={56} height={56} alt="프로필 사진" />
       <div className={trainer_info}>
         <p className={trainer_name}>김코드 강사님</p>
         <div className={info_details}>
-          <Rating rating={4.8} reviewCount={238} />
+          <Rating rating={rating} reviewCount={reviewCount} />
           <VerticalLine height="1.4rem" />
-          <Experience experience={3} />
+          <Experience experience={experience} />
           <VerticalLine height="1.4rem" />
-          <LessonCount lessonCount={45} />
+          <LessonCount lessonCount={lessonCount} />
         </div>
       </div>
-      <Favorite isFavorited={true} favoriteCount={26} />
+      <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount} />
     </div>
   );
 }
