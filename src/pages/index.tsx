@@ -13,9 +13,9 @@ export default function Home() {
     <div className="flex bg-pink-200 m-10 p-10">
       <CardContainer>
         <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount} />
-        <Rating />
-        <Experience />
-        <LessonCount />
+        <Rating rating={4.9} reviewCount={120} />
+        <Experience experience={7} />
+        <LessonCount lessonCount={235} />
       </CardContainer>
     </div>
   );
