@@ -8,6 +8,11 @@ const card_container = clsx(
   "bg-gray-50",
 );
 
-export default function CardContainer({ children }: { children: ReactNode }) {
-  return <div className={card_container}>{children}</div>;
+interface CardContainerProps {
+  gap: string;
+  children: ReactNode;
+}
+
+export default function CardContainer({ gap, children }: CardContainerProps) {
+  return <div className={`${card_container} gap-[${gap}]`}>{children}</div>;
 }
