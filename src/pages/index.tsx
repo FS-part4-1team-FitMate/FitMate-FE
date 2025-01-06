@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CardContainer from "@/components/Common/Card/CardContainer";
+import Experience from "@/components/Common/Card/Experience";
 import Favorite from "@/components/Common/Card/Favorite";
 import Rating from "@/components/Common/Card/Rating";
 
@@ -12,6 +13,7 @@ export default function Home() {
       <CardContainer>
         <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount} />
         <Rating />
+        <Experience />
       </CardContainer>
     </div>
   );
