@@ -1,7 +1,6 @@
 import instance from "./instance";
 
-export async function createRequest(data: {
-    userId: string;
+export async function createLessonRequest(data: {
     lessonType: string;
     subLessonType: string;
     duration: number;
@@ -11,7 +10,7 @@ export async function createRequest(data: {
     address?: string;
   }): Promise<any> {
     try {
-      const response = await instance.post("/lesson-requests", data);
+      const response = await instance.post("/user/my-lesson/pending-request", data);
       return response.data;
     } catch (err) {
       throw err;

@@ -1,187 +1,317 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import ChatBubble from "@/components/ChatBubble";
-import ProgressBar from "@/components/ProgressBar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { createRequest } from "@/lib/api/requestService";
-const LessonRequestForm = () => {
+import ProgressBar from "@/components/ProgressBar";
+import ChatBubble from "@/components/ChatBubble";
+import { createLessonRequest } from "@/lib/api/requestService";
+
+type FormValues = {
+  lessonType: string;
+  subLessonType: string;
+  startDate: Date;
+  endDate: Date;
+  duration: number;
+  locationType: string;
+  address?: string;
+};
+
+const createRequest = () => {
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [chatHistory, setChatHistory] = useState<{ type: "question" | "answer"; content: string }[]>([]);
+  const [currentAnswer, setCurrentAnswer] = useState<string>("");
+  const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
 
-  const { handleSubmit, control, watch, setValue } = useForm({
+  const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
-      userId: "user-12345", // 실제 유저 ID로 변경 필요
       lessonType: "",
       subLessonType: "",
+      startDate: new Date(),
+      endDate: new Date(),
       duration: 0,
-      startDate: null,
-      endDate: null,
       locationType: "",
       address: "",
     },
   });
+
+  const fields: (keyof FormValues)[] = [
+    "lessonType",
+    "subLessonType",
+    "startDate",
+    "endDate",
+    "duration",
+    "locationType",
+    "address",
+  ];
 
   const questions = [
     "어떤 운동을 하고 싶으세요?",
     "어떤 활동을 원하세요?",
     "기간을 정해주세요.",
     "몇 번을 원하시나요?",
-    "수업 장소 유형을 선택하세요.",
+    "수업 장소 유형을 선택해주세요.",
+    "주소를 입력해주세요.",
   ];
 
-  const options = {
-    0: ["스포츠", "피트니스"],
-    1: ["구기 스포츠", "계절 스포츠", "격투 스포츠"],
-    4: ["온라인", "오프라인"],
+  const getOptionsForSecondQuestion = (lessonType: string) => {
+    switch (lessonType) {
+      case "스포츠":
+        return ["구기 스포츠", "계절 스포츠", "격투 스포츠"];
+      case "피트니스":
+        return ["요가", "필라테스", "식단"];
+      case "재활운동":
+        return ["운동치료", "수치료"];
+      default:
+        return [];
+    }
   };
 
-  const handleAnswer = (answer) => {
-    const fields = ["lessonType", "subLessonType", "locationType"];
+  const handleAnswer = () => {
     if (fields[step]) {
-      setValue(fields[step], answer);
-    }
-
-    if (step < questions.length - 1) {
+      setValue(fields[step], currentAnswer);
+      setChatHistory((prev) => [
+        ...prev,
+        { type: "answer", content: currentAnswer },
+      ]);
+      setChatHistory((prev) => [
+        ...prev,
+        { type: "question", content: questions[step + 1] },
+      ]);
       setStep(step + 1);
       setProgress(((step + 1) / questions.length) * 100);
+      setCurrentAnswer("");
     }
   };
 
-  const handleDateChange = (dates) => {
-    const [start, end] = dates;
-    setValue("startDate", start);
-    setValue("endDate", end);
+  const handleDateSubmit = () => {
+    if (dateRange[0] && dateRange[1]) {
+      setValue("startDate", dateRange[0]);
+      setValue("endDate", dateRange[1]);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          type: "answer",
+          content: `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`,
+        },
+      ]);
+      if (step < questions.length - 1) {
+        setChatHistory((prev) => [
+          ...prev,
+          { type: "question", content: questions[step + 1] },
+        ]);
+      }
+      setStep(step + 1);
+      setProgress(((step + 1) / questions.length) * 100);
+    } else {
+      alert("날짜를 정확히 선택해주세요!");
+    }
   };
 
-  const onSubmit = async (data) => {
-    setLoading(true);
-    setError(null);
+  const onSubmit = async (data: FormValues) => {
     try {
-      const response = await createRequest(data);
-      console.log("응답 성공:", response);
-      setSuccess(true);
+      await createLessonRequest(data);
+      alert("견적 요청이 성공적으로 제출되었습니다!");
     } catch (err) {
-      console.error("응답 실패:", err);
-      setError("서버와 통신 중 문제가 발생했습니다.");
-    } finally {
-      setLoading(false);
+      alert("견적 요청 제출 중 오류가 발생했습니다.");
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col items-center space-y-4 p-6 bg-gray-100 min-h-screen"
+      className="flex flex-col space-y-6 bg-gray-100 min-h-screen"
     >
-      <h1 className="text-2xl font-bold">견적 요청</h1>
-      <ProgressBar progress={progress} />
+      <div className="bg-white p-10 w-full space-y-6 px-[20rem]">
+        <h1 className="text-xl">견적 요청</h1>
+        <ProgressBar progress={progress} />
+      </div>
 
-      <div className="flex flex-col space-y-4 w-full max-w-md">
-        {questions.slice(0, step + 1).map((question, index) => (
-          <ChatBubble key={index} type="question" content={question} />
+      <div className="flex flex-col space-y-4 w-full px-[20rem]">
+        {chatHistory.map((chat, index) => (
+          <ChatBubble key={index} type={chat.type} content={chat.content} />
         ))}
+      </div>
 
-        {step === 0 && (
-          <div className="flex space-x-4">
-            {options[0].map((option) => (
+      <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-lg rounded-tl-lg rounded-none self-end mr-6">
+      {step === 0 && (
+          <div className="space-y-4">
+            <div className="flex space-x-4">
               <button
-                key={option}
                 type="button"
-                onClick={() => handleAnswer(option)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                className={`w-1/3 py-2 px-4 rounded-lg border ${
+                  currentAnswer === "스포츠" ? "bg-blue-300 text-white" : "bg-white text-black"
+                }`}
+                onClick={() => setCurrentAnswer("스포츠")}
               >
-                {option}
+                스포츠
               </button>
-            ))}
+              <button
+                type="button"
+                className={`w-1/3 py-2 px-4 rounded-lg border ${
+                  currentAnswer === "피트니스" ? "bg-blue-300 text-white" : "bg-white text-black"
+                }`}
+                onClick={() => setCurrentAnswer("피트니스")}
+              >
+                피트니스
+              </button>
+              <button
+                type="button"
+                className={`w-1/3 py-2 px-4 rounded-lg border ${
+                  currentAnswer === "재활운동" ? "bg-blue-300 text-white" : "bg-white text-black"
+                }`}
+                onClick={() => setCurrentAnswer("재활운동")}
+              >
+                재활운동
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={handleAnswer}
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              disabled={!currentAnswer}
+            >
+              입력 완료
+            </button>
           </div>
         )}
 
         {step === 1 && (
-          <div className="flex space-x-4">
-            {options[1].map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => handleAnswer(option)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-              >
-                {option}
-              </button>
-            ))}
+          <div className="space-y-4">
+            <div className="flex space-x-4">
+              {getOptionsForSecondQuestion(watch("lessonType")).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={`w-1/3 py-2 px-4 rounded-lg border ${
+                    currentAnswer === option ? "bg-blue-300 text-white" : "bg-white text-black"
+                  }`}
+                  onClick={() => setCurrentAnswer(option)}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handleAnswer}
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              disabled={!currentAnswer}
+            >
+              입력 완료
+            </button>
           </div>
         )}
 
         {step === 2 && (
-          <Controller
-            name="dateRange"
-            control={control}
-            render={() => (
-              <DatePicker
-                selected={watch("startDate")}
-                onChange={handleDateChange}
-                startDate={watch("startDate")}
-                endDate={watch("endDate")}
-                selectsRange
-                inline
-              />
-            )}
-          />
-        )}
-
-        {step === 3 && (
-          <Controller
-            name="duration"
-            control={control}
-            render={({ field }) => (
-              <input
-                {...field}
-                type="number"
-                min="1"
-                className="border border-gray-300 rounded-lg p-2 w-full"
-                placeholder="숫자를 입력하세요"
-              />
-            )}
-          />
-        )}
-
-        {step === 4 && (
-          <div className="flex space-x-4">
-            {options[4].map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => handleAnswer(option)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-              >
-                {option}
-              </button>
-            ))}
+          <div>
+            <DatePicker
+              selected={dateRange[0]}
+              onChange={(dates) => setDateRange(dates as [Date, Date])}
+              startDate={dateRange[0]}
+              endDate={dateRange[1]}
+              selectsRange
+              inline
+            />
+            <button
+              type="button"
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              onClick={handleDateSubmit}
+              disabled={!dateRange[0] || !dateRange[1]}
+            >
+              선택 완료
+            </button>
           </div>
         )}
 
-        {step === questions.length - 1 && (
-          <button
-            type="submit"
-            className={`py-2 px-4 rounded-lg ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-500 text-white"
-            }`}
-            disabled={loading}
-          >
-            {loading ? "제출 중..." : "제출하기"}
-          </button>
+        {step === 3 && (
+          <div className="space-y-4">
+            <Controller
+              name="duration"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="number"
+                  className="w-full py-2 px-4 rounded-lg border"
+                  placeholder="횟수를 입력하세요"
+                  value={currentAnswer}
+                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                />
+              )}
+            />
+            <button
+              type="button"
+              onClick={handleAnswer}
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              disabled={!currentAnswer}
+            >
+              입력 완료
+            </button>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="space-y-4">
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                className={`w-1/2 py-2 px-4 rounded-lg border ${
+                  currentAnswer === "온라인" ? "bg-blue-300 text-white" : "bg-white text-black"
+                }`}
+                onClick={() => setCurrentAnswer("온라인")}
+              >
+                온라인
+              </button>
+              <button
+                type="button"
+                className={`w-1/2 py-2 px-4 rounded-lg border ${
+                  currentAnswer === "오프라인" ? "bg-blue-300 text-white" : "bg-white text-black"
+                }`}
+                onClick={() => setCurrentAnswer("오프라인")}
+              >
+                오프라인
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={handleAnswer}
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              disabled={!currentAnswer}
+            >
+              입력 완료
+            </button>
+          </div>
+        )}
+
+        {step === 5 && (
+          <div className="space-y-4">
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  className="w-full py-2 px-4 rounded-lg border"
+                  placeholder="주소를 입력하세요"
+                  value={watch("address") || ""}
+                  onChange={(e) => setValue("address", e.target.value)}
+                />
+              )}
+            />
+            <button
+              type="submit"
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
+              disabled={!watch("address")}
+            >
+              견적 확정하기
+            </button>
+          </div>
         )}
       </div>
-
-      {error && <div className="text-red-500">{error}</div>}
-      {success && <div className="text-green-500">요청이 성공적으로 제출되었습니다!</div>}
     </form>
   );
 };
 
-export default LessonRequestForm;
+export default createRequest;
