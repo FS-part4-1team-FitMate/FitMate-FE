@@ -4,6 +4,7 @@ import Image from "next/image";
 import Experience from "./Experience";
 import Favorite from "./Favorite";
 import LessonCount from "./LessonCount";
+import { VerticalLine } from "./Line";
 import Rating from "./Rating";
 
 const container = clsx(
@@ -23,7 +24,9 @@ export default function TrainerInfo() {
         <p className={trainer_name}>김코드 강사님</p>
         <div className={info_details}>
           <Rating rating={4.8} reviewCount={238} />
+          <VerticalLine height="1.4rem" />
           <Experience experience={3} />
+          <VerticalLine height="1.4rem" />
           <LessonCount lessonCount={45} />
         </div>
       </div>
