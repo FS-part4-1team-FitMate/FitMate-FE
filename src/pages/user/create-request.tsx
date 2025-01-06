@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ko } from "date-fns/locale";
 import ProgressBar from "@/components/ProgressBar";
 import ChatBubble from "@/components/ChatBubble";
 import { createLessonRequest } from "@/lib/api/requestService";
@@ -22,6 +23,7 @@ const createRequest = () => {
   const [chatHistory, setChatHistory] = useState<{ type: "question" | "answer"; content: string }[]>([]);
   const [currentAnswer, setCurrentAnswer] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
+  const [editMode, setEditMode] = useState<number | null>(null);
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
@@ -45,6 +47,12 @@ const createRequest = () => {
     "address",
   ];
 
+  useEffect(() => {
+    if (chatHistory.length === 0) {
+      setChatHistory([{ type: "question", content: "어떤 운동을 하고 싶으세요?" }]);
+    }
+  }, []);
+
   const questions = [
     "어떤 운동을 하고 싶으세요?",
     "어떤 활동을 원하세요?",
@@ -54,7 +62,7 @@ const createRequest = () => {
     "주소를 입력해주세요.",
   ];
 
-  const getOptionsForSecondQuestion = (lessonType: string) => {
+   const getOptionsForSecondQuestion = (lessonType: string) => {
     switch (lessonType) {
       case "스포츠":
         return ["구기 스포츠", "계절 스포츠", "격투 스포츠"];
@@ -73,13 +81,29 @@ const createRequest = () => {
       setChatHistory((prev) => [
         ...prev,
         { type: "answer", content: currentAnswer },
-      ]);
-      setChatHistory((prev) => [
-        ...prev,
         { type: "question", content: questions[step + 1] },
       ]);
       setStep(step + 1);
       setProgress(((step + 1) / questions.length) * 100);
+      setCurrentAnswer("");
+    }
+  };
+
+  const handleEdit = (editStep: number) => {
+    setEditMode(editStep);
+    setStep(editStep);
+    setCurrentAnswer(watch(fields[editStep])?.toString() || "");
+  };
+
+  const handleSaveEdit = () => {
+    if (fields[editMode!]) {
+      setValue(fields[editMode!], currentAnswer);
+      setChatHistory((prev) => {
+        const updatedHistory = [...prev];
+        updatedHistory[editMode! * 2 + 1] = { type: "answer", content: currentAnswer };
+        return updatedHistory;
+      });
+      setEditMode(null);
       setCurrentAnswer("");
     }
   };
@@ -94,17 +118,10 @@ const createRequest = () => {
           type: "answer",
           content: `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`,
         },
+        { type: "question", content: questions[step + 1] },
       ]);
-      if (step < questions.length - 1) {
-        setChatHistory((prev) => [
-          ...prev,
-          { type: "question", content: questions[step + 1] },
-        ]);
-      }
       setStep(step + 1);
       setProgress(((step + 1) / questions.length) * 100);
-    } else {
-      alert("날짜를 정확히 선택해주세요!");
     }
   };
 
@@ -118,10 +135,7 @@ const createRequest = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col space-y-6 bg-gray-100 min-h-screen"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-6 bg-gray-100 min-h-screen">
       <div className="bg-white p-10 w-full space-y-6 px-[20rem]">
         <h1 className="text-xl">견적 요청</h1>
         <ProgressBar progress={progress} />
@@ -129,41 +143,43 @@ const createRequest = () => {
 
       <div className="flex flex-col space-y-4 w-full px-[20rem]">
         {chatHistory.map((chat, index) => (
-          <ChatBubble key={index} type={chat.type} content={chat.content} />
+          <div key={index} className="flex flex-col">
+            <ChatBubble type={chat.type} content={chat.content} />
+            {chat.type === "answer" && index / 2 < step && (
+              <button
+                type="button"
+                onClick={() => handleEdit(Math.floor(index / 2))}
+                className="flex text-sm text-black-500 underline self-end mr-7"
+              >
+                수정하기
+              </button>
+            )}
+          </div>
         ))}
       </div>
 
-      <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-lg rounded-tl-lg rounded-none self-end mr-6">
-      {step === 0 && (
+      <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-lg rounded-tl-lg rounded-none self-end mr-[22rem]">
+        {step === 0 && (
           <div className="space-y-4">
-            <div className="flex space-x-4">
-              <button
-                type="button"
-                className={`w-1/3 py-2 px-4 rounded-lg border ${
-                  currentAnswer === "스포츠" ? "bg-blue-300 text-white" : "bg-white text-black"
-                }`}
-                onClick={() => setCurrentAnswer("스포츠")}
-              >
-                스포츠
-              </button>
-              <button
-                type="button"
-                className={`w-1/3 py-2 px-4 rounded-lg border ${
-                  currentAnswer === "피트니스" ? "bg-blue-300 text-white" : "bg-white text-black"
-                }`}
-                onClick={() => setCurrentAnswer("피트니스")}
-              >
-                피트니스
-              </button>
-              <button
-                type="button"
-                className={`w-1/3 py-2 px-4 rounded-lg border ${
-                  currentAnswer === "재활운동" ? "bg-blue-300 text-white" : "bg-white text-black"
-                }`}
-                onClick={() => setCurrentAnswer("재활운동")}
-              >
-                재활운동
-              </button>
+            <div className="flex flex-col space-y-2">
+              {["스포츠", "피트니스", "재활운동"].map((option) => (
+                <label
+                  key={option}
+                  className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
+                    currentAnswer === option ? "bg-blue-100 text-black" : "bg-white text-black"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="lessonType"
+                    value={option}
+                    className="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-blue-500 checked:border-transparent"
+                    onChange={() => setCurrentAnswer(option)}
+                    checked={currentAnswer === option}
+                  />
+                  <span className="text-lg">{option}</span>
+                </label>
+              ))}
             </div>
             <button
               type="button"
@@ -178,18 +194,24 @@ const createRequest = () => {
 
         {step === 1 && (
           <div className="space-y-4">
-            <div className="flex space-x-4">
+            <div className="flex flex-col space-y-2">
               {getOptionsForSecondQuestion(watch("lessonType")).map((option) => (
-                <button
+                <label
                   key={option}
-                  type="button"
-                  className={`w-1/3 py-2 px-4 rounded-lg border ${
-                    currentAnswer === option ? "bg-blue-300 text-white" : "bg-white text-black"
+                  className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
+                    currentAnswer === option ? "bg-blue-100 text-black" : "bg-white text-black"
                   }`}
-                  onClick={() => setCurrentAnswer(option)}
                 >
-                  {option}
-                </button>
+                  <input
+                    type="radio"
+                    name="subLessonType"
+                    value={option}
+                    className="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-blue-500 checked:border-transparent"
+                    onChange={() => setCurrentAnswer(option)}
+                    checked={currentAnswer === option}
+                  />
+                  <span className="text-lg">{option}</span>
+                </label>
               ))}
             </div>
             <button
@@ -212,6 +234,10 @@ const createRequest = () => {
               endDate={dateRange[1]}
               selectsRange
               inline
+              dateFormat="yyyy.MM.dd"
+              locale={ko}
+              showPopperArrow={false}
+              calendarClassName="custom-datepicker"
             />
             <button
               type="button"
@@ -233,7 +259,7 @@ const createRequest = () => {
                 <input
                   {...field}
                   type="number"
-                  className="w-full py-2 px-4 rounded-lg border"
+                  className="w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="횟수를 입력하세요"
                   value={currentAnswer}
                   onChange={(e) => setCurrentAnswer(e.target.value)}
@@ -253,25 +279,25 @@ const createRequest = () => {
 
         {step === 4 && (
           <div className="space-y-4">
-            <div className="flex space-x-4">
-              <button
-                type="button"
-                className={`w-1/2 py-2 px-4 rounded-lg border ${
-                  currentAnswer === "온라인" ? "bg-blue-300 text-white" : "bg-white text-black"
-                }`}
-                onClick={() => setCurrentAnswer("온라인")}
-              >
-                온라인
-              </button>
-              <button
-                type="button"
-                className={`w-1/2 py-2 px-4 rounded-lg border ${
-                  currentAnswer === "오프라인" ? "bg-blue-300 text-white" : "bg-white text-black"
-                }`}
-                onClick={() => setCurrentAnswer("오프라인")}
-              >
-                오프라인
-              </button>
+            <div className="flex flex-col space-y-2">
+              {["온라인", "오프라인"].map((option) => (
+                <label
+                  key={option}
+                  className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
+                    currentAnswer === option ? "bg-blue-100 text-black" : "bg-white text-black"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="lessonType"
+                    value={option}
+                    className="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-blue-500 checked:border-transparent"
+                    onChange={() => setCurrentAnswer(option)}
+                    checked={currentAnswer === option}
+                  />
+                  <span className="text-lg">{option}</span>
+                </label>
+              ))}
             </div>
             <button
               type="button"
@@ -293,7 +319,7 @@ const createRequest = () => {
                 <input
                   {...field}
                   type="text"
-                  className="w-full py-2 px-4 rounded-lg border"
+                  className="w-full py-2 px-4 rounded-lg text-lg"
                   placeholder="주소를 입력하세요"
                   value={watch("address") || ""}
                   onChange={(e) => setValue("address", e.target.value)}
