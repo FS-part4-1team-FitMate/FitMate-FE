@@ -1,5 +1,5 @@
 import CardContainer from "../Common/Card/CardContainer";
-import TrainerInfo from "../Common/Card/TrainerInfo";
+import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 const quote_price = "flex justify-end items-center gap-[1.6rem]";
 

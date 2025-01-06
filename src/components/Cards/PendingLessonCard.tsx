@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import CardContainer from "../Common/Card/CardContainer";
 import { VerticalLine } from "../Common/Card/Line";
-import TrainerInfo from "../Common/Card/TrainerInfo";
+import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 const lesson_info = "flex items-center gap-[1.6rem]";
 const info_text = "text-2lg font-medium";

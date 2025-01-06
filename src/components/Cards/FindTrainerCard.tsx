@@ -1,5 +1,5 @@
 import CardContainer from "../Common/Card/CardContainer";
-import TrainerInfo from "../Common/Card/TrainerInfo";
+import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 export default function FindTrainerCard() {
   return (
