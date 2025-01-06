@@ -48,6 +48,7 @@ module.exports = {
       },
       fontSize: {
         "3xl": ["3.2rem", { lineHeight: "4.2rem" }],
+        "2.5xl": ["2.8rem", { lineHeight: "4rem" }],
         "2xl": ["2.4rem", { lineHeight: "3.2rem" }],
         xl: ["2rem", { lineHeight: "3.2rem" }],
         "2lg": ["1.8rem", { lineHeight: "2.6rem" }],
