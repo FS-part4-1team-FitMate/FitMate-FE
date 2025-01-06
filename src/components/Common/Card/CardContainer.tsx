@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 
 const card_container = clsx(
   "flex flex-col",
+  "w-[95.5rem] h-[23rem]",
   "py-[2rem] px-[2.4rem] rounded-[1.6rem]",
   "bg-gray-50",
 );
