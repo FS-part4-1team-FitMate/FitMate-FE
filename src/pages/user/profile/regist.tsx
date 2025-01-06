@@ -10,6 +10,8 @@ import PopUp from "@/components/PopUp";
 const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
 
 const profile_menu = clsx("flex flex-col items-start gap-[12px]");
+const note_class = "text-sm text-slate-500";
+const error_class = "text-red-400 text-sm";
 
 const region_options = [
   { name: "서울", value: Region.SEOUL },
@@ -109,7 +111,7 @@ function Regist() {
             id="phone"
             placeholder="전화번호를 입력해 주세요."
           />
-          {errors.phone && <p className="text-red-400 text-sm">{errors.phone.message}</p>}
+          {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
         </div>
         <hr className="w-full border-[1px] border-solid border-gray-300" />
         <div className={profile_menu}>
@@ -129,7 +131,7 @@ function Regist() {
         <div className={profile_menu}>
           <div className="flex flex-col gap-[8px]">
             <label className="text-lg font-semibold">받고 싶은 레슨 유형</label>
-            <p className="text-sm">* 받고 싶은 레슨 유형은 언제든지 수정 가능해요!</p>
+            <p className={note_class}>* 받고 싶은 레슨 유형은 언제든지 수정 가능해요!</p>
           </div>
           <label className="text-lg">
             <input
@@ -163,7 +165,7 @@ function Regist() {
         <div className={profile_menu}>
           <div className="flex flex-col gap-[8px]">
             <label className="text-lg font-semibold">내가 사는 지역</label>
-            <p className="text-sm">* 내가 사는 지역은 언제든지 수정 가능해요!</p>
+            <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
           </div>
           <label htmlFor="region" className="flex flex-wrap gap-[8px]">
             {region_options.map((region) => {

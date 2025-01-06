@@ -11,6 +11,8 @@ import PopUp from "@/components/PopUp";
 const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
 
 const profile_menu = clsx("flex flex-col items-start gap-[12px]");
+const note_class = "text-sm text-slate-500";
+const error_class = "text-red-400 text-sm";
 
 const region_options = [
   { name: "서울", value: Region.SEOUL },
@@ -124,7 +126,7 @@ function Regist() {
               id="name"
               placeholder="이름를 입력해 주세요."
             />
-            {errors.name && <p className="text-red-400 text-sm">{errors.name.message}</p>}
+            {errors.name && <p className={error_class}>{errors.name.message}</p>}
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className="flex flex-col w-full gap-[12px]">
@@ -144,7 +146,7 @@ function Regist() {
               id="phone"
               placeholder="전화번호를 입력해 주세요."
             />
-            {errors.phone && <p className="text-red-400 text-sm">{errors.phone.message}</p>}
+            {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className={profile_menu}>
@@ -164,7 +166,7 @@ function Regist() {
           <div className={profile_menu}>
             <div className="flex flex-col gap-[8px]">
               <label className="text-lg font-semibold">제공 가능한 레슨 유형</label>
-              <p className="text-sm">* 제공 가능한 레슨 유형은 언제든지 수정 가능해요!</p>
+              <p className={note_class}>* 제공 가능한 레슨 유형은 언제든지 수정 가능해요!</p>
             </div>
             <label className="text-lg">
               <input
@@ -200,7 +202,7 @@ function Regist() {
           <div className={profile_menu}>
             <div className="flex flex-col gap-[8px]">
               <label className="text-lg font-semibold">내가 사는 지역</label>
-              <p className="text-sm">* 내가 사는 지역은 언제든지 수정 가능해요!</p>
+              <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
             </div>
             <label htmlFor="region" className="flex flex-wrap gap-[8px]">
               {region_options.map((region) => {
@@ -229,12 +231,15 @@ function Regist() {
           <div className={profile_menu}>
             <div className="flex flex-col gap-[8px]">
               <label className="text-lg font-semibold">강의 주소 타입</label>
-              <p className="text-sm">* 반드시 하나 이상을 선택해 주세요!</p>
+              <p className={note_class}>* 반드시 하나 이상을 선택해 주세요!</p>
             </div>
             <div className="flex gap-[16px]">
               <label className="text-lg">
                 <input
-                  {...register("locationType")}
+                  {...register("locationType", {
+                    validate: (value) =>
+                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                  })}
                   type="checkbox"
                   name="locationType"
                   value={LocationType.OFFLINE}
@@ -243,7 +248,10 @@ function Regist() {
               </label>
               <label className="text-lg">
                 <input
-                  {...register("locationType")}
+                  {...register("locationType", {
+                    validate: (value) =>
+                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                  })}
                   type="checkbox"
                   name="locationType"
                   value={LocationType.ONLINE}
@@ -251,6 +259,7 @@ function Regist() {
                 &nbsp;온라인
               </label>
             </div>
+            {errors.locationType && <p className={error_class}>{errors.locationType.message}</p>}
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className="flex flex-col w-full gap-[12px]">
@@ -266,7 +275,7 @@ function Regist() {
               })}
             />
           </div>
-          {errors.experience && <p className="text-red-400 text-sm">{errors.experience.message}</p>}
+          {errors.experience && <p className={error_class}>{errors.experience.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className="flex flex-col w-full gap-[12px]">
             <label className="text-lg font-semibold">한 줄 소개</label>
@@ -276,7 +285,7 @@ function Regist() {
               {...register("intro")}
             />
           </div>
-          {errors.intro && <p className="text-red-400 text-sm">{errors.intro.message}</p>}
+          {errors.intro && <p className={error_class}>{errors.intro.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className="flex flex-col w-full gap-[12px]">
             <label className="text-lg font-semibold">상세 설명</label>
@@ -290,9 +299,7 @@ function Regist() {
               })}
             ></textarea>
           </div>
-          {errors.description && (
-            <p className="text-red-400 text-sm">{errors.description.message}</p>
-          )}
+          {errors.description && <p className={error_class}>{errors.description.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <button
             type="submit"
