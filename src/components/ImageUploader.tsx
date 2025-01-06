@@ -1,7 +1,12 @@
 import { ic_profile_default_sm } from "@/imageExports";
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
-const ImageUploader: React.FC = () => {
+interface Props {
+  register: UseFormRegisterReturn;
+}
+
+const ImageUploader: React.FC<Props> = ({ register }: Props) => {
   const [imageSrc, setImageSrc] = useState<string>(ic_profile_default_sm.src);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +30,14 @@ const ImageUploader: React.FC = () => {
         className="w-[150px] h-[150px] rounded-3xl border-2 border-gray-300 object-cover mb-[10px]"
       />
       <br />
-      <input id="profileImage" name="profileImage" className="p-0 m-0 text-sm rounded-none" type="file" accept="image/*" onChange={handleImageChange} />
+      <input
+        id="profileImage"
+        className="p-0 m-0 text-sm rounded-none"
+        type="file"
+        accept="image/*"
+        {...register}
+        onChange={handleImageChange}
+      />
     </div>
   );
 };
