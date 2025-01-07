@@ -17,13 +17,14 @@ type FormValues = {
   address?: string;
 };
 
+
+
 const createRequest = () => {
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [chatHistory, setChatHistory] = useState<{ type: "question" | "answer"; content: string }[]>([]);
   const [currentAnswer, setCurrentAnswer] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
-  const [editMode, setEditMode] = useState<number | null>(null);
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
@@ -74,6 +75,8 @@ const createRequest = () => {
         return [];
     }
   };
+  
+  
 
   const handleAnswer = () => {
     if (fields[step]) {
@@ -88,30 +91,27 @@ const createRequest = () => {
       setCurrentAnswer("");
     }
   };
+  
 
   const handleEdit = (editStep: number) => {
-    setEditMode(editStep);
     setStep(editStep);
-    setCurrentAnswer(watch(fields[editStep])?.toString() || "");
-  };
-
-  const handleSaveEdit = () => {
-    if (fields[editMode!]) {
-      setValue(fields[editMode!], currentAnswer);
-      setChatHistory((prev) => {
-        const updatedHistory = [...prev];
-        updatedHistory[editMode! * 2 + 1] = { type: "answer", content: currentAnswer };
-        return updatedHistory;
-      });
-      setEditMode(null);
-      setCurrentAnswer("");
-    }
+    const fieldToEdit = fields[editStep];
+    const currentValue = watch(fieldToEdit)?.toString() || "";
+    setCurrentAnswer(currentValue);
+    setChatHistory((prev) =>
+      prev.slice(0, editStep * 2 + 1)
+    );
+    setProgress((editStep / questions.length) * 100);
   };
 
   const handleDateSubmit = () => {
     if (dateRange[0] && dateRange[1]) {
       setValue("startDate", dateRange[0]);
       setValue("endDate", dateRange[1]);
+      setTimeout(() => {
+        console.log("startDate:", watch("startDate"));
+        console.log("endDate:", watch("endDate"));
+      }, 100);
       setChatHistory((prev) => [
         ...prev,
         {
@@ -125,12 +125,15 @@ const createRequest = () => {
     }
   };
 
+
   const onSubmit = async (data: FormValues) => {
+    console.log("제출 데이터:", data);
     try {
       await createLessonRequest(data);
       alert("견적 요청이 성공적으로 제출되었습니다!");
     } catch (err) {
       alert("견적 요청 제출 중 오류가 발생했습니다.");
+      console.log("제출 데이터:", data);
     }
   };
 
@@ -158,6 +161,7 @@ const createRequest = () => {
         ))}
       </div>
 
+      
       <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-lg rounded-tl-lg rounded-none self-end mr-[22rem]">
         {step === 0 && (
           <div className="space-y-4">
@@ -229,7 +233,9 @@ const createRequest = () => {
           <div>
             <DatePicker
               selected={dateRange[0]}
-              onChange={(dates) => setDateRange(dates as [Date, Date])}
+              onChange={(dates) => {
+                console.log("dates:", dates);
+                setDateRange(dates as [Date, Date])}}
               startDate={dateRange[0]}
               endDate={dateRange[1]}
               selectsRange
@@ -249,6 +255,7 @@ const createRequest = () => {
             </button>
           </div>
         )}
+   
 
         {step === 3 && (
           <div className="space-y-4">
@@ -318,11 +325,21 @@ const createRequest = () => {
               render={({ field }) => (
                 <input
                   {...field}
-                  type="text"
-                  className="w-full py-2 px-4 rounded-lg text-lg"
-                  placeholder="주소를 입력하세요"
+                  id="address"
+                  type="button"
+                  className="w-full py-2 px-4 rounded-lg text-lg border"
                   value={watch("address") || ""}
-                  onChange={(e) => setValue("address", e.target.value)}
+                  onClick={() => new daum.Postcode({
+                    oncomplete: function(data: any) {
+                        var addr = '';
+                        if (data.userSelectedType === 'R') {
+                            addr = data.roadAddress;
+                        } else {
+                            addr = data.jibunAddress;
+                        }
+                        setValue("address", addr);
+                    }
+                }).open()}
                 />
               )}
             />
