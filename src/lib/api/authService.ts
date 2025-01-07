@@ -33,6 +33,7 @@ export function postSignUp(data: {
 
 export function postProfile(data: {
   profileImage: FileList | null;
+  name: string;
   phone: string;
   gender: Gender;
   lessonType: LessonType | null;

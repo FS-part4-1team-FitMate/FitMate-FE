@@ -75,6 +75,7 @@ function Regist() {
 
   const onSubmit = async (data: {
     profileImage: FileList | null;
+    name: string;
     phone: string;
     gender: Gender;
     lessonType: LessonType | null;
