@@ -47,12 +47,14 @@ function Regist() {
     mode: "all",
     defaultValues: {
       profileImage: null,
+      name: "",
       phone: "",
       gender: Gender.MALE,
       lessonType: null,
       region: null,
     } as {
       profileImage: FileList | null;
+      name: string;
       phone: string;
       gender: Gender;
       lessonType: LessonType | null;
@@ -92,6 +94,22 @@ function Regist() {
             프로필 이미지
           </label>
           <ImageUploader register={register("profileImage")} />
+        </div>
+        <hr className="w-full border-[1px] border-solid border-gray-300" />
+        <div className="flex flex-col w-full gap-[12px]">
+          <label className="w-full text-lg font-semibold" htmlFor="name">
+            이름
+          </label>
+          <input
+            className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
+            {...register("name", {
+              required: "이름를 입력해 주세요.",
+            })}
+            type="name"
+            id="name"
+            placeholder="이름를 입력해 주세요."
+          />
+          {errors.name && <p className={error_class}>{errors.name.message}</p>}
         </div>
         <hr className="w-full border-[1px] border-solid border-gray-300" />
         <div className="flex flex-col w-full gap-[12px]">
