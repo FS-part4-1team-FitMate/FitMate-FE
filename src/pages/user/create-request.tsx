@@ -79,8 +79,18 @@ const createRequest = () => {
   
 
   const handleAnswer = () => {
-    if (fields[step]) {
+    if (step < 3) {
       setValue(fields[step], currentAnswer);
+      setChatHistory((prev) => [
+        ...prev,
+        { type: "answer", content: currentAnswer },
+        { type: "question", content: questions[step + 1] },
+      ]);
+      setStep(step + 1);
+      setProgress(((step + 1) / questions.length) * 100);
+      setCurrentAnswer("");
+    } else {
+      setValue(fields[step + 1], currentAnswer);
       setChatHistory((prev) => [
         ...prev,
         { type: "answer", content: currentAnswer },
@@ -339,7 +349,8 @@ const createRequest = () => {
                         }
                         setValue("address", addr);
                     }
-                }).open()}
+                    
+                  }).open()}
                 />
               )}
             />
