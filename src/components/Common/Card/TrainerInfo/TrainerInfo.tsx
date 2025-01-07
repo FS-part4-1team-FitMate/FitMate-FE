@@ -10,7 +10,7 @@ import Rating from "./Rating";
 const container = clsx(
   "flex items-start gap-[2.4rem]",
   "py-[1.6rem] px-[1.8rem]",
-  "border border-line-100 rounded-[0.6rem]",
+  "border border-line-100 rounded-[0.6rem] shadow-card",
 );
 const trainer_info = "flex flex-col flex-grow gap-[0.8rem]";
 const trainer_name = "text-2lg font-semibold";
