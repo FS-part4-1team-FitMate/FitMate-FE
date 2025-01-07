@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postSignUp } from "@/lib/api/authService";
 import { Role } from "@/types/types";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/Common/PopUp";
 import { EMAIL_REGEX } from "@/pages/login";
 
 const input_class =

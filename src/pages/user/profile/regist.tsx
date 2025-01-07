@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
 import { Gender, LessonType, Region } from "@/types/types";
-import ImageUploader from "@/components/ImageUploader";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/Common/PopUp";
+import ImageUploader from "@/components/SignUp/ImageUploader";
 
 const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
 
