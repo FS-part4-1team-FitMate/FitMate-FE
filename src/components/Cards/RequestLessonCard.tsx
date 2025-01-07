@@ -20,10 +20,10 @@ export default function RequestLessonCard() {
       </div>
       <div className={lesson_info}>
         <p className={lesson_user}>김고객 고객님</p>
-        <HorizontalLine />
-        <LessonInfo />
+        <HorizontalLine width="100%" />
+        <LessonInfo startDate="" endDate="" locationType="" />
       </div>
-      <QuotePrice />
+      <QuotePrice price={180000} />
       <div className={buttons}>
         <button className={`${button} text-gray-50 bg-blue-300`}>견적 보내기</button>
         <button className={`${button} border border-blue-300 text-blue-300 bg-gray-50`}>

@@ -2,8 +2,8 @@ import { ic_like_active_md, ic_like_inactive_md } from "@/imageExports";
 import Image from "next/image";
 
 interface FavoriteProps {
-  isFavorited: boolean;
-  favoriteCount: number;
+  isFavorited?: boolean;
+  favoriteCount?: number;
 }
 
 export default function Favorite({ isFavorited, favoriteCount }: FavoriteProps) {
