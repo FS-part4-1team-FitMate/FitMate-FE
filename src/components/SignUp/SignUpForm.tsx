@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { postSignUp } from "@/lib/api/authService";
+import { postSignUpTrainer, postSignUpUser } from "@/lib/api/authService";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 import { EMAIL_REGEX } from "@/pages/login";
@@ -66,8 +66,13 @@ function SignUpForm({ role }: Props) {
       return;
     }
     try {
-      const userData = await postSignUp({ ...data, role });
-      if ("user" in userData) {
+      let userData;
+      if (role === Role.USER) {
+        userData = await postSignUpUser({ ...data });
+      } else if (role === Role.TRAINER) {
+        userData = await postSignUpTrainer({ ...data });
+      }
+      if (userData && "user" in userData) {
         setUser(userData.user);
         localStorage.setItem("userData", JSON.stringify(userData));
         if (userData.user.role === Role.USER) {
