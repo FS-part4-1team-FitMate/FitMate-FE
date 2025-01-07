@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 const tab_container = clsx(
   "flex items-end gap-[3.2rem]",
-  "w-[192rem]",
-  "pt-[1.6rem] px-[26rem]",
+  "max-w-[192rem]",
+  "m-auto pt-[1.6rem] px-[26rem]",
   "border-b border-line-100",
 );
 
