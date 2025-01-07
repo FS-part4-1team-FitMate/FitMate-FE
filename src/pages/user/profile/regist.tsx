@@ -84,135 +84,142 @@ function Regist() {
 
   return (
     <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
-      <main className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto p-[4px] my-[24px]">
-        <div className={profile_menu}>
-          <h1 className="text-xl font-bold">프로필 등록</h1>
-          <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
-        </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <div className={profile_menu}>
-          <label htmlFor="profileImage" className="text-lg font-semibold">
-            프로필 이미지
-          </label>
-          <ImageUploader register={register("profileImage")} />
-        </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <div className="flex flex-col w-full gap-[12px]">
-          <label className="w-full text-lg font-semibold" htmlFor="name">
-            이름
-          </label>
-          <input
-            className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-            {...register("name", {
-              required: "이름를 입력해 주세요.",
-            })}
-            type="name"
-            id="name"
-            placeholder="이름를 입력해 주세요."
-          />
-          {errors.name && <p className={error_class}>{errors.name.message}</p>}
-        </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <div className="flex flex-col w-full gap-[12px]">
-          <label className="w-full text-lg font-semibold" htmlFor="phone">
-            전화번호
-          </label>
-          <input
-            className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-            {...register("phone", {
-              required: "전화번호를 입력해 주세요.",
-              pattern: {
-                value: PHONE_REGEX,
-                message: "유효한 전화번호를 입력해 주세요.",
-              },
-            })}
-            type="phone"
-            id="phone"
-            placeholder="전화번호를 입력해 주세요."
-          />
-          {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
-        </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <div className={profile_menu}>
-          <label className="text-lg font-semibold">성별</label>
-          <div className="flex gap-[16px]">
-            <label className="text-lg inline-block">
-              <input {...register("gender")} type="radio" name="gender" value={Gender.MALE} />
-              &nbsp;남성
+      <main className="pc:flex justify-center items-start gap-[32px]">
+        <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
+          <div className={profile_menu}>
+            <h1 className="text-xl font-bold">프로필 등록</h1>
+            <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
+          </div>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className={profile_menu}>
+            <label htmlFor="profileImage" className="text-lg font-semibold">
+              프로필 이미지
             </label>
-            <label className="text-lg inline-block">
-              <input {...register("gender")} type="radio" name="gender" value={Gender.FEMALE} />
-              &nbsp;여성
+            <ImageUploader register={register("profileImage")} />
+          </div>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className="flex flex-col w-full gap-[12px]">
+            <label className="w-full text-lg font-semibold" htmlFor="name">
+              이름
+            </label>
+            <input
+              className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
+              {...register("name", {
+                required: "이름를 입력해 주세요.",
+              })}
+              type="name"
+              id="name"
+              placeholder="이름를 입력해 주세요."
+            />
+            {errors.name && <p className={error_class}>{errors.name.message}</p>}
+          </div>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className="flex flex-col w-full gap-[12px]">
+            <label className="w-full text-lg font-semibold" htmlFor="phone">
+              전화번호
+            </label>
+            <input
+              className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
+              {...register("phone", {
+                required: "전화번호를 입력해 주세요.",
+                pattern: {
+                  value: PHONE_REGEX,
+                  message: "유효한 전화번호를 입력해 주세요.",
+                },
+              })}
+              type="phone"
+              id="phone"
+              placeholder="전화번호를 입력해 주세요."
+            />
+            {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
+          </div>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className={profile_menu}>
+            <label className="text-lg font-semibold">성별</label>
+            <div className="flex gap-[16px]">
+              <label className="text-lg inline-block">
+                <input {...register("gender")} type="radio" name="gender" value={Gender.MALE} />
+                &nbsp;남성
+              </label>
+              <label className="text-lg inline-block">
+                <input {...register("gender")} type="radio" name="gender" value={Gender.FEMALE} />
+                &nbsp;여성
+              </label>
+            </div>
+          </div>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+        </div>
+        <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
+          <div className={profile_menu}>
+            <div className="flex flex-col gap-[8px]">
+              <label className="text-lg font-semibold">받고 싶은 레슨 유형</label>
+              <p className={note_class}>* 받고 싶은 레슨 유형은 언제든지 수정 가능해요!</p>
+            </div>
+            <label className="text-lg">
+              <input
+                {...register("lessonType")}
+                type="radio"
+                name="lessonType"
+                value={LessonType.SPORTS}
+              />
+              &nbsp;스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
+            </label>
+            <label className="text-lg">
+              <input
+                {...register("lessonType")}
+                type="radio"
+                name="lessonType"
+                value={LessonType.FITNESS}
+              />
+              &nbsp;피트니스 (PT, 요가, 필라테스, 식단 관리 등)
+            </label>
+            <label className="text-lg">
+              <input
+                {...register("lessonType")}
+                type="radio"
+                name="lessonType"
+                value={LessonType.REHAB}
+              />
+              &nbsp;재활치료
             </label>
           </div>
-        </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <div className={profile_menu}>
-          <div className="flex flex-col gap-[8px]">
-            <label className="text-lg font-semibold">받고 싶은 레슨 유형</label>
-            <p className={note_class}>* 받고 싶은 레슨 유형은 언제든지 수정 가능해요!</p>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className={profile_menu}>
+            <div className="flex flex-col gap-[8px]">
+              <label className="text-lg font-semibold">내가 사는 지역</label>
+              <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
+            </div>
+            <label htmlFor="region" className="flex flex-wrap gap-[8px]">
+              {region_options.map((region) => {
+                return (
+                  <label
+                    key={region.value}
+                    className={clsx(
+                      "text-lg border border-solid border-gray-300 p-[8px] rounded-2xl",
+                      selectedRegion === region.value ? "bg-blue-500 text-white" : "",
+                    )}
+                  >
+                    <input
+                      className="hidden"
+                      type="radio"
+                      value={region.value}
+                      {...register("region")}
+                      onChange={() => setSelectedRegion(region.value)}
+                    />
+                    {region.name}
+                  </label>
+                );
+              })}
+            </label>
           </div>
-          <label className="text-lg">
-            <input
-              {...register("lessonType")}
-              type="radio"
-              name="lessonType"
-              value={LessonType.SPORTS}
-            />
-            &nbsp;스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
-          </label>
-          <label className="text-lg">
-            <input
-              {...register("lessonType")}
-              type="radio"
-              name="lessonType"
-              value={LessonType.FITNESS}
-            />
-            &nbsp;피트니스 (PT, 요가, 필라테스, 식단 관리 등)
-          </label>
-          <label className="text-lg">
-            <input
-              {...register("lessonType")}
-              type="radio"
-              name="lessonType"
-              value={LessonType.REHAB}
-            />
-            &nbsp;재활치료
-          </label>
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <button
+            type="submit"
+            className="w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl"
+          >
+            시작하기
+          </button>
         </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <div className={profile_menu}>
-          <div className="flex flex-col gap-[8px]">
-            <label className="text-lg font-semibold">내가 사는 지역</label>
-            <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
-          </div>
-          <label htmlFor="region" className="flex flex-wrap gap-[8px]">
-            {region_options.map((region) => {
-              return (
-                <label
-                  key={region.value}
-                  className={clsx(
-                    "text-lg border border-solid border-gray-300 p-[8px] rounded-2xl",
-                    selectedRegion === region.value ? "bg-blue-500 text-white" : "",
-                  )}
-                >
-                  <input
-                    className="hidden"
-                    type="radio"
-                    value={region.value}
-                    {...register("region")}
-                    onChange={() => setSelectedRegion(region.value)}
-                  />
-                  {region.name}
-                </label>
-              );
-            })}
-          </label>
-        </div>
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <button type="submit" className="w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl">
-          시작하기
-        </button>
       </main>
       <PopUp error={error} setError={setError} />
     </form>
