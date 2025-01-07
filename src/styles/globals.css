@@ -21,3 +21,33 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+@layer components {
+  .custom-datepicker {
+    @apply w-full text-center font-sans border-none !important;
+  }
+
+  .custom-datepicker .react-datepicker__header {
+    @apply bg-white border-b-0 text-lg font-bold p-4;
+  }
+
+  .custom-datepicker .react-datepicker__current-month {
+    @apply text-lg font-bold mb-2;
+  }
+
+  .custom-datepicker .react-datepicker__day-names {
+    @apply grid grid-cols-7 text-gray-500;
+  }
+
+  .custom-datepicker .react-datepicker__day {
+    @apply w-10 h-10 text-center text-sm align-middle leading-10 rounded-full hover:bg-blue-100 m-4;
+  }
+
+  .custom-datepicker .react-datepicker__day--today {
+    @apply font-bold text-blue-500;
+  }
+
+  .custom-datepicker .react-datepicker__day--selected {
+    @apply bg-blue-500 text-white;
+  }
+}
