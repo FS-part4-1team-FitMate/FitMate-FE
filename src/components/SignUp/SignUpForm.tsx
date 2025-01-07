@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postSignUp } from "@/lib/api/authService";
 import { Role } from "@/types/types";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/Common/PopUp";
 import { EMAIL_REGEX } from "@/pages/login";
 
 const input_class =
@@ -84,20 +84,26 @@ function SignUpForm({ role }: Props) {
   return (
     <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
       <Image src={logo_xl} alt="Logo" width={384} height={124} priority />
-      <div className="text-lg">
+      <div className="text-lg flex flex-col items-center">
         {role === Role.USER ? (
           <>
-            강사님 이신가요?{" "}
-            <Link href="/trainer/signup" className="text-blue-600">
-              강사님 전용 페이지
-            </Link>
+            <div className="text-xl font-semibold mx-auto">일반회원 가입 페이지</div>
+            <div>
+              강사님 이신가요?{" "}
+              <Link href="/trainer/signup" className="text-blue-600">
+                강사님 전용 페이지
+              </Link>
+            </div>
           </>
         ) : (
           <>
-            일반회원 이신가요?{" "}
-            <Link href="/user/signup" className="text-blue-600">
-              일반회원 전용 페이지
-            </Link>
+            <div className="text-xl font-semibold mx-auto">강사님 회원 가입 페이지</div>
+            <div>
+              일반회원 이신가요?{" "}
+              <Link href="/user/signup" className="text-blue-600">
+                일반회원 전용 페이지
+              </Link>
+            </div>
           </>
         )}
       </div>
