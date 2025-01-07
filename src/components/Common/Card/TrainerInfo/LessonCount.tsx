@@ -1,7 +1,7 @@
 const container = "flex items-center gap-[0.6rem]";
 const text = "text-lg font-medium";
 
-export default function LessonCount({ lessonCount }: { lessonCount: number }) {
+export default function LessonCount({ lessonCount }: { lessonCount?: number }) {
   return (
     <div className={container}>
       <p className={text}>{lessonCount}건</p>
