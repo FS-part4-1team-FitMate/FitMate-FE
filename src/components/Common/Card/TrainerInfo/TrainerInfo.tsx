@@ -17,15 +17,17 @@ const trainer_name = "text-2lg font-semibold";
 const info_details = "flex items-center gap-[1.6rem]";
 
 interface TrainerInfoProps {
-  rating: number;
-  reviewCount: number;
-  experience: number;
-  lessonCount: number;
-  isFavorited: boolean;
-  favoriteCount: number;
+  name?: string;
+  rating?: number;
+  reviewCount?: number;
+  experience?: number;
+  lessonCount?: number;
+  isFavorited?: boolean;
+  favoriteCount?: number;
 }
 
 export default function TrainerInfo({
+  name,
   rating,
   reviewCount,
   experience,
@@ -37,7 +39,7 @@ export default function TrainerInfo({
     <div className={container}>
       <Image src={ic_profile_default_md} width={56} height={56} alt="프로필 사진" />
       <div className={trainer_info}>
-        <p className={trainer_name}>김코드 강사님</p>
+        <p className={trainer_name}>{name} 강사님</p>
         <div className={info_details}>
           <Rating rating={rating} reviewCount={reviewCount} />
           <VerticalLine height="1.4rem" />

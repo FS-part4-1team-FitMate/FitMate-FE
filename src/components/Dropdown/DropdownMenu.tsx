@@ -1,8 +1,7 @@
+import { ic_arrow_down_md_36x36, ic_arrow_down_xs_20x20 } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import React from "react";
-import filterArrowDown from "../../../public/assets/ic/ic_arrow-down_md-36x36.svg";
-import sortArrowDown from "../../../public/assets/ic/ic_arrow-down_xs-20x20.svg";
 
 interface SortMenuProps {
   currentSort: string;
@@ -35,7 +34,7 @@ export function SortMenu({ currentSort, onToggle }: SortMenuProps) {
     <div className={sort_menu} onClick={onToggle}>
       <p className="text-md font-semibold">{currentSort}</p>
       <div className="text-gray-200">
-        <Image src={sortArrowDown} width={20} height={20} alt="메뉴 아이콘" priority />
+        <Image src={ic_arrow_down_xs_20x20} width={20} height={20} alt="메뉴 아이콘" priority />
       </div>
     </div>
   );
@@ -45,7 +44,7 @@ export function FilterMenu({ currentFilter, onToggle }: FilterMenuProps) {
   return (
     <div className={filter_menu} onClick={onToggle}>
       <p className="text-2lg font-medium">{currentFilter}</p>
-      <Image src={filterArrowDown} width={36} height={36} alt="메뉴 아이콘" priority />
+      <Image src={ic_arrow_down_md_36x36} width={36} height={36} alt="메뉴 아이콘" priority />
     </div>
   );
 }

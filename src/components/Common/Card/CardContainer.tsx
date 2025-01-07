@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 const card_container = clsx(
   "flex flex-col",
   "py-[2rem] px-[2.4rem] rounded-[1.6rem]",
-  "bg-gray-50",
+  "shadow-card bg-gray-50",
 );
 
 interface CardContainerProps {
