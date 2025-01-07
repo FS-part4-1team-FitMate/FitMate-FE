@@ -9,12 +9,6 @@ import FavoriteTrainer from "@/components/FindTrainer/FavoriteTrainer";
 import Filter from "@/components/FindTrainer/Filter";
 
 const data = [{ name: "김코드" }, { name: "강코드" }, { name: "박코드" }];
-const container = "flex flex-col m-auto";
-const filter_list = "flex justify-between mx-[26rem]";
-const filter_favorite = "flex flex-col gap-[4.6rem]";
-const list_wrapper = "flex flex-col gap-[3.2rem]";
-const sort_search = "flex flex-col items-end gap-[2.4rem]";
-const list = "flex flex-col gap-[4.8rem]";
 
 export default function FindTrainer() {
   // 오류 방지용 임시 trainerID 지정
@@ -27,6 +21,7 @@ export default function FindTrainer() {
     "확정 횟수 많은 순",
   ];
 
+  // 타입 지정 필요
   const [filteredData, setFilteredData] = useState(data);
 
   const handleSearch = () => {
@@ -37,20 +32,21 @@ export default function FindTrainer() {
   };
 
   return (
-    <div className={container}>
+    <div className="flex flex-col max-w-[192rem] m-auto">
       <Title title="기사님 찾기" />
-      <div className={filter_list}>
-        <div className={filter_favorite}>
+      <div className="flex justify-between max-w-[144rem] mx-[26rem]">
+        <div className="flex flex-col gap-[4.6rem]">
           <Filter />
           <FavoriteTrainer />
         </div>
-        <div className={list_wrapper}>
-          <div className={sort_search}>
+        <div className="flex flex-col gap-[3.2rem]">
+          <div className="flex flex-col items-end gap-[2.4rem]">
             <Dropdown options={trainerSort} type="sort" />
             <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
           </div>
-          <div className={list}>
+          <div className="flex flex-col gap-[4.8rem]">
             {filteredData.map((item, index) => (
+              // 임시로 인덱스 키 지정 (수정 -> item.id)
               <div key={index}>
                 <Link href={`/user/detail-trainer/${trainerId}`}>
                   <FindTrainerCard item={item} />
