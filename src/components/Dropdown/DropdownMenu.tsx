@@ -14,7 +14,7 @@ interface FilterMenuProps {
 }
 
 const sort_menu = clsx(
-  "flex justify-center items-center gap-3",
+  "flex justify-center items-center gap-5",
   "w-full",
   "p-[0.8rem] rounded-[0.8rem]",
   "bg-gray-50",
