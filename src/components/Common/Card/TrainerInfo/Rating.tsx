@@ -5,8 +5,8 @@ const container = "flex items-center gap-[0.6rem]";
 const text = "text-lg font-medium";
 
 interface RatingProps {
-  rating: number;
-  reviewCount: number;
+  rating?: number;
+  reviewCount?: number;
 }
 
 export default function Rating({ rating, reviewCount }: RatingProps) {

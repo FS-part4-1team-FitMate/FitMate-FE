@@ -19,6 +19,7 @@ const filter_list = clsx(
   "w-full",
   "border border-gray-100 rounded-[1.6rem]",
   "bg-gray-50",
+  "z-10",
 );
 
 export function SortList({ options, onOptionClick }: DropdownListProps) {
