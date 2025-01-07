@@ -1,11 +1,11 @@
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Card/Line";
+import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 import Title from "@/components/Common/Title";
 
 const area_wrap = "flex flex-col gap-16";
 const content_wrap = "flex flex-col gap-[3.2rem]";
-const label = "text-2xl font-semibold";
 
 export default function DetailPendingRequest() {
   return (
@@ -16,12 +16,12 @@ export default function DetailPendingRequest() {
           <FindTrainerCard item="" />
           <HorizontalLine width="100%" />
           <div className={content_wrap}>
-            <p className={label}>견적가</p>
+            <p className="text-2xl font-semibold">견적가</p>
             <p className="text-3xl font-bold">180,000원</p>
           </div>
           <HorizontalLine width="100%" />
           <div className={area_wrap}>
-            <p className={label}>견적 정보</p>
+            <QuoteInfo />
           </div>
         </div>
         <div className={area_wrap}>
