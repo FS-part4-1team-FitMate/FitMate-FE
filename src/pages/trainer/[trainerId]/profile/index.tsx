@@ -1,4 +1,4 @@
-import StarPoints from "@/components/StarPoints";
+import StarPoints from "@/components/Common/StarPoints";
 
 function Profile() {
   return (
