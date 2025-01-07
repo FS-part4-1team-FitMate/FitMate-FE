@@ -7,6 +7,11 @@ import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 const buttons = "flex gap-[1.1rem]";
 const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text-xl font-semibold");
 
+/**
+ *
+ * @TODO replace any
+ */
+
 export default function PendingLessonCard({ item }: { item: any }) {
   return (
     <CardContainer width="68.8rem" gap="2.4rem">
