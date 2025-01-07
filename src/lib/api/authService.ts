@@ -13,19 +13,35 @@ export function postLogin(data: { email: string; password: string }): Promise<{
   }
 }
 
-export function postSignUp(data: {
+export function postSignUpUser(data: {
   nickname: string;
   email: string;
   phone: string;
   password: string;
-  role: Role;
 }): Promise<{
   user: User;
   accessToken: string;
   refreshToken: string;
 }> {
   try {
-    return instance.post("/auth/signup", data);
+    return instance.post("/auth/signup/user", data);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function postSignUpTrainer(data: {
+  nickname: string;
+  email: string;
+  phone: string;
+  password: string;
+}): Promise<{
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}> {
+  try {
+    return instance.post("/auth/signup/trainer", data);
   } catch (err) {
     throw err;
   }
@@ -46,6 +62,26 @@ export function postProfile(data: {
 }> {
   try {
     return instance.post("/auth/profile", data);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function patchProfile(data: {
+  profileImage?: string | FileList | null;
+  name?: string;
+  phone?: string;
+  gender?: Gender;
+  lessonType?: LessonType | null;
+  region?: Region | null;
+  experience?: number;
+  intro?: string;
+  description?: string;
+}): Promise<{
+  user: User;
+}> {
+  try {
+    return instance.patch("/auth/profile", data);
   } catch (err) {
     throw err;
   }
