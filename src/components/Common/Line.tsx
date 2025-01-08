@@ -3,5 +3,5 @@ export function VerticalLine({ height }: { height: string }) {
 }
 
 export function HorizontalLine({ width }: { width: string }) {
-  return <div className="border border-line-200 h-0" style={{ width: width }}></div>;
+  return <div className="border border-line-100 h-0" style={{ width: width }}></div>;
 }

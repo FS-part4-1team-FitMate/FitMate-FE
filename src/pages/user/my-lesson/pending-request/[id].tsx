@@ -1,5 +1,5 @@
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
-import { HorizontalLine } from "@/components/Common/Card/Line";
+import { HorizontalLine } from "@/components/Common/Line";
 import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 import Title from "@/components/Common/Title";
