@@ -1,4 +1,4 @@
-import { VerticalLine } from "./Line";
+import { VerticalLine } from "../Line";
 
 const lesson_detail = "flex items-center gap-[1.6rem]";
 const info_text = "text-2lg font-medium";

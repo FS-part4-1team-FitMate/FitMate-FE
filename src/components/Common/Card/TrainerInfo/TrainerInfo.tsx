@@ -1,7 +1,7 @@
 import { ic_profile_default_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
-import { VerticalLine } from "../Line";
+import { VerticalLine } from "../../Line";
 import Experience from "./Experience";
 import Favorite from "./Favorite";
 import LessonCount from "./LessonCount";
