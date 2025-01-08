@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { postSignUp } from "@/lib/api/authService";
+import { postSignUpTrainer, postSignUpUser } from "@/lib/api/authService";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 import { EMAIL_REGEX } from "@/pages/login";
@@ -48,7 +48,6 @@ function SignUpForm({ role }: Props) {
     defaultValues: {
       nickname: "",
       email: "",
-      phone: "",
       password: "",
       passwordConfirm: "",
     },
@@ -57,7 +56,6 @@ function SignUpForm({ role }: Props) {
   const onSubmit = async (data: {
     nickname: string;
     email: string;
-    phone: string;
     password: string;
     passwordConfirm: string;
   }) => {
@@ -66,8 +64,13 @@ function SignUpForm({ role }: Props) {
       return;
     }
     try {
-      const userData = await postSignUp({ ...data, role });
-      if ("user" in userData) {
+      let userData;
+      if (role === Role.USER) {
+        userData = await postSignUpUser({ ...data });
+      } else if (role === Role.TRAINER) {
+        userData = await postSignUpTrainer({ ...data });
+      }
+      if (userData && "user" in userData) {
         setUser(userData.user);
         localStorage.setItem("userData", JSON.stringify(userData));
         if (userData.user.role === Role.USER) {
@@ -202,11 +205,7 @@ function SignUpForm({ role }: Props) {
           className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
           type="submit"
           disabled={
-            !!errors.nickname ||
-            !!errors.email ||
-            !!errors.phone ||
-            !!errors.password ||
-            !!errors.passwordConfirm
+            !!errors.nickname || !!errors.email || !!errors.password || !!errors.passwordConfirm
           }
         >
           {role === Role.USER ? "일반회원 " : "강사님으로 "}가입하기

@@ -3,7 +3,7 @@
 .env 파일에
 
 ```
-NEXT_PUBLIC_API_URL="http://localhost:3100/api"
+NEXT_PUBLIC_API_URL="http://localhost:3100"
 ```
 
 같이 BE api 주소 넣어주기.
