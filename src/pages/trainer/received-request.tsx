@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UserSort } from "@/types/dropdown";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
-import { HorizontalLine } from "@/components/Common/Card/Line";
+import { HorizontalLine } from "@/components/Common/Line";
 import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";

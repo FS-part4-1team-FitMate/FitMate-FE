@@ -24,7 +24,7 @@ export default function RequestLessonCard({ item }: { item: any }) {
         <p className={time}>1시간 전</p>
       </div>
       <div className={lesson_info}>
-        <p className={lesson_user}>김고객 고객님</p>
+        <p className={lesson_user}>{item.name} 고객님</p>
         <HorizontalLine width="100%" />
         <LessonInfo startDate="" endDate="" locationType="" />
       </div>
