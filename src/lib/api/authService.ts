@@ -16,15 +16,16 @@ export function postLogin(data: { email: string; password: string }): Promise<{
 export function postSignUpUser(data: {
   nickname: string;
   email: string;
-  phone: string;
   password: string;
+  passwordConfirm?: string;
 }): Promise<{
   user: User;
   accessToken: string;
   refreshToken: string;
 }> {
   try {
-    return instance.post("/auth/signup/user", data);
+    delete data.passwordConfirm;
+    return instance.post("/auth/signUp/user", data);
   } catch (err) {
     throw err;
   }
@@ -33,15 +34,16 @@ export function postSignUpUser(data: {
 export function postSignUpTrainer(data: {
   nickname: string;
   email: string;
-  phone: string;
   password: string;
+  passwordConfirm?: string;
 }): Promise<{
   user: User;
   accessToken: string;
   refreshToken: string;
 }> {
   try {
-    return instance.post("/auth/signup/trainer", data);
+    delete data.passwordConfirm;
+    return instance.post("/auth/signUp/trainer", data);
   } catch (err) {
     throw err;
   }
