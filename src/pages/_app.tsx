@@ -31,7 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
   );
 
   const isActiveTab =
-    router.pathname === "/" ||
+    router.pathname === "/user/my-lesson/pending-request" ||
     router.pathname === "/user/my-lesson/active-lesson" ||
     router.pathname === "/user/my-lesson/past-lesson" ||
     router.pathname === "/user/lesson-review/awaiting-review" ||

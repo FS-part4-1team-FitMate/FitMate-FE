@@ -10,7 +10,7 @@ const sort_list = clsx(
   "flex flex-col justify-center gap-0.5",
   "w-full",
   "border border-gray-100 rounded-[0.8rem]",
-  "bg-gray-50",
+  "shadow-card bg-gray-50",
 );
 
 const filter_list = clsx(
@@ -18,8 +18,16 @@ const filter_list = clsx(
   "flex flex-col justify-center gap-2.5",
   "w-full",
   "border border-gray-100 rounded-[1.6rem]",
-  "bg-gray-50",
+  "shadow-card bg-gray-50",
   "z-10",
+);
+
+const quote_list = clsx(
+  "absolute top-[7rem]",
+  "flex flex-col justify-center gap-0.5",
+  "w-full",
+  "border border-gray-100 rounded-[1.6rem]",
+  "shadow-card bg-gray-50",
 );
 
 export function SortList({ options, onOptionClick }: DropdownListProps) {
@@ -41,6 +49,22 @@ export function SortList({ options, onOptionClick }: DropdownListProps) {
 export function FilterList({ options, onOptionClick }: DropdownListProps) {
   return (
     <div className={filter_list}>
+      {options.map((option, index) => (
+        <div
+          className={"px-[2.4rem] py-[1.6rem] cursor-pointer"}
+          key={index}
+          onClick={() => onOptionClick(option)}
+        >
+          <p className="text-2lg font-medium">{option}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function PastLessonFilterList({ options, onOptionClick }: DropdownListProps) {
+  return (
+    <div className={quote_list}>
       {options.map((option, index) => (
         <div
           className={"px-[2.4rem] py-[1.6rem] cursor-pointer"}

@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import CardContainer from "../Common/Card/CardContainer";
 import LessonInfo from "../Common/Card/LessonInfo";
-import { HorizontalLine } from "../Common/Card/Line";
 import QuotePrice from "../Common/Card/QuotePrice";
+import { HorizontalLine } from "../Common/Line";
 
 const chip_time = "flex justify-between";
 const time = "text-gray-500 text-xs font-normal";
