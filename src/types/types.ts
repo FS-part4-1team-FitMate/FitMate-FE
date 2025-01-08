@@ -67,19 +67,33 @@ export type Profile = {
   userId: string;
   name: string;
   phone?: string;
-  profileImage?: string;
+  profileImage?: string | FileList;
   gender: Gender;
   lessonType: LessonType[];
   region: Region[];
   intro?: string;
   description?: string;
   experience?: number;
-  certification?: string;
+  certification?: string | FileList;
   certificationValidated: boolean;
   rating?: number;
   lessonCount?: number;
   reviewCount?: number;
 };
+
+export type ProfileEdittable = Pick<
+  Profile,
+  | "name"
+  | "phone"
+  | "profileImage"
+  | "gender"
+  | "lessonType"
+  | "region"
+  | "intro"
+  | "description"
+  | "experience"
+  | "certification"
+>;
 
 export type User = {
   id: string;
