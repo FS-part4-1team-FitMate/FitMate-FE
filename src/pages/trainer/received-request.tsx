@@ -1,12 +1,10 @@
-import { ic_square_check_inactive_md } from "@/imageExports";
-import Image from "next/image";
 import { useState } from "react";
 import { GenderFilter, ServiceFilter, UserSort } from "@/types/dropdown";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
+import CheckboxFilter from "@/components/CheckboxFilter";
 import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
-import CheckboxFilter from "@/components/Filter/CheckboxFilter";
 
 const data = [{ name: "김코드" }, { name: "강코드" }, { name: "박코드" }];
 
