@@ -1,11 +1,16 @@
+"use client";
+
 import { useSetUser, useUser } from "@/contexts/UserProvider";
+import { ic_edit_sm } from "@/imageExports";
 import clsx from "clsx";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { patchProfile } from "@/lib/api/authService";
-import { Gender, LessonType, Region } from "@/types/types";
+import { Gender, LessonType, Profile, ProfileEdittable, Region } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
+import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
 const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
@@ -36,7 +41,7 @@ const region_options = [
 
 function ProfileEdit() {
   const router = useRouter();
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
   const setUser = useSetUser();
   const [error, setError] = useState<
@@ -55,27 +60,25 @@ function ProfileEdit() {
       gender: user?.profile?.gender,
       lessonType: user?.profile?.lessonType,
       region: user?.profile?.region,
-    } as {
-      profileImage: string | FileList | null;
-      name: string;
-      phone: string;
-      gender: Gender;
-      lessonType: LessonType | null;
-      region: Region | null;
-    },
+    } as Partial<ProfileEdittable>,
   });
 
-  const onSubmit = async (data: {
-    profileImage: string | FileList | null;
-    name: string;
-    phone: string;
-    gender: Gender;
-    lessonType: LessonType | null;
-    region: Region | null;
-  }) => {
-    data.region = selectedRegion;
+  const onSubmit = async (data: Partial<ProfileEdittable>) => {
+    const profile: ProfileEdittable = user.profile;
+    const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
+      const typedKey = key as keyof ProfileEdittable;
+      const newValue = data[typedKey];
+      if (newValue !== undefined && newValue !== profile[typedKey]) {
+        return { ...acc, [typedKey]: newValue };
+      }
+      return acc;
+    }, {});
+    if (data.region !== selectedRegion) {
+      changedData.region = selectedRegion;
+    }
+    console.log(changedData); // TODO: remove this.
     try {
-      const userData = await patchProfile(data);
+      const userData = await patchProfile(changedData);
       if ("user" in userData) {
         setUser(userData.user);
       }
@@ -85,11 +88,13 @@ function ProfileEdit() {
     }
   };
 
-  if (!user) {
-    return router.push(`/login`);
-  } else if (!user.profile) {
-    return router.push(`/user/profile/regist`);
-  }
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.push(`/login`);
+  //   } else if (!user.profile) {
+  //     router.push(`/user/profile/regist`);
+  //   }
+  // }, [user, router]);
 
   return (
     <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
@@ -166,7 +171,7 @@ function ProfileEdit() {
             <label className="text-lg">
               <input
                 {...register("lessonType")}
-                type="radio"
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.SPORTS}
               />
@@ -175,7 +180,7 @@ function ProfileEdit() {
             <label className="text-lg">
               <input
                 {...register("lessonType")}
-                type="radio"
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.FITNESS}
               />
@@ -184,7 +189,7 @@ function ProfileEdit() {
             <label className="text-lg">
               <input
                 {...register("lessonType")}
-                type="radio"
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.REHAB}
               />
@@ -197,35 +202,18 @@ function ProfileEdit() {
               <label className="text-lg font-semibold">내가 사는 지역</label>
               <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
             </div>
-            <label htmlFor="region" className="flex flex-wrap gap-[8px]">
-              {region_options.map((region) => {
-                return (
-                  <label
-                    key={region.value}
-                    className={clsx(
-                      "text-lg border border-solid border-gray-300 p-[8px] rounded-2xl",
-                      selectedRegion === region.value ? "bg-blue-500 text-white" : "",
-                    )}
-                  >
-                    <input
-                      className="hidden"
-                      type="radio"
-                      value={region.value}
-                      {...register("region")}
-                      onChange={() => setSelectedRegion(region.value)}
-                    />
-                    {region.name}
-                  </label>
-                );
-              })}
-            </label>
+            <Regions
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              register={register("region")}
+            />
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <button
             type="submit"
-            className="w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl"
+            className="flex justify-center items-center w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl"
           >
-            시작하기
+            수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
           </button>
         </div>
       </main>

@@ -51,8 +51,9 @@ function Regist() {
     lessonType: LessonType[];
     region: Region[];
   }) => {
-    data.region = selectedRegion;
-    console.log(data);
+    // console.log(data); // TODO: remove this.
+    // data.region = selectedRegion;
+    console.log(data); // TODO: remove this.
     try {
       const userData = await postProfile(data);
       if ("user" in userData) {
@@ -139,7 +140,10 @@ function Regist() {
             </div>
             <label className="text-lg">
               <input
-                {...register("lessonType")}
+                {...register("lessonType", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
                 type="checkbox"
                 name="lessonType"
                 value={LessonType.SPORTS}
@@ -148,7 +152,10 @@ function Regist() {
             </label>
             <label className="text-lg">
               <input
-                {...register("lessonType")}
+                {...register("lessonType", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
                 type="checkbox"
                 name="lessonType"
                 value={LessonType.FITNESS}
@@ -157,7 +164,10 @@ function Regist() {
             </label>
             <label className="text-lg">
               <input
-                {...register("lessonType")}
+                {...register("lessonType", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
                 type="checkbox"
                 name="lessonType"
                 value={LessonType.REHAB}
@@ -165,6 +175,7 @@ function Regist() {
               &nbsp;재활치료
             </label>
           </div>
+          {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className={profile_menu}>
             <div className="flex flex-col gap-[8px]">
@@ -174,9 +185,13 @@ function Regist() {
             <Regions
               selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}
-              register={register("region")}
+              register={register("region", {
+                validate: (value) =>
+                  (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+              })}
             />
           </div>
+          {errors.region && <p className={error_class}>{errors.region.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <button
             type="submit"

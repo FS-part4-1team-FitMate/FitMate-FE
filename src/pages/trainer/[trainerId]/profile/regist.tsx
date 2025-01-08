@@ -152,8 +152,11 @@ function Regist() {
             </div>
             <label className="text-lg">
               <input
-                {...register("lessonType")}
-                type="radio"
+                {...register("lessonType", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.SPORTS}
               />
@@ -161,8 +164,11 @@ function Regist() {
             </label>
             <label className="text-lg">
               <input
-                {...register("lessonType")}
-                type="radio"
+                {...register("lessonType", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.FITNESS}
               />
@@ -170,14 +176,18 @@ function Regist() {
             </label>
             <label className="text-lg">
               <input
-                {...register("lessonType")}
-                type="radio"
+                {...register("lessonType", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.REHAB}
               />
               &nbsp;재활치료
             </label>
           </div>
+          {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
@@ -189,9 +199,13 @@ function Regist() {
             <Regions
               selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}
-              register={register("region")}
+              register={register("region", {
+                validate: (value) =>
+                  (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+              })}
             />
           </div>
+          {errors.region && <p className={error_class}>{errors.region.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className={profile_menu}>
             <div className="flex flex-col gap-[8px]">
