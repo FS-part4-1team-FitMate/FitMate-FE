@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
 import { Gender, LessonType, Region } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
+import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
 const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
@@ -13,28 +14,8 @@ const profile_menu = clsx("flex flex-col items-start gap-[12px]");
 const note_class = "text-sm text-slate-500";
 const error_class = "text-red-400 text-sm";
 
-const region_options = [
-  { name: "서울", value: Region.SEOUL },
-  { name: "경기", value: Region.GYEONGGI },
-  { name: "인천", value: Region.INCHEON },
-  { name: "대전", value: Region.DAEJEON },
-  { name: "대구", value: Region.DAEGU },
-  { name: "울산", value: Region.ULSAN },
-  { name: "부산", value: Region.BUSAN },
-  { name: "광주", value: Region.GWANGJU },
-  { name: "세종", value: Region.SEJONG },
-  { name: "강원", value: Region.GANGWON },
-  { name: "충북", value: Region.CHUNGBUK },
-  { name: "충남", value: Region.CHUNGNAM },
-  { name: "전북", value: Region.JEONBUK },
-  { name: "전남", value: Region.JEONNAM },
-  { name: "경북", value: Region.GYEONGBUK },
-  { name: "경남", value: Region.GYEONGNAM },
-  { name: "제주", value: Region.JEJU },
-];
-
 function Regist() {
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const setUser = useSetUser();
   const [error, setError] = useState<
     null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
@@ -46,31 +27,32 @@ function Regist() {
   } = useForm({
     mode: "all",
     defaultValues: {
-      profileImage: null,
+      profileImage: undefined,
       name: "",
       phone: "",
       gender: Gender.MALE,
-      lessonType: null,
-      region: null,
+      lessonType: [],
+      region: [],
     } as {
-      profileImage: FileList | null;
+      profileImage?: FileList;
       name: string;
       phone: string;
       gender: Gender;
-      lessonType: LessonType | null;
-      region: Region | null;
+      lessonType: LessonType[];
+      region: Region[];
     },
   });
 
   const onSubmit = async (data: {
-    profileImage: FileList | null;
+    profileImage?: FileList;
     name: string;
     phone: string;
     gender: Gender;
-    lessonType: LessonType | null;
-    region: Region | null;
+    lessonType: LessonType[];
+    region: Region[];
   }) => {
     data.region = selectedRegion;
+    console.log(data);
     try {
       const userData = await postProfile(data);
       if ("user" in userData) {
@@ -158,7 +140,7 @@ function Regist() {
             <label className="text-lg">
               <input
                 {...register("lessonType")}
-                type="radio"
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.SPORTS}
               />
@@ -167,7 +149,7 @@ function Regist() {
             <label className="text-lg">
               <input
                 {...register("lessonType")}
-                type="radio"
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.FITNESS}
               />
@@ -176,7 +158,7 @@ function Regist() {
             <label className="text-lg">
               <input
                 {...register("lessonType")}
-                type="radio"
+                type="checkbox"
                 name="lessonType"
                 value={LessonType.REHAB}
               />
@@ -189,28 +171,11 @@ function Regist() {
               <label className="text-lg font-semibold">내가 사는 지역</label>
               <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
             </div>
-            <label htmlFor="region" className="flex flex-wrap gap-[8px]">
-              {region_options.map((region) => {
-                return (
-                  <label
-                    key={region.value}
-                    className={clsx(
-                      "text-lg border border-solid border-gray-300 p-[8px] rounded-2xl",
-                      selectedRegion === region.value ? "bg-blue-500 text-white" : "",
-                    )}
-                  >
-                    <input
-                      className="hidden"
-                      type="radio"
-                      value={region.value}
-                      {...register("region")}
-                      onChange={() => setSelectedRegion(region.value)}
-                    />
-                    {region.name}
-                  </label>
-                );
-              })}
-            </label>
+            <Regions
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              register={register("region")}
+            />
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <button
