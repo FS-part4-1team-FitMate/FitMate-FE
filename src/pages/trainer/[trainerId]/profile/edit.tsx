@@ -17,7 +17,14 @@ const profile_menu = clsx("flex flex-col items-start gap-[12px]");
 const note_class = "text-sm text-slate-500";
 const error_class = "text-red-400 text-sm";
 
+type FormType = Partial<ProfileEdittable> & {
+  currPassword: string;
+  password: string;
+  passwordConfirm: string;
+};
+
 function ProfileEdit() {
+  const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
   const router = useRouter();
@@ -50,14 +57,10 @@ function ProfileEdit() {
       currPassword: "",
       password: "",
       passwordConfirm: "",
-    } as Partial<ProfileEdittable> & {
-      currPassword: string;
-      password: string;
-      passwordConfirm: string;
-    },
+    } as FormType,
   });
 
-  const onSubmit = async (data: Partial<ProfileEdittable>) => {
+  const onSubmit = async (data: FormType) => {
     // data.region = selectedRegion;
     console.log(data); // TODO: remove this.
     const profile: ProfileEdittable = user.profile;
@@ -310,7 +313,7 @@ function ProfileEdit() {
                   message: "비밀번호는 최소 8글자 이상이어야 합니다.",
                 },
               })}
-              type={pwdIsVisible ? "text" : "password"}
+              type={curPwdIsVisible ? "text" : "password"}
               id="currPassword"
               placeholder="비밀번호를 입력해 주세요."
             />
@@ -318,9 +321,9 @@ function ProfileEdit() {
               className="absolute right-[8px] top-[8px] bottom-[8px]"
               width={24}
               height={24}
-              src={pwdIsVisible ? ic_visibility_on : ic_visibility_off}
+              src={curPwdIsVisible ? ic_visibility_on : ic_visibility_off}
               alt="eye"
-              onClick={() => setPwdIsVisible((prev) => !prev)}
+              onClick={() => setCurPwdIsVisible((prev) => !prev)}
             />
           </div>
           {errors.currPassword && (
@@ -389,6 +392,13 @@ function ProfileEdit() {
             className="flex justify-center items-center w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl disabled:bg-slate-600"
           >
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
+          </button>
+          <button
+            type="button"
+            className="flex justify-center items-center w-full text-lg p-[8px] border border-solid border-slate-800 bg-slate-200 text-black-500 rounded-2xl"
+            onClick={() => router.push(`/trainer/${trainerId}/profile`)}
+          >
+            취소하기
           </button>
         </div>
       </main>
