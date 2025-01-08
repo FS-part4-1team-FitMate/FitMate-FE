@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { FilterList, SortList } from "./DropdownList";
-import { FilterMenu, SortMenu } from "./DropdownMenu";
+import { FilterList, PastLessonFilterList, SortList } from "./DropdownList";
+import { FilterMenu, PastLessonFilterMenu, SortMenu } from "./DropdownMenu";
 
 interface DropdownProps {
   options: string[];
-  type: "sort" | "filter";
+  type: "sort" | "filter" | "pastLesson";
   filterType?: "service" | "gender";
 }
 
@@ -14,10 +14,12 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
   const [currentFilter, setCurrentFilter] = useState<string>(
     filterType === "service" ? "서비스" : "성별",
   );
+  const [currentQuote, setCurrentQuote] = useState<string>(options[0]);
 
   const handleOptionClick = (val: string) => {
     setCurrentSort(val);
     setCurrentFilter(val);
+    setCurrentQuote(val);
     setIsOpen(false);
   };
 
@@ -42,6 +44,23 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
           <FilterMenu currentFilter={currentFilter} onToggle={() => setIsOpen((prev) => !prev)} />
         </div>
         {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
+      </div>
+    );
+  }
+
+  if (type === "pastLesson") {
+    return (
+      <div className="relative flex flex-col w-[19rem]">
+        <PastLessonFilterMenu
+          className={
+            isOpen === true
+              ? "border border-blue-300 text-blue-300 bg-blue-50"
+              : "border border-gray-100"
+          }
+          currentQuote={currentQuote}
+          onToggle={() => setIsOpen((prev) => !prev)}
+        />
+        {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
   }
