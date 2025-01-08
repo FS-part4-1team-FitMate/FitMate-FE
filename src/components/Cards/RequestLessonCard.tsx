@@ -11,7 +11,12 @@ const lesson_user = "text-xl font-semibold";
 const buttons = "flex gap-[1.1rem]";
 const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text-xl font-semibold");
 
-export default function RequestLessonCard() {
+/**
+ *
+ * @TODO replace any
+ */
+
+export default function RequestLessonCard({ item }: { item: any }) {
   return (
     <CardContainer width="95.5rem" gap="1.6rem">
       <div className={chip_time}>
@@ -19,7 +24,7 @@ export default function RequestLessonCard() {
         <p className={time}>1시간 전</p>
       </div>
       <div className={lesson_info}>
-        <p className={lesson_user}>김고객 고객님</p>
+        <p className={lesson_user}>{item.name} 고객님</p>
         <HorizontalLine width="100%" />
         <LessonInfo startDate="" endDate="" locationType="" />
       </div>
