@@ -80,13 +80,3 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 };
 
 export default Pagination;
-
-// 강수님이 저번 프로젝트에서 만드신 페이지네이션이랑 방식이 좀 다르긴한데
-//  const fetchData = (page: number) => {
-//     const totalItems = 10;
-//     const data = Array.from({ length: totalItems }, (_, i) => `Item ${i + 1}`);
-//     const start = (page - 1) * ITEMS_PER_PAGE;
-//     const end = start + ITEMS_PER_PAGE;
-//     setItems(data.slice(start, end));
-//     setTotalPages(Math.ceil(totalItems / ITEMS_PER_PAGE));
-//   }; 이런 식으로 쓰시면 될 것 같습니다.
