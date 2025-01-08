@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetUser, useUser } from "@/contexts/UserProvider";
-import { ic_edit_sm } from "@/imageExports";
+import { ic_edit_sm, ic_visibility_off, ic_visibility_on } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -39,7 +39,16 @@ const region_options = [
   { name: "제주", value: Region.JEJU },
 ];
 
+type FormType = Partial<ProfileEdittable> & {
+  currPassword: string;
+  password: string;
+  passwordConfirm: string;
+};
+
 function ProfileEdit() {
+  const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
+  const [pwdIsVisible, setPwdIsVisible] = useState(false);
+  const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
   const router = useRouter();
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
@@ -49,6 +58,7 @@ function ProfileEdit() {
   >(null);
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -60,10 +70,13 @@ function ProfileEdit() {
       gender: user?.profile?.gender,
       lessonType: user?.profile?.lessonType,
       region: user?.profile?.region,
-    } as Partial<ProfileEdittable>,
+      currPassword: "",
+      password: "",
+      passwordConfirm: "",
+    } as FormType,
   });
 
-  const onSubmit = async (data: Partial<ProfileEdittable>) => {
+  const onSubmit = async (data: FormType) => {
     const profile: ProfileEdittable = user.profile;
     const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
       const typedKey = key as keyof ProfileEdittable;
@@ -209,11 +222,105 @@ function ProfileEdit() {
             />
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <label className="w-full text-lg font-semibold" htmlFor="currPassword">
+            현재 비밀번호
+          </label>
+          <div className="relative w-full h-[40px] text-slate-700">
+            <input
+              className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
+              {...register("currPassword", {
+                required: "비밀번호를 입력해 주세요.",
+                minLength: {
+                  value: 8,
+                  message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+                },
+              })}
+              type={curPwdIsVisible ? "text" : "password"}
+              id="currPassword"
+              placeholder="비밀번호를 입력해 주세요."
+            />
+            <Image
+              className="absolute right-[8px] top-[8px] bottom-[8px]"
+              width={24}
+              height={24}
+              src={curPwdIsVisible ? ic_visibility_on : ic_visibility_off}
+              alt="eye"
+              onClick={() => setCurPwdIsVisible((prev) => !prev)}
+            />
+          </div>
+          {errors.currPassword && (
+            <p className="text-red-400 text-sm">{errors.currPassword.message}</p>
+          )}
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <label className="w-full text-lg font-semibold" htmlFor="password">
+            새로운 비밀번호
+          </label>
+          <p className={note_class}>* 비밀번호를 바꾸고 싶으실 경우에만 입력하세요.</p>
+          <div className="relative w-full h-[40px] text-slate-700">
+            <input
+              className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
+              {...register("password", {
+                minLength: {
+                  value: 8,
+                  message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+                },
+              })}
+              type={pwdIsVisible ? "text" : "password"}
+              id="password"
+              placeholder="새로운 비밀번호를 입력해 주세요."
+            />
+            <Image
+              className="absolute right-[8px] top-[8px] bottom-[8px]"
+              width={24}
+              height={24}
+              src={pwdIsVisible ? ic_visibility_on : ic_visibility_off}
+              alt="eye"
+              onClick={() => setPwdIsVisible((prev) => !prev)}
+            />
+          </div>
+          {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
+          <label className="w-full text-lg font-semibold" htmlFor="passwordConfirm">
+            새로운 비밀번호 확인
+          </label>
+          <div className="relative w-full h-[40px] text-slate-700">
+            <input
+              className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
+              {...register("passwordConfirm", {
+                validate: (value) => {
+                  if (value !== watch("password")) {
+                    return "비밀번호가 일치하지 않습니다.";
+                  }
+                },
+              })}
+              type={pwdCfmIsVisible ? "text" : "password"}
+              id="passwordComfirm"
+              placeholder="새로운 비밀번호를 다시 한번 입력해 주세요."
+            />
+            <Image
+              className="absolute right-[8px] top-[8px] bottom-[8px]"
+              width={24}
+              height={24}
+              src={pwdCfmIsVisible ? ic_visibility_on : ic_visibility_off}
+              alt="eye"
+              onClick={() => setPwdCfmIsVisible((prev) => !prev)}
+            />
+          </div>
+          {errors.passwordConfirm && (
+            <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
+          )}
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
           <button
             type="submit"
             className="flex justify-center items-center w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl"
           >
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
+          </button>
+          <button
+            type="button"
+            className="flex justify-center items-center w-full text-lg p-[8px] border border-solid border-slate-800 bg-slate-200 text-black-500 rounded-2xl"
+            onClick={() => router.push(`/user/profile`)}
+          >
+            취소하기
           </button>
         </div>
       </main>
