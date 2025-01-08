@@ -1,5 +1,5 @@
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
-import { HorizontalLine } from "@/components/Common/Card/Line";
+import { HorizontalLine } from "@/components/Common/Line";
 import ShareSNS from "@/components/Common/ShareSNS";
 
 const area_wrap = "flex flex-col gap-16";
