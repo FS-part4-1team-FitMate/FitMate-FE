@@ -9,7 +9,6 @@ import Dropdown from "@/components/Dropdown/Dropdown";
 const data = [{ name: "김코드" }, { name: "강코드" }, { name: "박코드" }];
 
 export default function ReceivedRequest() {
-  // 오류 방지용 임시 trainerID 지정
   const [keyword, setKeyword] = useState<string>("");
 
   const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];

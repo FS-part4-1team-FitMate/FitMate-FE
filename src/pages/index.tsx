@@ -2,8 +2,6 @@ import { img_landing_01, img_landing_02, img_landing_03 } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import ModalContainer from "@/components/Modal/ModalContainer";
-import SendQuote from "@/components/Modal/SendQuote";
 
 const container = clsx(
   "flex flex-col items-center gap-[4.8rem]",
@@ -33,9 +31,6 @@ const button = clsx(
 export default function Home() {
   return (
     <div className={container}>
-      <ModalContainer>
-        <SendQuote />
-      </ModalContainer>
       <h1 className={title}>
         원하는 운동 유형을 확인하고
         <br />
