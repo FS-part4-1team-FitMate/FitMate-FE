@@ -17,6 +17,9 @@ import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 import { EMAIL_REGEX } from "@/pages/login";
 
+const PWD_REGEX =
+  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+
 const input_class =
   "w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl";
 
@@ -152,9 +155,9 @@ function SignUpForm({ role }: Props) {
             className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
             {...register("password", {
               required: "비밀번호를 입력해 주세요.",
-              minLength: {
-                value: 8,
-                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+              pattern: {
+                value: PWD_REGEX,
+                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
               },
             })}
             type={pwdIsVisible ? "text" : "password"}
