@@ -48,7 +48,6 @@ function SignUpForm({ role }: Props) {
     defaultValues: {
       nickname: "",
       email: "",
-      phone: "",
       password: "",
       passwordConfirm: "",
     },
@@ -57,7 +56,6 @@ function SignUpForm({ role }: Props) {
   const onSubmit = async (data: {
     nickname: string;
     email: string;
-    phone: string;
     password: string;
     passwordConfirm: string;
   }) => {
@@ -207,11 +205,7 @@ function SignUpForm({ role }: Props) {
           className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
           type="submit"
           disabled={
-            !!errors.nickname ||
-            !!errors.email ||
-            !!errors.phone ||
-            !!errors.password ||
-            !!errors.passwordConfirm
+            !!errors.nickname || !!errors.email || !!errors.password || !!errors.passwordConfirm
           }
         >
           {role === Role.USER ? "일반회원 " : "강사님으로 "}가입하기
