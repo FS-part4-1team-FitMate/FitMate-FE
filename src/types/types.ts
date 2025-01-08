@@ -70,6 +70,7 @@ export type Profile = {
   profileImage?: string | FileList;
   gender: Gender;
   lessonType: LessonType[];
+  locationType: LocationType[];
   region: Region[];
   intro?: string;
   description?: string;
@@ -88,6 +89,7 @@ export type ProfileEdittable = Pick<
   | "profileImage"
   | "gender"
   | "lessonType"
+  | "locationType"
   | "region"
   | "intro"
   | "description"
