@@ -34,7 +34,7 @@ export default function FindTrainer() {
   return (
     <div className="flex flex-col max-w-[192rem] m-auto">
       <Title title="기사님 찾기" />
-      <div className="flex justify-between max-w-[144rem] mx-[26rem]">
+      <div className="flex justify-between max-w-[140rem] w-full mx-auto">
         <div className="flex flex-col gap-[4.6rem]">
           <Filter />
           <FavoriteTrainer />
