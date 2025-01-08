@@ -1,7 +1,7 @@
 import { GenderFilter, ServiceFilter } from "@/types/dropdown";
 import Dropdown from "../Dropdown/Dropdown";
 
-export default function Filter() {
+export default function FilterTrainer() {
   const genderFilter: GenderFilter[] = ["전체", "남자", "여자"];
   const serviceFilter: ServiceFilter[] = ["전체", "재활운동", "스포츠", "피트니스"];
 
