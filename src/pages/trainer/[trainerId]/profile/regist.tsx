@@ -1,4 +1,5 @@
 import { useSetUser } from "@/contexts/UserProvider";
+import { ic_designate_md } from "@/imageExports";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -35,6 +36,7 @@ function Regist() {
       phone: "",
       gender: Gender.MALE,
       lessonType: [],
+      certification: undefined,
       region: [],
       locationType: [LocationType.OFFLINE],
       experience: 0,
@@ -46,6 +48,7 @@ function Regist() {
       phone: string;
       gender: Gender;
       lessonType: LessonType[];
+      certification?: FileList;
       region: Region[];
       locationType: LocationType[];
       experience?: number;
@@ -60,14 +63,15 @@ function Regist() {
     phone: string;
     gender: Gender;
     lessonType: LessonType[];
+    certification?: FileList;
     region: Region[];
     locationType: LocationType[];
     experience?: number;
     intro?: string;
     description?: string;
   }) => {
-    data.region = selectedRegion;
-    console.log(data);
+    // data.region = selectedRegion;
+    console.log(data); // TODO: remove this.
     try {
       const userData = await postProfile(data);
       if ("user" in userData) {
@@ -188,6 +192,18 @@ function Regist() {
             </label>
           </div>
           {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
+          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          <div className={profile_menu}>
+            <label htmlFor="certification" className="text-lg font-semibold">
+              자격증
+            </label>
+            <ImageUploader
+              register={register("certification")}
+              width={300}
+              height={300}
+              defImage={ic_designate_md.src}
+            />
+          </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
