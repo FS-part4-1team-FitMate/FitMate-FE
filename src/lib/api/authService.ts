@@ -1,4 +1,4 @@
-import { Gender, LessonType, Region, Role, User } from "@/types/types";
+import { Gender, LessonType, ProfileEdittable, Region, Role, User } from "@/types/types";
 import instance from "./instance";
 
 export function postLogin(data: { email: string; password: string }): Promise<{
@@ -48,12 +48,12 @@ export function postSignUpTrainer(data: {
 }
 
 export function postProfile(data: {
-  profileImage: FileList | null;
+  profileImage?: FileList;
   name: string;
   phone: string;
   gender: Gender;
-  lessonType: LessonType | null;
-  region: Region | null;
+  lessonType: LessonType[];
+  region: Region[];
   experience?: number;
   intro?: string;
   description?: string;
@@ -67,17 +67,7 @@ export function postProfile(data: {
   }
 }
 
-export function patchProfile(data: {
-  profileImage?: string | FileList | null;
-  name?: string;
-  phone?: string;
-  gender?: Gender;
-  lessonType?: LessonType | null;
-  region?: Region | null;
-  experience?: number;
-  intro?: string;
-  description?: string;
-}): Promise<{
+export function patchProfile(data: Partial<ProfileEdittable>): Promise<{
   user: User;
 }> {
   try {
