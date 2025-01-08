@@ -1,4 +1,4 @@
-import { Gender, LessonType, ProfileEdittable, Region, Role, User } from "@/types/types";
+import { Gender, LessonType, Profile, ProfileEdittable, Region, Role, User } from "@/types/types";
 import instance from "./instance";
 
 export function postLogin(data: { email: string; password: string }): Promise<{
@@ -44,6 +44,22 @@ export function postSignUpTrainer(data: {
   try {
     delete data.passwordConfirm;
     return instance.post("/auth/signUp/trainer", data);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function getProfile(userId: string): Promise<Profile> {
+  try {
+    return instance.get(`/profile/${userId}`);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function getTrainerDetails(trainerId: string): Promise<Profile> {
+  try {
+    return instance.get(`/trainers/${trainerId}`);
   } catch (err) {
     throw err;
   }
