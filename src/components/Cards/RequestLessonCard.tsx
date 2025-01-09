@@ -5,6 +5,7 @@ import LessonInfo from "../Common/Card/LessonInfo";
 import QuotePrice from "../Common/Card/QuotePrice";
 import { HorizontalLine } from "../Common/Line";
 import ModalContainer from "../Modal/ModalContainer";
+import RejectedRequest from "../Modal/RejectedRequest";
 import SendQuote from "../Modal/SendQuote";
 
 const buttons = "flex gap-[1.1rem]";
@@ -60,7 +61,7 @@ export default function RequestLessonCard({ item }: { item: any }) {
           buttonText="반려하기"
           closeModal={() => setIsRejectedModalOpen(false)}
         >
-          <SendQuote />
+          <RejectedRequest />
         </ModalContainer>
       )}
     </CardContainer>

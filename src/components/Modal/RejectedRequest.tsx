@@ -1,4 +1,4 @@
-import { HorizontalLine, VerticalLine } from "../Common/Line";
+import { VerticalLine } from "../Common/Line";
 
 export default function RejectedRequest() {
   return (
@@ -19,12 +19,7 @@ export default function RejectedRequest() {
       </div>
       {/* 추후 공통 컴포넌트로 교체 (input, textarea) */}
       <div className="flex flex-col gap-[1.6rem]">
-        <label className="text-xl font-semibold">견적가를 입력해주세요</label>
-        <input className="w-[56rem] h-[6.4rem] p-[1.4rem] rounded-[1.6rem] bg-bg-200" />
-      </div>
-      <HorizontalLine width="100%" />
-      <div className="flex flex-col gap-[1.6rem]">
-        <label className="text-xl font-semibold">코멘트를 입력해 주세요</label>
+        <label className="text-xl font-semibold">반려 사유를 입력해 주세요</label>
         <textarea className="w-[56rem] h-[16rem] p-[1.4rem] rounded-[1.6rem] bg-bg-200" />
       </div>
     </div>

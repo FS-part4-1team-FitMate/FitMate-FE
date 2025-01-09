@@ -17,9 +17,9 @@ export default function ModalContainer({
 }: ModalContainerProps) {
   return (
     <div className="fixed top-0 left-0 w-screen h-screen bg-black-400 bg-opacity-50 z-10">
-      <div className="absolute top-[8.6rem] left-0 right-0 flex flex-col gap-16 w-fit mx-auto py-[3.2rem] px-[2.4rem] rounded-[3.2rem] bg-gray-50">
+      <div className="absolute top-[30rem] left-0 right-0 flex flex-col gap-16 w-fit mx-auto py-[3.2rem] px-[2.4rem] rounded-[3.2rem] bg-gray-50">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold">견적 보내기</h1>
+          <h1 className="text-2xl font-semibold">{title}</h1>
           <Image
             className="cursor-pointer"
             src={ic_X_md}
@@ -31,7 +31,7 @@ export default function ModalContainer({
         </div>
         {children}
         <button className="w-[56rem] h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold bg-gray-200">
-          견적 보내기
+          {buttonText}
         </button>
       </div>
     </div>
