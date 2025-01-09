@@ -8,7 +8,7 @@ interface Props {
 function ChipRequestStatus({ requestStatus, size }: Props) {
   return (
     <div
-      className={`inline-block text-${size} rounded-lg border border-solid border-slate-900 text-slate-900 py-[2px] px-[3px]`}
+      className={`inline-block text-${size} rounded-lg bg-slate-100 text-slate-900 py-[4px] px-[3px]`}
     >
       {lessonRequestStatus_trans[requestStatus]}
     </div>

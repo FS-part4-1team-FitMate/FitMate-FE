@@ -9,12 +9,12 @@ interface Props {
 function ChipRequest({ requestType, size }: Props) {
   const bgClass =
     requestType === RequestType.SPECIFIC
-      ? "border-red-500 text-red-500 bg-red-100"
-      : "border-slate-900 text-slate-900 bg-slate-100";
+      ? "text-red-500 bg-red-100"
+      : "text-slate-900 bg-slate-100";
 
   return (
     <div
-      className={`inline-flex justify-center items-center text-${size} rounded-lg border border-solid ${bgClass} gap-[2px]`}
+      className={`inline-flex justify-center items-center text-${size} rounded-lg ${bgClass} gap-[2px] py-[4px] px-[3px]`}
     >
       {requestType_trans[requestType].img && (
         <Image src={requestType_trans[requestType].img} width={24} height={24} alt="견적 종류" />

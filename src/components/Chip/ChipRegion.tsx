@@ -8,7 +8,7 @@ interface Props {
 function ChipRegion({ region, size }: Props) {
   return (
     <div
-      className={`inline-block text-${size} rounded-full border border-solid border-slate-900 text-slate-900 py-[5px] px-[8px]`}
+      className={`inline-block text-${size} rounded-full border border-solid border-slate-900 text-slate-900 py-[4px] px-[12px]`}
     >
       {region_trans[region]}
     </div>
