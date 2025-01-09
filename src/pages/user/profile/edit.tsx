@@ -5,10 +5,11 @@ import { ic_edit_sm, ic_visibility_off, ic_visibility_on } from "@/imageExports"
 import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { patchProfile } from "@/lib/api/authService";
-import { Gender, LessonType, Profile, ProfileEdittable, Region } from "@/types/types";
+import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
+import Button from "@/components/Common/Button";
 import PopUp from "@/components/Common/PopUp";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
@@ -18,26 +19,6 @@ const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
 const profile_menu = clsx("flex flex-col items-start gap-[12px]");
 const note_class = "text-sm text-slate-500";
 const error_class = "text-red-400 text-sm";
-
-const region_options = [
-  { name: "서울", value: Region.SEOUL },
-  { name: "경기", value: Region.GYEONGGI },
-  { name: "인천", value: Region.INCHEON },
-  { name: "대전", value: Region.DAEJEON },
-  { name: "대구", value: Region.DAEGU },
-  { name: "울산", value: Region.ULSAN },
-  { name: "부산", value: Region.BUSAN },
-  { name: "광주", value: Region.GWANGJU },
-  { name: "세종", value: Region.SEJONG },
-  { name: "강원", value: Region.GANGWON },
-  { name: "충북", value: Region.CHUNGBUK },
-  { name: "충남", value: Region.CHUNGNAM },
-  { name: "전북", value: Region.JEONBUK },
-  { name: "전남", value: Region.JEONNAM },
-  { name: "경북", value: Region.GYEONGBUK },
-  { name: "경남", value: Region.GYEONGNAM },
-  { name: "제주", value: Region.JEJU },
-];
 
 type FormType = Partial<ProfileEdittable> & {
   currPassword: string;
@@ -309,19 +290,16 @@ function ProfileEdit() {
             <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
           )}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <button
-            type="submit"
-            className="flex justify-center items-center w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl"
-          >
+          <Button type="submit" className="w-full bg-blue-500 text-white">
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="flex justify-center items-center w-full text-lg p-[8px] border border-solid border-slate-800 bg-slate-200 text-black-500 rounded-2xl"
+            className="w-full border border-solid border-slate-800 bg-slate-200 text-black-500"
             onClick={() => router.push(`/user/profile`)}
           >
             취소하기
-          </button>
+          </Button>
         </div>
       </main>
       <PopUp error={error} setError={setError} />
