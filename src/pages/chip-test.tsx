@@ -1,6 +1,7 @@
-import { LessonType, Region } from "@/types/types";
+import { LessonType, Region, RequestType } from "@/types/types";
 import ChipLessonType from "@/components/Chip/ChipLessonType";
 import ChipRegion from "@/components/Chip/ChipRegion";
+import ChipRequest from "@/components/Chip/ChipRequest";
 
 function ChipTest() {
   return (
@@ -16,6 +17,10 @@ function ChipTest() {
       <ChipLessonType lessonType={LessonType.REHAB} size="sm" />
       <ChipLessonType lessonType={LessonType.REHAB} size="lg" />
       <ChipLessonType lessonType={LessonType.REHAB} size="xl" />
+      <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
+      <ChipRequest requestType={RequestType.SPECIFIC} size="xl" />
+      <ChipRequest requestType={RequestType.NORMAL} size="lg" />
+      <ChipRequest requestType={RequestType.NORMAL} size="xl" />
     </>
   );
 }
