@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { patchProfile, postProfile } from "@/lib/api/authService";
 import { Gender, LessonType, LocationType, ProfileEdittable, Region } from "@/types/types";
+import Button from "@/components/Common/Button";
 import PopUp from "@/components/Common/PopUp";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
@@ -387,19 +388,16 @@ function ProfileEdit() {
             <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
           )}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <button
-            type="submit"
-            className="flex justify-center items-center w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl disabled:bg-slate-600"
-          >
+          <Button type="submit" className="w-full bg-blue-500 text-white disabled:bg-slate-600">
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="flex justify-center items-center w-full text-lg p-[8px] border border-solid border-slate-800 bg-slate-200 text-black-500 rounded-2xl"
+            className="w-full border border-solid border-slate-800 bg-slate-200 text-black-500"
             onClick={() => router.push(`/trainer/${trainerId}/profile`)}
           >
             취소하기
-          </button>
+          </Button>
         </div>
       </main>
       <PopUp error={error} setError={setError} />
