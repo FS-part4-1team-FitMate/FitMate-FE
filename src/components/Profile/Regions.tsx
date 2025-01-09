@@ -1,27 +1,7 @@
 import clsx from "clsx";
 import { Dispatch, SetStateAction } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
-import { Region } from "@/types/types";
-
-const region_options = [
-  { name: "서울", value: Region.SEOUL },
-  { name: "경기", value: Region.GYEONGGI },
-  { name: "인천", value: Region.INCHEON },
-  { name: "대전", value: Region.DAEJEON },
-  { name: "대구", value: Region.DAEGU },
-  { name: "울산", value: Region.ULSAN },
-  { name: "부산", value: Region.BUSAN },
-  { name: "광주", value: Region.GWANGJU },
-  { name: "세종", value: Region.SEJONG },
-  { name: "강원", value: Region.GANGWON },
-  { name: "충북", value: Region.CHUNGBUK },
-  { name: "충남", value: Region.CHUNGNAM },
-  { name: "전북", value: Region.JEONBUK },
-  { name: "전남", value: Region.JEONNAM },
-  { name: "경북", value: Region.GYEONGBUK },
-  { name: "경남", value: Region.GYEONGNAM },
-  { name: "제주", value: Region.JEJU },
-];
+import { Region, region_options } from "@/types/types";
 
 interface Props {
   selectedRegion: Region[];

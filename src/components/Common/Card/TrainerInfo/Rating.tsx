@@ -14,7 +14,7 @@ export default function Rating({ rating, reviewCount }: RatingProps) {
     <div className={container}>
       <Image src={ic_star_active_md} width={24} height={24} alt="별점" />
       <div className={container}>
-        <p className={text}>{rating}</p>
+        <p className={text}>{rating?.toFixed(1)}</p>
         <p className={`${text} text-gray-300`}>({reviewCount})</p>
       </div>
     </div>
