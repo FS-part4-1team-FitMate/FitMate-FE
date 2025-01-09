@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTrainerDetails } from "@/lib/api/authService";
+import Button from "@/components/Common/Button";
 import Experience from "@/components/Common/Card/TrainerInfo/Experience";
 import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
 import Rating from "@/components/Common/Card/TrainerInfo/Rating";
@@ -40,8 +41,8 @@ function Profile() {
           <Image
             src={trainerProfile?.profileImage ? trainerProfile.profileImage : ic_profile_default_md}
             alt="Profile"
-            width={48}
-            height={48}
+            width={50}
+            height={50}
             className="rounded-full border-[2px] border-solid border-slate-800"
           />
           <div className="flex flex-col justify-between items-start">
@@ -69,14 +70,13 @@ function Profile() {
           </div>
         </div>
       </div>
-      <button
-        type="submit"
-        className="flex justify-center items-center w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl disabled:bg-slate-600"
-      >
-        내 프로필 수정 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
-      </button>
+      {myPage && (
+        <Button type="submit" className="w-full bg-blue-500 text-white disabled:bg-slate-600">
+          내 프로필 수정 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
+        </Button>
+      )}
       <HorizontalLine width="100%" />
-      <StarPoints rating={0.93} />
+      <StarPoints rating={4.5 / 5} />
     </main>
   );
 }

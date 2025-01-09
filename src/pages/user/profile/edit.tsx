@@ -1,24 +1,18 @@
-"use client";
-
 import { useSetUser, useUser } from "@/contexts/UserProvider";
-import { ic_edit_sm, ic_visibility_off, ic_visibility_on } from "@/imageExports";
-import clsx from "clsx";
+import { ic_edit_sm } from "@/imageExports";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { patchProfile } from "@/lib/api/authService";
+import { PHONE_REGEX, PWD_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
+import Input from "@/components/Common/Input";
+import InputPassword from "@/components/Common/InputPassword";
 import PopUp from "@/components/Common/PopUp";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
-
-const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
-
-const profile_menu = clsx("flex flex-col items-start gap-[12px]");
-const note_class = "text-sm text-slate-500";
-const error_class = "text-red-400 text-sm";
 
 type FormType = Partial<ProfileEdittable> & {
   currPassword: string;
@@ -105,41 +99,31 @@ function ProfileEdit() {
             <ImageUploader register={register("profileImage")} />
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="w-full text-lg font-semibold" htmlFor="name">
-              이름
-            </label>
-            <input
-              className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-              {...register("name", {
-                required: "이름를 입력해 주세요.",
-              })}
-              type="name"
-              id="name"
-              placeholder="이름를 입력해 주세요."
-            />
-            {errors.name && <p className={error_class}>{errors.name.message}</p>}
-          </div>
+          <Input
+            id="name"
+            label="이름"
+            type="name"
+            register={register("name", {
+              required: "이름를 입력해 주세요.",
+            })}
+            placeholder="이름를 입력해 주세요."
+          />
+          {errors.name && <p className={error_class}>{errors.name.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="w-full text-lg font-semibold" htmlFor="phone">
-              전화번호
-            </label>
-            <input
-              className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-              {...register("phone", {
-                required: "전화번호를 입력해 주세요.",
-                pattern: {
-                  value: PHONE_REGEX,
-                  message: "유효한 전화번호를 입력해 주세요.",
-                },
-              })}
-              type="phone"
-              id="phone"
-              placeholder="전화번호를 입력해 주세요."
-            />
-            {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
-          </div>
+          <Input
+            id="phone"
+            label="전화번호"
+            type="phone"
+            register={register("phone", {
+              required: "전화번호를 입력해 주세요.",
+              pattern: {
+                value: PHONE_REGEX,
+                message: "유효한 전화번호를 입력해 주세요.",
+              },
+            })}
+            placeholder="전화번호를 입력해 주세요."
+          />
+          {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className={profile_menu}>
             <label className="text-lg font-semibold">성별</label>
@@ -203,89 +187,53 @@ function ProfileEdit() {
             />
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <label className="w-full text-lg font-semibold" htmlFor="currPassword">
-            현재 비밀번호
-          </label>
-          <div className="relative w-full h-[40px] text-slate-700">
-            <input
-              className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
-              {...register("currPassword", {
-                required: "비밀번호를 입력해 주세요.",
-                minLength: {
-                  value: 8,
-                  message: "비밀번호는 최소 8글자 이상이어야 합니다.",
-                },
-              })}
-              type={curPwdIsVisible ? "text" : "password"}
-              id="currPassword"
-              placeholder="비밀번호를 입력해 주세요."
-            />
-            <Image
-              className="absolute right-[8px] top-[8px] bottom-[8px]"
-              width={24}
-              height={24}
-              src={curPwdIsVisible ? ic_visibility_on : ic_visibility_off}
-              alt="eye"
-              onClick={() => setCurPwdIsVisible((prev) => !prev)}
-            />
-          </div>
+          <InputPassword
+            id="currPassword"
+            label="현재 비밀번호"
+            pwdIsVisible={curPwdIsVisible}
+            setPwdIsVisible={setCurPwdIsVisible}
+            register={register("currPassword", {
+              required: "비밀번호를 입력해 주세요.",
+              minLength: {
+                value: 8,
+                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+              },
+            })}
+            placeholder="비밀번호를 입력해 주세요."
+          />
           {errors.currPassword && (
             <p className="text-red-400 text-sm">{errors.currPassword.message}</p>
           )}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <label className="w-full text-lg font-semibold" htmlFor="password">
-            새로운 비밀번호
-          </label>
           <p className={note_class}>* 비밀번호를 바꾸고 싶으실 경우에만 입력하세요.</p>
-          <div className="relative w-full h-[40px] text-slate-700">
-            <input
-              className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
-              {...register("password", {
-                minLength: {
-                  value: 8,
-                  message: "비밀번호는 최소 8글자 이상이어야 합니다.",
-                },
-              })}
-              type={pwdIsVisible ? "text" : "password"}
-              id="password"
-              placeholder="새로운 비밀번호를 입력해 주세요."
-            />
-            <Image
-              className="absolute right-[8px] top-[8px] bottom-[8px]"
-              width={24}
-              height={24}
-              src={pwdIsVisible ? ic_visibility_on : ic_visibility_off}
-              alt="eye"
-              onClick={() => setPwdIsVisible((prev) => !prev)}
-            />
-          </div>
+          <InputPassword
+            id="password"
+            label="새로운 비밀번호"
+            pwdIsVisible={pwdIsVisible}
+            setPwdIsVisible={setPwdIsVisible}
+            register={register("password", {
+              pattern: {
+                value: PWD_REGEX,
+                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
+              },
+            })}
+            placeholder="새로운 비밀번호를 입력해 주세요."
+          />
           {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
-          <label className="w-full text-lg font-semibold" htmlFor="passwordConfirm">
-            새로운 비밀번호 확인
-          </label>
-          <div className="relative w-full h-[40px] text-slate-700">
-            <input
-              className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
-              {...register("passwordConfirm", {
-                validate: (value) => {
-                  if (value !== watch("password")) {
-                    return "비밀번호가 일치하지 않습니다.";
-                  }
-                },
-              })}
-              type={pwdCfmIsVisible ? "text" : "password"}
-              id="passwordComfirm"
-              placeholder="새로운 비밀번호를 다시 한번 입력해 주세요."
-            />
-            <Image
-              className="absolute right-[8px] top-[8px] bottom-[8px]"
-              width={24}
-              height={24}
-              src={pwdCfmIsVisible ? ic_visibility_on : ic_visibility_off}
-              alt="eye"
-              onClick={() => setPwdCfmIsVisible((prev) => !prev)}
-            />
-          </div>
+          <InputPassword
+            id="passwordComfirm"
+            label="새로운 비밀번호 확인"
+            pwdIsVisible={pwdCfmIsVisible}
+            setPwdIsVisible={setPwdCfmIsVisible}
+            register={register("passwordConfirm", {
+              validate: (value) => {
+                if (value !== watch("password")) {
+                  return "비밀번호가 일치하지 않습니다.";
+                }
+              },
+            })}
+            placeholder="새로운 비밀번호를 다시 한번 입력해 주세요."
+          />
           {errors.passwordConfirm && (
             <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
           )}
