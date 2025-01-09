@@ -1,4 +1,4 @@
-import { ic_fitness_sm, ic_health_sm, ic_sports_sm } from "@/imageExports";
+import { ic_designate_sm, ic_fitness_sm, ic_health_sm, ic_sports_sm } from "@/imageExports";
 
 export enum Role {
   USER = "USER",
@@ -88,12 +88,29 @@ export enum LocationType {
   OFFLINE = "OFFLINE",
 }
 
+export enum RequestType {
+  NORMAL = "NORMAL",
+  SPECIFIC = "SPECIFIC",
+}
+
+export const requestType_trans = {
+  [RequestType.NORMAL]: { img: null, ko: "일반 견적요청" },
+  [RequestType.SPECIFIC]: { img: ic_designate_sm, ko: "지정 견적요청" },
+};
+
 export enum LessonRequestStatus {
   PENDING = "PENDING",
   COMPLETED = "COMPLETED",
   CANCELED = "CANCELED",
   EXPIRED = "EXPIRED",
 }
+
+export const lessonRequestStatus_trans = {
+  [LessonRequestStatus.PENDING]: "견적 대기중",
+  [LessonRequestStatus.COMPLETED]: "견적 완료됨",
+  [LessonRequestStatus.CANCELED]: "견적 취소됨",
+  [LessonRequestStatus.EXPIRED]: "견적 기한만료",
+};
 
 export enum QuoteStatus {
   PENDING = "PENDING",
