@@ -14,7 +14,7 @@ const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text
 
 export default function PendingLessonCard({ item }: { item: any }) {
   return (
-    <CardContainer width="68.8rem" gap="2.4rem">
+    <CardContainer width="100%" gap="2.4rem">
       <div className="text-2lg font-medium">칩 넣을 자리</div>
       <TrainerInfo
         rating={item.rating}
