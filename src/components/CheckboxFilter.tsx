@@ -61,7 +61,10 @@ export default function CheckboxFilter({ label, options = [] }: CheckboxFilterPr
         </div>
         <div className="flex flex-col gap-[1.6rem]">
           {options.map((_, index) => (
-            <div className="flex justify-between items-center p-[1.6rem] border-b border-line-100">
+            <div
+              key={index}
+              className="flex justify-between items-center p-[1.6rem] border-b border-line-100"
+            >
               <p className="text-2lg font-medium">{options[index]} (10)</p>
               <Image
                 className="cursor-pointer"
