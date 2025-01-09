@@ -2,13 +2,18 @@ import clsx from "clsx";
 import { useState } from "react";
 import CardContainer from "../Common/Card/CardContainer";
 import LessonInfo from "../Common/Card/LessonInfo";
-import QuotePrice from "../Common/Card/QuotePrice";
 import { HorizontalLine } from "../Common/Line";
 import ModalContainer from "../Modal/ModalContainer";
 import RejectedRequest from "../Modal/RejectedRequest";
 import SendQuote from "../Modal/SendQuote";
 
-const buttons = "flex gap-[1.1rem]";
+const info_wrap = clsx(
+  "flex flex-col",
+  "pc:gap-[2.4rem] pc:py-[1.6rem] pc:px-[1.8rem]",
+  "tablet:gap-4 tablet:py-[0.8rem] tablet:px-0",
+  "mobile:gap-4 moblie:py-0 moblie:px-0",
+);
+const buttons = "flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col";
 const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text-xl font-semibold");
 
 /**
@@ -21,17 +26,18 @@ export default function RequestLessonCard({ item }: { item: any }) {
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
 
   return (
-    <CardContainer width="95.5rem" gap="1.6rem">
+    <CardContainer width="100%" gap="1.6rem">
       <div className="flex justify-between">
-        <p className="text-xl font-semibold">칩 넣을 자리</p>
-        <p className="text-gray-500 text-xs font-normal">1시간 전</p>
+        <p className="text-lg font-semibold">칩 넣을 자리</p>
+        <p className="text-gray-500 font-normal pc:text-md tablet:text-xs mobile:text-xs">
+          1시간 전
+        </p>
       </div>
-      <div className="flex flex-col gap-[1.8rem] py-[1.6rem] px-[1.8rem]">
-        <p className="text-xl font-semibold">{item.name} 고객님</p>
+      <div className={info_wrap}>
+        <p className="font-semibold pc:text-xl tablet:text-lg mobile:text-lg">{item.name} 고객님</p>
         <HorizontalLine width="100%" />
         <LessonInfo startDate="" endDate="" locationType="" />
       </div>
-      <QuotePrice price={180000} />
       <div className={buttons}>
         <button
           onClick={() => setIsQuoteModalOpen(true)}
