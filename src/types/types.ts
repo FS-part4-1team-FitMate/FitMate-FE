@@ -107,7 +107,7 @@ export enum LessonRequestStatus {
 
 export const lessonRequestStatus_trans = {
   [LessonRequestStatus.PENDING]: "견적 대기중",
-  [LessonRequestStatus.COMPLETED]: "견적 완료됨",
+  [LessonRequestStatus.COMPLETED]: "확정 견적",
   [LessonRequestStatus.CANCELED]: "견적 취소됨",
   [LessonRequestStatus.EXPIRED]: "견적 기한만료",
 };
