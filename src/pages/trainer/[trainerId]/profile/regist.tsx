@@ -1,20 +1,17 @@
 import { useSetUser } from "@/contexts/UserProvider";
 import { ic_designate_md } from "@/imageExports";
-import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
+import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, LocationType, Region } from "@/types/types";
+import Button from "@/components/Common/Button";
+import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
+import Textarea from "@/components/Common/Textarea";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
-
-const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
-
-const profile_menu = clsx("flex flex-col items-start gap-[12px]");
-const note_class = "text-sm text-slate-500";
-const error_class = "text-red-400 text-sm";
 
 function Regist() {
   const router = useRouter();
@@ -39,7 +36,7 @@ function Regist() {
       certification: undefined,
       region: [],
       locationType: [LocationType.OFFLINE],
-      experience: 0,
+      experience: undefined,
       intro: "",
       description: "",
     } as {
@@ -99,41 +96,31 @@ function Regist() {
             <ImageUploader register={register("profileImage")} />
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="w-full text-lg font-semibold" htmlFor="name">
-              이름
-            </label>
-            <input
-              className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-              {...register("name", {
-                required: "이름를 입력해 주세요.",
-              })}
-              type="name"
-              id="name"
-              placeholder="이름를 입력해 주세요."
-            />
-            {errors.name && <p className={error_class}>{errors.name.message}</p>}
-          </div>
+          <Input
+            id="name"
+            label="이름"
+            type="name"
+            register={register("name", {
+              required: "이름를 입력해 주세요.",
+            })}
+            placeholder="이름를 입력해 주세요."
+          />
+          {errors.name && <p className={error_class}>{errors.name.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="w-full text-lg font-semibold" htmlFor="phone">
-              전화번호
-            </label>
-            <input
-              className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-              {...register("phone", {
-                required: "전화번호를 입력해 주세요.",
-                pattern: {
-                  value: PHONE_REGEX,
-                  message: "유효한 전화번호를 입력해 주세요.",
-                },
-              })}
-              type="phone"
-              id="phone"
-              placeholder="전화번호를 입력해 주세요."
-            />
-            {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
-          </div>
+          <Input
+            id="phone"
+            label="전화번호"
+            type="phone"
+            register={register("phone", {
+              required: "전화번호를 입력해 주세요.",
+              pattern: {
+                value: PHONE_REGEX,
+                message: "유효한 전화번호를 입력해 주세요.",
+              },
+            })}
+            placeholder="전화번호를 입력해 주세요."
+          />
+          {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <div className={profile_menu}>
             <label className="text-lg font-semibold">성별</label>
@@ -257,51 +244,45 @@ function Regist() {
             {errors.locationType && <p className={error_class}>{errors.locationType.message}</p>}
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="text-lg font-semibold">경력 (연, 소수점 입력 가능)</label>
-            <input
-              className="text-md font-regular w-full h-[40px] p-[5px] rounded-xl border border-solid border-slate-600"
-              type="number"
-              {...register("experience", {
-                min: {
-                  value: 0,
-                  message: "경력은 0년 이상이어야 합니다.",
-                },
-              })}
-            />
-          </div>
+          <Input
+            id="experience"
+            label="경력 (연, 소수점 입력 가능)"
+            type="number"
+            register={register("experience", {
+              min: {
+                value: 0,
+                message: "경력은 0년 이상이어야 합니다.",
+              },
+            })}
+            placeholder="경력 연수를 입력해 주세요."
+          />
           {errors.experience && <p className={error_class}>{errors.experience.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="text-lg font-semibold">한 줄 소개</label>
-            <input
-              className="text-md font-regular w-full h-[40px] p-[5px] rounded-xl border border-solid border-slate-600"
-              type="text"
-              {...register("intro")}
-            />
-          </div>
+          <Input
+            id="intro"
+            label="한 줄 소개"
+            type="text"
+            register={register("intro")}
+            placeholder="한 줄 소개를 입력해 주세요."
+          />
           {errors.intro && <p className={error_class}>{errors.intro.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className="flex flex-col w-full gap-[12px]">
-            <label className="text-lg font-semibold">상세 설명</label>
-            <textarea
-              className="text-md font-regular w-full rounded-xl p-[5px] border-[1px] border-solid border-gray-300 h-[160px] overflow-y-auto"
-              {...register("description", {
-                minLength: {
-                  value: 10,
-                  message: "상세 설명은 최소 10글자 이상이어야 합니다.",
-                },
-              })}
-            ></textarea>
-          </div>
+          <Textarea
+            id="description"
+            label="상세 설명"
+            placeholder="상세 설명을 작성해 주세요."
+            register={register("description", {
+              minLength: {
+                value: 10,
+                message: "상세 설명은 최소 10글자 이상이어야 합니다.",
+              },
+            })}
+          ></Textarea>
           {errors.description && <p className={error_class}>{errors.description.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <button
-            type="submit"
-            className="w-full text-lg p-[8px] bg-blue-500 text-white rounded-2xl"
-          >
+          <Button type="submit" className="w-full bg-blue-500 text-white">
             시작하기
-          </button>
+          </Button>
         </div>
       </main>
       <PopUp error={error} setError={setError} />

@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postSignUpTrainer, postSignUpUser } from "@/lib/api/authService";
+import { PWD_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 import { EMAIL_REGEX } from "@/pages/login";
@@ -152,9 +153,9 @@ function SignUpForm({ role }: Props) {
             className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
             {...register("password", {
               required: "비밀번호를 입력해 주세요.",
-              minLength: {
-                value: 8,
-                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+              pattern: {
+                value: PWD_REGEX,
+                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
               },
             })}
             type={pwdIsVisible ? "text" : "password"}
