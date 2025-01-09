@@ -17,7 +17,7 @@ const content = clsx("font-normal", "pc:text-2lg tablet:text-md mobile:text-md")
 
 export default function QuoteInfo() {
   return (
-    <div className="flex flex-col gap-16">
+    <div className="flex flex-col pc:gap-16 tablet:gap-[2.4rem] mobile:gap-[2.4rem]">
       <p className="font-semibold pc:text-2xl tablet:text-lg mobile:text-lg">견적 정보</p>
       <div className={content_area}>
         <div className={content_wrap}>
