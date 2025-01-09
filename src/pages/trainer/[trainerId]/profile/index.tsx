@@ -5,6 +5,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTrainerDetails } from "@/lib/api/authService";
+import RatingAvgCard from "@/components/Cards/RatingAvgCard";
+import RatingStatCard from "@/components/Cards/RatingStatCard";
+import ReviewCard from "@/components/Cards/ReviewCard";
 import Button from "@/components/Common/Button";
 import Experience from "@/components/Common/Card/TrainerInfo/Experience";
 import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
@@ -66,7 +69,9 @@ function Profile() {
           </div>
           <div className="flex items-center gap-[16px]">
             <div className="text-lg bg-slate-100 inline-block p-[2px]">지역</div>
-            <div className="text-lg">온라인, 서울, 경기</div>
+            <div className="text-lg">
+              <s className="text-slate-400">온라인</s>, 서울, 경기
+            </div>
           </div>
         </div>
       </div>
@@ -76,7 +81,19 @@ function Profile() {
         </Button>
       )}
       <HorizontalLine width="100%" />
-      <StarPoints rating={4.5 / 5} />
+      <div className="text-xl font-semibold">리뷰 (100)</div>
+      <div className="tablet:flex tablet:flex-row tablet:justify-center tablet:gap-[50px] mx-auto max-w-full">
+        <RatingAvgCard ratingAvg={4.3} />
+        <RatingStatCard ratingStat={[100, 0, 0, 0, 120]} />
+      </div>
+      <div className="flex flex-col gap-[24px]">
+        <ReviewCard
+          rating={4}
+          nickname="kipid"
+          createdAt="2025-01-09"
+          content={"기초부터 차근차근 잘 가르쳐 주십니다.\n\n짱입니다요."}
+        />
+      </div>
     </main>
   );
 }
