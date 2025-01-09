@@ -1,3 +1,5 @@
+import { ic_fitness_sm, ic_health_sm, ic_sports_sm } from "@/imageExports";
+
 export enum Role {
   USER = "USER",
   TRAINER = "TRAINER",
@@ -14,6 +16,12 @@ export enum LessonType {
   FITNESS = "FITNESS", // 피트니스 (PT, 요가, 필라테스, 식단 관리 등)
   REHAB = "REHAB", // 재활치료
 }
+
+export const lessonType_trans = {
+  [LessonType.SPORTS]: { img: ic_sports_sm, ko: "스포츠" },
+  [LessonType.FITNESS]: { img: ic_fitness_sm, ko: "피트니스" },
+  [LessonType.REHAB]: { img: ic_health_sm, ko: "재활치료" },
+};
 
 export enum Region {
   SEOUL = "SEOUL",
