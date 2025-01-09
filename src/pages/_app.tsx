@@ -5,7 +5,7 @@ import localFont from "next/font/local";
 import { useRouter } from "next/router";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import GNB from "@/components/GNB";
+import GNB from "@/components/GNB/GNB";
 import Tab from "@/components/Tab";
 import "@/styles/globals.css";
 
