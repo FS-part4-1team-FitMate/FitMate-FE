@@ -1,9 +1,16 @@
 import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageExports";
+import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 
+const select_all = clsx(
+  "flex items-center w-full",
+  "pc:flex-row tablet:flex-row-reverse mobile:flex-row-reverse",
+  "pc:justify-end tablet:justify-between mobile:justify-between",
+);
+
 interface CheckboxFilterProps {
-  label: string;
+  label?: string;
   options?: string[];
 }
 
@@ -41,9 +48,9 @@ export default function CheckboxFilter({ label, options = [] }: CheckboxFilterPr
   } else {
     return (
       <div className="flex flex-col gap-[2.4rem]">
-        <div className="flex justify-between w-[32.8rem] py-[1.6rem] px-4 border-b border-line-200">
+        <div className="flex pc:justify-between w-[32.8rem] py-[1.6rem] px-4 border-b border-line-200">
           <h1 className="text-xl font-medium">{label}</h1>
-          <div className="flex items-center">
+          <div className={select_all}>
             <Image
               className="cursor-pointer"
               src={
@@ -56,16 +63,20 @@ export default function CheckboxFilter({ label, options = [] }: CheckboxFilterPr
               onClick={handleSelectAll}
               alt="체크박스"
             />
-            <p className="text-gray-300 text-2lg font-normal">전체선택</p>
+            <p className="text-gray-300 font-normal pc:text-2lg tablet:text-lg mobile:text-lg">
+              전체선택
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-[1.6rem]">
           {options.map((_, index) => (
             <div
               key={index}
-              className="flex justify-between items-center p-[1.6rem] border-b border-line-100"
+              className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
             >
-              <p className="text-2lg font-medium">{options[index]} (10)</p>
+              <p className="font-medium pc:text-2lg tablet:text-lg mobile:text-lg">
+                {options[index]} (10)
+              </p>
               <Image
                 className="cursor-pointer"
                 src={
