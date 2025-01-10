@@ -4,7 +4,7 @@ import LessonInfo from "../Common/Card/LessonInfo";
 import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
-const buttons = "flex gap-[1.1rem]";
+const buttons = "flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col";
 const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text-xl font-semibold");
 
 /**
