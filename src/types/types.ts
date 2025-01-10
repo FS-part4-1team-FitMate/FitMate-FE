@@ -168,4 +168,6 @@ export type User = {
   nickname: string;
   role: Role;
   profile?: Profile;
+  createdAt: Date;
+  updatedAt: Date;
 };
