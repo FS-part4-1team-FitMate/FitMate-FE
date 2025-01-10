@@ -2,9 +2,11 @@ import { Gender, LessonType, Profile, ProfileEdittable, Region, Role, User } fro
 import instance from "./instance";
 
 export function postLogin(data: { email: string; password: string }): Promise<{
-  user: User;
-  accessToken: string;
-  refreshToken: string;
+  data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  };
 }> {
   try {
     return instance.post("/auth/login", data);
@@ -25,7 +27,7 @@ export function postSignUpUser(data: {
 }> {
   try {
     delete data.passwordConfirm;
-    return instance.post("/auth/signUp/user", data);
+    return instance.post("/auth/signup/user", data);
   } catch (err) {
     throw err;
   }
@@ -43,7 +45,7 @@ export function postSignUpTrainer(data: {
 }> {
   try {
     delete data.passwordConfirm;
-    return instance.post("/auth/signUp/trainer", data);
+    return instance.post("/auth/signup/trainer", data);
   } catch (err) {
     throw err;
   }
