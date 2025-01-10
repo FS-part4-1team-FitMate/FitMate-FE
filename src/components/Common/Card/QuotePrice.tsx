@@ -1,6 +1,7 @@
-const quote = "flex justify-end items-center gap-[1.6rem]";
-const quote_label = "text-2lg font-medium";
-const quote_price = "text-2xl font-bold";
+const quote =
+  "flex justify-end items-center pc:gap-[1.6rem] tablet:gap-[0.8rem] mobile:gap-[0.8rem]";
+const quote_label = "font-medium pc:text-2lg tablet:text-md mobile:text-md";
+const quote_price = "font-bold pc:text-2xl tablet:text-2lg mobile:text-2lg";
 
 export default function QuotePrice({ price }: { price: number }) {
   /**

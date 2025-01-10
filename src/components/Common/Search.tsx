@@ -2,6 +2,26 @@ import { ic_X_circle_md, ic_search_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 
+const search_wrap = clsx(
+  "flex items-center rounded-[1.6rem] bg-bg-200",
+  "pc:gap-[0.8rem] pc:w-[95.5rem] pc:h-[6.4rem] pc:py-[1.4rem] pc:px-[2.4rem]",
+  "tablet:gap-[0.6rem] tablet:w-full tablet:h-full tablet:py-[1.4rem] tablet:px-[1.6rem]",
+  "mobile:gap-[0.6rem] mobile:w-full mobile:h-full mobile:py-[1.4rem] mobile:px-[1.6rem]",
+);
+
+const input = clsx(
+  "w-full",
+  "font-regular bg-bg-200",
+  "focus:outline-none",
+  "pc:text-xl tablet:text-md mobile:text-md",
+);
+
+const icon = clsx(
+  "cursor-pointer",
+  "pc:w-[3.6rem] tablet:w-[2.4rem] mobile:w-[2.4rem]",
+  "pc:h-[3.6rem] tablet:h-[2.4rem] mobile:h-[2.4rem]",
+);
+
 interface SearchProps {
   keyword: string;
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
@@ -9,15 +29,6 @@ interface SearchProps {
 }
 
 export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
-  const input = clsx("w-full", "text-xl font-regular", "bg-bg-200", "focus:outline-none");
-  const search_wrapper = clsx(
-    "flex items-center gap-[0.8rem]",
-    !keyword && "flex-row-reverse",
-    "w-[95.5rem] h-[6.4rem]",
-    "py-[1.4rem] px-[2.4rem] rounded-[1.6rem]",
-    "bg-bg-200",
-  );
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newKeyword = e.target.value;
     setKeyword(newKeyword);
@@ -30,7 +41,7 @@ export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
   };
 
   return (
-    <div className={search_wrapper}>
+    <div className={clsx(search_wrap, !keyword && "flex-row-reverse")}>
       <input
         className={input}
         type="text"
@@ -39,12 +50,14 @@ export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      {!keyword && <Image src={ic_search_md} width={36} height={36} alt="검색 아이콘" />}
+      {!keyword && (
+        <Image className={icon} src={ic_search_md} width={36} height={36} alt="검색 아이콘" />
+      )}
 
       {keyword && (
         <div className="flex gap-[1.6rem]">
           <Image
-            className="cursor-pointer"
+            className={icon}
             src={ic_X_circle_md}
             width={36}
             height={36}
@@ -54,7 +67,7 @@ export default function Search({ keyword, setKeyword, onSearch }: SearchProps) {
             }}
           />
           <Image
-            className="cursor-pointer"
+            className={icon}
             src={ic_search_md}
             width={36}
             height={36}

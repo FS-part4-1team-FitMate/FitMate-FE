@@ -1,7 +1,6 @@
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
-const description = "text-2xl font-semibold";
 /**
  * 임시로 any 타입 지정
  */

@@ -3,18 +3,19 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const tab_container = clsx(
-  "flex items-end gap-[3.2rem]",
-  "max-w-[192rem]",
-  "m-auto pt-[1.6rem] px-[26rem]",
+  "flex items-end gap-[3.2rem] m-auto",
   "border-b border-line-100",
+  "pc:max-w-[192rem] pc:h-auto pc:pt-[1.6rem] pc:px-[26rem]",
+  "tablet:max-w-[74.5rem] tablet:h-[5.4rem] tablet:pt-4 tablet:px-[7.2rem]",
+  "mobile:max-w-[37.5rem] mobile:h-[5.4rem] mobile:pt-4 mobile:px-[2.4rem]",
 );
 
 export default function Tab() {
   const router = useRouter();
   const isActiveMenu = (path: string) =>
     router.pathname === path
-      ? "py-[1.6rem] border-b-2 border-black-400 text-black-400 text-xl font-semibold"
-      : "py-[1.6rem] text-gray-400 text-xl font-semibold";
+      ? "py-[1.6rem] border-b-2 border-blue-400 text-black-400 font-bold pc:text-xl tablet:text-md mobile:text-md"
+      : "py-[1.6rem] text-gray-400 font-bold pc:text-xl tablet:text-md mobile:text-md";
 
   if (
     router.pathname === "/user/my-lesson/pending-request" ||
