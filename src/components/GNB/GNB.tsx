@@ -38,48 +38,13 @@ function GNB() {
     });
   }, []);
 
-  const Logo = () => {
-    return (
-      <Link className="shrink-0" href="/">
-        <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
-      </Link>
-    );
-  };
-
-  const Noti = ({ right }: { right: string }) => {
-    return (
-      <div ref={refNoti} className="relative">
-        <Image
-          src={ic_noti}
-          alt="noti"
-          width={24}
-          height={24}
-          onClick={() => setNotiIsOpen((prev) => !prev)}
-        />
-        {notiIsOpen && (
-          <div
-            className={`absolute top-[30px] right-${right} w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg`}
-          >
-            Notification
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  // const MyProfile = () => {
-  //   return ();
-  // }
-
-  // const Menu = () => {
-  //   return ();
-  // };
-
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
       <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
         <div className="flex justify-start items-center gap-[16px]">
-          <Logo />
+          <Link className="shrink-0" href="/">
+            <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
+          </Link>
           <ul className="flex justify-start items-center gap-[16px] text-lg">
             {user && user?.role === Role.USER ? (
               <>
@@ -144,7 +109,21 @@ function GNB() {
         <div>
           {user && user?.id ? (
             <div className="flex justify-end items-center gap-[16px]">
-              <Noti right="0" />
+              <div ref={refNoti} className="relative">
+                <Image
+                  className="cursor-pointer"
+                  src={ic_noti}
+                  alt="noti"
+                  width={24}
+                  height={24}
+                  onClick={() => setNotiIsOpen((prev) => !prev)}
+                />
+                {notiIsOpen && (
+                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg">
+                    Notification
+                  </div>
+                )}
+              </div>
               <div ref={refMyProfile} className="relative">
                 <div
                   className="cursor-pointer flex justify-end items-center gap-[8px]"
@@ -201,13 +180,28 @@ function GNB() {
   return (
     <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100">
       <div className="flex justify-start items-center">
-        <Logo />
+        <Link className="shrink-0" href="/">
+          <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
+        </Link>
       </div>
       <div>
         <div className="flex justify-end items-center gap-[16px]">
           {user && user?.id ? (
             <>
-              <Noti right="[-30px]" />
+              <div ref={refNoti} className="relative cursor-pointer">
+                <Image
+                  src={ic_noti}
+                  alt="noti"
+                  width={24}
+                  height={24}
+                  onClick={() => setNotiIsOpen((prev) => !prev)}
+                />
+                {notiIsOpen && (
+                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg">
+                    Notification
+                  </div>
+                )}
+              </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
                   src={profileImageURL}
