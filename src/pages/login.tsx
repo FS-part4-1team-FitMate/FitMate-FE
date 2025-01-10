@@ -13,9 +13,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postLogin } from "@/lib/api/authService";
+import { EMAIL_REGEX } from "@/types/constants";
 import PopUp from "@/components/Common/PopUp";
-
-export const EMAIL_REGEX = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
 
 function LogIn() {
   const setUser = useSetUser();
@@ -43,7 +42,10 @@ function LogIn() {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const userData = await postLogin(data);
+      const response = await postLogin(data);
+      console.log(response); // TODO: remove this.
+      const userData = response.data;
+      console.log(userData); // TODO: remove this.
       if ("user" in userData) {
         setUser(userData.user);
       }
