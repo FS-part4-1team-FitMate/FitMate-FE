@@ -4,7 +4,7 @@ import LessonInfo from "../Common/Card/LessonInfo";
 import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
-const buttons = "flex gap-[1.1rem]";
+const buttons = "flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col";
 const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text-xl font-semibold");
 
 /**
@@ -14,7 +14,7 @@ const button = clsx("flex-1", "h-[6.4rem]", "p-[1.6rem] rounded-[1.6rem]", "text
 
 export default function PendingLessonCard({ item }: { item: any }) {
   return (
-    <CardContainer width="68.8rem" gap="2.4rem">
+    <CardContainer width="100%" gap="2.4rem">
       <div className="text-2lg font-medium">칩 넣을 자리</div>
       <TrainerInfo
         rating={item.rating}

@@ -2,9 +2,10 @@ import clsx from "clsx";
 import { ReactNode } from "react";
 
 const card_container = clsx(
-  "flex flex-col",
-  "py-[2rem] px-[2.4rem] rounded-[1.6rem]",
+  "flex flex-col rounded-[1.6rem]",
   "shadow-card bg-gray-50",
+  "pc:py-[2rem] tablet:py-[1.6rem] mobile:py-[1.6rem]",
+  "pc:px-[2.4rem] tablet:px-[1.4rem] mobile:px-[1.4rem]",
 );
 
 interface CardContainerProps {

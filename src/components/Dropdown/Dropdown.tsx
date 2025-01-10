@@ -34,14 +34,26 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
 
   if (type === "filter") {
     return (
-      <div className="relative flex flex-col w-[32.8rem]">
+      <div className="relative flex flex-col pc:w-[32.8rem] tablet:w-40 mobile:w-40">
         <div className="flex flex-col gap-[1.6rem]">
           {filterType === "gender" ? (
-            <label className="text-2lg font-medium">성별을 선택해주세요</label>
+            <label className="text-2lg font-medium pc:block tablet:hidden mobile:hidden">
+              성별을 선택해주세요
+            </label>
           ) : (
-            <label className="text-2lg font-medium">어떤 서비스가 필요하세요?</label>
+            <label className="text-2lg font-medium pc:block tablet:hidden mobile:hidden">
+              어떤 서비스가 필요하세요?
+            </label>
           )}
-          <FilterMenu currentFilter={currentFilter} onToggle={() => setIsOpen((prev) => !prev)} />
+          <FilterMenu
+            className={
+              isOpen === true
+                ? "border border-blue-300 text-blue-300 bg-blue-50"
+                : "border border-gray-100"
+            }
+            currentFilter={currentFilter}
+            onToggle={() => setIsOpen((prev) => !prev)}
+          />
         </div>
         {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
       </div>
@@ -50,7 +62,7 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
 
   if (type === "pastLesson") {
     return (
-      <div className="relative flex flex-col w-[19rem]">
+      <div className="relative flex flex-col pc:w-[19rem] tablet:w-56 mobile:w-56">
         <PastLessonFilterMenu
           className={
             isOpen === true
