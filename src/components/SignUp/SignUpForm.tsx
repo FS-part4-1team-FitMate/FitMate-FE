@@ -13,10 +13,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postSignUpTrainer, postSignUpUser } from "@/lib/api/authService";
-import { PWD_REGEX } from "@/types/constants";
+import { EMAIL_REGEX, PWD_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
-import { EMAIL_REGEX } from "@/pages/login";
 
 const input_class =
   "w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl";
