@@ -45,6 +45,8 @@ import ic_menu_md from "@/assets/ic/ic_menu_md.svg";
 import ic_menu_sm from "@/assets/ic/ic_menu_sm.svg";
 import ic_naver_md from "@/assets/ic/ic_naver_md.svg";
 import ic_naver_sm from "@/assets/ic/ic_naver_sm.svg";
+import ic_noti from "@/assets/ic/ic_noti.svg";
+import ic_noti_empty from "@/assets/ic/ic_noti_empty.svg";
 import ic_profile_default_sm from "@/assets/ic/ic_profile-default-sm.svg";
 import ic_profile_default_md from "@/assets/ic/ic_profile-default_md.svg";
 import ic_round_check_active_md from "@/assets/ic/ic_round-check-active_md.svg";
@@ -138,6 +140,8 @@ export {
   ic_menu_sm,
   ic_naver_md,
   ic_naver_sm,
+  ic_noti,
+  ic_noti_empty,
   ic_profile_default_sm,
   ic_profile_default_md,
   ic_round_check_active_md,
