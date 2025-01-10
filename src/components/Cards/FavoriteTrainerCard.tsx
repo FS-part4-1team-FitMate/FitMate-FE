@@ -19,8 +19,8 @@ export default function FavoiriteTrainerCard({
   favoriteCount,
 }: FindTrainerCardProps) {
   return (
-    <CardContainer width="47.5rem" gap="1.6rem">
-      <div className="text-xl font-semibold">칩 넣을 자리</div>
+    <CardContainer width="100%" gap="1.6rem">
+      <div className="text-lg font-semibold">칩 넣을 자리</div>
       <TrainerInfo
         rating={rating}
         reviewCount={reviewCount}
