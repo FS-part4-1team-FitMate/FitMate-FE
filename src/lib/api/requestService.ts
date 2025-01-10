@@ -1,4 +1,5 @@
 import instance from "./instance";
+import { QueryFunctionContext } from "@tanstack/react-query";
 
 export async function createLessonRequest(data: {
     lessonType: string;
@@ -15,4 +16,12 @@ export async function createLessonRequest(data: {
     } catch (err) {
       throw err;
     }
+  }
+
+
+  export async function getSentRequest({
+    pageParam=1,
+    querykey,
+  }: QueryFunctionContext<[string, { requestId: string }]>): Promise<any> {
+
   }
