@@ -26,7 +26,7 @@ const filter_menu = clsx(
   "bg-gray-50 cursor-pointer",
   "pc:h-[6.4rem] tablet:h-auto mobile:h-auto",
   "pc:py-[1.6rem] tablet:py-[0.6rem] mobile:py-[0.6rem]",
-  "pc:px-[2.4rem] tablet:px-[1.6rem] mobile:px-[1.6rem]",
+  "pc:px-[2.4rem] tablet:px-[1.6rem] mobile:px-[1.2rem]",
 );
 
 const icon = "pc:w-[3.6rem] pc:h-[3.6rem] tablet:w-8 tablet:h-8 mobile:w-8 mobile:h-8";
