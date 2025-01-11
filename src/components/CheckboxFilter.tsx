@@ -49,7 +49,7 @@ export default function CheckboxFilter({ label, options = [] }: CheckboxFilterPr
     return (
       <div className="flex flex-col gap-[2.4rem]">
         <div className="flex pc:justify-between w-[32.8rem] py-[1.6rem] px-4 border-b border-line-200">
-          <h1 className="text-xl font-medium">{label}</h1>
+          <h1 className="text-nowrap text-xl font-medium">{label}</h1>
           <div className={select_all}>
             <Image
               className="cursor-pointer"

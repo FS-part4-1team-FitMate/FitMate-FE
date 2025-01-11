@@ -1,3 +1,6 @@
+import { ic_filter_active_sm } from "@/imageExports";
+import clsx from "clsx";
+import Image from "next/image";
 import { useState } from "react";
 import { GenderFilter, ServiceFilter, UserSort } from "@/types/dropdown";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
@@ -5,11 +8,18 @@ import CheckboxFilter from "@/components/CheckboxFilter";
 import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
+import MobileFilter from "@/components/Modal/MobileFilter";
 
 const data = [{ name: "김코드" }, { name: "강코드" }, { name: "박코드" }];
 
+const container = clsx(
+  "flex flex-col w-full mx-auto py-[2.4rem] px-8",
+  "pc:flex-row pc:gap-[10rem] pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
+);
+
 export default function ReceivedRequest() {
   const [keyword, setKeyword] = useState<string>("");
+  const [isModalopen, setIsModalOpen] = useState<boolean>(false);
 
   const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
   const serviceFilter: ServiceFilter[] = ["재활운동", "스포츠", "피트니스"];
@@ -26,22 +36,27 @@ export default function ReceivedRequest() {
   };
 
   return (
-    <div className="flex flex-col max-w-[192rem] m-auto">
+    <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
       <Title title="받은 요청" />
-      <div className="flex justify-between max-w-[140rem] w-full mx-auto py-[2.4rem]">
+      <div className={container}>
         <div className="flex flex-col gap-[4.6rem]">
-          <div className="flex flex-col gap-[2.4rem]">
+          <div className="hidden flex-col gap-[2.4rem] pc:flex">
             <CheckboxFilter label="운동 유형" options={serviceFilter} />
             <CheckboxFilter label="성별" options={genderFilter} />
             <CheckboxFilter label="지정 견적 요청" />
           </div>
         </div>
-        <div className="flex flex-col gap-[3.2rem]">
+        <div className="flex flex-col gap-[3.2rem] w-full">
           <div className="flex flex-col gap-[2.4rem]">
             <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
             <div className="flex justify-between items-center">
               <p className="text-lg font-medium">전체 8건</p>
-              <Dropdown options={userSort} type="sort" />
+              <div className="flex gap-[0.4rem]">
+                <Dropdown options={userSort} type="sort" />
+                <div className="block pc:hidden" onClick={() => setIsModalOpen(true)}>
+                  <Image src={ic_filter_active_sm} width={32} height={32} alt="모바일 필터" />
+                </div>
+              </div>
             </div>
           </div>
           {filteredData.map((item, index) => (
@@ -52,6 +67,9 @@ export default function ReceivedRequest() {
           ))}
         </div>
       </div>
+      {isModalopen && (
+        <MobileFilter buttonText="조회하기" closeModal={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 }
