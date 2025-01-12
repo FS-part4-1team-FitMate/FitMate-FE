@@ -12,7 +12,7 @@ export default function FindTrainerCard({ item }: { item: any }) {
       <div className="text-lg font-semibold">
         <ChipLessonType lessonType={LessonType.REHAB} size="lg" />
       </div>
-      <p className="text-mdfont-semibold pc:text-2xl">고객님에게 맞춤형 레슨을 해드립니다.</p>
+      <p className="text-md font-semibold pc:text-2xl">고객님에게 맞춤형 레슨을 해드립니다.</p>
       <TrainerInfo
         name={item.name}
         rating={item.rating}

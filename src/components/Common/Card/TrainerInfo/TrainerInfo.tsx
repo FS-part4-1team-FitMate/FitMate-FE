@@ -16,11 +16,6 @@ const img_profile = clsx(
   "border-2 border-blue-400 w-[4.6rem] h-[4.6rem] rounded-full",
   "pc:w-[5.6rem] pc:h-[5.6rem]",
 );
-const info_details = clsx(
-  "flex items-center",
-  "pc:justify-start tablet:justify-start mobile:justify-between",
-  "pc:gap-[1.6rem] tablet:gap-[0.8rem] mobile:gap-0",
-);
 
 interface TrainerInfoProps {
   name?: string;
@@ -55,7 +50,7 @@ export default function TrainerInfo({
           <p className="text-md font-semibold pc:text-2lg">{name} 강사님</p>
           <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount} />
         </div>
-        <div className={info_details}>
+        <div className="flex justify-start items-center gap-[0.8rem] pc:gap-[1.6rem]">
           <Rating rating={rating} reviewCount={reviewCount} />
           <VerticalLine height="1.4rem" />
           <Experience experience={experience} />
