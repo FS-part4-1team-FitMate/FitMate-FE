@@ -10,7 +10,7 @@ export default function PastLesson() {
   const trainerInfos = new Array(3).fill("");
 
   return (
-    <div className="flex flex-col gap-16 max-w-[192rem] m-auto py-[6.4rem] bg-bg-100">
+    <div className="flex flex-col gap-16 max-w-[192rem] m-auto py-16 bg-bg-100 pc:py-[6.4rem]">
       {quotes.map(() => (
         <PastLessonCard trainerInfos={trainerInfos} />
       ))}

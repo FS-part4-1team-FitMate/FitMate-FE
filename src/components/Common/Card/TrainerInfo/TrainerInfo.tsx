@@ -8,22 +8,14 @@ import LessonCount from "./LessonCount";
 import Rating from "./Rating";
 
 const container = clsx(
-  "flex items-center w-full",
+  "flex items-center gap-[1.2rem] w-full p-4",
   "border border-line-100 rounded-[0.6rem] shadow-card",
   "pc:gap-[2.4rem] pc:py-[1.6rem] pc:px-[1.8rem]",
-  "tablet:gap-[1.2rem] tablet:p-4",
-  "mobile:gap-[1.2rem] mobile:p-4",
 );
 const img_profile = clsx(
-  "border-2 border-blue-400 rounded-full",
-  "pc:w-[5.6rem] tablet:w-[4.6rem] mobile:w-[4.6rem]",
-  "pc:h-[5.6rem] tablet:h-[4.6rem] mobile:h-[4.6rem]",
+  "border-2 border-blue-400 w-[4.6rem] h-[4.6rem] rounded-full",
+  "pc:w-[5.6rem] pc:h-[5.6rem]",
 );
-const trainer_info = clsx(
-  "flex flex-col flex-grow",
-  "pc:gap-[0.8rem] tablet:gap-[1.2rem] mobile:gap-[1.2rem]",
-);
-const trainer_name = "font-semibold pc:text-2lg tablet:text-md mobile:text-md";
 const info_details = clsx(
   "flex items-center",
   "pc:justify-start tablet:justify-start mobile:justify-between",
@@ -58,9 +50,9 @@ export default function TrainerInfo({
         height={56}
         alt="프로필 사진"
       />
-      <div className={trainer_info}>
+      <div className="flex flex-col flex-grow gap-[1.2rem] pc:gap-[0.8rem]">
         <div className="flex justify-between items-center">
-          <p className={trainer_name}>{name} 강사님</p>
+          <p className="text-md font-semibold pc:text-2lg">{name} 강사님</p>
           <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount} />
         </div>
         <div className={info_details}>
