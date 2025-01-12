@@ -33,10 +33,10 @@ export default function RequestLessonCard({ item }: { item: any }) {
   return (
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex justify-between items-center">
-        <p className="flex gap-[1.2rem]">
+        <div className="flex gap-[1.2rem]">
           <ChipLessonType lessonType={LessonType.FITNESS} size="lg" />
           <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
-        </p>
+        </div>
         <p className="text-gray-500 text-xs font-normal pc:text-md">1시간 전</p>
       </div>
       <div className={info_wrap}>
