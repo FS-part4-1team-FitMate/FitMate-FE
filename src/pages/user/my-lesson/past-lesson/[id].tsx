@@ -4,7 +4,7 @@ import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 import Title from "@/components/Common/Title";
 
-export default function DetailPendingRequest() {
+export default function DetailPastLesson() {
   return (
     <div className="flex flex-col gap-[1.6rem] pc:gap-[2.4rem]">
       <Title title="견적 상세" />
