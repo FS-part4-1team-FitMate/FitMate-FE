@@ -88,6 +88,11 @@ export enum LocationType {
   OFFLINE = "OFFLINE",
 }
 
+export const locationType_trans = {
+  [LocationType.ONLINE]: "온라인",
+  [LocationType.OFFLINE]: "오프라인",
+};
+
 export enum RequestType {
   NORMAL = "NORMAL",
   SPECIFIC = "SPECIFIC",
