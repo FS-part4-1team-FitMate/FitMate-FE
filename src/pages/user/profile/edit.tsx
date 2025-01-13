@@ -52,7 +52,7 @@ function ProfileEdit() {
   });
 
   const onSubmit = async (data: FormType) => {
-    const profile: ProfileEdittable = user.profile;
+    const profile: ProfileEdittable = user?.profile!;
     const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
       const typedKey = key as keyof ProfileEdittable;
       const newValue = data[typedKey];
