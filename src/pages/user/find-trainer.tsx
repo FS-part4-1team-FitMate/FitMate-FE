@@ -32,19 +32,26 @@ export default function FindTrainer() {
   };
 
   return (
-    <div className="flex flex-col max-w-[192rem] m-auto">
-      <Title title="기사님 찾기" />
-      <div className="flex justify-between max-w-[140rem] w-full mx-auto">
-        <div className="flex flex-col gap-[4.6rem]">
+    <div className="flex flex-col pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem] m-auto pb-16">
+      <div className="pc:block tablet:hidden mobile:hidden">
+        <Title title="기사님 찾기" />
+      </div>
+      <div className="flex justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row tablet:flex-col mobile:flex-col">
+        <div className="pc:flex tablet:hidden mobile:hidden flex-col gap-[4.6rem] w-fit">
           <FilterTrainer />
-          <FavoriteTrainer />
+          <FavoriteTrainer items={filteredData} />
         </div>
-        <div className="flex flex-col gap-[3.2rem]">
-          <div className="flex flex-col items-end gap-[2.4rem]">
-            <Dropdown options={trainerSort} type="sort" />
+        <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[11rem]">
+          <div className="flex flex-col gap-[2.4rem]">
+            <div className="flex items-center pc:justify-end tablet:justify-between mobile:justify-between w-full pc:pt-0 tablet:pt-[1.6rem] mobile:pt-[1.6rem]">
+              <div className="pc:hidden tablet:block mobile:block">
+                <FilterTrainer />
+              </div>
+              <Dropdown options={trainerSort} type="sort" />
+            </div>
             <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
           </div>
-          <div className="flex flex-col gap-[4.8rem]">
+          <div className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap[2.4rem]">
             {filteredData.map((item, index) => (
               // 임시로 인덱스 키 지정 (수정 -> item.id)
               <div key={index}>

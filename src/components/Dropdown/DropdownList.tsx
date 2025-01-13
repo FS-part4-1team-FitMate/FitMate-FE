@@ -26,7 +26,8 @@ const sort_option = clsx(
 );
 
 const filter_option = clsx(
-  "cursor-pointer py-[1.6rem]",
+  "cursor-pointer",
+  "pc:py-[1.6rem] tablet:py-[0.6rem] mobile:py-[0.6rem]",
   "pc:px-[2.4rem] tablet:px-[1.4rem] mobile:px-[1.4rem]",
 );
 
