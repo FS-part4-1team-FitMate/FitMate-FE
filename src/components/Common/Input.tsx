@@ -4,7 +4,7 @@ interface Props {
   id: string;
   label: string;
   type: string;
-  className: string;
+  className?: string;
   register?: UseFormRegisterReturn;
   placeholder: string;
 }
