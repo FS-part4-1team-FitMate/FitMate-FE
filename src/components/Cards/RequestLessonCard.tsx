@@ -38,7 +38,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
         <p className="text-gray-500 text-xs font-normal pc:text-md">{formatTime(item.createdAt)}</p>
       </div>
       <div className={info_wrap}>
-        <p className="text-lg font-semibold pc:text-xl">고객님</p>
+        <p className="text-lg font-semibold pc:text-xl">{item.name} 고객님</p>
         <HorizontalLine width="100%" />
         <LessonInfo
           startDate={formatDate(item.startDate)}

@@ -6,27 +6,53 @@ interface DropdownProps {
   options: string[];
   type: "sort" | "filter" | "pastLesson";
   filterType?: "service" | "gender";
+  setSortOrder?: (sort: string) => void;
+  onFilterChange?: (selectedValue: string) => void;
 }
 
-export default function Dropdown({ options, type, filterType }: DropdownProps) {
+export default function Dropdown({
+  setSortOrder,
+  options,
+  type,
+  filterType,
+  onFilterChange,
+}: DropdownProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currentSort, setCurrentSort] = useState<string>(options[0]);
-  const [currentFilter, setCurrentFilter] = useState<string>(
-    filterType === "service" ? "서비스" : "성별",
-  );
-  const [currentQuote, setCurrentQuote] = useState<string>(options[0]);
+  const [currentValue, setCurrentValue] = useState<string>(() => {
+    if (type === "filter") {
+      return filterType === "service" ? "서비스" : "성별";
+    }
+    return options[0];
+  });
 
   const handleOptionClick = (val: string) => {
-    setCurrentSort(val);
-    setCurrentFilter(val);
-    setCurrentQuote(val);
+    if (setSortOrder) {
+      setSortOrder(val);
+    }
+
+    if (onFilterChange) {
+      onFilterChange(val);
+    }
+
+    setCurrentValue(val);
     setIsOpen(false);
+  };
+
+  const getFilteredOptions = () => {
+    if (type === "filter") {
+      if (filterType === "service") {
+        return options.filter((option) => option.includes("서비스"));
+      } else if (filterType === "gender") {
+        return options.filter((option) => option.includes("성별"));
+      }
+    }
+    return options;
   };
 
   if (type === "sort") {
     return (
       <div className="relative flex flex-col w-max">
-        <SortMenu currentSort={currentSort} onToggle={() => setIsOpen((prev) => !prev)} />
+        <SortMenu currentSort={currentValue} onToggle={() => setIsOpen((prev) => !prev)} />
         {isOpen && <SortList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
@@ -51,11 +77,11 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
                 ? "border border-blue-300 text-blue-300 bg-blue-50"
                 : "border border-gray-100"
             }
-            currentFilter={currentFilter}
+            currentFilter={currentValue}
             onToggle={() => setIsOpen((prev) => !prev)}
           />
         </div>
-        {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
+        {isOpen && <FilterList options={getFilteredOptions()} onOptionClick={handleOptionClick} />}
       </div>
     );
   }
@@ -69,7 +95,7 @@ export default function Dropdown({ options, type, filterType }: DropdownProps) {
               ? "border border-blue-300 text-blue-300 bg-blue-50"
               : "border border-gray-100"
           }
-          currentQuote={currentQuote}
+          currentQuote={currentValue}
           onToggle={() => setIsOpen((prev) => !prev)}
         />
         {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}

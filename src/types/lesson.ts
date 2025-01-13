@@ -13,6 +13,7 @@ export interface LessonParams {
 
 export interface Lesson {
   id: string;
+  name: string;
   userId: string;
   lessonType: string;
   lessonSubType?: string;

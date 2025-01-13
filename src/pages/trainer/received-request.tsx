@@ -24,38 +24,52 @@ const container = clsx(
   "pc:flex-row pc:gap-[10rem] pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
 );
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    const queryParams: LessonParams = { page: 1, limit: 10, order: "start_date", sort: "desc" };
-    const receiveList = await getReceiveLesson(queryParams);
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   try {
+//     const queryParams: LessonParams = { page: 1, limit: 10, order: "start_date", sort: "desc" };
+//     const receiveList = await getReceiveLesson(queryParams);
 
-    return {
-      props: {
-        receiveList,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        receiveList: null,
-      },
-    };
-  }
-};
+//     return {
+//       props: {
+//         receiveList,
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       props: {
+//         receiveList: null,
+//       },
+//     };
+//   }
+// };
 
 export default function ReceivedRequest() {
   const [keyword, setKeyword] = useState<string>("");
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
-
   // 타입 지정 필요
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState<Lesson[]>(data.list);
+  const [sortOrder, setSortOrder] = useState<string>("레슨 빠른 순");
 
-  // 추후 userID로 프로필 조회 후 name
+  // 정렬 처리 함수
+  const handleSortChange = (sort: string) => {
+    setSortOrder(sort);
+    let sortedData = [...filteredData];
+
+    if (sort === "레슨 빠른 순") {
+      sortedData.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else if (sort === "레슨 느린 순") {
+      sortedData.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+    } else if (sort === "최근 요청 순") {
+      sortedData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    setFilteredData(sortedData);
+  };
+
   const handleSearch = () => {
-    // const newFilteredData = data.list.filter((item) =>
-    //   item.name.toLowerCase().includes(keyword.toLowerCase()),
-    // );
-    // setFilteredData(newFilteredData);
+    const newFilteredData = data.list.filter((item) =>
+      item.name.toLowerCase().includes(keyword.toLowerCase()),
+    );
+    setFilteredData(newFilteredData);
   };
 
   return (
@@ -75,14 +89,14 @@ export default function ReceivedRequest() {
             <div className="flex justify-between items-center">
               <p className="text-sm font-medium pc:text-lg">전체 {data.totalCount}건</p>
               <div className="flex gap-[0.4rem]">
-                <Dropdown options={userSort} type="sort" />
+                <Dropdown setSortOrder={handleSortChange} options={userSort} type="sort" />
                 <div className="block pc:hidden" onClick={() => setIsModalOpen(true)}>
                   <Image src={ic_filter_active_sm} width={32} height={32} alt="모바일 필터" />
                 </div>
               </div>
             </div>
           </div>
-          {data.list.map((item) => (
+          {filteredData.map((item) => (
             <div className="flex flex-col gap-[4.8rem]" key={item.id}>
               <RequestLessonCard item={item} />
             </div>
