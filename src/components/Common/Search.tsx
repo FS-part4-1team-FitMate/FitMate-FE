@@ -3,10 +3,10 @@ import clsx from "clsx";
 import Image from "next/image";
 
 const search_wrap = clsx(
-  "flex items-center rounded-[1.6rem] bg-bg-200",
-  "pc:gap-[0.8rem] pc:w-[95.5rem] pc:h-[6.4rem] pc:py-[1.4rem] pc:px-[2.4rem]",
-  "tablet:gap-[0.6rem] tablet:w-full tablet:h-full tablet:py-[1.4rem] tablet:px-[1.6rem]",
-  "mobile:gap-[0.6rem] mobile:w-full mobile:h-full mobile:py-[1.4rem] mobile:px-[1.6rem]",
+  "flex items-center w-full rounded-[1.6rem] bg-bg-200",
+  "pc:gap-[0.8rem] pc:h-[6.4rem] pc:py-[1.4rem] pc:px-[2.4rem]",
+  "tablet:gap-[0.6rem] tablet:h-full tablet:py-[1.4rem] tablet:px-[1.6rem]",
+  "mobile:gap-[0.6rem] mobile:h-full mobile:py-[1.4rem] mobile:px-[1.6rem]",
 );
 
 const input = clsx(

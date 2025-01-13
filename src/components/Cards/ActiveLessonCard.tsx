@@ -1,3 +1,5 @@
+import { LessonType } from "@/types/types";
+import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
@@ -7,7 +9,9 @@ import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 export default function ActiveLessonCard({ item }: { item: any }) {
   return (
     <CardContainer width="100%" gap="1.6rem">
-      <div className="text-xl font-semibold">칩 넣을 자리</div>
+      <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
+        <ChipLessonType lessonType={LessonType.SPORTS} size="lg" />
+      </div>
       <TrainerInfo
         name="김강사"
         rating={5}
