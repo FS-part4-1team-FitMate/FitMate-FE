@@ -3,45 +3,33 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 
-const container = clsx(
-  "flex flex-col items-center gap-[4.8rem]",
-  "max-w-[192rem]",
-  "m-auto px-[35rem] py-[8rem]",
-  "bg-bg-200",
+const service_container = clsx(
+  "flex flex-col gap-[4.4rem] w-[32.7rem]",
+  " pc:gap-[2.4rem] pc:flex-row pc:w-[122rem] pc:h-[59.8rem]",
 );
-const title = "text-[3.6rem] leading-[5rem] font-semibold text-center";
 const img_card = clsx(
-  "relative",
-  "flex flex-col flex-1 justify-start items-start",
-  "py-[4rem] px-[4.2rem] rounded-[3.2rem]",
-  "shadow-card bg-blue-100",
+  "relative flex flex-col justify-start items-start w-full h-[24rem]",
+  "py-[4rem] px-[4.2rem] rounded-[3.2rem] shadow-card bg-blue-100",
 );
-const service_label = "text-2.5xl font-semibold";
-const service_detail = "text-gray-400 text-xl font-normal";
-const service_container = clsx("flex gap-[2.4rem]", "w-[122rem] h-[59.8rem]");
-const sports_fitness = "flex flex-col gap-[2.4rem]";
-const buttons = "flex gap-[1.1rem]";
 const button = clsx(
-  "flex-1",
-  "w-[34rem] h-[6.4rem]",
-  "p-[1.6rem] rounded-[5rem]",
-  "text-xl font-semibold",
+  "flex-1 w-full h-[5.4rem] p-[1.6rem] rounded-[5rem] text-lg font-semibold",
+  "pc:w-[34rem] pc:h-[6.4rem] pc:text-xl",
 );
 
 export default function Home() {
   return (
-    <div className={container}>
-      <h1 className={title}>
+    <div className="flex flex-col items-center gap-[4.8rem] h-screen m-auto py-[8rem] px-8 bg-bg-200">
+      <h1 className="text-nowrap text-2xl font-semibold text-center pc:text-3lx">
         원하는 운동 유형을 확인하고
         <br />
         레슨을 받아보세요
       </h1>
       <div className={service_container}>
-        <div className={`${img_card} w-[43.2rem] h-full bg-blue-100`}>
-          <p className={service_label}>재활운동</p>
-          <p className={service_detail}>스트레칭, 재활치료</p>
+        <div className={`${img_card} bg-blue-100 pc:w-[43.2rem] pc:h-full`}>
+          <p className="text-xl font-semibold pc:text-2.5xl">재활운동</p>
+          <p className="text-gray-400 text-md font-normal pc:text-xl">스트레칭, 재활치료</p>
           <Image
-            className="absolute bottom-0"
+            className="absolute right-8 bottom-0 w-[17rem] h-[17rem] pc:w-[34.8rem] pc:h-[34.8rem]"
             src={img_landing_01}
             width={348}
             height={348}
@@ -49,30 +37,38 @@ export default function Home() {
             priority
           />
         </div>
-        <div className={sports_fitness}>
-          <div className={`${img_card} w-[76.4rem] bg-gray-50`}>
-            <p className={service_label}>스포츠</p>
-            <p className={service_detail}>축구, 테니스, 스키, 복싱, 주짓수 등</p>
+        <div className="flex flex-col gap-[4.4rem] pc:gap-[2.4rem]">
+          <div className={`${img_card} bg-gray-50 pc:flex-1 pc:w-[76.4rem]`}>
+            <p className="text-xl font-semibold pc:text-2.5xl">스포츠</p>
+            <p className="text-gray-400 text-md font-normal pc:text-xl">
+              축구, 테니스, 스키, 복싱, 주짓수 등
+            </p>
             <Image
-              className="absolute right-0 bottom-0"
+              className="absolute right-0 bottom-0 w-[32.5rem] h-[11.5rem] pc:w-[42.5rem] pc:h-[21.5rem]"
               src={img_landing_02}
+              width={425}
+              height={215}
               alt="스포츠 이미지"
               priority
             />
           </div>
-          <div className={`${img_card} w-[76.4rem] bg-gray-50`}>
-            <p className={service_label}>피트니스</p>
-            <p className={service_detail}>개인 트레이닝(PT), 요가, 필라테스, 식단 관리</p>
+          <div className={`${img_card} bg-gray-50 pc:flex-1 pc:w-[76.4rem]`}>
+            <p className="text-xl font-semibold pc:text-2.5xl">피트니스</p>
+            <p className="text-gray-400 text-md font-normal pc:text-xl">
+              PT, 요가, 필라테스, 식단 관리
+            </p>
             <Image
-              className="absolute right-0 bottom-0"
+              className="absolute -right-10 bottom-0 w-[21.2rem] h-[14rem] pc:right-0 pc:w-[31.2rem] pc:h-[27.3rem]"
               src={img_landing_03}
+              width={312}
+              height={273}
               alt="피트니스 이미지"
               priority
             />
           </div>
         </div>
       </div>
-      <div className={buttons}>
+      <div className="flex flex-col gap-[1.1rem] max-w-[32.7rem] w-full pc:flex-row pc:max-w-fit">
         <button className={`${button} text-gray-50 bg-blue-300`}>
           <Link href="/login">로그인</Link>
         </button>
