@@ -2,7 +2,7 @@ import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { GenderFilter, ServiceFilter, UserSort } from "@/types/dropdown";
+import { GenderFilter, ReceivedRequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import CheckboxFilter from "@/components/CheckboxFilter";
 import Search from "@/components/Common/Search";
@@ -24,6 +24,7 @@ export default function ReceivedRequest() {
   const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
   const serviceFilter: ServiceFilter[] = ["재활운동", "스포츠", "피트니스"];
   const genderFilter: GenderFilter[] = ["남자", "여자"];
+  const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
 
   // 타입 지정 필요
   const [filteredData, setFilteredData] = useState(data);
@@ -43,7 +44,7 @@ export default function ReceivedRequest() {
           <div className="hidden flex-col gap-[2.4rem] pc:flex">
             <CheckboxFilter label="운동 유형" options={serviceFilter} />
             <CheckboxFilter label="성별" options={genderFilter} />
-            <CheckboxFilter label="지정 견적 요청" />
+            <CheckboxFilter label="필터" options={receivedRequestFilter} />
           </div>
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
@@ -67,9 +68,7 @@ export default function ReceivedRequest() {
           ))}
         </div>
       </div>
-      {isModalopen && (
-        <MobileFilter buttonText="조회하기" closeModal={() => setIsModalOpen(false)} />
-      )}
+      {isModalopen && <MobileFilter closeModal={() => setIsModalOpen(false)} />}
     </div>
   );
 }
