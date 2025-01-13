@@ -14,18 +14,18 @@ export interface LessonParams {
 export interface Lesson {
   id: string;
   userId: string;
-  lessonType: LessonType;
+  lessonType: string;
   lessonSubType?: string;
   startDate: string;
   endDate: string;
   lessonCount: number;
   lessonTime: number;
   quoteEndDate: string;
-  locationType: LocationType;
+  locationType: string;
   postcode?: string;
   roadAddress?: string;
   detailAddress?: string;
-  status: LessonRequestStatus;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }
