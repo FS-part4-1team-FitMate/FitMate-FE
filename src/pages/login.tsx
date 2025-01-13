@@ -47,9 +47,17 @@ function LogIn() {
   useEffect(() => {
     if (user?.id) {
       if (user.role === Role.USER) {
-        router.push("/user/my-lesson/active-lesson");
+        if ("profile" in user && user.profile?.name) {
+          router.push("/user/my-lesson/active-lesson");
+        } else {
+          router.push("/user/profile/regist");
+        }
       } else if (user.role === Role.TRAINER) {
-        router.push("/trainer/managing-request/sent-request");
+        if ("profile" in user && user.profile?.name) {
+          router.push("/trainer/managing-request/sent-request");
+        } else {
+          router.push(`/trainer/${user.id}/profile/regist`);
+        }
       }
     }
   }, [user]);
