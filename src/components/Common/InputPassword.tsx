@@ -14,11 +14,11 @@ interface Props {
 
 function InputPassword({ id, label, register, placeholder, pwdIsVisible, setPwdIsVisible }: Props) {
   return (
-    <div className="flex flex-col w-full gap-[12px]">
+    <div className={`flex flex-col w-full gap-[12px]`}>
       <label className="w-full text-lg font-semibold" htmlFor={id}>
         {label}
       </label>
-      <div className="relative w-full h-[40px] text-slate-700">
+      <div className={`relative w-full h-[40px] text-slate-700`}>
         <input
           className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
           {...register}
