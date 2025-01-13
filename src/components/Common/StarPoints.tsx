@@ -15,7 +15,7 @@ interface Props {
   rating: number; // Rating (0 ~ 1)
 }
 
-function StarPoints({ r = 12, r0 = 7, pad = 1, pad0 = 9, rating = 0 }: Props) {
+function StarPoints({ r = 12, r0 = 7, pad = 1, pad0 = 1, rating = 0 }: Props) {
   let str = `${pad0},0 `;
   let yc = pad + r;
   let xc = pad0 + pad + r;

@@ -1,4 +1,4 @@
-import { useSetUser } from "@/contexts/UserProvider";
+import { useSetUser, useUser } from "@/contexts/UserProvider";
 import {
   ic_google_sm,
   ic_kakao_sm,
@@ -10,14 +10,17 @@ import {
 import "dotenv/config";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { postLogin } from "@/lib/api/authService";
+import { EMAIL_REGEX } from "@/types/constants";
+import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 
-export const EMAIL_REGEX = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
-
 function LogIn() {
+  const router = useRouter();
+  const user = useUser();
   const setUser = useSetUser();
   const [error, setError] = useState<
     | null
@@ -41,11 +44,30 @@ function LogIn() {
     },
   });
 
+  useEffect(() => {
+    if (user?.id) {
+      if (user.role === Role.USER) {
+        router.push("/user/my-lesson/active-lesson");
+      } else if (user.role === Role.TRAINER) {
+        router.push("/trainer/managing-request/sent-request");
+      }
+    }
+  }, [user]);
+
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const userData = await postLogin(data);
+      const response = await postLogin(data);
+      console.log(response); // TODO: remove this.
+      const userData = response.data;
+      console.log(userData); // TODO: remove this.
       if ("user" in userData) {
-        setUser(userData.user);
+        const { user } = userData;
+        setUser(user);
+        if (user.role === Role.USER) {
+          router.push("/user/my-lesson/active-lesson");
+        } else if (user.role === Role.TRAINER) {
+          router.push("/trainer/managing-request/sent-request");
+        }
       }
       localStorage.setItem("userData", JSON.stringify(userData));
     } catch (err) {
