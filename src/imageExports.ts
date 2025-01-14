@@ -148,6 +148,8 @@ export {
   ic_round_check_active_sm,
   ic_round_check_inactive_md,
   ic_round_check_inactive_sm,
+  ic_search_md,
+  ic_search_sm,
   ic_sports_md,
   ic_sports_sm,
   ic_square_check_active_md,
@@ -192,6 +194,4 @@ export {
   share_ic_kakao_md,
   share_ic_kakao_sm,
   share_ic_kakao_xs,
-  ic_search_md,
-  ic_search_sm,
 };

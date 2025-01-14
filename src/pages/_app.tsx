@@ -2,6 +2,7 @@ import { UserProvider } from "@/contexts/UserProvider";
 import ViewportProvider from "@/contexts/ViewportProvider";
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,16 +41,21 @@ export default function App({ Component, pageProps }: AppProps) {
     router.pathname === "/trainer/managing-request/rejected-request";
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <ViewportProvider>
-          <div className={pretendard.className}>
-            <GNB />
-            {isActiveTab && <Tab />}
-            <Component {...pageProps} />
-          </div>
-        </ViewportProvider>
-      </UserProvider>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <ViewportProvider>
+            <div className={pretendard.className}>
+              <GNB />
+              {isActiveTab && <Tab />}
+              <Component {...pageProps} />
+            </div>
+          </ViewportProvider>
+        </UserProvider>
+      </QueryClientProvider>
+    </>
   );
 }

@@ -21,9 +21,11 @@ export function postSignUpUser(data: {
   password: string;
   passwordConfirm?: string;
 }): Promise<{
-  user: User;
-  accessToken: string;
-  refreshToken: string;
+  data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  };
 }> {
   try {
     delete data.passwordConfirm;
@@ -39,9 +41,11 @@ export function postSignUpTrainer(data: {
   password: string;
   passwordConfirm?: string;
 }): Promise<{
-  user: User;
-  accessToken: string;
-  refreshToken: string;
+  data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  };
 }> {
   try {
     delete data.passwordConfirm;
