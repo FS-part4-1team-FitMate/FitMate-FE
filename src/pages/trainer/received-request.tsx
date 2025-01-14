@@ -15,7 +15,7 @@ import MobileFilter from "@/components/Modal/MobileFilter";
 import data from "../../../mock/received-request.json";
 
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
-const serviceFilter: ServiceFilter[] = ["재활운동", "스포츠", "피트니스"];
+const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 const genderFilter: GenderFilter[] = ["남자", "여자"];
 const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
 
@@ -72,15 +72,25 @@ export default function ReceivedRequest() {
     setFilteredData(newFilteredData);
   };
 
+  const handleFilterChange = (filtered: Lesson[]) => {
+    setFilteredData(filtered);
+  };
+
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
       <Title title="받은 요청" />
       <div className={container}>
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
-            <CheckboxFilter label="운동 유형" options={serviceFilter} />
-            <CheckboxFilter label="성별" options={genderFilter} />
-            <CheckboxFilter label="필터" options={receivedRequestFilter} />
+            <CheckboxFilter
+              items={data.list}
+              label="운동 유형"
+              options={serviceFilter}
+              filterType="lessonType"
+              onFilterChange={handleFilterChange}
+            />
+            <CheckboxFilter items={filteredData} label="성별" options={genderFilter} />
+            <CheckboxFilter items={filteredData} label="필터" options={receivedRequestFilter} />
           </div>
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
