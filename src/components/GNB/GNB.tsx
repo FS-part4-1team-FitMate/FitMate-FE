@@ -1,6 +1,7 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
 import { ic_menu, ic_noti, ic_profile_default_sm, logo_xl } from "@/imageExports";
+import "dotenv/config";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,6 +13,7 @@ function GNB() {
   const refNoti = useRef<HTMLDivElement>(null);
   const refMyProfile = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
+  const eventSourceRef = useRef<EventSource>(null);
   const router = useRouter();
   const viewport = useViewport();
   const user = useUser();
@@ -23,20 +25,40 @@ function GNB() {
   const [notiIsOpen, setNotiIsOpen] = useState(false);
   const [myProfileIsOpen, setMyProfileIsOpen] = useState(false);
 
+  const handleOutsideClick = (e: MouseEvent) => {
+    if (refMyProfile.current && !refMyProfile.current.contains(e.target as Node)) {
+      setMyProfileIsOpen(false);
+    }
+    if (refNoti.current && !refNoti.current.contains(e.target as Node)) {
+      setNotiIsOpen(false);
+    }
+    if (refMenu.current && !refMenu.current.contains(e.target as Node)) {
+      setMenuIsOpen(false);
+    }
+  };
+
   useEffect(() => {
     const html = document.querySelector("html");
-    html?.addEventListener("click", (e: MouseEvent) => {
-      if (refMyProfile.current && !refMyProfile.current.contains(e.target as Node)) {
-        setMyProfileIsOpen(false);
-      }
-      if (refNoti.current && !refNoti.current.contains(e.target as Node)) {
-        setNotiIsOpen(false);
-      }
-      if (refMenu.current && !refMenu.current.contains(e.target as Node)) {
-        setMenuIsOpen(false);
-      }
-    });
+    html?.addEventListener("click", handleOutsideClick);
+    return () => html?.removeEventListener("click", handleOutsideClick);
   }, []);
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      `${process.env.NEXT_PUBLIC_API_URL}/sse?userId=${user?.id!}`,
+    ); // 서버의 SSE 엔드포인트
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      // 받은 데이터 처리 (예: 알림 표시, 상태 업데이트)
+      console.log(data);
+    };
+    eventSource.onerror = (error) => {
+      console.error("Error:", error);
+    };
+    return () => {
+      eventSource.close();
+    };
+  }, [user]);
 
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
