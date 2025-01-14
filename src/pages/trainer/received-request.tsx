@@ -14,6 +14,7 @@ import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import MobileFilter from "@/components/Modal/MobileFilter";
+import data from "../../../mock/received-request.json";
 
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
 const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
@@ -24,11 +25,12 @@ export default function ReceivedRequest() {
   const router = useRouter();
   const { query } = router;
 
-  const [sort, setSort] = useState<string>(query.sort || "");
-  const [lessonType, setLessonType] = useState<string[]>(query.lesson_type || []);
-  const [gender, setGender] = useState<string[]>(query.gender || []);
-  const [region, setRegion] = useState<string[]>(query.region || []);
-  const [keyword, setKeyword] = useState<string>(query.keyword || "");
+  // const [sort, setSort] = useState<string>(query.sort || "");
+  // const [lessonType, setLessonType] = useState<string[]>(query.lesson_type || []);
+  // const [gender, setGender] = useState<string[]>(query.gender || []);
+  // const [region, setRegion] = useState<string[]>(query.region || []);
+  // const [keyword, setKeyword] = useState<string>(query.keyword || "");
+  const [keyword, setKeyword] = useState<string>("");
 
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<string>("레슨 빠른 순");
@@ -36,99 +38,121 @@ export default function ReceivedRequest() {
 
   const loaderRef = useRef<HTMLDivElement>(null);
 
-  const { data, error, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteQuery<LessonResult>({
-      queryKey: ["received-request", query],
-      queryFn: ({ pageParam = 1 }) =>
-        getReceiveRequest({
-          page: pageParam,
-          limit: 10,
-          order: "start_date",
-          sort: sort,
-          lesson_type: lessonType.join(","),
-          gender: gender.join(","),
-          region: region.join(","),
-          keyword: keyword || "",
-        }),
-      getNextPageParam: (lastPage) => {
-        return lastPage.hasMore ? lastPage.list.length + 1 : false;
-      },
-    });
+  // const { data, error, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
+  //   useInfiniteQuery<LessonResult>({
+  //     queryKey: ["received-request", query],
+  //     queryFn: ({ pageParam = 1 }) =>
+  //       getReceiveRequest({
+  //         page: pageParam,
+  //         limit: 10,
+  //         order: "start_date",
+  //         sort: sort,
+  //         lesson_type: lessonType.join(","),
+  //         gender: gender.join(","),
+  //         region: region.join(","),
+  //         keyword: keyword || "",
+  //       }),
+  //     getNextPageParam: (lastPage) => {
+  //       return lastPage.hasMore ? lastPage.list.length + 1 : false;
+  //     },
+  //   });
 
   // 무한 스크롤
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        rootMargin: "100px",
-      },
-    );
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+  //         fetchNextPage();
+  //       }
+  //     },
+  //     {
+  //       rootMargin: "100px",
+  //     },
+  //   );
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
+  //   if (loaderRef.current) {
+  //     observer.observe(loaderRef.current);
+  //   }
 
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  //   return () => {
+  //     if (loaderRef.current) {
+  //       observer.unobserve(loaderRef.current);
+  //     }
+  //   };
+  // }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // 쿼리 파라미터 업데이트
-  const updateQueryParams = () => {
-    router.push(
-      {
-        pathname: router.pathname,
-        query: {
-          ...query,
-          keyword,
-          sort: sortOrder,
-          lesson_type: lessonType.join(","),
-          gender: gender.join(","),
-          region: region.join(","),
-        },
-      },
-      undefined,
-      { shallow: true },
-    );
-  };
+  // // 쿼리 파라미터 업데이트
+  // const updateQueryParams = () => {
+  //   router.push(
+  //     {
+  //       pathname: router.pathname,
+  //       query: {
+  //         ...query,
+  //         keyword,
+  //         sort: sortOrder,
+  //         lesson_type: lessonType.join(","),
+  //         gender: gender.join(","),
+  //         region: region.join(","),
+  //       },
+  //     },
+  //     undefined,
+  //     { shallow: true },
+  //   );
+  // };
 
+  // const handleSortChange = (sort: string) => {
+  //   setSortOrder(sort);
+  //   updateQueryParams();
+  // };
+
+  // const handleSearch = () => {
+  //   updateQueryParams();
+  // };
+
+  // 정렬 처리 함수
   const handleSortChange = (sort: string) => {
     setSortOrder(sort);
-    updateQueryParams();
+    let sortedData = [...filteredData];
+
+    if (sort === "레슨 빠른 순") {
+      sortedData.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else if (sort === "레슨 느린 순") {
+      sortedData.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+    } else if (sort === "최근 요청 순") {
+      sortedData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    setFilteredData(sortedData);
   };
 
   const handleSearch = () => {
-    updateQueryParams();
+    const newFilteredData = data.list.filter((item) =>
+      item.name.toLowerCase().includes(keyword.toLowerCase()),
+    );
+    setFilteredData(newFilteredData);
   };
 
   const handleFilterChange = (filtered: Lesson[]) => {
     setFilteredData(filtered);
   };
 
-  const handleCheckboxChange = (type: string, selectedOptions: string[]) => {
-    if (type === "lessonType") {
-      setLessonType(selectedOptions);
-    } else if (type === "gender") {
-      setGender(selectedOptions);
-    } else if (type === "region") {
-      setRegion(selectedOptions);
-    }
-    updateQueryParams();
-  };
+  // const handleCheckboxChange = (type: string, selectedOptions: string[]) => {
+  //   if (type === "lessonType") {
+  //     setLessonType(selectedOptions);
+  //   } else if (type === "gender") {
+  //     setGender(selectedOptions);
+  //   } else if (type === "region") {
+  //     setRegion(selectedOptions);
+  //   }
+  //   updateQueryParams();
+  // };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
-  if (isError) {
-    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
-  }
+  // if (isError) {
+  //   return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
+  // }
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
@@ -165,7 +189,7 @@ export default function ReceivedRequest() {
               </div>
             </div>
           </div>
-          {filteredData.map((item) => (
+          {data.list.map((item) => (
             <div className="flex flex-col gap-[4.8rem]" key={item.id}>
               <RequestLessonCard item={item} />
             </div>
