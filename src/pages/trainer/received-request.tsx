@@ -21,11 +21,6 @@ const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
 const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
 
-const container = clsx(
-  "flex flex-col w-full mx-auto py-[2.4rem] px-8",
-  "pc:flex-row pc:gap-[10rem] pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
-);
-
 export default function ReceivedRequest() {
   const [keyword, setKeyword] = useState<string>("");
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
@@ -62,7 +57,12 @@ export default function ReceivedRequest() {
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
       <Title title="받은 요청" />
-      <div className={container}>
+      <div
+        className={clsx(
+          "flex flex-col w-full mx-auto py-[2.4rem] px-8",
+          "pc:flex-row pc:gap-[10rem] pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
+        )}
+      >
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
