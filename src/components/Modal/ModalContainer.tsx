@@ -23,6 +23,7 @@ interface ModalContainerProps {
   buttonText?: string;
   closeModal?: () => void;
   onButtonClick?: () => void;
+  isButtonEnabled?: boolean;
 }
 
 export default function ModalContainer({
@@ -31,6 +32,7 @@ export default function ModalContainer({
   buttonText,
   closeModal,
   onButtonClick,
+  isButtonEnabled,
 }: ModalContainerProps) {
   return (
     <div className="fixed top-0 left-0  w-screen h-screen bg-black-400 bg-opacity-50 z-10">
@@ -48,12 +50,15 @@ export default function ModalContainer({
         </div>
         {children}
         <Button
-            type="button"
-            className="w-full h-[6.4rem] text-gray-50 text-xl font-semibold bg-gray-200 hover:bg-gray-300"
-            onClick={onButtonClick}
-          >
-            {buttonText}
-          </Button>
+          type="button"
+          className={clsx(
+            "w-full h-[6.4rem] text-gray-50 text-xl font-semibold",
+            isButtonEnabled ? "bg-blue-300 hover:bg-blue-300" : "bg-gray-200 cursor-default",
+          )}
+          onClick={onButtonClick}
+        >
+          {buttonText}
+        </Button>
       </div>
     </div>
   );

@@ -13,16 +13,17 @@ const input = clsx(
 
 interface SendQuoteProps {
   item: Lesson;
-  setQuote: React.Dispatch<React.SetStateAction<string>>;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  values: { quote: string; message: string };
+  errors: { quote?: string; message?: string };
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-export default function SendQuote({ item, setQuote, setMessage }: SendQuoteProps) {
+export default function SendQuote({ item, values, errors, onInputChange }: SendQuoteProps) {
   return (
     <div className="flex flex-col gap-8 pc:gap-[3.2rem]">
       <div className="flex flex-col gap-[1.4rem] pc:gap-[2.4rem]">
         <div className="flex gap-[1.2rem]">
-          <ChipLessonType lessonType={LessonType.FITNESS} size="lg" />
+          <ChipLessonType lessonType={item.lessonType as LessonType} size="lg" />
           <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
         </div>
         <UserCard item={item} />
@@ -31,19 +32,28 @@ export default function SendQuote({ item, setQuote, setMessage }: SendQuoteProps
       <div className="flex flex-col gap-[1.6rem]">
         <label className="text-lg font-semibold pc:text-xl">견적가를 입력해주세요</label>
         <input
+          id="quote"
           className={`${input} h-[6.4rem]`}
-          onChange={(e) => setQuote(e.target.value)}
+          value={values.quote}
+          onChange={onInputChange}
           placeholder="견적가 입력"
         />
+        {errors.quote && <p className="pl-6 text-red-200 text-md font-semibold">{errors.quote}</p>}
       </div>
+
       <HorizontalLine width="100%" />
       <div className="flex flex-col gap-[1.6rem]">
         <label className="text-lg font-semibold pc:text-xl">코멘트를 입력해 주세요</label>
         <textarea
+          id="message"
           className={`${input} h-[16rem]`}
-          onChange={(e) => setMessage(e.target.value)}
+          value={values.message}
+          onChange={onInputChange}
           placeholder="최소 10자 이상 입력해주세요"
         />
+        {errors.message && (
+          <p className="pl-6 text-red-200 text-md font-semibold">{errors.message}</p>
+        )}
       </div>
     </div>
   );
