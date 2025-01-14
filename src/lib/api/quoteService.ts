@@ -3,8 +3,8 @@ import { QuoteParams } from "@/types/quote";
 import { get, patch, post } from "./method";
 
 // 견적 보내기
-export async function sendQuote(quote: QuoteData) {
-  const res = await post("/quotes", quote);
+export async function sendQuote(quoteData: QuoteData) {
+  const res = await post("/quotes", quoteData);
   return res.data;
 }
 

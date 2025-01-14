@@ -1,7 +1,7 @@
 export interface QuoteData {
-  id: string;
-  price: number;
-  comment: string;
+  lessonRequestId: string;
+  quote: number;
+  message: string;
 }
 
 export interface QuoteParams {

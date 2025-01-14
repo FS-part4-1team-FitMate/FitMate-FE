@@ -2,9 +2,12 @@ import { ic_edit_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { sendQuote } from "@/lib/api/quoteService";
 import formatDate from "@/lib/utils/formatDate";
 import formatTime from "@/lib/utils/formatTime";
 import { Lesson } from "@/types/lesson";
+import { QuoteData } from "@/types/quote";
 import { LessonType, LocationType, RequestType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
@@ -25,8 +28,37 @@ const buttons = "flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col";
 const button = "flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold";
 
 export default function RequestLessonCard({ item }: { item: Lesson }) {
+  const queryClient = useQueryClient();
+
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
+
+  const [quote, setQuote] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+
+  const [quoteError, setQuoteError] = useState<string | null>(null);
+  const [messageError, setMessageError] = useState<string | null>(null);
+
+  const [error, setError] = useState<string>("");
+  const [isValid, setIsValid] = useState<boolean>(false);
+
+  const uploadQuote = useMutation({
+    mutationFn: (quoteData: QuoteData) => sendQuote(quoteData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sendQuote"] });
+      alert("견적을 전송하였습니다.");
+      setIsQuoteModalOpen(false);
+    },
+    onError: (error: any) => {
+      console.error("견적 전송에 실패하였습니다.", error.message);
+      setError("견적 전송에 실패하였습니다.");
+    },
+  });
+
+  const handleSendQuote = async () => {
+    const quoteData = { lessonRequestId: item.id, quote: parseInt(quote), message };
+    uploadQuote.mutate(quoteData);
+  };
 
   return (
     <CardContainer width="100%" gap="1.6rem">
@@ -67,8 +99,10 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           title="견적 보내기"
           buttonText="견적 보내기"
           closeModal={() => setIsQuoteModalOpen(false)}
+          onButtonClick={handleSendQuote}
+          isButtonEnabled={isValid}
         >
-          <SendQuote />
+          <SendQuote item={item} setQuote={setQuote} setMessage={setMessage} />
         </ModalContainer>
       )}
       {isRejectedModalOpen && (
