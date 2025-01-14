@@ -2,7 +2,7 @@ import { ic_X_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { GenderFilter, ServiceFilter } from "@/types/dropdown";
+import { GenderFilter, ReceivedRequestFilter, ServiceFilter } from "@/types/dropdown";
 import CheckboxFilter from "../CheckboxFilter";
 
 const container = clsx(
@@ -14,14 +14,14 @@ const container = clsx(
 );
 
 interface ModalContainerProps {
-  buttonText?: string;
   closeModal?: () => void;
 }
-export default function MobileFilter({ buttonText, closeModal }: ModalContainerProps) {
+export default function MobileFilter({ closeModal }: ModalContainerProps) {
   const [activeTab, setActiveTab] = useState("service");
 
   const serviceFilter: ServiceFilter[] = ["재활운동", "스포츠", "피트니스"];
   const genderFilter: GenderFilter[] = ["남자", "여자"];
+  const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -45,10 +45,10 @@ export default function MobileFilter({ buttonText, closeModal }: ModalContainerP
               성별
             </button>
             <button
-              className={`text-2lg ${activeTab === "direct" ? "text-black-400 font-bold" : "text-gray-400 font-semibold"}`}
-              onClick={() => handleTabClick("direct")}
+              className={`text-2lg ${activeTab === "filter" ? "text-black-400 font-bold" : "text-gray-400 font-semibold"}`}
+              onClick={() => handleTabClick("filter")}
             >
-              지정 견적
+              필터
             </button>
           </div>
           <Image
@@ -63,10 +63,10 @@ export default function MobileFilter({ buttonText, closeModal }: ModalContainerP
         <div className="tab-content">
           {activeTab === "service" && <CheckboxFilter options={serviceFilter} />}
           {activeTab === "gender" && <CheckboxFilter options={genderFilter} />}
-          {activeTab === "direct" && <CheckboxFilter label="지정 견적 요청" />}
+          {activeTab === "filter" && <CheckboxFilter options={receivedRequestFilter} />}
         </div>
         <button className="w-full h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold bg-gray-200">
-          {buttonText}
+          조회하기
         </button>
       </div>
     </div>

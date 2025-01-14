@@ -2,7 +2,10 @@ import { ic_edit_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { LessonType, RequestType } from "@/types/types";
+import formatDate from "@/lib/utils/formatDate";
+import formatTime from "@/lib/utils/formatTime";
+import { Lesson } from "@/types/lesson";
+import { LessonType, LocationType, RequestType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
 import Button from "../Common/Button";
@@ -21,12 +24,7 @@ const info_wrap = clsx(
 const buttons = "flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col";
 const button = "flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold";
 
-/**
- *
- * @TODO replace any
- */
-
-export default function RequestLessonCard({ item }: { item: any }) {
+export default function RequestLessonCard({ item }: { item: Lesson }) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
 
@@ -34,15 +32,19 @@ export default function RequestLessonCard({ item }: { item: any }) {
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex justify-between items-center">
         <div className="flex gap-[1.2rem]">
-          <ChipLessonType lessonType={LessonType.FITNESS} size="lg" />
+          <ChipLessonType lessonType={item.lessonType as LessonType} size="lg" />
           <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
         </div>
-        <p className="text-gray-500 text-xs font-normal pc:text-md">1시간 전</p>
+        <p className="text-gray-500 text-xs font-normal pc:text-md">{formatTime(item.createdAt)}</p>
       </div>
       <div className={info_wrap}>
         <p className="text-lg font-semibold pc:text-xl">{item.name} 고객님</p>
         <HorizontalLine width="100%" />
-        <LessonInfo startDate="" endDate="" locationType="" />
+        <LessonInfo
+          startDate={formatDate(item.startDate)}
+          endDate={formatDate(item.endDate)}
+          locationType={locationType_trans[item.locationType as LocationType]}
+        />
       </div>
       <div className={buttons}>
         <Button
@@ -59,6 +61,7 @@ export default function RequestLessonCard({ item }: { item: any }) {
           반려
         </Button>
       </div>
+
       {isQuoteModalOpen && (
         <ModalContainer
           title="견적 보내기"
