@@ -17,7 +17,7 @@ export interface Quote {
   price: number;
   message: string;
   status: string;
-  rejectionReason?: string;
+  rejectionReason?: string | null;
   createdAt: string;
   updatedAt: string;
 }
