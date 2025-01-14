@@ -1,4 +1,11 @@
 export interface QuoteData {
-  price: number;
-  comment: string;
+  lessonRequestId: string;
+  quote: number;
+  message: string;
+}
+
+export interface QuoteParams {
+  page?: number;
+  limit?: number;
+  status?: string;
 }

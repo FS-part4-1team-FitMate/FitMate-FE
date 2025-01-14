@@ -8,7 +8,7 @@ export async function post<T>(url: string, body: T) {
   return instance.post(url, body);
 }
 
-export async function patch<T>(url: string, body: T) {
+export async function patch<T>(url: string, body?: T) {
   return instance.patch(url, body);
 }
 
