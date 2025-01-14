@@ -1,4 +1,6 @@
+import { ChangeEventHandler } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+
 
 interface Props {
   id: string;
@@ -6,9 +8,10 @@ interface Props {
   className?: string;
   register?: UseFormRegisterReturn;
   placeholder: string;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
 }
 
-function Textarea({ id, label, className, register, placeholder }: Props) {
+function Textarea({ id, label, className, register, placeholder, onChange }: Props) {
   return (
     <div className={`flex flex-col w-full gap-[12px]`}>
       <label className="w-full text-lg font-semibold" htmlFor={id}>
@@ -19,6 +22,7 @@ function Textarea({ id, label, className, register, placeholder }: Props) {
         {...register}
         id={id}
         placeholder={placeholder}
+        onChange={onChange}
       ></textarea>
     </div>
   );
