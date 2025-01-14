@@ -2,7 +2,7 @@ import { LessonParams, LessonResult } from "@/types/lesson";
 import { get } from "./method";
 
 // 받은 레슨 요청 목록 조회
-export async function getReceiveLesson({
+export async function getReceiveRequest({
   page,
   limit,
   order,

@@ -13,16 +13,24 @@ export const serviceFilter_trans = (filter: string): string => {
   return map[filter];
 };
 
-export type GenderFilter = "전체" | "남자" | "여자";
+export type GenderFilter = "ALL" | "MALE" | "FEMALE";
 export const genderFilter_trans = (filter: string): string => {
   const map: { [key: string]: string } = {
     MALE: "남자",
-    female: "여자",
-    전체: "전체",
+    FEMALE: "여자",
+    ALL: "전체",
+  };
+  return map[filter];
+};
+
+// 추후 이름 변경
+export type ReceivedRequestFilter = "서비스 가능 지역" | "지정 견적 요청";
+export const receivedRequestFilter_trans = (filter: string): string => {
+  const map: { [key: string]: string } = {
+    MALE: "서비스 가능 지역",
+    FEMALE: "지정 견적 요청",
   };
   return map[filter] || filter;
 };
 
 export type PastLessonFilter = "전체" | "확정한 견적서";
-
-export type ReceivedRequestFilter = "서비스 가능 지역" | "지정 견적 요청";
