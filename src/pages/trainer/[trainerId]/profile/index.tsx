@@ -13,7 +13,6 @@ import Experience from "@/components/Common/Card/TrainerInfo/Experience";
 import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
 import Rating from "@/components/Common/Card/TrainerInfo/Rating";
 import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
-import StarPoints from "@/components/Common/StarPoints";
 
 function Profile() {
   const router = useRouter();
@@ -76,7 +75,13 @@ function Profile() {
         </div>
       </div>
       {myPage && (
-        <Button type="submit" className="w-full bg-blue-500 text-white disabled:bg-slate-600">
+        <Button
+          type="submit"
+          className="w-full bg-blue-500 text-white"
+          onClick={() => {
+            router.push(`/trainer/${user?.id}/profile/edit`);
+          }}
+        >
           내 프로필 수정 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
         </Button>
       )}

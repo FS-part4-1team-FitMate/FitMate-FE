@@ -36,7 +36,7 @@ function Regist() {
       certification: undefined,
       region: [],
       locationType: [LocationType.OFFLINE],
-      experience: undefined,
+      experience: 0,
       intro: "",
       description: "",
     } as {
@@ -48,9 +48,9 @@ function Regist() {
       certification?: FileList;
       region: Region[];
       locationType: LocationType[];
-      experience?: number;
-      intro?: string;
-      description?: string;
+      experience: number;
+      intro: string;
+      description: string;
     },
   });
 
@@ -63,9 +63,9 @@ function Regist() {
     certification?: FileList;
     region: Region[];
     locationType: LocationType[];
-    experience?: number;
-    intro?: string;
-    description?: string;
+    experience: number;
+    intro: string;
+    description: string;
   }) => {
     // data.region = selectedRegion;
     console.log(data); // TODO: remove this.
@@ -249,6 +249,7 @@ function Regist() {
             label="경력 (연, 소수점 입력 가능)"
             type="number"
             register={register("experience", {
+              required: "경력 연수를 입력해 주세요.",
               min: {
                 value: 0,
                 message: "경력은 0년 이상이어야 합니다.",
@@ -262,7 +263,13 @@ function Regist() {
             id="intro"
             label="한 줄 소개"
             type="text"
-            register={register("intro")}
+            register={register("intro", {
+              required: "한 줄 소개를 입력해 주세요.",
+              minLength: {
+                value: 10,
+                message: "최소 10자 이상 입력해 주세요.",
+              },
+            })}
             placeholder="한 줄 소개를 입력해 주세요."
           />
           {errors.intro && <p className={error_class}>{errors.intro.message}</p>}
@@ -272,6 +279,7 @@ function Regist() {
             label="상세 설명"
             placeholder="상세 설명을 작성해 주세요."
             register={register("description", {
+              required: "상세 설명을 작성해 주세요.",
               minLength: {
                 value: 10,
                 message: "상세 설명은 최소 10글자 이상이어야 합니다.",
