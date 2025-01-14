@@ -2,6 +2,7 @@ import { ic_X_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { ReactNode } from "react";
+import Button from "../Common/Button";
 
 const container = clsx(
   "absolute left-0 right-0",
@@ -21,6 +22,8 @@ interface ModalContainerProps {
   children?: ReactNode;
   buttonText?: string;
   closeModal?: () => void;
+  onButtonClick?: () => void;
+  isButtonEnabled?: boolean;
 }
 
 export default function ModalContainer({
@@ -28,6 +31,8 @@ export default function ModalContainer({
   children,
   buttonText,
   closeModal,
+  onButtonClick,
+  isButtonEnabled,
 }: ModalContainerProps) {
   return (
     <div className="fixed top-0 left-0  w-screen h-screen bg-black-400 bg-opacity-50 z-10">
@@ -44,9 +49,16 @@ export default function ModalContainer({
           />
         </div>
         {children}
-        <button className="w-full h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold bg-gray-200">
+        <Button
+          type="button"
+          className={clsx(
+            "w-full h-[6.4rem] text-gray-50 text-xl font-semibold",
+            isButtonEnabled ? "bg-blue-300 hover:bg-blue-300" : "bg-gray-200 cursor-default",
+          )}
+          onClick={onButtonClick}
+        >
           {buttonText}
-        </button>
+        </Button>
       </div>
     </div>
   );
