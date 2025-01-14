@@ -114,7 +114,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           buttonText="견적 보내기"
           closeModal={closeModal}
           onButtonClick={handleSendQuote}
-          isButtonEnabled={isInputEmpty()}
+          isButtonEnabled={!isInputEmpty()}
         >
           <SendQuote item={item} values={values} errors={errors} onInputChange={handleChange} />
         </ModalContainer>

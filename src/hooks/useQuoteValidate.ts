@@ -40,7 +40,7 @@ export default function useQuoteValidate(initialValues: InitialValuesProps) {
   };
 
   const isInputEmpty = (): boolean => {
-    return values.quote.trim() !== "" && values.message.trim() !== "";
+    return values.quote.trim() === "" || values.message.trim() === "";
   };
 
   return {
