@@ -1,7 +1,8 @@
 import { QuoteData } from "@/types/quote";
 import { post } from "./method";
 
-export async function SendQuote(quote: QuoteData) {
+// 견적 보내기
+export async function sendQuote(quote: QuoteData) {
   const res = await post("/quotes", quote);
   return res.data;
 }
