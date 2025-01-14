@@ -1,9 +1,8 @@
 import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
-import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useState } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
 import { GenderFilter, ReceivedRequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
 import { Lesson, LessonParams, LessonResult } from "@/types/lesson";
