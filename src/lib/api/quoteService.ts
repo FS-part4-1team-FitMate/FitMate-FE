@@ -1,8 +1,33 @@
 import { QuoteData } from "@/types/quote";
-import { post } from "./method";
+import { QuoteParams } from "@/types/quote";
+import { get, patch, post } from "./method";
 
 // 견적 보내기
 export async function sendQuote(quote: QuoteData) {
   const res = await post("/quotes", quote);
+  return res.data;
+}
+
+// 요청한 레슨의 견적 목록 확인
+export async function getQuoteList({ page, limit, status }: QuoteParams) {
+  const res = await get("/quotes", { page, limit, status });
+  return res.data;
+}
+
+// 견적 상세 조회
+export async function getQuote(quoteId: string) {
+  const res = await get(`/quotes/${quoteId}`);
+  return res.data;
+}
+
+// 견적 확정
+export async function acceptQuote(quoteId: string) {
+  const res = await patch(`/quotes/${quoteId}/accept`);
+  return res.data;
+}
+
+// 견적 반려
+export async function rejectQuote(quoteId: string) {
+  const res = await patch(`/quotes/${quoteId}/reject`);
   return res.data;
 }
