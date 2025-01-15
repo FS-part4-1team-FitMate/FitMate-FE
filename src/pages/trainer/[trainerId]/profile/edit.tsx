@@ -1,11 +1,13 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { ic_designate_md, ic_edit_sm, ic_visibility_off, ic_visibility_on } from "@/imageExports";
+import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { patchProfile } from "@/lib/api/authService";
-import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
+import instance from "@/lib/api/instance";
+import { PHONE_REGEX, PWD_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, LocationType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
@@ -37,6 +39,7 @@ function ProfileEdit() {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "all",
@@ -58,6 +61,30 @@ function ProfileEdit() {
     } as FormType,
   });
 
+  useEffect(() => {
+    (async function () {
+      const imageUrlData = await instance.post("/get-download-url", {
+        fileName: "uploads/1736857082230-fitness-female-trainer.webp",
+      });
+      setUser({
+        ...user!,
+        profile: {
+          id: "id",
+          userId: "userId",
+          profileImage: imageUrlData.data.url as string,
+          certificationValidated: false,
+          gender: Gender.MALE,
+          lessonType: [LessonType.FITNESS],
+          locationType: [LocationType.OFFLINE],
+          name: "user_example",
+          region: [Region.SEOUL],
+          certification: imageUrlData.data.url,
+        },
+      });
+      reset(user?.profile);
+    })();
+  }, []);
+
   const onSubmit = async (data: FormType) => {
     // data.region = selectedRegion;
     console.log(data); // TODO: remove this.
@@ -65,7 +92,7 @@ function ProfileEdit() {
     const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
       const typedKey = key as keyof ProfileEdittable;
       const newValue = data[typedKey];
-      if (newValue !== undefined && newValue !== profile[typedKey]) {
+      if (newValue !== undefined && newValue !== profile?.[typedKey]) {
         return { ...acc, [typedKey]: newValue };
       }
       return acc;
@@ -74,6 +101,20 @@ function ProfileEdit() {
       changedData.region = selectedRegion;
     }
     console.log(changedData); // TODO: remove this.
+    if ("profileImage" in changedData) {
+      const profileImage = changedData.profileImage;
+      if (profileImage instanceof FileList) {
+        const uploadUrlData = await instance.post(`/get-upload-url`, {
+          fileName: profileImage[0].name,
+          fileSize: profileImage[0].size,
+          fileType: profileImage[0].type,
+        });
+        console.log(uploadUrlData.data.url);
+        const uploadUrl = uploadUrlData.data.url as string;
+        const result = await axios.put(uploadUrl, profileImage[0]);
+        console.log(result);
+      }
+    }
     try {
       const userData = await patchProfile(changedData);
       if ("user" in userData) {
@@ -94,12 +135,11 @@ function ProfileEdit() {
             <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="profileImage" className="text-lg font-semibold">
-              프로필 이미지
-            </label>
-            <ImageUploader register={register("profileImage")} />
-          </div>
+          <ImageUploader
+            id="profileImage"
+            label="프로필 이미지"
+            register={register("profileImage")}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="name"
@@ -185,17 +225,14 @@ function ProfileEdit() {
           </div>
           {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="certification" className="text-lg font-semibold">
-              자격증
-            </label>
-            <ImageUploader
-              register={register("certification")}
-              width={300}
-              height={300}
-              defImage={ic_designate_md.src}
-            />
-          </div>
+          <ImageUploader
+            id="certification"
+            label="자격증"
+            register={register("certification")}
+            width={300}
+            height={300}
+            defImage={ic_designate_md.src}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
@@ -290,7 +327,7 @@ function ProfileEdit() {
             label="현재 비밀번호"
             pwdIsVisible={curPwdIsVisible}
             setPwdIsVisible={setCurPwdIsVisible}
-            {...register("currPassword", {
+            register={register("currPassword", {
               required: "비밀번호를 입력해 주세요.",
               minLength: {
                 value: 8,
@@ -310,9 +347,9 @@ function ProfileEdit() {
             pwdIsVisible={pwdIsVisible}
             setPwdIsVisible={setPwdIsVisible}
             register={register("password", {
-              minLength: {
-                value: 8,
-                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+              pattern: {
+                value: PWD_REGEX,
+                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
               },
             })}
             placeholder="새로운 비밀번호를 입력해 주세요."
@@ -323,7 +360,7 @@ function ProfileEdit() {
             label="새로운 비밀번호 확인"
             pwdIsVisible={pwdCfmIsVisible}
             setPwdIsVisible={setPwdCfmIsVisible}
-            {...register("passwordConfirm", {
+            register={register("passwordConfirm", {
               validate: (value) => {
                 if (value !== watch("password")) {
                   return "비밀번호가 일치하지 않습니다.";

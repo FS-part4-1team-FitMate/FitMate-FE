@@ -1,7 +1,9 @@
 import { useSetUser } from "@/contexts/UserProvider";
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
+import instance from "@/lib/api/instance";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
@@ -50,6 +52,20 @@ function Regist() {
     // console.log(data); // TODO: remove this.
     // data.region = selectedRegion;
     console.log(data); // TODO: remove this.
+    if ("profileImage" in data) {
+      const profileImage = data.profileImage;
+      if (profileImage instanceof FileList) {
+        const uploadUrlData = await instance.post(`/get-upload-url`, {
+          fileName: profileImage[0].name,
+          fileSize: profileImage[0].size,
+          fileType: profileImage[0].type,
+        });
+        console.log(uploadUrlData.data.url);
+        const uploadUrl = uploadUrlData.data.url as string;
+        const result = await axios.put(uploadUrl, profileImage[0]);
+        console.log(result);
+      }
+    }
     try {
       const userData = await postProfile(data);
       if ("user" in userData) {
@@ -70,12 +86,11 @@ function Regist() {
             <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="profileImage" className="text-lg font-semibold">
-              프로필 이미지
-            </label>
-            <ImageUploader register={register("profileImage")} />
-          </div>
+          <ImageUploader
+            id="profileImage"
+            label="프로필 이미지"
+            register={register("profileImage")}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="name"
