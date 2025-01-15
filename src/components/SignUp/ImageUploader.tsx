@@ -54,7 +54,7 @@ const ImageUploader: React.FC<Props> = ({
           id={id}
           className="p-0 m-0 text-sm rounded-none"
           type="file"
-          accept="image/*"
+          accept=".webp, .jpg, .jpeg, .png, image/webp, image/jpg, image/jpeg, image/png"
           {...register}
           onChange={handleImageChange}
         />
