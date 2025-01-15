@@ -138,6 +138,8 @@ export type Profile = {
   name: string;
   phone?: string;
   profileImage?: string | FileList;
+  profileImageCount?: number;
+  contentType?: string;
   gender: Gender;
   lessonType: LessonType[];
   locationType: LocationType[];
@@ -146,7 +148,8 @@ export type Profile = {
   description?: string;
   experience?: number;
   certification?: string | FileList;
-  certificationValidated: boolean;
+  certificationCount?: number;
+  certificationValidated?: boolean;
   rating?: number;
   lessonCount?: number;
   reviewCount?: number;
@@ -157,6 +160,8 @@ export type ProfileEdittable = Pick<
   | "name"
   | "phone"
   | "profileImage"
+  | "profileImageCount"
+  | "contentType"
   | "gender"
   | "lessonType"
   | "locationType"
@@ -165,6 +170,7 @@ export type ProfileEdittable = Pick<
   | "description"
   | "experience"
   | "certification"
+  | "certificationCount"
 >;
 
 export type User = {
