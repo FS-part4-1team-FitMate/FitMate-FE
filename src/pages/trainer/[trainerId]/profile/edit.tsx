@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { patchProfile } from "@/lib/api/authService";
 import instance from "@/lib/api/instance";
 import { PHONE_REGEX, PWD_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, LocationType, ProfileEdittable, Region } from "@/types/types";
+import { Gender, LessonType, LocationType, Profile, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import InputPassword from "@/components/Common/InputPassword";
@@ -45,11 +45,14 @@ function ProfileEdit() {
     mode: "all",
     defaultValues: {
       profileImage: user?.profile?.profileImage,
+      profileImageCount: 0,
+      contentType: "",
       name: user?.profile?.name,
       phone: user?.profile?.phone,
       gender: user?.profile?.gender,
       lessonType: user?.profile?.lessonType,
       certification: user?.profile?.certification,
+      certificationCount: 0,
       region: user?.profile?.region,
       locationType: user?.profile?.locationType,
       experience: user?.profile?.experience,
@@ -62,28 +65,8 @@ function ProfileEdit() {
   });
 
   useEffect(() => {
-    (async function () {
-      const imageUrlData = await instance.post("/get-download-url", {
-        fileName: "uploads/1736857082230-fitness-female-trainer.webp",
-      });
-      setUser({
-        ...user!,
-        profile: {
-          id: "id",
-          userId: "userId",
-          profileImage: imageUrlData.data.url as string,
-          certificationValidated: false,
-          gender: Gender.MALE,
-          lessonType: [LessonType.FITNESS],
-          locationType: [LocationType.OFFLINE],
-          name: "user_example",
-          region: [Region.SEOUL],
-          certification: imageUrlData.data.url,
-        },
-      });
-      reset(user?.profile);
-    })();
-  }, []);
+    reset(user?.profile);
+  }, [user]);
 
   const onSubmit = async (data: FormType) => {
     // data.region = selectedRegion;
@@ -101,26 +84,49 @@ function ProfileEdit() {
       changedData.region = selectedRegion;
     }
     console.log(changedData); // TODO: remove this.
+    let profileImageFileToUpload;
     if ("profileImage" in changedData) {
       const profileImage = changedData.profileImage;
       if (profileImage instanceof FileList) {
-        const uploadUrlData = await instance.post(`/get-upload-url`, {
-          fileName: profileImage[0].name,
-          fileSize: profileImage[0].size,
-          fileType: profileImage[0].type,
-        });
-        console.log(uploadUrlData.data.url);
-        const uploadUrl = uploadUrlData.data.url as string;
-        const result = await axios.put(uploadUrl, profileImage[0]);
-        console.log(result);
+        profileImageFileToUpload = profileImage[0];
+        changedData.profileImageCount = 1;
+        changedData.contentType = profileImage[0].type;
+        delete changedData.profileImage;
+      }
+    }
+    let certificationFileToUpload;
+    if ("certification" in changedData) {
+      const certification = changedData.certification;
+      if (certification instanceof FileList) {
+        certificationFileToUpload = certification[0];
+        changedData.certificationCount = 1;
+        changedData.contentType = certification[0].type;
+        delete changedData.certification;
       }
     }
     try {
       const userData = await patchProfile(changedData);
-      if ("user" in userData) {
-        setUser(userData.user);
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result);
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+      if ("certificationPresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.certificationPresignedUrl as string,
+          certificationFileToUpload,
+        );
+        console.log(result);
+      }
+      if ("profile" in userData) {
+        const profile = userData.profile! as Profile;
+        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = { ...user, profile };
+        setUser(userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS));
+      }
     } catch (err) {
       setError({ message: (err as Error).message });
     }
@@ -138,6 +144,9 @@ function ProfileEdit() {
           <ImageUploader
             id="profileImage"
             label="프로필 이미지"
+            defImage={
+              user?.profile?.profileImage ? (user?.profile?.profileImage as string) : undefined
+            }
             register={register("profileImage")}
           />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
@@ -231,7 +240,9 @@ function ProfileEdit() {
             register={register("certification")}
             width={300}
             height={300}
-            defImage={ic_designate_md.src}
+            defImage={
+              user?.profile?.certification ? user?.profile?.certification : ic_designate_md.src
+            }
           />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>

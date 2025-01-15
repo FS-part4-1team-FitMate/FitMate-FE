@@ -1,4 +1,4 @@
-import { useSetUser } from "@/contexts/UserProvider";
+import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { ic_designate_md } from "@/imageExports";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
 import instance from "@/lib/api/instance";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, LocationType, Region } from "@/types/types";
+import { Gender, LessonType, LocationType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -19,6 +19,7 @@ function Regist() {
   const router = useRouter();
   const { trainerId } = router.query;
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
+  const user = useUser();
   const setUser = useSetUser();
   const [error, setError] = useState<
     null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
@@ -31,11 +32,14 @@ function Regist() {
     mode: "all",
     defaultValues: {
       profileImage: undefined,
+      profileImageCount: 0,
+      contentType: "",
       name: "",
       phone: "",
       gender: Gender.MALE,
       lessonType: [],
       certification: undefined,
+      certificationCount: 0,
       region: [],
       locationType: [LocationType.OFFLINE],
       experience: 0,
@@ -43,11 +47,14 @@ function Regist() {
       description: "",
     } as {
       profileImage?: FileList;
+      profileImageCount: number;
+      contentType: string;
       name: string;
       phone: string;
       gender: Gender;
       lessonType: LessonType[];
       certification?: FileList;
+      certificationCount: number;
       region: Region[];
       locationType: LocationType[];
       experience: number;
@@ -58,11 +65,14 @@ function Regist() {
 
   const onSubmit = async (data: {
     profileImage?: FileList;
+    profileImageCount: number;
+    contentType: string;
     name: string;
     phone: string;
     gender: Gender;
     lessonType: LessonType[];
     certification?: FileList;
+    certificationCount: number;
     region: Region[];
     locationType: LocationType[];
     experience: number;
@@ -71,26 +81,49 @@ function Regist() {
   }) => {
     // data.region = selectedRegion;
     console.log(data); // TODO: remove this.
+    let profileImageFileToUpload;
     if ("profileImage" in data) {
       const profileImage = data.profileImage;
       if (profileImage instanceof FileList) {
-        const uploadUrlData = await instance.post(`/get-upload-url`, {
-          fileName: profileImage[0].name,
-          fileSize: profileImage[0].size,
-          fileType: profileImage[0].type,
-        });
-        console.log(uploadUrlData.data.url);
-        const uploadUrl = uploadUrlData.data.url as string;
-        const result = await axios.put(uploadUrl, profileImage[0]);
-        console.log(result);
+        profileImageFileToUpload = profileImage[0];
+        data.profileImageCount = 1;
+        data.contentType = profileImage[0].type;
+        delete data.profileImage;
+      }
+    }
+    let certificationFileToUpload;
+    if ("certification" in data) {
+      const certification = data.certification;
+      if (certification instanceof FileList) {
+        certificationFileToUpload = certification[0];
+        data.certificationCount = 1;
+        data.contentType = certification[0].type;
+        delete data.certification;
       }
     }
     try {
       const userData = await postProfile(data);
-      if ("user" in userData) {
-        setUser(userData.user);
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result);
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+      if ("certificationPresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.certificationPresignedUrl as string,
+          certificationFileToUpload,
+        );
+        console.log(result);
+      }
+      if ("profile" in userData) {
+        const profile = userData.profile! as Profile;
+        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = { ...user, profile };
+        setUser(userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS));
+      }
     } catch (err) {
       setError({ message: (err as Error).message });
     }

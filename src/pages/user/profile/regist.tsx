@@ -67,8 +67,6 @@ function Regist() {
         data.profileImageCount = 1;
         data.contentType = profileImage[0].type;
         delete data.profileImage;
-        // const result = await axios.put(uploadUrl, profileImage[0]);
-        // console.log(result);
       }
     }
     try {

@@ -3,12 +3,12 @@ import { ic_edit_sm } from "@/imageExports";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { patchProfile } from "@/lib/api/authService";
 import instance from "@/lib/api/instance";
 import { PHONE_REGEX, PWD_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
+import { Gender, LessonType, Profile, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import InputPassword from "@/components/Common/InputPassword";
@@ -37,11 +37,14 @@ function ProfileEdit() {
     register,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "all",
     defaultValues: {
       profileImage: user?.profile?.profileImage,
+      profileImageCount: 0,
+      contentType: "",
       name: user?.profile?.name,
       phone: user?.profile?.phone,
       gender: user?.profile?.gender,
@@ -52,6 +55,10 @@ function ProfileEdit() {
       passwordConfirm: "",
     } as FormType,
   });
+
+  useEffect(() => {
+    reset(user?.profile);
+  }, [user]);
 
   const onSubmit = async (data: FormType) => {
     const profile: ProfileEdittable = user?.profile!;
@@ -67,26 +74,32 @@ function ProfileEdit() {
       changedData.region = selectedRegion;
     }
     console.log(changedData); // TODO: remove this.
+    let profileImageFileToUpload;
     if ("profileImage" in changedData) {
       const profileImage = changedData.profileImage;
       if (profileImage instanceof FileList) {
-        const uploadUrlData = await instance.post(`/get-upload-url`, {
-          fileName: profileImage[0].name,
-          fileSize: profileImage[0].size,
-          fileType: profileImage[0].type,
-        });
-        console.log(uploadUrlData.data.url);
-        const uploadUrl = uploadUrlData.data.url as string;
-        const result = await axios.put(uploadUrl, profileImage[0]);
-        console.log(result);
+        profileImageFileToUpload = profileImage[0];
+        changedData.profileImageCount = 1;
+        changedData.contentType = profileImage[0].type;
+        delete changedData.profileImage;
       }
     }
     try {
       const userData = await patchProfile(changedData);
-      if ("user" in userData) {
-        setUser(userData.user);
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result);
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+      if ("profile" in userData) {
+        const profile = userData.profile! as Profile;
+        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = { ...user, profile };
+        setUser(userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS));
+      }
     } catch (err) {
       setError({ message: (err as Error).message });
     }
@@ -111,6 +124,9 @@ function ProfileEdit() {
           <ImageUploader
             id="profileImage"
             label="프로필 이미지"
+            defImage={
+              user?.profile?.profileImage ? (user.profile.profileImage as string) : undefined
+            }
             register={register("profileImage")}
           />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
