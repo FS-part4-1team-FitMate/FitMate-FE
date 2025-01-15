@@ -64,9 +64,7 @@ function LogIn() {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const response = await postLogin(data);
-      console.log(response); // TODO: remove this.
-      const userData = response.data;
+      const userData = await postLogin(data);
       console.log(userData); // TODO: remove this.
       if ("user" in userData) {
         const { user } = userData;
