@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSentRequest } from "@/lib/api/requestService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
+import Tab from "@/components/Tab";
 
 export default function SentRequest() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery(
@@ -41,8 +42,7 @@ export default function SentRequest() {
 
   return (
     <div className="p-10 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">보낸 견적 조회</h1>
-      <h1 className="text-2xl font-bold mb-6">반려 요청</h1>
+      <Tab />
       <div className="grid grid-cols-2 gap-4">
         {data?.pages.map((page, pageIndex) => (
           <React.Fragment key={pageIndex}>

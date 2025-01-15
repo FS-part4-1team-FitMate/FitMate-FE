@@ -31,3 +31,8 @@ export async function rejectQuote(quoteId: string) {
   const res = await patch(`/quotes/${quoteId}/reject`);
   return res.data;
 }
+
+export async function getRejectedQuote({ page, limit, status }: QuoteParams) {
+  const res = await get("/quotes", { page, limit, status });
+  return res.data;
+}

@@ -9,3 +9,9 @@ export interface QuoteParams {
   limit?: number;
   status?: string;
 }
+
+export interface RejectedQuoteParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+}
