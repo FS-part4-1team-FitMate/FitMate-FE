@@ -63,12 +63,11 @@ export default function ReceivedRequest() {
   const totalCount = data?.pages.flatMap((page) => page.totalCount) ?? [];
 
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
-  const [filteredData, setFilteredData] = useState<Lesson[]>([]);
 
   // 빈 값 필터링 후 쿼리 파라미터 업데이트
   const updateQueryParams = (params: { [key: string]: string | null }) => {
     const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(([key, value]) => value !== null),
+      Object.entries(params).filter(([key, value]) => value !== null && value !== ""),
     );
 
     router.push(
@@ -82,25 +81,6 @@ export default function ReceivedRequest() {
   };
 
   // 정렬 처리 함수
-  const sortData = (data: Lesson[]) => {
-    const sortedData = [...data];
-    if (order === "start_date") {
-      sortedData.sort((a, b) => {
-        const dateA = new Date(a.startDate).getTime();
-        const dateB = new Date(b.startDate).getTime();
-        return sort === "asc" ? dateA - dateB : dateB - dateA;
-      });
-    } else if (order === "created_at") {
-      sortedData.sort((a, b) => {
-        const dateA = new Date(a.createdAt).getTime();
-        const dateB = new Date(b.createdAt).getTime();
-        return sort === "asc" ? dateA - dateB : dateB - dateA;
-      });
-    }
-    return sortedData;
-  };
-
-  // 정렬 처리 함수
   const handleSortChange = (order: string, sort: string) => {
     setOrder(order);
     setSort(sort);
@@ -108,17 +88,9 @@ export default function ReceivedRequest() {
   };
 
   // 검색 처리 함수
-  const handleSearch = () => {
-    // 검색어가 비어있으면 빈 값을 쿼리 파라미터에 반영
-    updateQueryParams({ keyword: keyword || "" });
-
-    // 검색어로 필터링된 데이터
-    const filteredByKeyword = receivedList.filter((item) =>
-      item.user.profile.name.toLowerCase().includes(keyword.toLowerCase()),
-    );
-
-    // 렌더링에 반영
-    setFilteredData(filteredByKeyword);
+  const handleSearch = (searchTerm: string) => {
+    setKeyword(searchTerm);
+    updateQueryParams({ keyword: searchTerm });
   };
 
   // 필터 처리 함수
@@ -134,8 +106,6 @@ export default function ReceivedRequest() {
       updateQueryParams({ region: value });
     }
   };
-
-  const sortedData = sortData(filteredData.length > 0 ? filteredData : receivedList);
 
   if (isLoading) {
     return <Loading />;
@@ -157,19 +127,19 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
-              items={sortedData}
+              items={receivedList}
               label="운동 유형"
               options={serviceFilter}
               filterType="lessonType"
               onFilterChange={handleFilterChange}
             />
-            <CheckboxFilter items={sortedData} label="성별" options={genderFilter} />
-            <CheckboxFilter items={sortedData} label="필터" options={receivedRequestFilter} />
+            <CheckboxFilter items={receivedList} label="성별" options={genderFilter} />
+            <CheckboxFilter items={receivedList} label="필터" options={receivedRequestFilter} />
           </div>
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
           <div className="flex flex-col gap-[2.4rem]">
-            <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
+            <Search onSearch={handleSearch} />
             <div className="flex justify-between items-center">
               <p className="text-sm font-medium pc:text-lg">전체 {totalCount}건</p>
               <div className="flex gap-[0.4rem]">
@@ -180,7 +150,7 @@ export default function ReceivedRequest() {
               </div>
             </div>
           </div>
-          {sortedData.map((item) => (
+          {receivedList.map((item) => (
             <div className="flex flex-col gap-[4.8rem]" key={item.id}>
               <RequestLessonCard item={item} />
             </div>
