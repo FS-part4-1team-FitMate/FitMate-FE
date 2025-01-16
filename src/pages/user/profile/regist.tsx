@@ -3,9 +3,10 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { postProfile } from "@/lib/api/authService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Profile, Region } from "@/types/types";
+import { Gender, LessonType, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -13,6 +14,7 @@ import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
 function Regist() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
@@ -52,7 +54,7 @@ function Regist() {
   useEffect(() => {
     if (user?.id) {
       if (user.hasProfile) {
-        router.push("user/profile/edit");
+        router.push("/user/profile/edit");
       }
     }
   }, [user]);
@@ -95,6 +97,9 @@ function Regist() {
         setUser((prev) => userDataLS.user);
         localStorage.setItem("userData", JSON.stringify(userDataLS));
       }
+      queryClient.invalidateQueries({
+        queryKey: ["profile", user?.id],
+      });
       router.push("/user/profile");
     } catch (err) {
       setError({ message: (err as Error).message });
