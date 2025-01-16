@@ -187,11 +187,11 @@ function GNB() {
                       <Link
                         href={
                           user.role === Role.TRAINER
-                            ? `/trainer/${user.id}/profile/edit`
-                            : "/user/profile/edit"
+                            ? `/trainer/${user.id}/profile`
+                            : "/user/profile"
                         }
                         className={
-                          router.pathname.includes("profile")
+                          router.pathname.endsWith("profile")
                             ? `${active_class} flex justify-center items-center gap-[10px]`
                             : "flex justify-center items-center gap-[10px]"
                         }
@@ -208,6 +208,34 @@ function GNB() {
                         />
                         <span>{user?.nickname}&nbsp;프로필</span>
                       </Link>
+                    </div>
+                    <div
+                      className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
+                      onClick={() => {
+                        if (user?.hasProfile) {
+                          if (user.role === Role.USER) {
+                            router.push("/user/profile/edit");
+                          } else if (user.role === Role.TRAINER) {
+                            router.push(`/trainer/${user.id}/profile/edit`);
+                          }
+                        } else {
+                          if (user.role === Role.USER) {
+                            router.push("/user/profile/regist");
+                          } else if (user.role === Role.TRAINER) {
+                            router.push(`/trainer/${user.id}/profile/regist`);
+                          }
+                        }
+                      }}
+                    >
+                      <div
+                        className={
+                          router.pathname.endsWith("/edit") || router.pathname.endsWith("/regist")
+                            ? active_class
+                            : ""
+                        }
+                      >
+                        프로필&nbsp;{user?.hasProfile ? "수정" : "등록"}
+                      </div>
                     </div>
                     <div
                       className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
@@ -278,11 +306,11 @@ function GNB() {
                       <Link
                         href={
                           user.role === Role.TRAINER
-                            ? `/trainer/${user.id}/profile/edit`
-                            : "/user/profile/edit"
+                            ? `/trainer/${user.id}/profile`
+                            : "/user/profile"
                         }
                         className={
-                          router.pathname.includes("profile")
+                          router.pathname.endsWith("profile")
                             ? `${active_class} flex justify-center items-center gap-[10px]`
                             : "flex justify-center items-center gap-[10px]"
                         }
@@ -299,6 +327,34 @@ function GNB() {
                         />
                         <span>{user?.nickname}&nbsp;프로필</span>
                       </Link>
+                    </div>
+                    <div
+                      className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
+                      onClick={() => {
+                        if (user?.hasProfile) {
+                          if (user.role === Role.USER) {
+                            router.push("/user/profile/edit");
+                          } else if (user.role === Role.TRAINER) {
+                            router.push(`/trainer/${user.id}/profile/edit`);
+                          }
+                        } else {
+                          if (user.role === Role.USER) {
+                            router.push("/user/profile/regist");
+                          } else if (user.role === Role.TRAINER) {
+                            router.push(`/trainer/${user.id}/profile/regist`);
+                          }
+                        }
+                      }}
+                    >
+                      <div
+                        className={
+                          router.pathname.endsWith("/edit") || router.pathname.endsWith("/regist")
+                            ? active_class
+                            : ""
+                        }
+                      >
+                        프로필&nbsp;{user?.hasProfile ? "수정" : "등록"}
+                      </div>
                     </div>
                     <div
                       className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
