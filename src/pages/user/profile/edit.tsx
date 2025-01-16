@@ -6,10 +6,10 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProfile, patchProfile } from "@/lib/api/authService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Profile, ProfileEdittable, Region } from "@/types/types";
+import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import Loading from "@/components/Common/Loading";
@@ -28,6 +28,7 @@ function ProfileEdit() {
   // const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
   // const [pwdIsVisible, setPwdIsVisible] = useState(false);
   // const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
@@ -95,7 +96,7 @@ function ProfileEdit() {
     }
     console.log(changedData); // TODO: remove this.
     let profileImageFileToUpload;
-    if ("profileImage" in changedData && changedData.profileImage) {
+    if ("profileImage" in changedData && changedData?.profileImage?.length) {
       const profileImage = changedData.profileImage;
       console.log(profileImage);
       if (profileImage instanceof FileList && profileImage[0]?.name) {
@@ -107,23 +108,23 @@ function ProfileEdit() {
     }
     try {
       delete changedData.updatedAt;
-      console.log("changedData: ", changedData);
+      console.log("changedData: ", changedData); // TODO: remove this.
       const userData = await patchProfile(user?.id!, changedData);
-      console.log(userData);
+      console.log(userData); // TODO: remove this.
       if ("profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result);
+        console.log(result); // TODO: remove this.
       }
-      if ("profile" in userData) {
-        const profile = userData.profile! as Profile;
-        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...user, profile };
-        setUser(userDataLS.user);
-        localStorage.setItem("userData", JSON.stringify(userDataLS));
-      }
+      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...user, ...userData };
+      setUser((prev) => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS));
+      queryClient.invalidateQueries({
+        queryKey: ["profile", user?.id],
+      });
       router.push("/user/profile");
     } catch (err) {
       setError({ message: (err as Error).message });
@@ -302,7 +303,9 @@ function ProfileEdit() {
           <Button
             type="button"
             className="w-full border border-solid border-slate-800 bg-slate-200 text-black-500"
-            onClick={() => router.push(`/user/profile`)}
+            onClick={() => {
+              router.push(`/user/profile`);
+            }}
           >
             취소하기
           </Button>
