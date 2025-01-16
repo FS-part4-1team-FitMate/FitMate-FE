@@ -1,12 +1,16 @@
 import { useUser } from "@/contexts/UserProvider";
+import { ic_edit_sm } from "@/imageExports";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { getProfile } from "@/lib/api/authService";
 import { profile_menu } from "@/types/constants";
 import { gender_trans, lessonType_trans, region_trans } from "@/types/types";
+import Button from "@/components/Common/Button";
 import Loading from "@/components/Common/Loading";
 
 function Profile() {
+  const router = useRouter();
   const user = useUser();
   const {
     data: profileData,
@@ -79,7 +83,15 @@ function Profile() {
           </div>
         </div>
         <hr className="w-full border-[1px] border-solid border-gray-300" />
-        <hr className="w-full border-[1px] border-solid border-gray-300" />
+        <Button
+          type="submit"
+          className="w-full bg-blue-500 text-white"
+          onClick={() => {
+            router.push(`/user/profile/edit`);
+          }}
+        >
+          내 프로필 수정 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
+        </Button>
       </div>
     </main>
   );
