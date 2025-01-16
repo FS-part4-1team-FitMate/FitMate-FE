@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getTrainerDetails } from "@/lib/api/authService";
+import { getProfile } from "@/lib/api/authService";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
 import RatingStatCard from "@/components/Cards/RatingStatCard";
 import ReviewCard from "@/components/Cards/ReviewCard";
@@ -21,8 +21,9 @@ function Profile() {
   const myPage = trainerId === user?.id;
   const { data: trainerProfile, isError } = useQuery({
     queryKey: ["trainerProfile", trainerId],
-    queryFn: () => getTrainerDetails(trainerId as string),
+    queryFn: () => getProfile(trainerId as string),
     staleTime: 5 * 60 * 1000,
+    enabled: !!trainerId,
   });
   const [rating, setRating] = useState(5.0);
   const [reviewCount, setReviewCount] = useState(100);
@@ -41,16 +42,20 @@ function Profile() {
       <div className="flex flex-col justify-normal items-start p-[12px] bg-slate-100 w-full">
         <div className="flex gap-[16px] mb-[12px]">
           <Image
-            src={trainerProfile?.profileImage ? trainerProfile.profileImage : ic_profile_default_md}
+            src={
+              trainerProfile?.profileImagePresignedUrl
+                ? trainerProfile.profileImagePresignedUrl
+                : ic_profile_default_md
+            }
             alt="Profile"
             width={50}
             height={50}
             className="rounded-full border-[2px] border-solid border-slate-800"
           />
           <div className="flex flex-col justify-between items-start">
-            <div className="text-lg">{trainerProfile?.name || "김코드"}</div>
+            <div className="text-lg">{trainerProfile?.profile?.name || "김코드"}</div>
             <div className="text-md text-slate-500 truncate whitespace-nowrap">
-              {trainerProfile?.intro || "한 줄 자기소개가 들어갑니다."}
+              {trainerProfile?.profile?.intro || "한 줄 자기소개가 들어갑니다."}
             </div>
           </div>
         </div>
@@ -58,7 +63,7 @@ function Profile() {
           <div className="flex gap-[8px] justify-normal items-center">
             <Rating rating={rating} reviewCount={reviewCount} />
             <VerticalLine height="16px" />
-            <Experience experience={experience} />
+            <Experience experience={trainerProfile?.profile?.experience} />
             <VerticalLine height="16px" />
             <LessonCount lessonCount={lessonCount} />
           </div>
