@@ -1,11 +1,14 @@
-import { LessonRequestStatus, LessonType, LocationType } from "@/types/types";
+import { LessonRequestStatus, LessonType, LocationType, Profile } from "@/types/types";
 
 export interface LessonParams {
   page?: number;
   limit?: number;
   order?: string;
   sort?: string;
-  lesson_type?: string;
+  lessonType?: string;
+  lessonSubType?: string;
+  locationType?: string;
+  status?: string;
   gender?: string;
   region?: string;
   keyword?: string;
@@ -13,7 +16,6 @@ export interface LessonParams {
 
 export interface Lesson {
   id: string;
-  name: string;
   userId: string;
   lessonType: string;
   lessonSubType?: string;
@@ -29,6 +31,12 @@ export interface Lesson {
   status: string;
   createdAt: string;
   updatedAt: string;
+  directQuoteRequest?: [];
+  user: {
+    id: string;
+    nickname: string;
+    profile: Pick<Profile, "name" | "gender" | "region">;
+  };
 }
 
 export interface LessonResult {

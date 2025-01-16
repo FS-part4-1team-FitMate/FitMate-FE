@@ -1,11 +1,12 @@
 import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
 import { GenderFilter, ReceivedRequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
-import { Lesson, LessonParams, LessonResult } from "@/types/lesson";
+import { Lesson, LessonResult } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import CheckboxFilter from "@/components/CheckboxFilter";
 import Loading from "@/components/Common/Loading";
@@ -13,7 +14,6 @@ import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import MobileFilter from "@/components/Modal/MobileFilter";
-import data from "../../../mock/received-request.json";
 
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
 const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
@@ -21,37 +21,129 @@ const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
 const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
 
 export default function ReceivedRequest() {
-  const [keyword, setKeyword] = useState<string>("");
+  const router = useRouter();
+  const { query } = router;
+
+  const [order, setOrder] = useState<string>(query.order?.toString() || "start_date");
+  const [sort, setSort] = useState<string>(query.sort?.toString() || "asc");
+  const [keyword, setKeyword] = useState<string>(query.keyword?.toString() || "");
+  const [lessonType, setLessonType] = useState<string>(query.lessonType?.toString() || "");
+  const [gender, setGender] = useState<string>(query.gender?.toString() || "");
+  const [region, setRegion] = useState<string>(query.region?.toString() || "");
+
+  const filters = {
+    order,
+    sort,
+    lessonType,
+    gender,
+    region,
+    keyword,
+  };
+
+  const { data, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteQuery<LessonResult>({
+      queryKey: ["received-request", filters],
+      queryFn: ({ pageParam = 1 }) =>
+        getReceiveRequest({
+          page: pageParam,
+          limit: 10,
+          order: filters.order,
+          sort: filters.sort,
+          lessonType: filters.lessonType || undefined,
+          gender: filters.gender || undefined,
+          region: filters.region || undefined,
+          keyword: filters.keyword,
+        }),
+      getNextPageParam: (lastPage) => {
+        return lastPage.hasMore ? lastPage.list.length + 1 : false;
+      },
+    });
+
+  const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
+  const totalCount = data?.pages.flatMap((page) => page.totalCount) ?? [];
+
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
-  // 타입 지정 필요
-  const [filteredData, setFilteredData] = useState<Lesson[]>(data.list);
-  const [sortOrder, setSortOrder] = useState<string>("레슨 빠른 순");
+  const [filteredData, setFilteredData] = useState<Lesson[]>([]);
+
+  // 빈 값 필터링 후 쿼리 파라미터 업데이트
+  const updateQueryParams = (params: { [key: string]: string | null }) => {
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(([key, value]) => value !== null),
+    );
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...query, ...filteredParams },
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
 
   // 정렬 처리 함수
-  const handleSortChange = (sort: string) => {
-    setSortOrder(sort);
-    let sortedData = [...filteredData];
-
-    if (sort === "레슨 빠른 순") {
-      sortedData.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-    } else if (sort === "레슨 느린 순") {
-      sortedData.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
-    } else if (sort === "최근 요청 순") {
-      sortedData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const sortData = (data: Lesson[]) => {
+    const sortedData = [...data];
+    if (order === "start_date") {
+      sortedData.sort((a, b) => {
+        const dateA = new Date(a.startDate).getTime();
+        const dateB = new Date(b.startDate).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
+    } else if (order === "created_at") {
+      sortedData.sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return sort === "asc" ? dateA - dateB : dateB - dateA;
+      });
     }
-    setFilteredData(sortedData);
+    return sortedData;
   };
 
+  // 정렬 처리 함수
+  const handleSortChange = (order: string, sort: string) => {
+    setOrder(order);
+    setSort(sort);
+    updateQueryParams({ order, sort });
+  };
+
+  // 검색 처리 함수
   const handleSearch = () => {
-    const newFilteredData = data.list.filter((item) =>
-      item.name.toLowerCase().includes(keyword.toLowerCase()),
+    // 검색어가 비어있으면 빈 값을 쿼리 파라미터에 반영
+    updateQueryParams({ keyword: keyword || "" });
+
+    // 검색어로 필터링된 데이터
+    const filteredByKeyword = receivedList.filter((item) =>
+      item.user.profile.name.toLowerCase().includes(keyword.toLowerCase()),
     );
-    setFilteredData(newFilteredData);
+
+    // 렌더링에 반영
+    setFilteredData(filteredByKeyword);
   };
 
-  const handleFilterChange = (filtered: Lesson[]) => {
-    setFilteredData(filtered);
+  // 필터 처리 함수
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (filterType === "lessonType") {
+      setLessonType(value);
+      updateQueryParams({ lessonType: value });
+    } else if (filterType === "gender") {
+      setGender(value);
+      updateQueryParams({ gender: value });
+    } else if (filterType === "region") {
+      setRegion(value);
+      updateQueryParams({ region: value });
+    }
   };
+
+  const sortedData = sortData(filteredData.length > 0 ? filteredData : receivedList);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
+  }
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
@@ -65,21 +157,21 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
-              items={data.list}
+              items={sortedData}
               label="운동 유형"
               options={serviceFilter}
               filterType="lessonType"
               onFilterChange={handleFilterChange}
             />
-            <CheckboxFilter items={filteredData} label="성별" options={genderFilter} />
-            <CheckboxFilter items={filteredData} label="필터" options={receivedRequestFilter} />
+            <CheckboxFilter items={sortedData} label="성별" options={genderFilter} />
+            <CheckboxFilter items={sortedData} label="필터" options={receivedRequestFilter} />
           </div>
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
           <div className="flex flex-col gap-[2.4rem]">
             <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
             <div className="flex justify-between items-center">
-              <p className="text-sm font-medium pc:text-lg">전체 {data.totalCount}건</p>
+              <p className="text-sm font-medium pc:text-lg">전체 {totalCount}건</p>
               <div className="flex gap-[0.4rem]">
                 <Dropdown setSortOrder={handleSortChange} options={userSort} type="sort" />
                 <div className="block pc:hidden" onClick={() => setIsModalOpen(true)}>
@@ -88,7 +180,7 @@ export default function ReceivedRequest() {
               </div>
             </div>
           </div>
-          {filteredData.map((item) => (
+          {sortedData.map((item) => (
             <div className="flex flex-col gap-[4.8rem]" key={item.id}>
               <RequestLessonCard item={item} />
             </div>

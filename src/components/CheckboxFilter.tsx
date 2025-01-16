@@ -10,7 +10,7 @@ interface CheckboxFilterProps {
   label?: string;
   options: string[];
   filterType?: "lessonType";
-  onFilterChange?: (filtered: Lesson[]) => void;
+  onFilterChange?: (filterType: string, value: string) => void;
 }
 
 export default function CheckboxFilter({
