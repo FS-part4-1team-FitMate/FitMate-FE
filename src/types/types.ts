@@ -11,6 +11,11 @@ export enum Gender {
   FEMALE = "FEMALE",
 }
 
+export const gender_trans = {
+  [Gender.MALE]: "남성",
+  [Gender.FEMALE]: "여성",
+};
+
 export enum LessonType {
   SPORTS = "SPORTS", // 스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
   FITNESS = "FITNESS", // 피트니스 (PT, 요가, 필라테스, 식단 관리 등)
@@ -153,6 +158,8 @@ export type Profile = {
   rating?: number;
   lessonCount?: number;
   reviewCount?: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type ProfileEdittable = Pick<
@@ -171,6 +178,7 @@ export type ProfileEdittable = Pick<
   | "experience"
   | "certification"
   | "certificationCount"
+  | "updatedAt"
 >;
 
 export type User = {
@@ -178,7 +186,10 @@ export type User = {
   email: string;
   nickname: string;
   role: Role;
+  hasProfile?: boolean;
   profile?: Profile;
+  profileImagePresignedUrl?: string;
+  certificationPresignedUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 };
