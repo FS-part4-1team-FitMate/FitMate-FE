@@ -105,7 +105,7 @@ function ProfileEdit() {
       }
     }
     try {
-      const userData = await patchProfile(changedData);
+      const userData = await patchProfile(user?.id!, changedData);
       if ("profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
