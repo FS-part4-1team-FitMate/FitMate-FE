@@ -9,7 +9,7 @@ export default function RejectedQuotesList() {
     fetchNextPage,
     hasNextPage,
     isLoading,
-  } = useInfiniteQuery<PaginatedResponse<RejectedQuote>>(
+  } = useInfiniteQuery(
     ["rejectedQuotes"],
     getRejectedQuote,
     {
