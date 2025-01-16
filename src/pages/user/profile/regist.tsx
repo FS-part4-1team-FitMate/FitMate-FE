@@ -1,11 +1,11 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import axios from "axios";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { postProfile } from "@/lib/api/authService";
-import instance from "@/lib/api/instance";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Profile, Region, User } from "@/types/types";
+import { Gender, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -13,6 +13,7 @@ import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
 function Regist() {
+  const router = useRouter();
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
   const setUser = useSetUser();
@@ -34,6 +35,7 @@ function Regist() {
       gender: Gender.MALE,
       lessonType: [],
       region: [],
+      certificationCount: 0,
     } as {
       profileImage?: FileList;
       profileImageCount: number;
@@ -43,8 +45,17 @@ function Regist() {
       gender: Gender;
       lessonType: LessonType[];
       region: Region[];
+      certificationCount: number;
     },
   });
+
+  useEffect(() => {
+    if (user?.id) {
+      if (user.hasProfile) {
+        router.push("user/profile/edit");
+      }
+    }
+  }, [user]);
 
   const onSubmit = async (data: {
     profileImage?: FileList;
@@ -55,21 +66,21 @@ function Regist() {
     gender: Gender;
     lessonType: LessonType[];
     region: Region[];
+    certificationCount: number;
   }) => {
-    // console.log(data); // TODO: remove this.
-    // data.region = selectedRegion;
-    console.log(data); // TODO: remove this.
     let profileImageFileToUpload;
     if ("profileImage" in data) {
       const profileImage = data.profileImage;
-      if (profileImage instanceof FileList) {
+      console.log(profileImage);
+      if (profileImage instanceof FileList && data.profileImage?.length) {
         profileImageFileToUpload = profileImage[0];
         data.profileImageCount = 1;
         data.contentType = profileImage[0].type;
-        delete data.profileImage;
       }
+      delete data.profileImage;
     }
     try {
+      data.certificationCount = 0;
       const userData = await postProfile(data);
       if ("profileImagePresignedUrl" in userData) {
         const result = await axios.put(
@@ -79,12 +90,12 @@ function Regist() {
         console.log(result);
       }
       if ("profile" in userData) {
-        const profile = userData.profile! as Profile;
         const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...user, profile };
-        setUser(userDataLS.user);
+        userDataLS.user = { ...user, ...userData };
+        setUser((prev) => userDataLS.user);
         localStorage.setItem("userData", JSON.stringify(userDataLS));
       }
+      router.push("/user/profile");
     } catch (err) {
       setError({ message: (err as Error).message });
     }
