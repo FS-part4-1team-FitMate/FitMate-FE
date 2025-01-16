@@ -1,26 +1,33 @@
 import { useUser } from "@/contexts/UserProvider";
-import { ic_edit_sm, ic_profile_default_md } from "@/imageExports";
+import { ic_edit_sm, ic_profile_default_md, img_default_md } from "@/imageExports";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProfile } from "@/lib/api/authService";
+import { region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
 import RatingStatCard from "@/components/Cards/RatingStatCard";
 import ReviewCard from "@/components/Cards/ReviewCard";
+import ChipLessonType from "@/components/Chip/ChipLessonType";
 import Button from "@/components/Common/Button";
 import Experience from "@/components/Common/Card/TrainerInfo/Experience";
 import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
 import Rating from "@/components/Common/Card/TrainerInfo/Rating";
 import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
+import Loading from "@/components/Common/Loading";
 
 function Profile() {
   const router = useRouter();
   const { trainerId } = router.query;
   const user = useUser();
   const myPage = trainerId === user?.id;
-  const { data: trainerProfile, isError } = useQuery({
-    queryKey: ["trainerProfile", trainerId],
+  const {
+    data: trainerProfile,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile", trainerId],
     queryFn: () => getProfile(trainerId as string),
     staleTime: 5 * 60 * 1000,
     enabled: !!trainerId,
@@ -29,6 +36,13 @@ function Profile() {
   const [reviewCount, setReviewCount] = useState(100);
   const [lessonCount, setLessonCount] = useState(100);
   const [experience, setExperience] = useState(1.5);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    return <div className="text-lg text-center">오류 발생!</div>;
+  }
 
   // TODO: || "채우기 용" 지우기.
   return (
@@ -67,17 +81,35 @@ function Profile() {
             <VerticalLine height="16px" />
             <LessonCount lessonCount={lessonCount} />
           </div>
-          <div className="flex items-center gap-[16px]">
+          <div className="flex items-center gap-[12px]">
             <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>
-            <div className="text-lg">스포츠, 피트니스</div>
+            <div className="text-lg flex justify-normal items-center gap-[5px]">
+              {trainerProfile?.profile?.lessonType.map((lessonType) => {
+                return <ChipLessonType lessonType={lessonType} size="lg" />;
+              })}
+            </div>
           </div>
-          <div className="flex items-center gap-[16px]">
+          <div className="flex items-center gap-[12px]">
             <div className="text-lg bg-slate-100 inline-block p-[2px]">지역</div>
             <div className="text-lg">
-              <s className="text-slate-400">온라인</s>, 서울, 경기
+              {trainerProfile?.profile?.region.map((region) => region_trans[region]).join(", ")}
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex flex-col justify-normal items-start p-[12px] bg-slate-100 w-full">
+        <div className="text-lg font-semibold">자격증</div>
+        <Image
+          src={
+            trainerProfile?.certificationPresignedUrl
+              ? trainerProfile.certificationPresignedUrl
+              : img_default_md
+          }
+          alt="자격증"
+          width={300}
+          height={400}
+          className="object-contain my-[10px]"
+        />
       </div>
       {myPage && (
         <Button
