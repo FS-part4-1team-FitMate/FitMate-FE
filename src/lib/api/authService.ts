@@ -5,6 +5,7 @@ export async function postLogin(data: { email: string; password: string }): Prom
   user: User;
   accessToken: string;
   refreshToken: string;
+  hasProfile: boolean;
 }> {
   try {
     const res = await instance.post("/auth/login", data);
@@ -26,7 +27,7 @@ export async function postSignUpUser(data: {
 }> {
   try {
     delete data.passwordConfirm;
-    const res = await instance.post("/auth/signup/user", data);
+    const res = await instance.post("/auth/signup?role=USER", data);
     return res.data;
   } catch (err) {
     throw err;
@@ -45,14 +46,18 @@ export async function postSignUpTrainer(data: {
 }> {
   try {
     delete data.passwordConfirm;
-    const res = await instance.post("/auth/signup/trainer", data);
+    const res = await instance.post("/auth/signup?role=TRAINER", data);
     return res.data;
   } catch (err) {
     throw err;
   }
 }
 
-export async function getProfile(userId: string): Promise<Profile> {
+export async function getProfile(userId: string): Promise<{
+  profile: Profile;
+  profileImagePresignedUrl?: string;
+  certificationPresignedUrl?: string;
+}> {
   try {
     const res = await instance.get(`/profile/${userId}`);
     return res.data;
@@ -93,11 +98,14 @@ export async function postProfile(data: {
   }
 }
 
-export async function patchProfile(data: Partial<ProfileEdittable>): Promise<{
+export async function patchProfile(
+  userId: string,
+  data: Partial<ProfileEdittable>,
+): Promise<{
   user: User;
 }> {
   try {
-    const res = await instance.patch("/profile", data);
+    const res = await instance.patch(`/profile/${userId}`, data);
     return res.data;
   } catch (err) {
     throw err;
