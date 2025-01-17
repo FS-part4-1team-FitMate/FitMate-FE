@@ -7,3 +7,25 @@ export interface TrainerParams {
   lessonType?: string;
   keyword?: string;
 }
+
+export interface Trainer {
+  id: string;
+  nickname: string;
+  email: string;
+  profile: {
+    profileImage: string | null;
+    intro: string;
+    lessonType: string[];
+    experience: number;
+    rating: number;
+    reviewCount: number;
+    lessonCount: number;
+  };
+  isFavorite: boolean;
+}
+
+export interface TrainerResult {
+  trainers: Trainer[];
+  totalCount: number;
+  hasMore: boolean;
+}
