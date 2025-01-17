@@ -2,10 +2,11 @@ import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
-import { GenderFilter, ReceivedRequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
-import { Lesson, LessonParams, LessonResult } from "@/types/lesson";
+import { GenderFilter, RequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
+import { LessonResult } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import CheckboxFilter from "@/components/CheckboxFilter";
 import Loading from "@/components/Common/Loading";
@@ -13,45 +14,79 @@ import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import MobileFilter from "@/components/Modal/MobileFilter";
-import data from "../../../mock/received-request.json";
 
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
 const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
+const receivedRequestFilter: string[] = ["REGION", "DIRECT"];
 
 export default function ReceivedRequest() {
-  const [keyword, setKeyword] = useState<string>("");
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
-  // 타입 지정 필요
-  const [filteredData, setFilteredData] = useState<Lesson[]>(data.list);
-  const [sortOrder, setSortOrder] = useState<string>("레슨 빠른 순");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const [order, setOrder] = useState<string>("start_date");
+  const [sort, setSort] = useState<string>("asc");
+
+  const [lessonType, setLessonType] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [region, setRegion] = useState<string>(""); // 레슨 신청한 지역
+  const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
+
+  const params = { searchTerm, order, sort, lessonType, gender, region };
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<LessonResult>(
+    ["received-request", params],
+    ({ pageParam = 1 }) =>
+      getReceiveRequest({
+        page: pageParam,
+        limit: 10,
+        keyword: params.searchTerm,
+        order: params.order,
+        sort: params.sort,
+        lesson_type: params.lessonType || undefined,
+        gender: params.gender || undefined,
+        region: params.region || undefined,
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.hasMore ? allPages.length + 1 : undefined;
+      },
+    },
+  );
+
+  const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
+
+  // 검색 처리 함수
+  const handleSearch = (keyword: string) => {
+    setSearchTerm(keyword);
+  };
 
   // 정렬 처리 함수
-  const handleSortChange = (sort: string) => {
-    setSortOrder(sort);
-    let sortedData = [...filteredData];
+  const handleSortChange = (order: string, sort: string) => {
+    setOrder(order);
+    setSort(sort);
+  };
 
-    if (sort === "레슨 빠른 순") {
-      sortedData.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-    } else if (sort === "레슨 느린 순") {
-      sortedData.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
-    } else if (sort === "최근 요청 순") {
-      sortedData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  // 필터 처리 함수
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (filterType === "lessonType") {
+      setLessonType(value);
+    } else if (filterType === "gender") {
+      setGender(value);
     }
-    setFilteredData(sortedData);
   };
 
-  const handleSearch = () => {
-    const newFilteredData = data.list.filter((item) =>
-      item.name.toLowerCase().includes(keyword.toLowerCase()),
-    );
-    setFilteredData(newFilteredData);
+  const handleApplyFilters = (selectedOptions: any) => {
+    setLessonType(selectedOptions.lessonType.join(","));
+    setGender(selectedOptions.gender.join(","));
+    setRegion(selectedOptions.filter.includes("REGION") ? "REGION" : "");
+    setIsDirectQuote(selectedOptions.filter.includes("DIRECT"));
   };
 
-  const handleFilterChange = (filtered: Lesson[]) => {
-    setFilteredData(filtered);
-  };
+  if (isError) {
+    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
+  }
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
@@ -65,21 +100,33 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
-              items={data.list}
+              receivedList={receivedList}
               label="운동 유형"
               options={serviceFilter}
               filterType="lessonType"
               onFilterChange={handleFilterChange}
             />
-            <CheckboxFilter items={filteredData} label="성별" options={genderFilter} />
-            <CheckboxFilter items={filteredData} label="필터" options={receivedRequestFilter} />
+            <CheckboxFilter
+              receivedList={receivedList}
+              label="성별"
+              options={genderFilter}
+              filterType="gender"
+              onFilterChange={handleFilterChange}
+            />
+            <CheckboxFilter
+              receivedList={receivedList}
+              label="필터"
+              options={receivedRequestFilter}
+              filterType="filter"
+              onFilterChange={handleFilterChange}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
           <div className="flex flex-col gap-[2.4rem]">
-            <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
+            <Search onSearch={handleSearch} />
             <div className="flex justify-between items-center">
-              <p className="text-sm font-medium pc:text-lg">전체 {data.totalCount}건</p>
+              <p className="text-sm font-medium pc:text-lg">전체 {totalCount}건</p>
               <div className="flex gap-[0.4rem]">
                 <Dropdown setSortOrder={handleSortChange} options={userSort} type="sort" />
                 <div className="block pc:hidden" onClick={() => setIsModalOpen(true)}>
@@ -88,14 +135,24 @@ export default function ReceivedRequest() {
               </div>
             </div>
           </div>
-          {filteredData.map((item) => (
-            <div className="flex flex-col gap-[4.8rem]" key={item.id}>
-              <RequestLessonCard item={item} />
-            </div>
-          ))}
+          <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+            {receivedList.map((item) => (
+              <div className="flex flex-col gap-[4.8rem]" key={item.id}>
+                <RequestLessonCard item={item} />
+              </div>
+            ))}
+          </InfiniteScroll>
+          {isLoading && <Loading />}
         </div>
       </div>
-      {isModalopen && <MobileFilter closeModal={() => setIsModalOpen(false)} />}
+      {isModalopen && (
+        <MobileFilter
+          receivedList={receivedList}
+          onFilterChange={handleFilterChange}
+          closeModal={() => setIsModalOpen(false)}
+          onApplyFilters={handleApplyFilters}
+        />
+      )}
     </div>
   );
 }

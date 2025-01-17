@@ -1,20 +1,20 @@
 import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { genderFilter_trans, serviceFilter_trans } from "@/types/dropdown";
+import { useState } from "react";
+import { genderFilter_trans, requestFilter_trans, serviceFilter_trans } from "@/types/dropdown";
 import { Lesson } from "@/types/lesson";
 
 interface CheckboxFilterProps {
-  items: Lesson[];
+  receivedList: Lesson[];
   label?: string;
   options: string[];
-  filterType?: "lessonType";
-  onFilterChange?: (filtered: Lesson[]) => void;
+  filterType: "lessonType" | "gender" | "filter";
+  onFilterChange?: (filterType: string, value: string) => void;
 }
 
 export default function CheckboxFilter({
-  items,
+  receivedList,
   label,
   options,
   filterType,
@@ -24,12 +24,11 @@ export default function CheckboxFilter({
     new Array(options.length).fill(false),
   );
 
-  const [filteredItems, setFilteredItems] = useState<Lesson[]>(items);
-
   const filterCount: { [key: string]: number } = {};
 
-  if (filterType) {
-    items.forEach((item: Lesson) => {
+  // 필터 카운트 업데이트
+  if (filterType === "lessonType") {
+    receivedList.forEach((item: Lesson) => {
       const filterKey = item[filterType];
       if (filterKey) {
         filterCount[filterKey] = (filterCount[filterKey] || 0) + 1;
@@ -37,47 +36,61 @@ export default function CheckboxFilter({
     });
   }
 
-  const filterItems = () => {
-    let filtered = [...items];
-
-    if (filterType) {
-      const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
-
-      if (selectedFilters.length > 0) {
-        filtered = filtered.filter((item) => selectedFilters.includes(item[filterType]));
+  if (filterType === "gender") {
+    receivedList.forEach((item: Lesson) => {
+      const gender = item.user.profile.gender;
+      if (gender) {
+        filterCount[gender] = (filterCount[gender] || 0) + 1;
       }
-    }
+    });
+  }
 
-    setFilteredItems(filtered);
-    // onFilterChange가 존재할 경우에만 호출
-    if (onFilterChange) {
-      onFilterChange(filtered); // 필터링된 데이터를 부모 컴포넌트로 전달
-    }
-  };
-
-  useEffect(() => {
-    filterItems();
-  }, [isCheckedFilter]);
+  // 수정 필요
+  if (filterType === "filter") {
+    receivedList.forEach((item: Lesson) => {
+      if (item.user.profile.region) {
+        filterCount["REGION"] = (filterCount["REGION"] || 0) + 1;
+      }
+      if (item.isDirectQuote) {
+        filterCount["DIRECT"] = (filterCount["DIRECT"] || 0) + 1;
+      }
+    });
+  }
 
   const handleCheckboxClick = (index: number) => {
-    const updatedCheckedItems = [...isCheckedFilter];
-    updatedCheckedItems[index] = !updatedCheckedItems[index];
-    setIsCheckedFilter(updatedCheckedItems);
+    const updatedCheckedState = [...isCheckedFilter];
+    updatedCheckedState[index] = !updatedCheckedState[index];
+    setIsCheckedFilter(updatedCheckedState);
+
+    const selectedOptions = options.filter((_, idx) => updatedCheckedState[idx]).join(",");
+    if (onFilterChange) {
+      onFilterChange(filterType, selectedOptions);
+    }
   };
 
   const handleSelectAll = () => {
-    const allChecked = isCheckedFilter.every((item) => item);
-    setIsCheckedFilter(new Array(options.length).fill(!allChecked));
+    const newCheckedState = isCheckedFilter.every((checked) => checked)
+      ? new Array(options.length).fill(false)
+      : new Array(options.length).fill(true);
+    setIsCheckedFilter(newCheckedState);
+
+    if (onFilterChange) {
+      const selectedOptions = newCheckedState.every(Boolean) ? options.join(",") : "";
+      onFilterChange(filterType, selectedOptions);
+    }
   };
 
   const getFilterTranslation = (option: string): string => {
-    if (filterType === "lessonType") {
-      return serviceFilter_trans(option);
+    switch (filterType) {
+      case "lessonType":
+        return serviceFilter_trans(option);
+      case "gender":
+        return genderFilter_trans(option);
+      case "filter":
+        return requestFilter_trans(option);
+      default:
+        return option;
     }
-    if (filterType === "gender") {
-      return genderFilter_trans(option);
-    }
-    return option;
   };
 
   return (
