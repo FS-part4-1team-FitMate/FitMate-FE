@@ -13,13 +13,13 @@ interface FindTrainerCardProps {
 }
 
 export default function FindTrainerCard({ quoteData, trainerId }: FindTrainerCardProps) {
-  const { data, isLoading, isError } = useQuery<Profile>({
-    queryKey: ["trainer-info", trainerId],
-    queryFn: () => getProfile(trainerId),
-  });
+  // const { data, isLoading, isError } = useQuery<Profile>({
+  //   queryKey: ["trainer-info", trainerId],
+  //   queryFn: () => getProfile(trainerId),
+  // });
 
-  if (isLoading) return <div>로딩중</div>;
-  if (isError) return <div>에러 발생</div>;
+  // if (isLoading) return <div>로딩중</div>;
+  // if (isError) return <div>에러 발생</div>;
 
   /**
    * @TODO favorite 정보 추가 및 추가 데이터 입력
@@ -32,11 +32,11 @@ export default function FindTrainerCard({ quoteData, trainerId }: FindTrainerCar
       </div>
       <p className="text-md font-semibold pc:text-2xl">고객님에게 맞춤형 레슨을 해드립니다.</p>
       <TrainerInfo
-        name={data?.name || ""}
-        rating={data?.rating || 0}
-        reviewCount={data?.reviewCount || 0}
-        experience={data?.experience || 0}
-        lessonCount={data?.lessonCount || 0}
+        name="김강사"
+        rating={2}
+        reviewCount={20}
+        experience={2}
+        lessonCount={30}
         isFavorited={true}
         favoriteCount={23}
       />
