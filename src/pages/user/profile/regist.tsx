@@ -89,14 +89,12 @@ function Regist() {
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result);
+        console.log(result); // TODO: remove this.
       }
-      if ("profile" in userData) {
-        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...user, ...userData };
-        setUser((prev) => userDataLS.user);
-        localStorage.setItem("userData", JSON.stringify(userDataLS));
-      }
+      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...user, ...userData, hasProfile: true };
+      setUser((prev) => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS));
       queryClient.invalidateQueries({
         queryKey: ["profile", user?.id],
       });
