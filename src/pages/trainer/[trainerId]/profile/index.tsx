@@ -29,7 +29,8 @@ function Profile() {
   } = useQuery({
     queryKey: ["profile", trainerId],
     queryFn: () => getProfile(trainerId as string),
-    staleTime: 5 * 60 * 1000,
+    cacheTime: 60 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
     enabled: !!trainerId,
   });
   const [rating, setRating] = useState(5.0);
