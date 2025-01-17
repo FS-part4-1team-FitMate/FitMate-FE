@@ -48,7 +48,7 @@ function Profile() {
   return (
     <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[800px] mx-auto p-[12px]">
       {myPage ? (
-        <h1 className="text-xl font-semibold">마이페이지</h1>
+        <h1 className="text-xl font-semibold">마이 페이지</h1>
       ) : (
         <h1 className="text-xl font-semibold">강사님 페이지</h1>
       )}
