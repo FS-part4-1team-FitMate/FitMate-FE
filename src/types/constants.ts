@@ -5,7 +5,7 @@ export const PWD_REGEX =
 
 export const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
 
-export const profile_menu = "flex flex-col items-start gap-[12px]";
+export const profile_menu = "flex flex-col w-full items-start gap-[12px]";
 export const note_class = "text-sm text-slate-500";
 export const error_class = "text-red-400 text-sm";
 export const active_class = "font-semibold";

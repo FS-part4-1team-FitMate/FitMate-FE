@@ -66,9 +66,9 @@ function SignUpForm({ role }: Props) {
     try {
       let userData;
       if (role === Role.USER) {
-        userData = (await postSignUpUser({ ...data })).data;
+        userData = await postSignUpUser({ ...data });
       } else if (role === Role.TRAINER) {
-        userData = (await postSignUpTrainer({ ...data })).data;
+        userData = await postSignUpTrainer({ ...data });
       }
       if (userData && "user" in userData) {
         setUser(userData.user);

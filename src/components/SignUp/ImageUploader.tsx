@@ -2,8 +2,11 @@ import { ic_profile_default_sm } from "@/imageExports";
 import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { profile_menu } from "@/types/constants";
 
 interface Props {
+  id: string;
+  label: string;
   register: UseFormRegisterReturn;
   defImage?: string;
   width?: number;
@@ -11,6 +14,8 @@ interface Props {
 }
 
 const ImageUploader: React.FC<Props> = ({
+  id,
+  label,
   register,
   defImage = ic_profile_default_sm.src,
   width = 150,
@@ -32,23 +37,28 @@ const ImageUploader: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      <Image
-        src={imageSrc}
-        alt="Profile Preview"
-        width={width}
-        height={height}
-        className="rounded-3xl border-2 border-gray-300 object-cover mb-[10px]"
-      />
-      <br />
-      <input
-        id="profileImage"
-        className="p-0 m-0 text-sm rounded-none"
-        type="file"
-        accept="image/*"
-        {...register}
-        onChange={handleImageChange}
-      />
+    <div className={profile_menu}>
+      <label htmlFor={id} className="text-lg font-semibold">
+        {label}
+      </label>
+      <div>
+        <Image
+          src={imageSrc}
+          alt="Profile Preview"
+          width={width}
+          height={height}
+          className="rounded-3xl border-2 border-gray-300 object-cover mb-[10px]"
+        />
+        <br />
+        <input
+          id={id}
+          className="p-0 m-0 text-sm rounded-none"
+          type="file"
+          accept=".webp, .jpg, .jpeg, .png, image/webp, image/jpg, image/jpeg, image/png"
+          {...register}
+          onChange={handleImageChange}
+        />
+      </div>
     </div>
   );
 };

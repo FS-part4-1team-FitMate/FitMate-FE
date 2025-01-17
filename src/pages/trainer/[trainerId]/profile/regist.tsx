@@ -1,11 +1,13 @@
-import { useSetUser } from "@/contexts/UserProvider";
+import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { ic_designate_md } from "@/imageExports";
+import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { postProfile } from "@/lib/api/authService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, LocationType, Region } from "@/types/types";
+import { Gender, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -14,9 +16,11 @@ import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
 function Regist() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { trainerId } = router.query;
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
+  const user = useUser();
   const setUser = useSetUser();
   const [error, setError] = useState<
     null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
@@ -29,52 +33,111 @@ function Regist() {
     mode: "all",
     defaultValues: {
       profileImage: undefined,
+      profileImageCount: 0,
+      contentType: "",
       name: "",
       phone: "",
       gender: Gender.MALE,
       lessonType: [],
       certification: undefined,
+      certificationCount: 0,
       region: [],
-      locationType: [LocationType.OFFLINE],
       experience: 0,
       intro: "",
       description: "",
     } as {
       profileImage?: FileList;
+      profileImageCount: number;
+      contentType: string;
       name: string;
       phone: string;
       gender: Gender;
       lessonType: LessonType[];
       certification?: FileList;
+      certificationCount: number;
       region: Region[];
-      locationType: LocationType[];
       experience: number;
       intro: string;
       description: string;
     },
   });
 
+  useEffect(() => {
+    if (user?.id) {
+      if (user.id !== trainerId) {
+        router.push(`/trainer/${user.id}/profile/regist`);
+      }
+      if (user.hasProfile) {
+        router.push(`/trainer/${user.id}/profile/edit`);
+      }
+    }
+  }, [user]);
+
   const onSubmit = async (data: {
     profileImage?: FileList;
+    profileImageCount: number;
+    contentType: string;
     name: string;
     phone: string;
     gender: Gender;
     lessonType: LessonType[];
     certification?: FileList;
+    certificationCount: number;
     region: Region[];
-    locationType: LocationType[];
     experience: number;
     intro: string;
     description: string;
   }) => {
     // data.region = selectedRegion;
+    data.experience = Number(data.experience);
     console.log(data); // TODO: remove this.
+    let profileImageFileToUpload;
+    if ("profileImage" in data) {
+      const profileImage = data.profileImage;
+      if (profileImage instanceof FileList) {
+        profileImageFileToUpload = profileImage[0];
+        data.profileImageCount = 1;
+        data.contentType = profileImage[0].type;
+        delete data.profileImage;
+      }
+    }
+    let certificationFileToUpload;
+    if ("certification" in data) {
+      const certification = data.certification;
+      if (certification instanceof FileList) {
+        certificationFileToUpload = certification[0];
+        data.certificationCount = 1;
+        data.contentType = certification[0].type;
+        delete data.certification;
+      }
+    }
     try {
       const userData = await postProfile(data);
-      if ("user" in userData) {
-        setUser(userData.user);
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result);
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+      if ("certificationPresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.certificationPresignedUrl as string,
+          certificationFileToUpload,
+        );
+        console.log(result);
+      }
+      if ("profile" in userData) {
+        const profile = userData.profile! as Profile;
+        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = { ...user, profile };
+        setUser(userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS));
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["profile", user?.id],
+      });
+      router.push(`/trainer/${user?.id}/profile`);
     } catch (err) {
       setError({ message: (err as Error).message });
     }
@@ -89,12 +152,11 @@ function Regist() {
             <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="profileImage" className="text-lg font-semibold">
-              프로필 이미지
-            </label>
-            <ImageUploader register={register("profileImage")} />
-          </div>
+          <ImageUploader
+            id="profileImage"
+            label="프로필 이미지"
+            register={register("profileImage")}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="name"
@@ -180,17 +242,14 @@ function Regist() {
           </div>
           {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="certification" className="text-lg font-semibold">
-              자격증
-            </label>
-            <ImageUploader
-              register={register("certification")}
-              width={300}
-              height={300}
-              defImage={ic_designate_md.src}
-            />
-          </div>
+          <ImageUploader
+            id="certification"
+            label="자격증"
+            register={register("certification")}
+            width={300}
+            height={300}
+            defImage={ic_designate_md.src}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
@@ -210,43 +269,9 @@ function Regist() {
           </div>
           {errors.region && <p className={error_class}>{errors.region.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <div className="flex flex-col gap-[8px]">
-              <label className="text-lg font-semibold">강의 주소 타입</label>
-              <p className={note_class}>* 반드시 하나 이상을 선택해 주세요!</p>
-            </div>
-            <div className="flex gap-[16px]">
-              <label className="text-lg">
-                <input
-                  {...register("locationType", {
-                    validate: (value) =>
-                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                  })}
-                  type="checkbox"
-                  name="locationType"
-                  value={LocationType.OFFLINE}
-                />
-                &nbsp;오프라인
-              </label>
-              <label className="text-lg">
-                <input
-                  {...register("locationType", {
-                    validate: (value) =>
-                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                  })}
-                  type="checkbox"
-                  name="locationType"
-                  value={LocationType.ONLINE}
-                />
-                &nbsp;온라인
-              </label>
-            </div>
-            {errors.locationType && <p className={error_class}>{errors.locationType.message}</p>}
-          </div>
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="experience"
-            label="경력 (연, 소수점 입력 가능)"
+            label="경력 (연, 소수점 입력 불가)"
             type="number"
             register={register("experience", {
               required: "경력 연수를 입력해 주세요.",

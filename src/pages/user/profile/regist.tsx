@@ -1,6 +1,9 @@
-import { useSetUser } from "@/contexts/UserProvider";
-import { useState } from "react";
+import { useSetUser, useUser } from "@/contexts/UserProvider";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { postProfile } from "@/lib/api/authService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, Region } from "@/types/types";
@@ -11,7 +14,10 @@ import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
 function Regist() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
+  const user = useUser();
   const setUser = useSetUser();
   const [error, setError] = useState<
     null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
@@ -24,38 +30,77 @@ function Regist() {
     mode: "all",
     defaultValues: {
       profileImage: undefined,
+      profileImageCount: 0,
+      contentType: "",
       name: "",
       phone: "",
       gender: Gender.MALE,
       lessonType: [],
       region: [],
+      certificationCount: 0,
     } as {
       profileImage?: FileList;
+      profileImageCount: number;
+      contentType: string;
       name: string;
       phone: string;
       gender: Gender;
       lessonType: LessonType[];
       region: Region[];
+      certificationCount: number;
     },
   });
 
+  useEffect(() => {
+    if (user?.id) {
+      if (user.hasProfile) {
+        router.push("/user/profile/edit");
+      }
+    }
+  }, [user]);
+
   const onSubmit = async (data: {
     profileImage?: FileList;
+    profileImageCount: number;
+    contentType: string;
     name: string;
     phone: string;
     gender: Gender;
     lessonType: LessonType[];
     region: Region[];
+    certificationCount: number;
   }) => {
-    // console.log(data); // TODO: remove this.
-    // data.region = selectedRegion;
-    console.log(data); // TODO: remove this.
-    try {
-      const userData = await postProfile(data);
-      if ("user" in userData) {
-        setUser(userData.user);
+    let profileImageFileToUpload;
+    if ("profileImage" in data) {
+      const profileImage = data.profileImage;
+      console.log(profileImage);
+      if (profileImage instanceof FileList && data.profileImage?.length) {
+        profileImageFileToUpload = profileImage[0];
+        data.profileImageCount = 1;
+        data.contentType = profileImage[0].type;
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+      delete data.profileImage;
+    }
+    try {
+      data.certificationCount = 0;
+      const userData = await postProfile(data);
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result);
+      }
+      if ("profile" in userData) {
+        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = { ...user, ...userData };
+        setUser((prev) => userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS));
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["profile", user?.id],
+      });
+      router.push("/user/profile");
     } catch (err) {
       setError({ message: (err as Error).message });
     }
@@ -70,12 +115,11 @@ function Regist() {
             <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="profileImage" className="text-lg font-semibold">
-              프로필 이미지
-            </label>
-            <ImageUploader register={register("profileImage")} />
-          </div>
+          <ImageUploader
+            id="profileImage"
+            label="프로필 이미지"
+            register={register("profileImage")}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="name"
