@@ -24,14 +24,21 @@ export default function ReceivedRequest() {
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+  const [order, setOrder] = useState<string>("start_date");
+  const [sort, setSort] = useState<string>("asc");
+
+  const params = {searchTerm, order, sort}
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteQuery<LessonResult>(
-     ["received-request", searchTerm],
+     ["received-request", params],
       ({ pageParam = 1 }) =>
         getReceiveRequest({
           page: pageParam,
           limit: 10,
-          keyword: searchTerm
+          keyword: params.searchTerm,
+          order: params.order,
+          sort: params.sort
         }),
       {
         getNextPageParam: (lastPage, allPages) => {
@@ -50,7 +57,8 @@ const handleSearch = (keyword: string) => {
 
   // 정렬 처리 함수
   const handleSortChange = (order: string, sort: string) => {
-
+    setOrder(order);
+    setSort(sort);
   };
 
   // 필터 처리 함수
