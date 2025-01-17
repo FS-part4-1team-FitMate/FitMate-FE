@@ -77,6 +77,13 @@ export default function ReceivedRequest() {
     }
   };
 
+  const handleApplyFilters = (selectedOptions: any) => {
+    setLessonType(selectedOptions.lessonType.join(","));
+    setGender(selectedOptions.gender.join(","));
+    setRegion(selectedOptions.filter.includes("REGION") ? "REGION" : "");
+    setIsDirectQuote(selectedOptions.filter.includes("DIRECT"));
+  };
+
   if (isError) {
     return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
   }
@@ -138,7 +145,14 @@ export default function ReceivedRequest() {
           {isLoading && <Loading />}
         </div>
       </div>
-      {isModalopen && <MobileFilter closeModal={() => setIsModalOpen(false)} />}
+      {isModalopen && (
+        <MobileFilter
+          receivedList={receivedList}
+          onFilterChange={handleFilterChange}
+          closeModal={() => setIsModalOpen(false)}
+          onApplyFilters={handleApplyFilters}
+        />
+      )}
     </div>
   );
 }
