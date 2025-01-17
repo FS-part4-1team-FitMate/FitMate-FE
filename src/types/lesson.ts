@@ -5,9 +5,9 @@ export interface LessonParams {
   limit?: number;
   order?: string;
   sort?: string;
-  lessonType?: string;
-  lessonSubType?: string;
-  locationType?: string;
+  lesson_type?: string;
+  lesson_sub_type?: string;
+  location_type?: string;
   status?: string;
   gender?: string;
   region?: string;
@@ -37,6 +37,7 @@ export interface Lesson {
     nickname: string;
     profile: Pick<Profile, "name" | "gender" | "region">;
   };
+  isDirectQuote: boolean;
 }
 
 export interface LessonResult {

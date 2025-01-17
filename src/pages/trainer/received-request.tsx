@@ -2,10 +2,10 @@ import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
-import { GenderFilter, ReceivedRequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
+import { GenderFilter, ServiceFilter, UserSort } from "@/types/dropdown";
 import { Lesson, LessonResult } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import CheckboxFilter from "@/components/CheckboxFilter";
@@ -18,27 +18,21 @@ import MobileFilter from "@/components/Modal/MobileFilter";
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
 const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-const receivedRequestFilter: ReceivedRequestFilter[] = ["서비스 가능 지역", "지정 견적 요청"];
+const receivedRequestFilter: string[] = ["REGION", "DIRECT"];
 
 export default function ReceivedRequest() {
   const router = useRouter();
-  const { query } = router;
+  const query = router.query;
 
   const [order, setOrder] = useState<string>(query.order?.toString() || "start_date");
   const [sort, setSort] = useState<string>(query.sort?.toString() || "asc");
   const [keyword, setKeyword] = useState<string>(query.keyword?.toString() || "");
-  const [lessonType, setLessonType] = useState<string>(query.lessonType?.toString() || "");
+  const [lessonType, setLessonType] = useState<string>(query.lesson_type?.toString() || "");
   const [gender, setGender] = useState<string>(query.gender?.toString() || "");
   const [region, setRegion] = useState<string>(query.region?.toString() || "");
+  const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
 
-  const filters = {
-    order,
-    sort,
-    lessonType,
-    gender,
-    region,
-    keyword,
-  };
+  const filters = { order, sort, lessonType, gender, region, keyword };
 
   const { data, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteQuery<LessonResult>({
@@ -49,7 +43,7 @@ export default function ReceivedRequest() {
           limit: 10,
           order: filters.order,
           sort: filters.sort,
-          lessonType: filters.lessonType || undefined,
+          lesson_type: filters.lessonType || undefined,
           gender: filters.gender || undefined,
           region: filters.region || undefined,
           keyword: filters.keyword,
@@ -61,8 +55,19 @@ export default function ReceivedRequest() {
 
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount = data?.pages.flatMap((page) => page.totalCount) ?? [];
-
+  const [filteredData, setFilteredData] = useState<Lesson[]>(receivedList);
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    router.push(
+      {
+        pathname: router.pathname,
+        query: {},
+      },
+      undefined,
+      { shallow: true },
+    );
+  }, []);
 
   // 빈 값 필터링 후 쿼리 파라미터 업데이트
   const updateQueryParams = (params: { [key: string]: string | null }) => {
@@ -70,10 +75,16 @@ export default function ReceivedRequest() {
       Object.entries(params).filter(([key, value]) => value !== null && value !== ""),
     );
 
+    const formattedParams = Object.fromEntries(
+      Object.entries(filteredParams).map(([key, value]) => [
+        key === "lessonType" ? "lesson_type" : key,
+        value,
+      ]),
+    );
     router.push(
       {
         pathname: router.pathname,
-        query: { ...query, ...filteredParams },
+        query: { ...query, ...formattedParams },
       },
       undefined,
       { shallow: true },
@@ -94,17 +105,8 @@ export default function ReceivedRequest() {
   };
 
   // 필터 처리 함수
-  const handleFilterChange = (filterType: string, value: string) => {
-    if (filterType === "lessonType") {
-      setLessonType(value);
-      updateQueryParams({ lessonType: value });
-    } else if (filterType === "gender") {
-      setGender(value);
-      updateQueryParams({ gender: value });
-    } else if (filterType === "region") {
-      setRegion(value);
-      updateQueryParams({ region: value });
-    }
+  const handleFilterChange = (filtered: Lesson[]) => {
+    setFilteredData(filtered);
   };
 
   if (isLoading) {
@@ -127,14 +129,26 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
-              items={receivedList}
+              receivedList={receivedList}
               label="운동 유형"
               options={serviceFilter}
               filterType="lessonType"
               onFilterChange={handleFilterChange}
             />
-            <CheckboxFilter items={receivedList} label="성별" options={genderFilter} />
-            <CheckboxFilter items={receivedList} label="필터" options={receivedRequestFilter} />
+            <CheckboxFilter
+              receivedList={receivedList}
+              label="성별"
+              options={genderFilter}
+              filterType="gender"
+              onFilterChange={handleFilterChange}
+            />
+            <CheckboxFilter
+              receivedList={receivedList}
+              label="필터"
+              options={receivedRequestFilter}
+              filterType="filter"
+              onFilterChange={handleFilterChange}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
@@ -150,7 +164,7 @@ export default function ReceivedRequest() {
               </div>
             </div>
           </div>
-          {receivedList.map((item) => (
+          {filteredData.map((item) => (
             <div className="flex flex-col gap-[4.8rem]" key={item.id}>
               <RequestLessonCard item={item} />
             </div>

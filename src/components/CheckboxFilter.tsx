@@ -2,19 +2,23 @@ import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageE
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { genderFilter_trans, serviceFilter_trans } from "@/types/dropdown";
+import {
+  genderFilter_trans,
+  receivedRequestFilter_trans,
+  serviceFilter_trans,
+} from "@/types/dropdown";
 import { Lesson } from "@/types/lesson";
 
 interface CheckboxFilterProps {
-  items: Lesson[];
+  receivedList: Lesson[];
   label?: string;
   options: string[];
-  filterType?: "lessonType";
-  onFilterChange?: (filterType: string, value: string) => void;
+  filterType: "lessonType" | "gender" | "filter";
+  onFilterChange?: (filtered: Lesson[]) => void;
 }
 
 export default function CheckboxFilter({
-  items,
+  receivedList,
   label,
   options,
   filterType,
@@ -24,12 +28,13 @@ export default function CheckboxFilter({
     new Array(options.length).fill(false),
   );
 
-  const [filteredItems, setFilteredItems] = useState<Lesson[]>(items);
+  const [filteredItems, setFilteredItems] = useState<Lesson[]>(receivedList);
 
   const filterCount: { [key: string]: number } = {};
 
-  if (filterType) {
-    items.forEach((item: Lesson) => {
+  // 필터 카운트 업데이트
+  if (filterType === "lessonType") {
+    receivedList.forEach((item: Lesson) => {
       const filterKey = item[filterType];
       if (filterKey) {
         filterCount[filterKey] = (filterCount[filterKey] || 0) + 1;
@@ -37,21 +42,62 @@ export default function CheckboxFilter({
     });
   }
 
+  if (filterType === "gender") {
+    // 성별 필터 카운트
+    receivedList.forEach((item: Lesson) => {
+      const gender = item.user.profile.gender;
+      if (gender) {
+        filterCount[gender] = (filterCount[gender] || 0) + 1;
+      }
+    });
+  }
+
+  if (filterType === "filter") {
+    // REGION, DIRECT 필터 카운트
+    receivedList.forEach((item: Lesson) => {
+      if (item.user.profile.region) {
+        filterCount["REGION"] = (filterCount["REGION"] || 0) + 1;
+      }
+      if (item.isDirectQuote) {
+        filterCount["DIRECT"] = (filterCount["DIRECT"] || 0) + 1;
+      }
+    });
+  }
+
   const filterItems = () => {
-    let filtered = [...items];
+    let filtered = [...receivedList];
 
-    if (filterType) {
+    // lessonType 필터링
+    if (filterType === "lessonType") {
       const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
-
       if (selectedFilters.length > 0) {
         filtered = filtered.filter((item) => selectedFilters.includes(item[filterType]));
       }
     }
 
+    // gender 필터링
+    if (filterType === "gender") {
+      const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
+      if (selectedFilters.length > 0) {
+        filtered = filtered.filter((item) => selectedFilters.includes(item.user.profile.gender));
+      }
+    }
+
+    // filter (REGION, DIRECT) 필터링
+    if (filterType === "filter") {
+      const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
+      if (selectedFilters.includes("REGION")) {
+        filtered = filtered.filter((item) => item.user.profile.region);
+      }
+      if (selectedFilters.includes("DIRECT")) {
+        filtered = filtered.filter((item) => item.isDirectQuote);
+      }
+    }
+
     setFilteredItems(filtered);
-    // onFilterChange가 존재할 경우에만 호출
+
     if (onFilterChange) {
-      onFilterChange(filtered); // 필터링된 데이터를 부모 컴포넌트로 전달
+      onFilterChange(filtered); // 부모 컴포넌트에 필터링된 데이터 전달
     }
   };
 
@@ -71,13 +117,16 @@ export default function CheckboxFilter({
   };
 
   const getFilterTranslation = (option: string): string => {
-    if (filterType === "lessonType") {
-      return serviceFilter_trans(option);
+    switch (filterType) {
+      case "lessonType":
+        return serviceFilter_trans(option);
+      case "gender":
+        return genderFilter_trans(option); // gender 필터의 번역
+      case "filter":
+        return receivedRequestFilter_trans(option); // REGION, DIRECT 필터의 번역
+      default:
+        return option;
     }
-    if (filterType === "gender") {
-      return genderFilter_trans(option);
-    }
-    return option;
   };
 
   return (
