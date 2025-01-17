@@ -214,7 +214,7 @@ function SignUpForm({ role }: Props) {
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 간편 가입하기</div>
         <div className="flex justify-center items-center gap-[8px]">
-          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/google"}>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/google?role=${role}`}>
             <Image src={ic_google_sm} alt="google" width={40} height={40} />
           </Link>
           <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/kakao"}>
