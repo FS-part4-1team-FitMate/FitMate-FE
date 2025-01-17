@@ -11,6 +11,11 @@ export enum Gender {
   FEMALE = "FEMALE",
 }
 
+export const gender_trans = {
+  [Gender.MALE]: "남성",
+  [Gender.FEMALE]: "여성",
+};
+
 export enum LessonType {
   SPORTS = "SPORTS", // 스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
   FITNESS = "FITNESS", // 피트니스 (PT, 요가, 필라테스, 식단 관리 등)
@@ -138,6 +143,8 @@ export type Profile = {
   name: string;
   phone?: string;
   profileImage?: string | FileList;
+  profileImageCount?: number;
+  contentType?: string;
   gender: Gender;
   lessonType: LessonType[];
   locationType: LocationType[];
@@ -146,10 +153,13 @@ export type Profile = {
   description?: string;
   experience?: number;
   certification?: string | FileList;
-  certificationValidated: boolean;
+  certificationCount?: number;
+  certificationValidated?: boolean;
   rating?: number;
   lessonCount?: number;
   reviewCount?: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type ProfileEdittable = Pick<
@@ -157,6 +167,8 @@ export type ProfileEdittable = Pick<
   | "name"
   | "phone"
   | "profileImage"
+  | "profileImageCount"
+  | "contentType"
   | "gender"
   | "lessonType"
   | "locationType"
@@ -165,6 +177,8 @@ export type ProfileEdittable = Pick<
   | "description"
   | "experience"
   | "certification"
+  | "certificationCount"
+  | "updatedAt"
 >;
 
 export type User = {
@@ -172,7 +186,10 @@ export type User = {
   email: string;
   nickname: string;
   role: Role;
+  hasProfile?: boolean;
   profile?: Profile;
+  profileImagePresignedUrl?: string;
+  certificationPresignedUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 };

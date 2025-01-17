@@ -1,13 +1,13 @@
-import { createContext, useContext, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
 import { useEffect } from "react";
 import { User } from "@/types/types";
 
 const UserContext = createContext<{
   user: null | User;
-  setUser: (user: null | User) => void;
+  setUser: Dispatch<SetStateAction<User | null>>;
 }>({
   user: null,
-  setUser: (user: any) => {},
+  setUser: () => {},
 });
 
 interface Props {
@@ -27,7 +27,7 @@ export function UserProvider({ children }: Props) {
   return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 }
 
-export function useUser() {
+export function useUser(): User | null {
   const context = useContext(UserContext);
 
   if (!context) {
@@ -38,7 +38,7 @@ export function useUser() {
   return user;
 }
 
-export function useSetUser() {
+export function useSetUser(): Dispatch<SetStateAction<null | User>> {
   const context = useContext(UserContext);
 
   if (!context) {

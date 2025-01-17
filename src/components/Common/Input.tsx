@@ -1,4 +1,5 @@
 import { UseFormRegisterReturn } from "react-hook-form";
+import { profile_menu } from "@/types/constants";
 
 interface Props {
   id: string;
@@ -11,7 +12,7 @@ interface Props {
 
 function Input({ id, label, type, className, register, placeholder }: Props) {
   return (
-    <div className={`flex flex-col w-full gap-[12px]`}>
+    <div className={profile_menu}>
       <label className="w-full text-lg font-semibold" htmlFor={id}>
         {label}
       </label>

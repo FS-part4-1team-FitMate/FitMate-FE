@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { postLogin } from "@/lib/api/authService";
+import { getProfile, postLogin } from "@/lib/api/authService";
 import { EMAIL_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
@@ -46,14 +46,15 @@ function LogIn() {
 
   useEffect(() => {
     if (user?.id) {
+      const userData = JSON.parse(localStorage.getItem("userData")!);
       if (user.role === Role.USER) {
-        if ("profile" in user && user.profile?.name) {
+        if (user.hasProfile) {
           router.push("/user/my-lesson/active-lesson");
         } else {
           router.push("/user/profile/regist");
         }
       } else if (user.role === Role.TRAINER) {
-        if ("profile" in user && user.profile?.name) {
+        if (user.hasProfile) {
           router.push("/trainer/managing-request/sent-request");
         } else {
           router.push(`/trainer/${user.id}/profile/regist`);
@@ -64,21 +65,20 @@ function LogIn() {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const response = await postLogin(data);
-      console.log(response); // TODO: remove this.
-      const userData = response.data;
+      const userData = await postLogin(data);
       console.log(userData); // TODO: remove this.
       if ("user" in userData) {
         const { user } = userData;
+        user.hasProfile = userData.hasProfile;
         setUser(user);
         if (user.role === Role.USER) {
-          if ("profile" in user && user.profile?.name) {
+          if (user.hasProfile) {
             router.push("/user/my-lesson/active-lesson");
           } else {
             router.push("/user/profile/regist");
           }
         } else if (user.role === Role.TRAINER) {
-          if ("profile" in user && user.profile?.name) {
+          if (user.hasProfile) {
             router.push("/trainer/managing-request/sent-request");
           } else {
             router.push(`/trainer/${user.id}/profile/regist`);

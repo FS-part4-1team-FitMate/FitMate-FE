@@ -1,29 +1,34 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { ic_edit_sm } from "@/imageExports";
+import axios from "axios";
+import deepEqual from "fast-deep-equal";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { patchProfile } from "@/lib/api/authService";
-import { PHONE_REGEX, PWD_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getProfile, patchProfile } from "@/lib/api/authService";
+import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
-import InputPassword from "@/components/Common/InputPassword";
+import Loading from "@/components/Common/Loading";
 import PopUp from "@/components/Common/PopUp";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
-type FormType = Partial<ProfileEdittable> & {
-  currPassword: string;
-  password: string;
-  passwordConfirm: string;
-};
+type FormType = Partial<ProfileEdittable>;
+// & {
+//   currPassword: string;
+//   password: string;
+//   passwordConfirm: string;
+// };
 
 function ProfileEdit() {
-  const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
-  const [pwdIsVisible, setPwdIsVisible] = useState(false);
-  const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
+  // const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
+  // const [pwdIsVisible, setPwdIsVisible] = useState(false);
+  // const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
@@ -33,56 +38,106 @@ function ProfileEdit() {
   >(null);
   const {
     register,
-    watch,
+    // watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "all",
     defaultValues: {
       profileImage: user?.profile?.profileImage,
+      profileImageCount: 0,
+      contentType: "",
       name: user?.profile?.name,
       phone: user?.profile?.phone,
       gender: user?.profile?.gender,
       lessonType: user?.profile?.lessonType,
       region: user?.profile?.region,
-      currPassword: "",
-      password: "",
-      passwordConfirm: "",
+      // currPassword: "",
+      // password: "",
+      // passwordConfirm: "",
     } as FormType,
   });
+  const {
+    data: profileData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: () => getProfile(user?.id!),
+    cacheTime: 60 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
+    enabled: !!user?.id,
+  });
+
+  useEffect(() => {
+    if (user && profileData) {
+      setUser({
+        ...user,
+        ...profileData,
+      });
+      reset(profileData.profile);
+      setSelectedRegion(profileData.profile.region);
+    }
+  }, [profileData]);
 
   const onSubmit = async (data: FormType) => {
     const profile: ProfileEdittable = user?.profile!;
     const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
       const typedKey = key as keyof ProfileEdittable;
       const newValue = data[typedKey];
-      if (newValue !== undefined && newValue !== profile[typedKey]) {
+      if (newValue !== undefined && !deepEqual(newValue, profile?.[typedKey])) {
         return { ...acc, [typedKey]: newValue };
       }
       return acc;
     }, {});
-    if (data.region !== selectedRegion) {
+    if (!deepEqual(data.region, selectedRegion)) {
       changedData.region = selectedRegion;
     }
     console.log(changedData); // TODO: remove this.
-    try {
-      const userData = await patchProfile(changedData);
-      if ("user" in userData) {
-        setUser(userData.user);
+    let profileImageFileToUpload;
+    if ("profileImage" in changedData && changedData?.profileImage?.length) {
+      const profileImage = changedData.profileImage;
+      console.log(profileImage);
+      if (profileImage instanceof FileList && profileImage[0]?.name) {
+        profileImageFileToUpload = profileImage[0];
+        changedData.profileImageCount = 1;
+        changedData.contentType = profileImage[0].type;
+        delete changedData.profileImage;
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+    }
+    try {
+      delete changedData.updatedAt;
+      console.log("changedData: ", changedData); // TODO: remove this.
+      const userData = await patchProfile(user?.id!, changedData);
+      console.log(userData); // TODO: remove this.
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result); // TODO: remove this.
+      }
+      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...user, ...userData };
+      setUser((prev) => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS));
+      queryClient.invalidateQueries({
+        queryKey: ["profile", user?.id],
+      });
+      router.push("/user/profile");
     } catch (err) {
       setError({ message: (err as Error).message });
     }
   };
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     router.push(`/login`);
-  //   } else if (!user.profile) {
-  //     router.push(`/user/profile/regist`);
-  //   }
-  // }, [user, router]);
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <div className="text-2lg text-center">에러 발생.</div>;
+  }
 
   return (
     <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
@@ -92,12 +147,16 @@ function ProfileEdit() {
             <h1 className="text-xl font-bold">프로필 수정</h1>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="profileImage" className="text-lg font-semibold">
-              프로필 이미지
-            </label>
-            <ImageUploader register={register("profileImage")} />
-          </div>
+          <ImageUploader
+            id="profileImage"
+            label="프로필 이미지"
+            defImage={
+              profileData?.profileImagePresignedUrl
+                ? (profileData.profileImagePresignedUrl as string)
+                : undefined
+            }
+            register={register("profileImage")}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="name"
@@ -186,7 +245,7 @@ function ProfileEdit() {
               register={register("region")}
             />
           </div>
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          {/* <hr className="w-full border-[1px] border-solid border-gray-300" />
           <InputPassword
             id="currPassword"
             label="현재 비밀번호"
@@ -236,7 +295,7 @@ function ProfileEdit() {
           />
           {errors.passwordConfirm && (
             <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
-          )}
+          )} */}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Button type="submit" className="w-full bg-blue-500 text-white">
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
@@ -244,7 +303,9 @@ function ProfileEdit() {
           <Button
             type="button"
             className="w-full border border-solid border-slate-800 bg-slate-200 text-black-500"
-            onClick={() => router.push(`/user/profile`)}
+            onClick={() => {
+              router.push(`/user/profile`);
+            }}
           >
             취소하기
           </Button>
