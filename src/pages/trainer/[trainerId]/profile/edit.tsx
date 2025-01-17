@@ -11,6 +11,7 @@ import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/cons
 import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
+import Loading from "@/components/Common/Loading";
 import PopUp from "@/components/Common/PopUp";
 import Textarea from "@/components/Common/Textarea";
 import Regions from "@/components/Profile/Regions";
@@ -156,6 +157,14 @@ function ProfileEdit() {
       setError({ message: (err as Error).message });
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <div className="text-2lg text-center">에러 발생.</div>;
+  }
 
   return (
     <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
