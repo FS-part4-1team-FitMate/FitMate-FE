@@ -25,12 +25,32 @@ export const genderFilter_trans = (filter: string): string => {
   return map[filter];
 };
 
-export type ReceivedRequestFilter = {
-  REGION: Region | null;
-  DIRECT: boolean;
+export type RegionFilter = "SEOUL" |
+"GYEONGGI" |
+"INCHEON"|
+"DAEJEON"|
+ "DAEGU"|
+ "ULSAN"|
+"BUSAN"|
+ "GWANGJU"|
+ "SEJONG"|
+ "GANGWON"|
+ "CHUNGBUK"|
+ "CHUNGNAM"|
+ "JEONBUK"|
+ "JEONNAM"|
+ "GYEONGBUK"|
+"GYEONGNAM"|
+"JEJU";
+
+export type DirectFilter = true | false;
+
+export type RequestFilter = {
+  type: "REGION" | "DIRECT";
+  value: string | boolean;
 };
 
-export const receivedRequestFilter_trans = (filter: string): string => {
+export const requestFilter_trans = (filter: string): string => {
   const map: { [key: string]: string } = {
     REGION: "서비스 가능 지역",
     DIRECT: "지정 견적 요청",

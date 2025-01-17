@@ -1,12 +1,8 @@
 import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import {
-  genderFilter_trans,
-  receivedRequestFilter_trans,
-  serviceFilter_trans,
-} from "@/types/dropdown";
+import { useState } from "react";
+import { genderFilter_trans, requestFilter_trans, serviceFilter_trans } from "@/types/dropdown";
 import { Lesson } from "@/types/lesson";
 
 interface CheckboxFilterProps {
@@ -14,7 +10,7 @@ interface CheckboxFilterProps {
   label?: string;
   options: string[];
   filterType: "lessonType" | "gender" | "filter";
-  onFilterChange?: (filtered: Lesson[]) => void;
+  onFilterChange?: (filterType: string, value: string) => void;
 }
 
 export default function CheckboxFilter({
@@ -27,8 +23,6 @@ export default function CheckboxFilter({
   const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(
     new Array(options.length).fill(false),
   );
-
-  const [filteredItems, setFilteredItems] = useState<Lesson[]>(receivedList);
 
   const filterCount: { [key: string]: number } = {};
 
@@ -43,7 +37,6 @@ export default function CheckboxFilter({
   }
 
   if (filterType === "gender") {
-    // 성별 필터 카운트
     receivedList.forEach((item: Lesson) => {
       const gender = item.user.profile.gender;
       if (gender) {
@@ -52,8 +45,8 @@ export default function CheckboxFilter({
     });
   }
 
+  // 수정 필요
   if (filterType === "filter") {
-    // REGION, DIRECT 필터 카운트
     receivedList.forEach((item: Lesson) => {
       if (item.user.profile.region) {
         filterCount["REGION"] = (filterCount["REGION"] || 0) + 1;
@@ -64,56 +57,27 @@ export default function CheckboxFilter({
     });
   }
 
-  const filterItems = () => {
-    let filtered = [...receivedList];
-
-    // lessonType 필터링
-    if (filterType === "lessonType") {
-      const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
-      if (selectedFilters.length > 0) {
-        filtered = filtered.filter((item) => selectedFilters.includes(item[filterType]));
-      }
-    }
-
-    // gender 필터링
-    if (filterType === "gender") {
-      const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
-      if (selectedFilters.length > 0) {
-        filtered = filtered.filter((item) => selectedFilters.includes(item.user.profile.gender));
-      }
-    }
-
-    // filter (REGION, DIRECT) 필터링
-    if (filterType === "filter") {
-      const selectedFilters = options.filter((_, index) => isCheckedFilter[index]);
-      if (selectedFilters.includes("REGION")) {
-        filtered = filtered.filter((item) => item.user.profile.region);
-      }
-      if (selectedFilters.includes("DIRECT")) {
-        filtered = filtered.filter((item) => item.isDirectQuote);
-      }
-    }
-
-    setFilteredItems(filtered);
-
-    if (onFilterChange) {
-      onFilterChange(filtered); // 부모 컴포넌트에 필터링된 데이터 전달
-    }
-  };
-
-  useEffect(() => {
-    filterItems();
-  }, [isCheckedFilter]);
-
   const handleCheckboxClick = (index: number) => {
-    const updatedCheckedItems = [...isCheckedFilter];
-    updatedCheckedItems[index] = !updatedCheckedItems[index];
-    setIsCheckedFilter(updatedCheckedItems);
+    const updatedCheckedState = [...isCheckedFilter];
+    updatedCheckedState[index] = !updatedCheckedState[index];
+    setIsCheckedFilter(updatedCheckedState);
+
+    const selectedOptions = options.filter((_, idx) => updatedCheckedState[idx]).join(",");
+    if (onFilterChange) {
+      onFilterChange(filterType, selectedOptions);
+    }
   };
 
   const handleSelectAll = () => {
-    const allChecked = isCheckedFilter.every((item) => item);
-    setIsCheckedFilter(new Array(options.length).fill(!allChecked));
+    const newCheckedState = isCheckedFilter.every((checked) => checked)
+      ? new Array(options.length).fill(false)
+      : new Array(options.length).fill(true);
+    setIsCheckedFilter(newCheckedState);
+
+    if (onFilterChange) {
+      const selectedOptions = newCheckedState.every(Boolean) ? options.join(",") : "";
+      onFilterChange(filterType, selectedOptions);
+    }
   };
 
   const getFilterTranslation = (option: string): string => {
@@ -121,9 +85,9 @@ export default function CheckboxFilter({
       case "lessonType":
         return serviceFilter_trans(option);
       case "gender":
-        return genderFilter_trans(option); // gender 필터의 번역
+        return genderFilter_trans(option);
       case "filter":
-        return receivedRequestFilter_trans(option); // REGION, DIRECT 필터의 번역
+        return requestFilter_trans(option);
       default:
         return option;
     }

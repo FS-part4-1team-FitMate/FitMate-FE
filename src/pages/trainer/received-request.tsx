@@ -2,10 +2,11 @@ import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
-import { GenderFilter, ServiceFilter, UserSort } from "@/types/dropdown";
-import { Lesson, LessonResult } from "@/types/lesson";
+import { GenderFilter, RequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
+import { LessonResult } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import CheckboxFilter from "@/components/CheckboxFilter";
 import Loading from "@/components/Common/Loading";
@@ -13,7 +14,6 @@ import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import MobileFilter from "@/components/Modal/MobileFilter";
-import InfiniteScroll from "react-infinite-scroller";
 
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
 const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
@@ -27,33 +27,40 @@ export default function ReceivedRequest() {
   const [order, setOrder] = useState<string>("start_date");
   const [sort, setSort] = useState<string>("asc");
 
-  const params = {searchTerm, order, sort}
+  const [lessonType, setLessonType] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [region, setRegion] = useState<string>(""); // 레슨 신청한 지역
+  const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
 
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } =
-    useInfiniteQuery<LessonResult>(
-     ["received-request", params],
-      ({ pageParam = 1 }) =>
-        getReceiveRequest({
-          page: pageParam,
-          limit: 10,
-          keyword: params.searchTerm,
-          order: params.order,
-          sort: params.sort
-        }),
-      {
-        getNextPageParam: (lastPage, allPages) => {
+  const params = { searchTerm, order, sort, lessonType, gender, region };
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<LessonResult>(
+    ["received-request", params],
+    ({ pageParam = 1 }) =>
+      getReceiveRequest({
+        page: pageParam,
+        limit: 10,
+        keyword: params.searchTerm,
+        order: params.order,
+        sort: params.sort,
+        lesson_type: params.lessonType || undefined,
+        gender: params.gender || undefined,
+        region: params.region || undefined,
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
         return lastPage.hasMore ? allPages.length + 1 : undefined;
       },
-    }
-    );
-    
-  const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
-  const totalCount =  data?.pages[0]?.totalCount ?? 0;
+    },
+  );
 
-// 검색 처리 함수
-const handleSearch = (keyword: string) => {
-  setSearchTerm(keyword);
-};
+  const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
+
+  // 검색 처리 함수
+  const handleSearch = (keyword: string) => {
+    setSearchTerm(keyword);
+  };
 
   // 정렬 처리 함수
   const handleSortChange = (order: string, sort: string) => {
@@ -62,8 +69,13 @@ const handleSearch = (keyword: string) => {
   };
 
   // 필터 처리 함수
-  const handleFilterChange = (filtered: Lesson[]) => {
-  }
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (filterType === "lessonType") {
+      setLessonType(value);
+    } else if (filterType === "gender") {
+      setGender(value);
+    }
+  };
 
   if (isError) {
     return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
@@ -117,11 +129,11 @@ const handleSearch = (keyword: string) => {
             </div>
           </div>
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-          {receivedList.map((item) => (
-            <div className="flex flex-col gap-[4.8rem]" key={item.id}>
-              <RequestLessonCard item={item} />
-            </div>
-          ))}
+            {receivedList.map((item) => (
+              <div className="flex flex-col gap-[4.8rem]" key={item.id}>
+                <RequestLessonCard item={item} />
+              </div>
+            ))}
           </InfiniteScroll>
           {isLoading && <Loading />}
         </div>
