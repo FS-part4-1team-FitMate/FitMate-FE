@@ -42,7 +42,7 @@ function Profile() {
     return <Loading />;
   }
   if (isError) {
-    return <div className="text-lg text-center">오류 발생!</div>;
+    return <div className="text-2lg text-center">오류 발생!</div>;
   }
 
   // TODO: || "채우기 용" 지우기.
