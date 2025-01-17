@@ -21,13 +21,17 @@ const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
 const receivedRequestFilter: string[] = ["REGION", "DIRECT"];
 
 export default function ReceivedRequest() {
+  const [isModalopen, setIsModalOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const { data, isLoading, isError, hasNextPage, fetchNextPage } =
     useInfiniteQuery<LessonResult>(
-     ["received-request"],
+     ["received-request", searchTerm],
       ({ pageParam = 1 }) =>
         getReceiveRequest({
           page: pageParam,
           limit: 10,
+          keyword: searchTerm
         }),
       {
         getNextPageParam: (lastPage, allPages) => {
@@ -38,16 +42,15 @@ export default function ReceivedRequest() {
     
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount =  data?.pages[0]?.totalCount ?? 0;
-  const [isModalopen, setIsModalOpen] = useState<boolean>(false);
+
+// 검색 처리 함수
+const handleSearch = (keyword: string) => {
+  setSearchTerm(keyword);
+};
 
   // 정렬 처리 함수
   const handleSortChange = (order: string, sort: string) => {
 
-  };
-
-  // 검색 처리 함수
-  const handleSearch = (searchTerm: string) => {
-  
   };
 
   // 필터 처리 함수

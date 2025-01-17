@@ -9,7 +9,7 @@ const search_wrap = clsx(
 );
 
 interface SearchProps {
-  onSearch: (searchTerm: string) => void;
+  onSearch: (keyword: string) => void;
 }
 
 export default function Search({ onSearch }: SearchProps) {
@@ -18,6 +18,10 @@ export default function Search({ onSearch }: SearchProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setKeyword(value);
+
+    if (value === "") {
+      onSearch("");
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
