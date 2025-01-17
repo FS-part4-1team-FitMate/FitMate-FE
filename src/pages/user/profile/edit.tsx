@@ -136,7 +136,7 @@ function ProfileEdit() {
   }
 
   if (isError) {
-    return <div className="text-lg text-center">에러 발생.</div>;
+    return <div className="text-2lg text-center">에러 발생.</div>;
   }
 
   return (
