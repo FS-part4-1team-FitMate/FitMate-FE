@@ -2,7 +2,7 @@ import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageE
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { genderFilter_trans, requestFilter_trans, serviceFilter_trans } from "@/types/dropdown";
+import { filter_trans } from "@/types/dropdown";
 import { Lesson } from "@/types/lesson";
 
 interface CheckboxFilterProps {
@@ -80,19 +80,6 @@ export default function CheckboxFilter({
     }
   };
 
-  const getFilterTranslation = (option: string): string => {
-    switch (filterType) {
-      case "lessonType":
-        return serviceFilter_trans(option);
-      case "gender":
-        return genderFilter_trans(option);
-      case "filter":
-        return requestFilter_trans(option);
-      default:
-        return option;
-    }
-  };
-
   return (
     <div className="flex flex-col gap-[2.4rem]">
       <div className="flex pc:justify-between w-[32.8rem] py-[1.6rem] px-4 border-b border-line-200">
@@ -125,7 +112,7 @@ export default function CheckboxFilter({
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
             <p className="text-lg font-medium pc:text-2lg">
-              {getFilterTranslation(option)} ({filterCount[option] || 0})
+              {filter_trans(option)} ({filterCount[option] || 0})
             </p>
             <Image
               className="cursor-pointer"
