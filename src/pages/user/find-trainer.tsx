@@ -71,20 +71,20 @@ export default function FindTrainer() {
   // }
 
   return (
-    <div className="flex flex-col pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem] m-auto pb-16">
-      <div className="pc:block tablet:hidden mobile:hidden">
+    <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
+      <div className="hidden pc:block">
         <Title title="기사님 찾기" />
       </div>
-      <div className="flex justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row tablet:flex-col mobile:flex-col">
-        <div className="pc:flex tablet:hidden mobile:hidden flex-col gap-[4.6rem] w-fit">
+      <div className="flex flex-col justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row">
+        <div className="hidden flex-col gap-[4.6rem] w-fit pc:flex">
           <FilterTrainer onFilterChange={handleFilterChange} />
           {/* 비회원일 시 안보이게 설정 */}
           <FavoriteTrainer items={list} />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[11rem]">
           <div className="flex flex-col gap-[2.4rem]">
-            <div className="flex items-center pc:justify-end tablet:justify-between mobile:justify-between w-full pc:pt-0 tablet:pt-[1.6rem] mobile:pt-[1.6rem]">
-              <div className="pc:hidden tablet:block mobile:block">
+            <div className="flex justify-between items-center w-full pt-[1.6rem] pc:justify-end pc:pt-0">
+              <div className="block pc:hidden">
                 <FilterTrainer onFilterChange={handleFilterChange} />
               </div>
               <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
