@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { filter_trans } from "@/types/dropdown";
 import { FilterList, PastLessonFilterList, SortList } from "./DropdownList";
 import { FilterMenu, PastLessonFilterMenu, SortMenu } from "./DropdownMenu";
 
@@ -51,7 +52,12 @@ export default function Dropdown({
       }
     }
 
-    setCurrentValue(val);
+    if (type === "filter") {
+      setCurrentValue(filter_trans(val));
+    } else {
+      setCurrentValue(val);
+    }
+
     setIsOpen(false);
   };
 

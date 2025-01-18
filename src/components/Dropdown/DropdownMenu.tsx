@@ -1,4 +1,4 @@
-import { ic_arrow_down_md_36x36, ic_arrow_down_xs_20x20 } from "@/imageExports";
+import { ic_arrow_down_xs_20x20 } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import React from "react";
