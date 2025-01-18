@@ -23,7 +23,7 @@ const sort_menu = clsx(
 
 const filter_menu = clsx(
   "flex justify-between items-center w-full rounded-[1.6rem]",
-  "bg-gray-50 cursor-pointer",
+  "shadow-card bg-gray-50 cursor-pointer",
   "pc:h-[6.4rem] tablet:h-auto mobile:h-auto",
   "pc:py-[1.6rem] tablet:py-[0.6rem] mobile:py-[0.6rem]",
   "pc:px-[2.4rem] tablet:px-[1.3rem] mobile:px-[1.2rem]",

@@ -66,9 +66,9 @@ export default function FindTrainer() {
     }
   };
 
-  if (isError) {
-    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
-  }
+  // if (isError) {
+  //   return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
+  // }
 
   return (
     <div className="flex flex-col pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem] m-auto pb-16">
@@ -77,7 +77,7 @@ export default function FindTrainer() {
       </div>
       <div className="flex justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row tablet:flex-col mobile:flex-col">
         <div className="pc:flex tablet:hidden mobile:hidden flex-col gap-[4.6rem] w-fit">
-          <FilterTrainer />
+          <FilterTrainer onFilterChange={handleFilterChange} />
           {/* 비회원일 시 안보이게 설정 */}
           <FavoriteTrainer items={list} />
         </div>
@@ -85,7 +85,7 @@ export default function FindTrainer() {
           <div className="flex flex-col gap-[2.4rem]">
             <div className="flex items-center pc:justify-end tablet:justify-between mobile:justify-between w-full pc:pt-0 tablet:pt-[1.6rem] mobile:pt-[1.6rem]">
               <div className="pc:hidden tablet:block mobile:block">
-                <FilterTrainer />
+                <FilterTrainer onFilterChange={handleFilterChange} />
               </div>
               <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
             </div>
@@ -101,7 +101,7 @@ export default function FindTrainer() {
                 </div>
               ))}
             </InfiniteScroll>
-            {isLoading && <Loading />}
+            {/* {isLoading && <Loading />} */}
           </div>
         </div>
       </div>
