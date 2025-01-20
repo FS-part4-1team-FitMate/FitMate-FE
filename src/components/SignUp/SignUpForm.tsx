@@ -217,10 +217,10 @@ function SignUpForm({ role }: Props) {
           <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/google?role=${role}`}>
             <Image src={ic_google_sm} alt="google" width={40} height={40} />
           </Link>
-          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/kakao"}>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/kakao?role=${role}`}>
             <Image src={ic_kakao_sm} alt="kakao" width={40} height={40} />
           </Link>
-          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/naver"}>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/naver?role=${role}`}>
             <Image src={ic_naver_sm} alt="naver" width={40} height={40} />
           </Link>
         </div>
