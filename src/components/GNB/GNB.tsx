@@ -159,8 +159,8 @@ function GNB() {
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
                 {notiIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg">
-                    Notification
+                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg">
+                    알림
                   </div>
                 )}
               </div>
@@ -283,8 +283,8 @@ function GNB() {
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
                 {notiIsOpen && (
-                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg">
-                    Notification
+                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg">
+                    알림
                   </div>
                 )}
               </div>
