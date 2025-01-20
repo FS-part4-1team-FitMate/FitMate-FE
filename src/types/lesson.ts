@@ -1,4 +1,4 @@
-import { LessonRequestStatus, LessonType, LocationType, Profile } from "@/types/types";
+import { Profile } from "@/types/types";
 
 export interface LessonParams {
   page?: number;

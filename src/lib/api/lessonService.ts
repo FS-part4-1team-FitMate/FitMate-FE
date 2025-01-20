@@ -1,5 +1,5 @@
 import { LessonParams, LessonResult } from "@/types/lesson";
-import { get } from "./method";
+import { get, patch } from "./method";
 
 // 받은 레슨 요청 목록 조회
 export async function getReceiveRequest({
@@ -28,5 +28,11 @@ export async function getReceiveRequest({
 // 레슨 상세 조회
 export async function getLessonInfo(lessonId: string) {
   const res = await get(`/lessons/${lessonId}`);
+  return res.data;
+}
+
+// 레슨 요청 취소
+export async function cancelLessonRequest(lessonId: string) {
+  const res = await patch(`/lessons/${lessonId}/cancel`);
   return res.data;
 }
