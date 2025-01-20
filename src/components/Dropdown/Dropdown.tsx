@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { filter_trans } from "@/types/dropdown";
 import { FilterList, PastLessonFilterList, SortList } from "./DropdownList";
 import { FilterMenu, PastLessonFilterMenu, SortMenu } from "./DropdownMenu";
@@ -9,6 +9,7 @@ interface DropdownProps {
   filterType?: "lessonType" | "gender";
   setSortOrder?: (order: string, sort: string) => void;
   onFilterChange?: (filterType: string, value: string) => void;
+  currentValue?: string;
 }
 
 interface SortMapping {
@@ -31,14 +32,28 @@ export default function Dropdown({
   type,
   filterType,
   onFilterChange,
+  currentValue = "",
 }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currentValue, setCurrentValue] = useState<string>(() => {
-    if (type === "filter") {
-      return filterType === "lessonType" ? "서비스" : "성별";
+  const getInitialLabel = () => {
+    if (filterType === "gender") {
+      return "성별";
+    }
+    if (filterType === "lessonType") {
+      return "서비스";
     }
     return options[0];
-  });
+  };
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [currentLabel, setCurrentLabel] = useState<string>(options[0]);
+
+  useEffect(() => {
+    if (currentValue === "") {
+      setCurrentLabel(getInitialLabel());
+    } else {
+      setCurrentLabel(filter_trans(currentValue));
+    }
+  }, [currentValue]);
 
   const handleOptionClick = (val: string) => {
     if (setSortOrder && type === "sort") {
@@ -46,25 +61,18 @@ export default function Dropdown({
       setSortOrder(orderValue, sortValue);
     }
 
-    if (filterType) {
-      if (onFilterChange) {
-        onFilterChange(filterType, val);
-      }
+    if (filterType && onFilterChange) {
+      onFilterChange(filterType, val);
     }
 
-    if (type === "filter") {
-      setCurrentValue(filter_trans(val));
-    } else {
-      setCurrentValue(val);
-    }
-
+    setCurrentLabel(val);
     setIsOpen(false);
   };
 
   if (type === "sort") {
     return (
       <div className="relative flex flex-col w-max">
-        <SortMenu currentSort={currentValue} onToggle={() => setIsOpen((prev) => !prev)} />
+        <SortMenu currentSort={currentLabel} onToggle={() => setIsOpen((prev) => !prev)} />
         {isOpen && <SortList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
@@ -87,7 +95,7 @@ export default function Dropdown({
                 ? "border border-blue-300 text-blue-300 bg-blue-50"
                 : "border border-gray-100"
             }
-            currentFilter={currentValue}
+            currentFilter={currentLabel}
             onToggle={() => setIsOpen((prev) => !prev)}
           />
         </div>
@@ -105,7 +113,7 @@ export default function Dropdown({
               ? "border border-blue-300 text-blue-300 bg-blue-50"
               : "border border-gray-100"
           }
-          currentQuote={currentValue}
+          currentQuote={filter_trans(currentLabel)}
           onToggle={() => setIsOpen((prev) => !prev)}
         />
         {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}
