@@ -60,9 +60,9 @@ export function FilterMenu({ className, currentFilter, onToggle }: FilterMenuPro
           <path
             d="M10 14L18 22L26 14"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </div>
@@ -86,9 +86,9 @@ export function PastLessonFilterMenu({ className, currentQuote, onToggle }: Filt
           <path
             d="M10 14L18 22L26 14"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </div>
