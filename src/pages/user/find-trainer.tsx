@@ -63,6 +63,10 @@ export default function FindTrainer() {
 
   // 필터 처리 함수
   const handleFilterChange = (filterType: string, value: string) => {
+    if (value === "ALL") {
+      value = "";
+    }
+
     if (filterType === "lessonType") {
       setLessonType(value);
     } else if (filterType === "gender") {
