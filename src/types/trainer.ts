@@ -21,6 +21,9 @@ export interface Trainer {
     reviewCount: number;
     lessonCount: number;
   };
+  _count: {
+    favoritedByUsers: number;
+  };
   isFavorite: boolean;
 }
 

@@ -92,7 +92,7 @@ export default function FindTrainer() {
             onFilterReset={handleFilterReset}
             onFilterChange={handleFilterChange}
           />
-          <FavoriteTrainer items={list} />
+          <FavoriteTrainer />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[11rem]">
           <div className="flex flex-col gap-[2.4rem]">
