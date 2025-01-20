@@ -42,6 +42,7 @@ export default function FindTrainer() {
         lessonType: params.lessonType || undefined,
         gender: params.gender || undefined,
       }),
+    // 이전 데이터 유지하면서 부드럽게 화면전환하는 효과? (테스트용)
     // {
     //   keepPreviousData: true,
     // }
@@ -74,9 +75,9 @@ export default function FindTrainer() {
     setGender("");
   };
 
-  // if (isError) {
-  //   return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
-  // }
+  if (isError) {
+    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
+  }
 
   return (
     <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
@@ -91,7 +92,6 @@ export default function FindTrainer() {
             onFilterReset={handleFilterReset}
             onFilterChange={handleFilterChange}
           />
-          {/* 비회원일 시 안보이게 설정 */}
           <FavoriteTrainer items={list} />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[11rem]">
@@ -117,7 +117,7 @@ export default function FindTrainer() {
                 </div>
               ))}
             </InfiniteScroll>
-            {/* {isLoading && <Loading />} */}
+            {isLoading && <Loading />}
           </div>
         </div>
       </div>
