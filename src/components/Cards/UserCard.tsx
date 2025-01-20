@@ -12,7 +12,7 @@ const user_card = clsx(
 export default function UserCard({ item }: { item: Lesson }) {
   return (
     <div className={user_card}>
-      <p className="text-md font-semibold pc:text-2lg">{item.name} 고객님</p>
+      <p className="text-md font-semibold pc:text-2lg">{item.user.profile.name} 고객님</p>
       <div className="flex flex-col gap-[0.8rem] pc:gap-[1.4rem]">
         <div className="flex items-center gap-[0.8rem] pc:gap-[1.6rem]">
           <div className="w-fit py-[0.2rem] px-[0.6rem] rounded-[0.4rem] bg-bg-400 pc:py-[0.4rem]">
