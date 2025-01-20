@@ -6,9 +6,19 @@ interface DropdownProps {
   options: string[];
   type: "sort" | "filter" | "pastLesson";
   filterType?: "service" | "gender";
-  setSortOrder?: (sort: string) => void;
+  setSortOrder?: (order: string, sort: string) => void;
   onFilterChange?: (selectedValue: string) => void;
 }
+
+interface SortMapping {
+  [key: string]: [string, string];
+}
+
+const sortMapping: SortMapping = {
+  "레슨 빠른 순": ["start_date", "asc"],
+  "레슨 느린 순": ["start_date", "desc"],
+  "최근 요청 순": ["created_at", "desc"],
+};
 
 export default function Dropdown({
   setSortOrder,
@@ -26,8 +36,9 @@ export default function Dropdown({
   });
 
   const handleOptionClick = (val: string) => {
-    if (setSortOrder) {
-      setSortOrder(val);
+    if (setSortOrder && type === "sort") {
+      const [orderValue, sortValue] = sortMapping[val];
+      setSortOrder(orderValue, sortValue);
     }
 
     if (onFilterChange) {

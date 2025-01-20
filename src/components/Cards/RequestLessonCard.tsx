@@ -84,7 +84,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           "pc:gap-[2.4rem] pc:py-[1.6rem] pc:px-[1.8rem]",
         )}
       >
-        <p className="text-lg font-semibold pc:text-xl">{item.name} 고객님</p>
+        <p className="text-lg font-semibold pc:text-xl">{item.user.profile.name} 고객님</p>
         <HorizontalLine width="100%" />
         <LessonInfo
           startDate={formatDate(item.startDate)}
