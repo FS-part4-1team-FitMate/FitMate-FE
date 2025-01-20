@@ -28,7 +28,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
 
   const { values, setValues, errors, setErrors, handleChange, validate, isInputEmpty } =
     useQuoteValidate({
-      quote: "",
+      price: "",
       message: "",
     });
 
@@ -54,7 +54,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
 
     const quoteData = {
       lessonRequestId: item.id,
-      quote: parseInt(values.quote),
+      price: parseInt(values.price),
       message: values.message,
     };
     uploadQuote.mutate(quoteData);
@@ -63,7 +63,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
   const closeModal = () => {
     setIsQuoteModalOpen(false);
     setValues({
-      quote: "",
+      price: "",
       message: "",
     });
     setErrors({});
@@ -107,6 +107,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           반려
         </Button>
       </div>
+      {error && <div>{error}</div>}
 
       {isQuoteModalOpen && (
         <ModalContainer

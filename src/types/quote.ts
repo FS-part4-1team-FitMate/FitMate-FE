@@ -1,6 +1,6 @@
 export interface QuoteData {
   lessonRequestId: string;
-  quote: number;
+  price: number;
   message: string;
 }
 
