@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createDirectQuote, getMyLessonRequest } from "@/lib/api/lessonService";
 import { Profile } from "@/types/types";
@@ -9,7 +8,7 @@ import Favorite from "../Common/Card/TrainerInfo/Favorite";
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-
+  console.log(profile.userId);
   const { data } = useQuery(["my-lesson"], () => getMyLessonRequest());
 
   const lessonId = data?.list?.id;
