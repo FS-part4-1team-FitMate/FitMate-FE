@@ -1,8 +1,10 @@
 import { GetServerSideProps } from "next";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getProfile } from "@/lib/api/authService";
 import { acceptQuote, getQuote } from "@/lib/api/quoteService";
 import formatPrice from "@/lib/utils/formatPrice";
 import { Quote } from "@/types/quote";
+import { Profile } from "@/types/types";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import Button from "@/components/Common/Button";
 import Favorite from "@/components/Common/Card/TrainerInfo/Favorite";
@@ -24,19 +26,11 @@ const data = {
   updatedAt: "2025-01-14T02:20:19.471Z",
 };
 
-interface Props {
-  quoteInfo: Quote;
-}
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
-    /**
-     * @TODO 임시 id 지정
-     */
-    const quoteId = "1";
-    const quoteInfo = await getQuote(quoteId);
+    const quoteId = context.params;
 
-    if (!quoteInfo) {
+    if (!quoteId) {
       return {
         notFound: true,
       };
@@ -44,20 +38,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
-        quoteInfo,
+        quoteId,
       },
     };
   } catch (err) {
     console.error("Error fetching quote:", err);
     return {
       props: {
-        quoteInfo: null,
+        quoteId: null,
       },
     };
   }
 };
 
-export default function DetailPendingRequest({ quoteInfo }: Props) {
+export default function DetailPendingRequest({ quoteId }: { quoteId: string }) {
+  const { data: quoteInfo } = useQuery(["quote-detail", quoteId], () => getQuote(quoteId));
+
+  const trainerId = quoteInfo?.trainerId;
+
+  const { data: trainer } = useQuery<Profile>(["trainer-detail", trainerId], () =>
+    getProfile(trainerId),
+  );
+
   const {
     mutate: accept,
     isLoading,
@@ -87,7 +89,7 @@ export default function DetailPendingRequest({ quoteInfo }: Props) {
       <Title title="견적 상세" />
       <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:max-w-[140rem]">
         <div className="flex flex-col gap-[2.4rem] w-full pc:max-w-[95.5rem] pc:pr-[10rem] pc:gap-16">
-          <FindTrainerCard quoteData={data} trainerId={data.trainerId} />
+          <FindTrainerCard profile={trainer} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
             <ShareSNS label="견적서 공유하기" />
