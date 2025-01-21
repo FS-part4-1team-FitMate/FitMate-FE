@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { filter_trans } from "@/types/dropdown";
 
 interface DropdownListProps {
   options: string[];
@@ -20,23 +21,16 @@ const filter_list = clsx(
   "z-10",
 );
 
-const sort_option = clsx(
-  "cursor-pointer py-[0.6rem]",
-  "pc:px-[0.8rem] tablet:px-[0.6rem] mobile:px-[0.6rem]",
-);
-
-const filter_option = clsx(
-  "cursor-pointer",
-  "pc:py-[1.6rem] tablet:py-[0.6rem] mobile:py-[0.6rem]",
-  "pc:px-[2.4rem] tablet:px-[1.4rem] mobile:px-[1.4rem]",
-);
-
 export function SortList({ options, onOptionClick }: DropdownListProps) {
   return (
     <div className={sort_list}>
       {options.map((option, index) => (
-        <div className={sort_option} key={index} onClick={() => onOptionClick(option)}>
-          <p className="font-semibold pc:text-md tablet:text-xs mobile:text-xs">{option}</p>
+        <div
+          className="cursor-pointer py-[0.6rem] px-[0.6rem] pc:px-[0.8rem]"
+          key={index}
+          onClick={() => onOptionClick(option)}
+        >
+          <p className="text-xs font-semibold pc:text-md">{option}</p>
         </div>
       ))}
     </div>
@@ -47,8 +41,12 @@ export function FilterList({ options, onOptionClick }: DropdownListProps) {
   return (
     <div className={filter_list}>
       {options.map((option, index) => (
-        <div className={filter_option} key={index} onClick={() => onOptionClick(option)}>
-          <p className="font-medium pc:text-2lg tablet:text-md mobile:text-md">{option}</p>
+        <div
+          className="cursor-pointer py-[0.6rem] px-[1.4rem] pc:py-[1.6rem] pc:px-[2.4rem]"
+          key={index}
+          onClick={() => onOptionClick(option)}
+        >
+          <p className="text-md font-medium pc:text-2lg">{filter_trans(option)}</p>
         </div>
       ))}
     </div>
@@ -59,8 +57,12 @@ export function PastLessonFilterList({ options, onOptionClick }: DropdownListPro
   return (
     <div className={filter_list}>
       {options.map((option, index) => (
-        <div className={filter_option} key={index} onClick={() => onOptionClick(option)}>
-          <p className="font-medium pc:text-2lg tablet:text-md mobile:text-md">{option}</p>
+        <div
+          className="cursor-pointer py-[0.6rem] px-[1.4rem] pc:py-[1.6rem] pc:px-[2.4rem]"
+          key={index}
+          onClick={() => onOptionClick(option)}
+        >
+          <p className="text-md font-medium pc:text-2lg">{filter_trans(option)}</p>
         </div>
       ))}
     </div>
