@@ -83,7 +83,7 @@ function GNB() {
       <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
         <div className="flex justify-start items-center gap-[16px]">
           <Link className="shrink-0" href="/">
-            <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
+            <Image className="h-auto" src={logo_xl} alt="Logo" width={96} height={32} />
           </Link>
           <ul className="flex justify-start items-center gap-[16px] text-lg">
             {user && user?.role === Role.USER ? (
@@ -170,6 +170,7 @@ function GNB() {
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 >
                   <Image
+                    className="object-contain rounded-full"
                     src={
                       profileData?.profileImagePresignedUrl
                         ? profileData.profileImagePresignedUrl
@@ -197,12 +198,13 @@ function GNB() {
                         }
                       >
                         <Image
+                          className="object-contain rounded-full"
                           src={
                             profileData?.profileImagePresignedUrl
                               ? profileData.profileImagePresignedUrl
                               : ic_profile_default_sm
                           }
-                          alt="google"
+                          alt="Profile Image"
                           width={24}
                           height={24}
                         />
@@ -229,7 +231,8 @@ function GNB() {
                     >
                       <div
                         className={
-                          router.pathname.endsWith("/edit") || router.pathname.endsWith("/regist")
+                          router.pathname.endsWith("profile/edit") ||
+                          router.pathname.endsWith("profile/regist")
                             ? active_class
                             : ""
                         }
@@ -267,7 +270,7 @@ function GNB() {
     <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100">
       <div className="flex justify-start items-center">
         <Link className="shrink-0" href="/">
-          <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
+          <Image className="h-auto" src={logo_xl} alt="Logo" width={96} height={32} />
         </Link>
       </div>
       <div>
@@ -290,12 +293,13 @@ function GNB() {
               </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
+                  className="object-contain rounded-full"
                   src={
                     profileData?.profileImagePresignedUrl
                       ? profileData.profileImagePresignedUrl
                       : ic_profile_default_sm
                   }
-                  alt="google"
+                  alt="Profile Image"
                   width={24}
                   height={24}
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
@@ -316,12 +320,13 @@ function GNB() {
                         }
                       >
                         <Image
+                          className="object-contain rounded-full"
                           src={
                             profileData?.profileImagePresignedUrl
                               ? profileData.profileImagePresignedUrl
                               : ic_profile_default_sm
                           }
-                          alt="google"
+                          alt="Profile Image"
                           width={24}
                           height={24}
                         />
@@ -348,7 +353,8 @@ function GNB() {
                     >
                       <div
                         className={
-                          router.pathname.endsWith("/edit") || router.pathname.endsWith("/regist")
+                          router.pathname.endsWith("profile/edit") ||
+                          router.pathname.endsWith("profile/regist")
                             ? active_class
                             : ""
                         }
