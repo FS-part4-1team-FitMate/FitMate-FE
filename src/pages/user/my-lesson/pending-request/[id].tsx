@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getProfile } from "@/lib/api/authService";
 import { acceptQuote, getQuote } from "@/lib/api/quoteService";
+import { getTrainerInfo } from "@/lib/api/trainerService";
 import formatPrice from "@/lib/utils/formatPrice";
 import { Quote } from "@/types/quote";
 import { Profile } from "@/types/types";
@@ -52,12 +52,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function DetailPendingRequest({ quoteId }: { quoteId: string }) {
-  const { data: quoteInfo } = useQuery(["quote-detail", quoteId], () => getQuote(quoteId));
+  const { data: quoteInfo } = useQuery<Quote>(["quote-detail", quoteId], () => getQuote(quoteId));
 
   const trainerId = quoteInfo?.trainerId;
+  console.log(trainerId);
 
   const { data: trainer } = useQuery<Profile>(["trainer-detail", trainerId], () =>
-    getProfile(trainerId),
+    getTrainerInfo(trainerId),
   );
 
   const {
