@@ -100,12 +100,14 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           견적 보내기
           <Image src={ic_edit_md} width={24} height={24} alt="견적 보내기" />
         </Button>
-        <Button
-          onClick={() => setIsRejectedModalOpen(true)}
-          className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
-        >
-          반려
-        </Button>
+        {item.isDirectQuote === true && (
+          <Button
+            onClick={() => setIsRejectedModalOpen(true)}
+            className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
+          >
+            반려
+          </Button>
+        )}
       </div>
 
       {isQuoteModalOpen && (

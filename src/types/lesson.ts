@@ -44,4 +44,14 @@ export interface LessonResult {
   list: Lesson[];
   totalCount: number;
   hasMore: boolean;
+  lessonTypeCounts: {
+    SPORTS: number;
+    FITNESS: number;
+    REHAB: number;
+  };
+  genderCounts: {
+    MALE: number;
+    FEMALE: number;
+  };
+  directQuoteRequestCount: number;
 }

@@ -3,18 +3,18 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { filter_trans } from "@/types/dropdown";
-import { Lesson } from "@/types/lesson";
+import { Lesson, LessonResult } from "@/types/lesson";
 
 interface CheckboxFilterProps {
-  receivedList: Lesson[];
+  data: LessonResult;
   label?: string;
   options: string[];
-  filterType: "lessonType" | "gender" | "filter";
+  filterType: "lessonType" | "gender" | "direct";
   onFilterChange?: (filterType: string, value: string) => void;
 }
 
 export default function CheckboxFilter({
-  receivedList,
+  data,
   label,
   options,
   filterType,
@@ -23,39 +23,6 @@ export default function CheckboxFilter({
   const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(
     new Array(options.length).fill(false),
   );
-
-  const filterCount: { [key: string]: number } = {};
-
-  // 필터 카운트 업데이트
-  if (filterType === "lessonType") {
-    receivedList.forEach((item: Lesson) => {
-      const filterKey = item[filterType];
-      if (filterKey) {
-        filterCount[filterKey] = (filterCount[filterKey] || 0) + 1;
-      }
-    });
-  }
-
-  if (filterType === "gender") {
-    receivedList.forEach((item: Lesson) => {
-      const gender = item.user.profile.gender;
-      if (gender) {
-        filterCount[gender] = (filterCount[gender] || 0) + 1;
-      }
-    });
-  }
-
-  // 수정 필요
-  if (filterType === "filter") {
-    receivedList.forEach((item: Lesson) => {
-      if (item.user.profile.region) {
-        filterCount["REGION"] = (filterCount["REGION"] || 0) + 1;
-      }
-      if (item.isDirectQuote) {
-        filterCount["DIRECT"] = (filterCount["DIRECT"] || 0) + 1;
-      }
-    });
-  }
 
   const handleCheckboxClick = (index: number) => {
     const updatedCheckedState = [...isCheckedFilter];
@@ -111,9 +78,7 @@ export default function CheckboxFilter({
             key={index}
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
-            <p className="text-lg font-medium pc:text-2lg">
-              {filter_trans(option)} ({filterCount[option] || 0})
-            </p>
+            <p className="text-lg font-medium pc:text-2lg">{filter_trans(option)}</p>
             <Image
               className="cursor-pointer"
               src={isCheckedFilter[index] ? ic_square_check_active_md : ic_square_check_inactive_md}

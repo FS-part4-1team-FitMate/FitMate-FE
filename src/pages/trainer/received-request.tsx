@@ -5,7 +5,7 @@ import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
-import { GenderFilter, RequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
+import { GenderFilter, ServiceFilter, UserSort } from "@/types/dropdown";
 import { LessonResult } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import CheckboxFilter from "@/components/CheckboxFilter";
@@ -18,7 +18,7 @@ import MobileFilter from "@/components/Modal/MobileFilter";
 const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
 const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-const receivedRequestFilter: string[] = ["REGION", "DIRECT"];
+const receivedRequestFilter: string[] = ["DIRECT"];
 
 export default function ReceivedRequest() {
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
@@ -54,8 +54,21 @@ export default function ReceivedRequest() {
     },
   );
 
+  if (!data) {
+    return <div>No data available</div>;
+  }
+  const result = data?.pages[0];
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
+
+  // const count: Pick<LessonResult, lessonTyp> = {
+  //   SPORTS: data?.lessonTypeCounts || 0,
+  //   FITNESS: data?.house || 0,
+  //   REHAB: data?.office || 0,
+  //   MALE: data?.assign || 0,
+  //   FEMALE: data?.genderCounts?.female || 0,
+  //   DIRECT: data?.directQuoteRequestCount || 0
+  // };
 
   // 검색 처리 함수
   const handleSearch = (keyword: string) => {
@@ -100,24 +113,24 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
-              receivedList={receivedList}
+              data={result}
               label="운동 유형"
               options={serviceFilter}
               filterType="lessonType"
               onFilterChange={handleFilterChange}
             />
             <CheckboxFilter
-              receivedList={receivedList}
+              data={result}
               label="성별"
               options={genderFilter}
               filterType="gender"
               onFilterChange={handleFilterChange}
             />
             <CheckboxFilter
-              receivedList={receivedList}
+              data={result}
               label="필터"
               options={receivedRequestFilter}
-              filterType="filter"
+              filterType="direct"
               onFilterChange={handleFilterChange}
             />
           </div>
