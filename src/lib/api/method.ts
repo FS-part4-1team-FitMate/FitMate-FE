@@ -12,6 +12,6 @@ export async function patch<T>(url: string, body?: T) {
   return instance.patch(url, body);
 }
 
-export async function remove(url: string) {
-  return instance.delete(url);
+export async function remove<T>(url: string, body?: T) {
+  return instance.delete(url, { data: body });
 }
