@@ -1,65 +1,127 @@
 import Link from "next/link";
 import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getTrainerList } from "@/lib/api/trainerService";
 import { TrainerSort } from "@/types/dropdown";
+import { TrainerResult } from "@/types/trainer";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
+import Loading from "@/components/Common/Loading";
 import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import FavoriteTrainer from "@/components/FindTrainer/FavoriteTrainer";
 import FilterTrainer from "@/components/FindTrainer/FilterTrainer";
 
-const data = [{ name: "김코드" }, { name: "강코드" }, { name: "박코드" }];
+const trainerSort: TrainerSort[] = [
+  "리뷰 많은 순",
+  "평점 높은 순",
+  "경력 높은 순",
+  "확정 횟수 많은 순",
+];
 
 export default function FindTrainer() {
-  // 오류 방지용 임시 trainerID 지정
-  const trainerId = 1;
-  const [keyword, setKeyword] = useState<string>("");
-  const trainerSort: TrainerSort[] = [
-    "리뷰 많은 순",
-    "평점 높은 순",
-    "경력 높은 순",
-    "확정 횟수 많은 순",
-  ];
+  const [order, setOrder] = useState<string>("reviewCount");
+  const [sort, setSort] = useState<string>("desc");
 
-  // 타입 지정 필요
-  const [filteredData, setFilteredData] = useState(data);
+  const [lessonType, setLessonType] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleSearch = () => {
-    const newFilteredData = data.filter((item) =>
-      item.name.toLowerCase().includes(keyword.toLowerCase()),
-    );
-    setFilteredData(newFilteredData);
+  const params = { order, sort, lessonType, gender, searchTerm };
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<TrainerResult>(
+    ["trainer-list", params],
+    ({ pageParam = 1 }) =>
+      getTrainerList({
+        page: pageParam,
+        limit: 5,
+        keyword: params.searchTerm,
+        order: params.order,
+        sort: params.sort,
+        lessonType: params.lessonType || undefined,
+        gender: params.gender || undefined,
+      }),
+    // 이전 데이터 유지하면서 부드럽게 화면전환하는 효과? (테스트용)
+    // {
+    //   keepPreviousData: true,
+    // }
+  );
+
+  const list = data?.pages.flatMap((page) => page.trainers) ?? [];
+
+  // 검색 처리 함수
+  const handleSearch = (keyword: string) => {
+    setSearchTerm(keyword);
   };
 
+  // 정렬 처리 함수
+  const handleSortChange = (order: string, sort: string) => {
+    setOrder(order);
+    setSort(sort);
+  };
+
+  // 필터 처리 함수
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (value === "ALL") {
+      value = "";
+    }
+
+    if (filterType === "lessonType") {
+      setLessonType(value);
+    } else if (filterType === "gender") {
+      setGender(value);
+    }
+  };
+
+  const handleFilterReset = () => {
+    setLessonType("");
+    setGender("");
+  };
+
+  if (isError) {
+    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
+  }
+
   return (
-    <div className="flex flex-col pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem] m-auto pb-16">
-      <div className="pc:block tablet:hidden mobile:hidden">
+    <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
+      <div className="hidden pc:block">
         <Title title="기사님 찾기" />
       </div>
-      <div className="flex justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row tablet:flex-col mobile:flex-col">
-        <div className="pc:flex tablet:hidden mobile:hidden flex-col gap-[4.6rem] w-fit">
-          <FilterTrainer />
-          <FavoriteTrainer items={filteredData} />
+      <div className="flex flex-col justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row">
+        <div className="hidden flex-col gap-[4.6rem] w-fit pc:flex">
+          <FilterTrainer
+            gender={gender}
+            lessonType={lessonType}
+            onFilterReset={handleFilterReset}
+            onFilterChange={handleFilterChange}
+          />
+          <FavoriteTrainer />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[11rem]">
           <div className="flex flex-col gap-[2.4rem]">
-            <div className="flex items-center pc:justify-end tablet:justify-between mobile:justify-between w-full pc:pt-0 tablet:pt-[1.6rem] mobile:pt-[1.6rem]">
-              <div className="pc:hidden tablet:block mobile:block">
-                <FilterTrainer />
+            <div className="flex justify-between items-center w-full pt-[1.6rem] pc:justify-end pc:pt-0">
+              <div className="block pc:hidden">
+                <FilterTrainer
+                  onFilterReset={handleFilterReset}
+                  onFilterChange={handleFilterChange}
+                />
               </div>
-              <Dropdown options={trainerSort} type="sort" />
+              <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
             </div>
-            <Search keyword={keyword} setKeyword={setKeyword} onSearch={handleSearch} />
+            <Search onSearch={handleSearch} />
           </div>
           <div className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap[2.4rem]">
-            {filteredData.map((item, index) => (
-              // 임시로 인덱스 키 지정 (수정 -> item.id)
-              <div key={index}>
-                <Link href={`/user/detail-trainer/${trainerId}`}>
-                  <FindTrainerCard item={item} />
-                </Link>
-              </div>
-            ))}
+            <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+              {list.map((item) => (
+                <div key={item.id}>
+                  <Link href={`/user/detail-trainer/${item.id}`}>
+                    <FindTrainerCard item={item} />
+                  </Link>
+                </div>
+              ))}
+            </InfiniteScroll>
+            {isLoading && <Loading />}
           </div>
         </div>
       </div>
