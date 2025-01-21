@@ -86,7 +86,7 @@ function SignUpForm({ role }: Props) {
 
   return (
     <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
-      <Image src={logo_xl} alt="Logo" width={384} height={124} priority />
+      <Image className="h-auto" src={logo_xl} alt="Logo" width={384} height={124} priority />
       <div className="text-lg flex flex-col items-center">
         {role === Role.USER ? (
           <>
