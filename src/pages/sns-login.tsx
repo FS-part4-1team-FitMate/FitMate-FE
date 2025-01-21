@@ -10,9 +10,6 @@ function SNSLogIn() {
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    // router.replace("/sns-login", undefined, { shallow: true });
-    console.log(window.location.search);
-    console.log(query); // decodeURIComponent needed?
     const accessToken = query.get("accessToken");
     const refreshToken = query.get("refreshToken");
     const user = JSON.parse(query.get("user")!);
@@ -30,19 +27,19 @@ function SNSLogIn() {
       // 권한에 따라 페이지 이동
       if (user.role === Role.USER) {
         if (user.hasProfile) {
-          router.push("/user/my-lesson/active-lesson");
+          router.replace("/user/my-lesson/active-lesson");
         } else {
-          router.push("/user/profile/regist");
+          router.replace("/user/profile/regist");
         }
       } else if (user.role === Role.TRAINER) {
         if (user.hasProfile) {
-          router.push("/trainer/managing-request/sent-request");
+          router.replace("/trainer/managing-request/sent-request");
         } else {
-          router.push(`/trainer/${user.id}/profile/regist`);
+          router.replace(`/trainer/${user.id}/profile/regist`);
         }
       }
     } else {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [router, setUser]);
 
