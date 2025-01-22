@@ -29,10 +29,10 @@ export default function ReceivedRequest() {
 
   const [lessonType, setLessonType] = useState<string>("");
   const [gender, setGender] = useState<string>("");
-  const [region, setRegion] = useState<string>(""); // 레슨 신청한 지역
+  const [region, setRegion] = useState<string>("");
   const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
 
-  const params = { searchTerm, order, sort, lessonType, gender, region };
+  const params = { searchTerm, order, sort, lessonType, gender, region, isDirectQuote };
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<LessonResult>(
     ["received-request", params],
@@ -46,6 +46,7 @@ export default function ReceivedRequest() {
         lesson_type: params.lessonType || undefined,
         gender: params.gender || undefined,
         region: params.region || undefined,
+        has_direct_quote: params.isDirectQuote,
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -61,14 +62,14 @@ export default function ReceivedRequest() {
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
-  // const count: Pick<LessonResult, lessonTyp> = {
-  //   SPORTS: data?.lessonTypeCounts || 0,
-  //   FITNESS: data?.house || 0,
-  //   REHAB: data?.office || 0,
-  //   MALE: data?.assign || 0,
-  //   FEMALE: data?.genderCounts?.female || 0,
-  //   DIRECT: data?.directQuoteRequestCount || 0
-  // };
+  const count = {
+    SPORTS: result?.lessonTypeCounts.SPORTS || 0,
+    FITNESS: result?.lessonTypeCounts.FITNESS || 0,
+    REHAB: result?.lessonTypeCounts.REHAB || 0,
+    MALE: result?.genderCounts?.male || 0,
+    FEMALE: result?.genderCounts?.female || 0,
+    DIRECT: result?.directQuoteRequestCount || 0,
+  };
 
   // 검색 처리 함수
   const handleSearch = (keyword: string) => {
@@ -87,13 +88,14 @@ export default function ReceivedRequest() {
       setLessonType(value);
     } else if (filterType === "gender") {
       setGender(value);
+    } else if (filterType === "direct") {
+      setIsDirectQuote(value === "DIRECT");
     }
   };
 
   const handleApplyFilters = (selectedOptions: any) => {
     setLessonType(selectedOptions.lessonType.join(","));
     setGender(selectedOptions.gender.join(","));
-    setRegion(selectedOptions.filter.includes("REGION") ? "REGION" : "");
     setIsDirectQuote(selectedOptions.filter.includes("DIRECT"));
   };
 
@@ -113,25 +115,25 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <div className="hidden flex-col gap-[5rem] pc:flex">
             <CheckboxFilter
-              data={result}
               label="운동 유형"
               options={serviceFilter}
               filterType="lessonType"
               onFilterChange={handleFilterChange}
+              count={count}
             />
             <CheckboxFilter
-              data={result}
               label="성별"
               options={genderFilter}
               filterType="gender"
               onFilterChange={handleFilterChange}
+              count={count}
             />
             <CheckboxFilter
-              data={result}
               label="필터"
               options={receivedRequestFilter}
               filterType="direct"
               onFilterChange={handleFilterChange}
+              count={count}
             />
           </div>
         </div>

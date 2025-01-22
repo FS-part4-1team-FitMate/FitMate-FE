@@ -32,8 +32,6 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       message: "",
     });
 
-  const [error, setError] = useState<string>("");
-
   const uploadQuote = useMutation({
     mutationFn: (quoteData: QuoteData) => sendQuote(quoteData),
     onSuccess: () => {
@@ -43,7 +41,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     },
     onError: (error: any) => {
       console.error("견적 전송에 실패하였습니다.", error.message);
-      setError("견적 전송에 실패하였습니다.");
+      alert("견적 전송에 실패하였습니다.");
     },
   });
 
@@ -74,7 +72,9 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       <div className="flex justify-between items-center">
         <div className="flex gap-[1.2rem]">
           <ChipLessonType lessonType={item.lessonType as LessonType} size="lg" />
-          <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
+          {item.isDirectQuote === true && (
+            <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
+          )}
         </div>
         <p className="text-gray-500 text-xs font-normal pc:text-md">{formatTime(item.createdAt)}</p>
       </div>

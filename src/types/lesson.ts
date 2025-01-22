@@ -1,4 +1,4 @@
-import { LessonRequestStatus, LessonType, LocationType, Profile } from "@/types/types";
+import { Profile } from "@/types/types";
 
 export interface LessonParams {
   page?: number;
@@ -11,6 +11,7 @@ export interface LessonParams {
   status?: string;
   gender?: string;
   region?: string;
+  has_direct_quote?: boolean;
   keyword?: string;
 }
 
@@ -50,8 +51,8 @@ export interface LessonResult {
     REHAB: number;
   };
   genderCounts: {
-    MALE: number;
-    FEMALE: number;
+    male: number;
+    female: number;
   };
   directQuoteRequestCount: number;
 }

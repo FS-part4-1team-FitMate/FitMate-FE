@@ -3,22 +3,21 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { filter_trans } from "@/types/dropdown";
-import { Lesson, LessonResult } from "@/types/lesson";
 
 interface CheckboxFilterProps {
-  data: LessonResult;
   label?: string;
   options: string[];
   filterType: "lessonType" | "gender" | "direct";
   onFilterChange?: (filterType: string, value: string) => void;
+  count: { [key: string]: number };
 }
 
 export default function CheckboxFilter({
-  data,
   label,
   options,
   filterType,
   onFilterChange,
+  count,
 }: CheckboxFilterProps) {
   const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(
     new Array(options.length).fill(false),
@@ -78,7 +77,9 @@ export default function CheckboxFilter({
             key={index}
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
-            <p className="text-lg font-medium pc:text-2lg">{filter_trans(option)}</p>
+            <p className="text-lg font-medium pc:text-2lg">
+              {filter_trans(option)} ({count[option]})
+            </p>
             <Image
               className="cursor-pointer"
               src={isCheckedFilter[index] ? ic_square_check_active_md : ic_square_check_inactive_md}
