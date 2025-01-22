@@ -81,7 +81,6 @@ export default function ReceivedRequest() {
             count={count}
             setLessonType={setLessonType}
             setGender={setGender}
-            region={region}
             setRegion={setRegion}
             setIsDirectQuote={setIsDirectQuote}
           />

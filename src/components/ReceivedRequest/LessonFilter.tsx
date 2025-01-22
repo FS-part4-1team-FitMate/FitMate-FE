@@ -1,36 +1,11 @@
-import { GenderFilter, RegionFilter, RequestFilter, ServiceFilter } from "@/types/dropdown";
+import { genderFilter, regionFilter, requestFilter, serviceFilter } from "@/types/dropdown";
 import CheckboxFilter from "../CheckboxFilter";
 import Dropdown from "../Dropdown/Dropdown";
-
-const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
-const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-const receivedRequestFilter: RequestFilter[] = ["DIRECT"];
-const regionFilter: RegionFilter[] = [
-  "ALL",
-  "BUSAN",
-  "CHUNGBUK",
-  "CHUNGNAM",
-  "DAEGU",
-  "DAEJEON",
-  "GANGWON",
-  "GWANGJU",
-  "GYEONGBUK",
-  "GYEONGGI",
-  "GYEONGNAM",
-  "INCHEON",
-  "JEJU",
-  "JEONBUK",
-  "JEONNAM",
-  "SEJONG",
-  "SEOUL",
-  "ULSAN",
-];
 
 interface LessonFilterProps {
   count: {};
   setLessonType: React.Dispatch<React.SetStateAction<string>>;
   setGender: React.Dispatch<React.SetStateAction<string>>;
-  region: string;
   setRegion: React.Dispatch<React.SetStateAction<string>>;
   setIsDirectQuote: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -39,7 +14,6 @@ export default function LessonFilter({
   count,
   setLessonType,
   setGender,
-  region,
   setRegion,
   setIsDirectQuote,
 }: LessonFilterProps) {
@@ -77,12 +51,17 @@ export default function LessonFilter({
       />
       <CheckboxFilter
         label="필터"
-        options={receivedRequestFilter}
+        options={requestFilter}
         filterType="direct"
         onFilterChange={handleFilterChange}
         count={count}
       />
-      <Dropdown type="filter" filterType="region" options={regionFilter} currentValue={region} />
+      <Dropdown
+        type="filter"
+        filterType="region"
+        options={regionFilter}
+        onFilterChange={handleFilterChange}
+      />
     </div>
   );
 }
