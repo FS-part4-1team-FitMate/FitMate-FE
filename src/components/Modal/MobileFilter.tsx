@@ -2,9 +2,12 @@ import { ic_X_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { GenderFilter, ServiceFilter } from "@/types/dropdown";
-import { Lesson } from "@/types/lesson";
+import { GenderFilter, RequestFilter, ServiceFilter } from "@/types/dropdown";
 import CheckboxFilter from "../CheckboxFilter";
+
+const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
+const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
+const receivedRequestFilter: RequestFilter[] = ["DIRECT"];
 
 const container = clsx(
   "absolute left-0 right-0",
@@ -14,43 +17,43 @@ const container = clsx(
 );
 
 interface ModalContainerProps {
-  receivedList: Lesson[];
-  onFilterChange: (filterType: string, value: string) => void;
+  setLessonType: React.Dispatch<React.SetStateAction<string>>;
+  setGender: React.Dispatch<React.SetStateAction<string>>;
+  setIsDirectQuote: React.Dispatch<React.SetStateAction<boolean>>;
   closeModal?: () => void;
-  onApplyFilters: (selectedOptions: any) => void;
+  count: {};
 }
 export default function MobileFilter({
-  receivedList,
-  onFilterChange,
+  setLessonType,
+  setGender,
+  setIsDirectQuote,
   closeModal,
-  onApplyFilters,
+  count,
 }: ModalContainerProps) {
   const [activeTab, setActiveTab] = useState("service");
   const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(new Array(3).fill(false));
-
-  const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
-  const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-  const receivedRequestFilter: string[] = ["REGION", "DIRECT"];
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
-  const handleCheckboxClick = (index: number) => {
-    const updatedCheckedState = [...isCheckedFilter];
-    updatedCheckedState[index] = !updatedCheckedState[index];
-    setIsCheckedFilter(updatedCheckedState);
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (filterType === "lessonType") {
+      setLessonType(value);
+    } else if (filterType === "gender") {
+      setGender(value);
+    } else if (filterType === "direct") {
+      setIsDirectQuote(value === "DIRECT");
+    }
   };
 
   const handleApplyFilters = () => {
-    // 체크된 옵션을 필터링된 값으로 전달
     const selectedOptions = {
       lessonType: serviceFilter.filter((_, index) => isCheckedFilter[index]),
       gender: genderFilter.filter((_, index) => isCheckedFilter[index]),
       filter: receivedRequestFilter.filter((_, index) => isCheckedFilter[index]),
     };
-    // 부모 컴포넌트로 필터를 전달
-    onApplyFilters(selectedOptions);
+
     closeModal && closeModal();
   };
 
@@ -90,26 +93,26 @@ export default function MobileFilter({
         <div className="tab-content">
           {activeTab === "service" && (
             <CheckboxFilter
-              receivedList={receivedList}
               filterType="lessonType"
-              onFilterChange={onFilterChange}
+              onFilterChange={handleFilterChange}
               options={serviceFilter}
+              count={count}
             />
           )}
           {activeTab === "gender" && (
             <CheckboxFilter
-              receivedList={receivedList}
               filterType="gender"
-              onFilterChange={onFilterChange}
+              onFilterChange={handleFilterChange}
               options={genderFilter}
+              count={count}
             />
           )}
           {activeTab === "filter" && (
             <CheckboxFilter
-              receivedList={receivedList}
-              filterType="filter"
-              onFilterChange={onFilterChange}
+              filterType="direct"
+              onFilterChange={handleFilterChange}
               options={receivedRequestFilter}
+              count={count}
             />
           )}
         </div>

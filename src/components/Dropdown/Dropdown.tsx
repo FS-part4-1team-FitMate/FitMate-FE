@@ -6,7 +6,7 @@ import { FilterMenu, PastLessonFilterMenu, SortMenu } from "./DropdownMenu";
 interface DropdownProps {
   options: string[];
   type: "sort" | "filter" | "pastLesson";
-  filterType?: "lessonType" | "gender";
+  filterType?: "lessonType" | "gender" | "region";
   setSortOrder?: (order: string, sort: string) => void;
   onFilterChange?: (filterType: string, value: string) => void;
   currentValue?: string;
@@ -41,6 +41,9 @@ export default function Dropdown({
     if (filterType === "lessonType") {
       return "서비스";
     }
+    if (filterType === "region") {
+      return filter_trans(options[0]);
+    }
     return options[0];
   };
 
@@ -65,8 +68,20 @@ export default function Dropdown({
       onFilterChange(filterType, val);
     }
 
-    setCurrentLabel(val);
+    setCurrentLabel(filter_trans(val));
     setIsOpen(false);
+  };
+
+  const getLabel = () => {
+    if (filterType === "gender") {
+      return <label className="hidden text-2lg font-medium pc:block">성별을 선택해주세요</label>;
+    } else if (filterType === "lessonType") {
+      return (
+        <label className="hidden text-2lg font-medium pc:block">어떤 서비스가 필요하세요?</label>
+      );
+    } else {
+      return <label className="text-nowrap text-xl font-medium">지역</label>;
+    }
   };
 
   if (type === "sort") {
@@ -82,13 +97,7 @@ export default function Dropdown({
     return (
       <div className="relative flex flex-col w-40 pc:w-[32.8rem]">
         <div className="flex flex-col gap-[1.6rem]">
-          {filterType === "gender" ? (
-            <label className="hidden text-2lg font-medium pc:block">성별을 선택해주세요</label>
-          ) : (
-            <label className="hidden text-2lg font-medium pc:block">
-              어떤 서비스가 필요하세요?
-            </label>
-          )}
+          {getLabel()}
           <FilterMenu
             className={
               isOpen === true
