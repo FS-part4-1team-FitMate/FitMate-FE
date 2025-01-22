@@ -89,7 +89,7 @@ function Regist() {
     description: string;
   }) => {
     // data.region = selectedRegion;
-    data.experience = Number(data.experience);
+    data.experience = Number(Number(data.experience).toFixed(0));
     console.log(data); // TODO: remove this.
     let profileImageFileToUpload;
     if ("profileImage" in data) {

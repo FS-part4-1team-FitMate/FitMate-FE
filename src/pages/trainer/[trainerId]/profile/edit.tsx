@@ -104,7 +104,7 @@ function ProfileEdit() {
     }
     console.log(changedData); // TODO: remove this.
     if (changedData.experience) {
-      changedData.experience = Number(changedData.experience);
+      changedData.experience = Number(Number(changedData.experience).toFixed(0));
     }
     let profileImageFileToUpload;
     if ("profileImage" in changedData && changedData?.profileImage?.length) {
