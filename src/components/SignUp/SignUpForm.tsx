@@ -7,6 +7,7 @@ import {
   ic_visibility_on,
   logo_xl,
 } from "@/imageExports";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -86,6 +87,10 @@ function SignUpForm({ role }: Props) {
 
   return (
     <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
+      <Head>
+        <title>회원 가입 | 핏메이트</title>
+        <meta name="description" content="핏메이트 회원 가입 페이지입니다." />
+      </Head>
       <Image className="h-auto" src={logo_xl} alt="Logo" width={384} height={124} priority />
       <div className="text-lg flex flex-col items-center">
         {role === Role.USER ? (
