@@ -58,8 +58,8 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     },
   );
 
-  const { mutate: accept, isError: isAcceptError } = useMutation({
-    mutationFn: acceptQuote,
+  const quoteAccept = useMutation({
+    mutationFn: (quoteId: string) => acceptQuote(quoteId),
     onSuccess: () => {
       alert("견적이 확정되었습니다.");
     },
@@ -71,7 +71,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
 
   const handleAccept = () => {
     if (quoteInfo && quoteInfo.id) {
-      accept(quoteInfo.id);
+      quoteAccept.mutate(quoteInfo.id);
     }
   };
 
@@ -85,10 +85,6 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
 
   if (isTrainerError || !trainer) {
     return <div>트레이너 정보를 불러오는 데 실패했습니다.</div>;
-  }
-
-  if (isAcceptError) {
-    return <div>견적 확정에 실패하였습니다.</div>;
   }
 
   const trainerInfo = trainer?.profile ?? {};
