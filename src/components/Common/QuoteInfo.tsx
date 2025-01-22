@@ -2,7 +2,9 @@ import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
 import { getLessonInfo } from "@/lib/api/lessonService";
 import formatDate from "@/lib/utils/formatDate";
+import formatDateTime from "@/lib/utils/formatDateTime";
 import { Lesson } from "@/types/lesson";
+import { LessonType, LocationType, lessonType_trans, locationType_trans } from "@/types/types";
 
 const content_area = clsx(
   "flex flex-col gap-[1.6rem]",
@@ -23,6 +25,14 @@ export default function QuoteInfo({ lessonRequestId }: { lessonRequestId: string
   if (isLoading) return <div>로딩중</div>;
   if (isError) return <div>견정 확정에 실패하였습니다.</div>;
 
+  const getLocation = () => {
+    if (data.locationType === "OFFLINE") {
+      return data.roadAddress;
+    } else {
+      return locationType_trans[data.locationType as LocationType];
+    }
+  };
+
   return (
     <div className="flex flex-col gap-[2.4rem] pc:gap-16">
       <p className="font-semibold text-lg pc:text-2xl">견적 정보</p>
@@ -33,19 +43,19 @@ export default function QuoteInfo({ lessonRequestId }: { lessonRequestId: string
         </div>
         <div className={content_wrap}>
           <p className={label}>서비스 </p>
-          <p className={content}>{data.lessonType}</p>
+          <p className={content}>{lessonType_trans[data.lessonType as LessonType].ko}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>레슨 시작일</p>
-          <p className={content}>{data.startDate}</p>
+          <p className={content}>{formatDateTime(data.startDate)}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>레슨 종료일</p>
-          <p className={content}>{data.endDate}</p>
+          <p className={content}>{formatDateTime(data.endDate)}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>레슨 장소 </p>
-          <p className={content}>{data.locationType}</p>
+          <p className={content}>{getLocation()}</p>
         </div>
       </div>
     </div>
