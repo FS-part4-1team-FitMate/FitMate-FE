@@ -68,7 +68,11 @@ export default function Dropdown({
       onFilterChange(filterType, val);
     }
 
-    setCurrentLabel(filter_trans(val));
+    if (type === "filter") {
+      setCurrentLabel(filter_trans(val));
+    } else {
+      setCurrentLabel(val);
+    }
     setIsOpen(false);
   };
 
