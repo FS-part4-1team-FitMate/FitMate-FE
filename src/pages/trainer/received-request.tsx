@@ -46,8 +46,8 @@ export default function ReceivedRequest() {
     },
   );
 
-  if (!data) {
-    return <div>No data available</div>;
+  if (isError) {
+    alert("데이터를 불러오는 중 오류가 발생하였습니다.");
   }
 
   const result = data?.pages[0];
@@ -62,10 +62,6 @@ export default function ReceivedRequest() {
     FEMALE: result?.genderCounts?.female || 0,
     DIRECT: result?.directQuoteRequestCount || 0,
   };
-
-  if (isError) {
-    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
-  }
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
