@@ -46,7 +46,7 @@ function Profile() {
             alt="Profile Preview"
             width={150}
             height={150}
-            className="rounded-3xl border-2 border-gray-300 object-cover"
+            className="rounded-3xl border-2 border-gray-300 object-cover w-[150px] h-[150px]"
           />
         </div>
         <hr className="w-full border-[1px] border-solid border-gray-300" />

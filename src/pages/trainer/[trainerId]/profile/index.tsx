@@ -65,7 +65,7 @@ function Profile() {
             alt="Profile"
             width={50}
             height={50}
-            className="rounded-full border-[2px] border-solid border-slate-800"
+            className="object-cover rounded-full border-[2px] border-solid border-slate-800 w-[50px] h-[50px]"
           />
           <div className="flex flex-col justify-between items-start">
             <div className="text-lg">{trainerProfile?.profile?.name || "김코드"}</div>
@@ -76,11 +76,14 @@ function Profile() {
         </div>
         <div className="flex flex-col gap-[10px] bg-white p-[10px] w-full">
           <div className="flex gap-[8px] justify-normal items-center">
-            <Rating rating={rating} reviewCount={reviewCount} />
+            <Rating
+              rating={trainerProfile?.profile?.rating}
+              reviewCount={trainerProfile?.profile?.reviewCount}
+            />
             <VerticalLine height="16px" />
             <Experience experience={trainerProfile?.profile?.experience} />
             <VerticalLine height="16px" />
-            <LessonCount lessonCount={lessonCount} />
+            <LessonCount lessonCount={trainerProfile?.profile?.lessonCount} />
           </div>
           <div className="flex items-center gap-[12px]">
             <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>
@@ -124,9 +127,9 @@ function Profile() {
         </Button>
       )}
       <HorizontalLine width="100%" />
-      <div className="text-xl font-semibold">리뷰 (100)</div>
+      <div className="text-xl font-semibold">리뷰 ({trainerProfile?.profile?.reviewCount})</div>
       <div className="tablet:flex tablet:flex-row tablet:justify-center tablet:gap-[50px] mx-auto max-w-full">
-        <RatingAvgCard ratingAvg={4.3} />
+        <RatingAvgCard ratingAvg={trainerProfile?.profile?.rating as number} />
         <RatingStatCard ratingStat={[100, 0, 0, 0, 120]} />
       </div>
       <div className="flex flex-col gap-[24px]">

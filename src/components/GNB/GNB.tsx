@@ -170,7 +170,7 @@ function GNB() {
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 >
                   <Image
-                    className="object-contain rounded-full"
+                    className="object-cover rounded-full w-[24px] h-[24px]"
                     src={
                       profileData?.profileImagePresignedUrl
                         ? profileData.profileImagePresignedUrl
@@ -198,7 +198,7 @@ function GNB() {
                         }
                       >
                         <Image
-                          className="object-contain rounded-full"
+                          className="object-cover rounded-full w-[24px] h-[24px]"
                           src={
                             profileData?.profileImagePresignedUrl
                               ? profileData.profileImagePresignedUrl
@@ -293,7 +293,7 @@ function GNB() {
               </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
-                  className="object-contain rounded-full"
+                  className="object-cover rounded-full w-[24px] h-[24px]"
                   src={
                     profileData?.profileImagePresignedUrl
                       ? profileData.profileImagePresignedUrl
@@ -320,7 +320,7 @@ function GNB() {
                         }
                       >
                         <Image
-                          className="object-contain rounded-full"
+                          className="object-cover rounded-full w-[24px] h-[24px]"
                           src={
                             profileData?.profileImagePresignedUrl
                               ? profileData.profileImagePresignedUrl
