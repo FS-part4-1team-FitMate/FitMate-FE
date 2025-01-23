@@ -121,7 +121,9 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       <div className="flex justify-between items-center">
         <div className="flex gap-[1.2rem]">
           <ChipLessonType lessonType={item.lessonType as LessonType} size="lg" />
-          <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
+          {item.isDirectQuote === true && (
+            <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
+          )}
         </div>
         <p className="text-gray-500 text-xs font-normal pc:text-md">{formatTime(item.createdAt)}</p>
       </div>
@@ -137,6 +139,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           startDate={formatDate(item.startDate)}
           endDate={formatDate(item.endDate)}
           locationType={locationType_trans[item.locationType as LocationType]}
+          address={item.roadAddress}
         />
       </div>
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
@@ -147,12 +150,14 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           견적 보내기
           <Image src={ic_edit_md} width={24} height={24} alt="견적 보내기" />
         </Button>
-        <Button
-          onClick={() => setIsRejectedModalOpen(true)}
-          className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
-        >
-          반려
-        </Button>
+        {item.isDirectQuote === true && (
+          <Button
+            onClick={() => setIsRejectedModalOpen(true)}
+            className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
+          >
+            반려
+          </Button>
+        )}
       </div>
 
       {isQuoteModalOpen && (

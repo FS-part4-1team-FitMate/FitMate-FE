@@ -11,6 +11,7 @@ export interface LessonParams {
   status?: string;
   gender?: string;
   region?: string;
+  has_direct_quote?: boolean;
   keyword?: string;
 }
 
@@ -52,4 +53,14 @@ export interface LessonResult {
   list: Lesson[];
   totalCount: number;
   hasMore: boolean;
+  lessonTypeCounts: {
+    SPORTS: number;
+    FITNESS: number;
+    REHAB: number;
+  };
+  genderCounts: {
+    male: number;
+    female: number;
+  };
+  directQuoteRequestCount: number;
 }

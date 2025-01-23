@@ -10,6 +10,7 @@ export async function getReceiveRequest({
   lesson_type,
   gender,
   region,
+  has_direct_quote,
   keyword,
 }: LessonParams): Promise<LessonResult> {
   const res = await get("/lessons", {
@@ -20,6 +21,7 @@ export async function getReceiveRequest({
     lesson_type,
     gender,
     region,
+    has_direct_quote,
     keyword,
   });
   return res.data;
