@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cancelLessonRequest } from "@/lib/api/lessonService";
+import { rejectedLesson } from "@/lib/api/lessonService";
 import { sendQuote } from "@/lib/api/quoteService";
 import formatDate from "@/lib/utils/formatDate";
 import formatTime from "@/lib/utils/formatTime";
@@ -27,14 +27,15 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
 
+  // const lessonId = item.id;
+  // const directQuoteRequestId = item.directQuoteRequest.id;
+
   const { values, setValues, errors, setErrors, handleChange, validate, isInputEmpty } =
     useQuoteValidate({
       price: "",
       message: "",
     });
   const [rejectionReason, setRejectionReason] = useState<string>("");
-
-  const [error, setError] = useState<string>("");
 
   const uploadQuote = useMutation({
     mutationFn: (quoteData: QuoteData) => sendQuote(quoteData),
@@ -45,12 +46,20 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     },
     onError: (error: any) => {
       console.error("견적 전송에 실패하였습니다.", error.message);
-      setError("견적 전송에 실패하였습니다.");
+      alert("견적 전송에 실패하였습니다.");
     },
   });
 
-  const cancelLesson = useMutation({
-    mutationFn: (lessonId: string) => cancelLessonRequest(lessonId),
+  const rejectionLesson = useMutation({
+    mutationFn: ({
+      lessonId,
+      directQuoteRequestId,
+      rejectionReason,
+    }: {
+      lessonId: string;
+      directQuoteRequestId: string;
+      rejectionReason: string;
+    }) => rejectedLesson(lessonId, directQuoteRequestId, rejectionReason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cancel-lesson"] });
       alert("요청을 반려하였습니다.");
@@ -58,7 +67,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     },
     onError: (error: any) => {
       console.error("요청 반려에 실패하였습니다.", error.message);
-      setError("요청 반려에 실패하였습니다.");
+      alert("요청 반려에 실패하였습니다.");
     },
   });
 
@@ -81,7 +90,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       return;
     }
 
-    cancelLesson.mutate(item.id);
+    rejectionLesson.mutate({ lessonId, directQuoteRequestId, rejectionReason });
   };
 
   const isRejectedEmpty = (): boolean => {
@@ -156,7 +165,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           buttonText="반려하기"
           closeModal={closeModal}
           onButtonClick={handleRejectedRequest}
-          isButtonEnabled={rejectionReason.length > 10}
+          isButtonEnabled={!isRejectedEmpty()}
         >
           <RejectedRequest item={item} value={rejectionReason} setValue={setRejectionReason} />
         </ModalContainer>
