@@ -57,6 +57,7 @@ function GNB() {
       setUser({
         ...user,
         ...profileData,
+        hasProfile: !!profileData.profile.id,
       });
     }
   }, [profileData]);
@@ -83,7 +84,7 @@ function GNB() {
       <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
         <div className="flex justify-start items-center gap-[16px]">
           <Link className="shrink-0" href="/">
-            <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
+            <Image className="h-auto" src={logo_xl} alt="Logo" width={96} height={32} />
           </Link>
           <ul className="flex justify-start items-center gap-[16px] text-lg">
             {user && user?.role === Role.USER ? (
@@ -159,8 +160,8 @@ function GNB() {
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
                 {notiIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg">
-                    Notification
+                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10">
+                    알림
                   </div>
                 )}
               </div>
@@ -170,6 +171,7 @@ function GNB() {
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 >
                   <Image
+                    className="object-cover rounded-full w-[24px] h-[24px]"
                     src={
                       profileData?.profileImagePresignedUrl
                         ? profileData.profileImagePresignedUrl
@@ -182,7 +184,7 @@ function GNB() {
                   <span className="text-md font-medium">{user?.nickname}</span>
                 </div>
                 {myProfileIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px]">
+                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px] z-10">
                     <div className="w-[240px] h-auto text-lg flex justify-center items-center py-[10px]">
                       <Link
                         href={
@@ -197,12 +199,13 @@ function GNB() {
                         }
                       >
                         <Image
+                          className="object-cover rounded-full w-[24px] h-[24px]"
                           src={
                             profileData?.profileImagePresignedUrl
                               ? profileData.profileImagePresignedUrl
                               : ic_profile_default_sm
                           }
-                          alt="google"
+                          alt="Profile Image"
                           width={24}
                           height={24}
                         />
@@ -229,7 +232,8 @@ function GNB() {
                     >
                       <div
                         className={
-                          router.pathname.endsWith("/edit") || router.pathname.endsWith("/regist")
+                          router.pathname.endsWith("profile/edit") ||
+                          router.pathname.endsWith("profile/regist")
                             ? active_class
                             : ""
                         }
@@ -267,7 +271,7 @@ function GNB() {
     <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100">
       <div className="flex justify-start items-center">
         <Link className="shrink-0" href="/">
-          <Image src={logo_xl} alt="Logo" width={96} height={32} priority />
+          <Image className="h-auto" src={logo_xl} alt="Logo" width={96} height={32} />
         </Link>
       </div>
       <div>
@@ -283,25 +287,26 @@ function GNB() {
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
                 {notiIsOpen && (
-                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl px-[10px] text-lg">
-                    Notification
+                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10">
+                    알림
                   </div>
                 )}
               </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
+                  className="object-cover rounded-full w-[24px] h-[24px]"
                   src={
                     profileData?.profileImagePresignedUrl
                       ? profileData.profileImagePresignedUrl
                       : ic_profile_default_sm
                   }
-                  alt="google"
+                  alt="Profile Image"
                   width={24}
                   height={24}
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 />
                 {myProfileIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px]">
+                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px] z-10">
                     <div className="w-[240px] h-auto text-lg flex justify-center items-center py-[10px]">
                       <Link
                         href={
@@ -316,12 +321,13 @@ function GNB() {
                         }
                       >
                         <Image
+                          className="object-cover rounded-full w-[24px] h-[24px]"
                           src={
                             profileData?.profileImagePresignedUrl
                               ? profileData.profileImagePresignedUrl
                               : ic_profile_default_sm
                           }
-                          alt="google"
+                          alt="Profile Image"
                           width={24}
                           height={24}
                         />
@@ -348,7 +354,8 @@ function GNB() {
                     >
                       <div
                         className={
-                          router.pathname.endsWith("/edit") || router.pathname.endsWith("/regist")
+                          router.pathname.endsWith("profile/edit") ||
+                          router.pathname.endsWith("profile/regist")
                             ? active_class
                             : ""
                         }
@@ -387,7 +394,7 @@ function GNB() {
             />
             {menuIsOpen &&
               (user && user?.role === Role.USER ? (
-                <div className="absolute top-[30px] right-0 w-[160px] bg-white border border-gray-300 rounded-xl px-[10px] py-[2px]">
+                <div className="absolute top-[30px] right-0 w-[160px] bg-white border border-gray-300 rounded-xl px-[10px] py-[2px] z-10">
                   <div className="w-[140px] h-auto text-lg flex justify-center items-center py-[10px]">
                     <Link
                       href="/user/create-request"

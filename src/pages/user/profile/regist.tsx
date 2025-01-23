@@ -89,14 +89,12 @@ function Regist() {
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result);
+        console.log(result); // TODO: remove this.
       }
-      if ("profile" in userData) {
-        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...user, ...userData };
-        setUser((prev) => userDataLS.user);
-        localStorage.setItem("userData", JSON.stringify(userDataLS));
-      }
+      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...user, ...userData, hasProfile: true };
+      setUser((prev) => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS));
       queryClient.invalidateQueries({
         queryKey: ["profile", user?.id],
       });
@@ -107,7 +105,7 @@ function Regist() {
   };
 
   return (
-    <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <main className="pc:flex justify-center items-start gap-[32px]">
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
           <div className={profile_menu}>

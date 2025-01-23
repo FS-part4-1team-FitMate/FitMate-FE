@@ -87,8 +87,8 @@ export async function postProfile(data: {
   description?: string;
 }): Promise<{
   profile: Profile;
-  profileImagePresignedUrl: string;
-  certificationPresignedUrl: string;
+  profileImagePresignedUrl?: string;
+  certificationPresignedUrl?: string;
 }> {
   try {
     const res = await instance.post("/profile", data);
