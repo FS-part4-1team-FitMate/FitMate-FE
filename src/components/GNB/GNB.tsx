@@ -57,6 +57,7 @@ function GNB() {
       setUser({
         ...user,
         ...profileData,
+        hasProfile: !!profileData.profile.id,
       });
     }
   }, [profileData]);
@@ -159,7 +160,7 @@ function GNB() {
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
                 {notiIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg">
+                  <div className="absolute top-[30px] right-0 w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10">
                     알림
                   </div>
                 )}
@@ -183,7 +184,7 @@ function GNB() {
                   <span className="text-md font-medium">{user?.nickname}</span>
                 </div>
                 {myProfileIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px]">
+                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px] z-10">
                     <div className="w-[240px] h-auto text-lg flex justify-center items-center py-[10px]">
                       <Link
                         href={
@@ -286,7 +287,7 @@ function GNB() {
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
                 {notiIsOpen && (
-                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg">
+                  <div className="absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10">
                     알림
                   </div>
                 )}
@@ -305,7 +306,7 @@ function GNB() {
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 />
                 {myProfileIsOpen && (
-                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px]">
+                  <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px] z-10">
                     <div className="w-[240px] h-auto text-lg flex justify-center items-center py-[10px]">
                       <Link
                         href={
@@ -393,7 +394,7 @@ function GNB() {
             />
             {menuIsOpen &&
               (user && user?.role === Role.USER ? (
-                <div className="absolute top-[30px] right-0 w-[160px] bg-white border border-gray-300 rounded-xl px-[10px] py-[2px]">
+                <div className="absolute top-[30px] right-0 w-[160px] bg-white border border-gray-300 rounded-xl px-[10px] py-[2px] z-10">
                   <div className="w-[140px] h-auto text-lg flex justify-center items-center py-[10px]">
                     <Link
                       href="/user/create-request"
