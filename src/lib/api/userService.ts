@@ -19,7 +19,7 @@ export const getFavorite = (
   favoriteTotalCount: number;
 }> => {
   try {
-    return instance.get(`/trainer/${trainerId}/favorite`);
+    return instance.get(`/trainers/${trainerId}/favorite`);
   } catch (err) {
     throw err;
   }
@@ -34,9 +34,9 @@ export const toggleFavorite = (
 }> => {
   try {
     if (isFavorite) {
-      return instance.delete(`/trainer/${trainerId}/favorite`);
+      return instance.delete(`/trainers/${trainerId}/favorite`);
     }
-    return instance.post(`/trainer/${trainerId}/favorite`);
+    return instance.post(`/trainers/${trainerId}/favorite`);
   } catch (err) {
     throw err;
   }

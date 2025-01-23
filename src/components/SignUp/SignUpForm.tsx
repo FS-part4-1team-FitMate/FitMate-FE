@@ -7,6 +7,7 @@ import {
   ic_visibility_on,
   logo_xl,
 } from "@/imageExports";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -86,7 +87,11 @@ function SignUpForm({ role }: Props) {
 
   return (
     <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
-      <Image src={logo_xl} alt="Logo" width={384} height={124} priority />
+      <Head>
+        <title>회원 가입 | 핏메이트</title>
+        <meta name="description" content="핏메이트 회원 가입 페이지입니다." />
+      </Head>
+      <Image className="h-auto" src={logo_xl} alt="Logo" width={384} height={124} priority />
       <div className="text-lg flex flex-col items-center">
         {role === Role.USER ? (
           <>
@@ -214,13 +219,13 @@ function SignUpForm({ role }: Props) {
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 간편 가입하기</div>
         <div className="flex justify-center items-center gap-[8px]">
-          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/google"}>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/google?role=${role}`}>
             <Image src={ic_google_sm} alt="google" width={40} height={40} />
           </Link>
-          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/kakao"}>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/kakao?role=${role}`}>
             <Image src={ic_kakao_sm} alt="kakao" width={40} height={40} />
           </Link>
-          <Link href={process.env.NEXT_PUBLIC_API_URL + "/auth/naver"}>
+          <Link href={process.env.NEXT_PUBLIC_API_URL + `/auth/naver?role=${role}`}>
             <Image src={ic_naver_sm} alt="naver" width={40} height={40} />
           </Link>
         </div>

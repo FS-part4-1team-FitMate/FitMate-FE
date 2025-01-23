@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { ic_edit_sm } from "@/imageExports";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
@@ -34,6 +35,9 @@ function Profile() {
 
   return (
     <main className="pc:flex justify-center items-start gap-[32px]">
+      <Head>
+        <title>나의 프로필</title>
+      </Head>
       <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
         <div className={profile_menu}>
           <h1 className="text-xl font-bold">나의 프로필</h1>
@@ -46,7 +50,7 @@ function Profile() {
             alt="Profile Preview"
             width={150}
             height={150}
-            className="rounded-3xl border-2 border-gray-300 object-cover"
+            className="rounded-3xl border-2 border-gray-300 object-cover w-[150px] h-[150px]"
           />
         </div>
         <hr className="w-full border-[1px] border-solid border-gray-300" />

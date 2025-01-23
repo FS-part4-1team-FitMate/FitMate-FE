@@ -89,27 +89,27 @@ function Regist() {
     description: string;
   }) => {
     // data.region = selectedRegion;
-    data.experience = Number(data.experience);
+    data.experience = Number(Number(data.experience).toFixed(0));
     console.log(data); // TODO: remove this.
     let profileImageFileToUpload;
     if ("profileImage" in data) {
       const profileImage = data.profileImage;
-      if (profileImage instanceof FileList) {
+      if (profileImage instanceof FileList && data.profileImage?.length) {
         profileImageFileToUpload = profileImage[0];
         data.profileImageCount = 1;
         data.contentType = profileImage[0].type;
-        delete data.profileImage;
       }
+      delete data.profileImage;
     }
     let certificationFileToUpload;
     if ("certification" in data) {
       const certification = data.certification;
-      if (certification instanceof FileList) {
+      if (certification instanceof FileList && data.certification?.length) {
         certificationFileToUpload = certification[0];
         data.certificationCount = 1;
         data.contentType = certification[0].type;
-        delete data.certification;
       }
+      delete data.certification;
     }
     try {
       const userData = await postProfile(data);
@@ -127,13 +127,10 @@ function Regist() {
         );
         console.log(result);
       }
-      if ("profile" in userData) {
-        const profile = userData.profile! as Profile;
-        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...user, profile };
-        setUser(userDataLS.user);
-        localStorage.setItem("userData", JSON.stringify(userDataLS));
-      }
+      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...user, ...userData, hasProfile: true };
+      setUser(userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS));
       queryClient.invalidateQueries({
         queryKey: ["profile", user?.id],
       });
@@ -144,7 +141,7 @@ function Regist() {
   };
 
   return (
-    <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <main className="pc:flex justify-center items-start gap-[32px]">
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
           <div className={profile_menu}>

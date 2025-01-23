@@ -8,6 +8,7 @@ import {
   logo_xl,
 } from "@/imageExports";
 import "dotenv/config";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -93,7 +94,11 @@ function LogIn() {
 
   return (
     <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
-      <Image src={logo_xl} alt="Logo" width={384} height={124} priority />
+      <Head>
+        <title>로그인 | 핏메이트</title>
+        <meta name="description" content="핏메이트 로그인 페이지입니다." />
+      </Head>
+      <Image className="h-auto" src={logo_xl} alt="Logo" width={384} height={124} priority />
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[16px] items-stretch w-full"
