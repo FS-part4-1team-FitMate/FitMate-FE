@@ -7,7 +7,13 @@ export interface QuoteData {
 export interface QuoteParams {
   page?: number;
   limit?: number;
+  order?: string;
+  sort?: string;
   status?: string;
+  trainer_id?: string;
+  min_price?: number;
+  max_price?: number;
+  lesson_request_id?: string;
 }
 
 export interface Quote {
