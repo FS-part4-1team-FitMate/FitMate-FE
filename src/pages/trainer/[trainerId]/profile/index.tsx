@@ -1,9 +1,11 @@
 import { useUser } from "@/contexts/UserProvider";
 import { ic_edit_sm, ic_profile_default_md, img_default_md } from "@/imageExports";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { getReviews } from "@/lib/api/ReviewService";
 import { getProfile } from "@/lib/api/authService";
 import { region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
@@ -16,9 +18,11 @@ import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
 import Rating from "@/components/Common/Card/TrainerInfo/Rating";
 import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
+import Pagination from "@/components/Common/Pagination";
 
 function Profile() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { trainerId } = router.query;
   const user = useUser();
   const myPage = trainerId === user?.id;
@@ -33,10 +37,46 @@ function Profile() {
     staleTime: 60 * 60 * 1000,
     enabled: !!trainerId,
   });
-  const [rating, setRating] = useState(5.0);
-  const [reviewCount, setReviewCount] = useState(100);
-  const [lessonCount, setLessonCount] = useState(100);
-  const [experience, setExperience] = useState(1.5);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", trainerId, { page, limit }],
+    queryFn: () => getReviews(trainerId as string, { page, limit }),
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    enabled: !!trainerId,
+  });
+  // console.log(reviews);
+
+  useEffect(() => {
+    const handleSearchChange = () => {
+      const { pathname, search } = window.location;
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get("page");
+      if (pageParam) {
+        setPage(Number(pageParam)); // 페이지 번호를 상태로 설정
+      }
+      router.replace(pathname + search);
+    };
+
+    // 초기 실행
+    handleSearchChange();
+
+    // URL 검색 변화를 감지
+    window.addEventListener("popstate", handleSearchChange);
+
+    return () => {
+      window.removeEventListener("popstate", handleSearchChange);
+    };
+  }, []);
+
+  let setTimeoutId: NodeJS.Timeout;
+  useEffect(() => {
+    clearTimeout(setTimeoutId);
+    setTimeoutId = setTimeout(() => {
+      window.history.pushState({}, "", `${window.location.pathname}?page=${page}`);
+    }, 256);
+  }, [page]);
 
   if (isLoading) {
     return <Loading />;
@@ -138,6 +178,13 @@ function Profile() {
           nickname="kipid"
           createdAt="2025-01-09"
           content={"기초부터 차근차근 잘 가르쳐 주십니다.\n\n짱입니다요."}
+        />
+      </div>
+      <div className="text-2lg flex justify-center items-center mx-auto my-[24px] gap-[16px]">
+        <Pagination
+          currentPage={page}
+          totalPages={reviews?.totalCount || 10}
+          onPageChange={setPage}
         />
       </div>
     </main>
