@@ -75,7 +75,7 @@ function Profile() {
     clearTimeout(setTimeoutId);
     setTimeoutId = setTimeout(() => {
       window.history.pushState({}, "", `${window.location.pathname}?page=${page}`);
-    }, 256);
+    }, 1024);
   }, [page]);
 
   if (isLoading) {
