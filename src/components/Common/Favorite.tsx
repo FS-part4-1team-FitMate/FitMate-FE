@@ -1,3 +1,4 @@
+import { useUser } from "@/contexts/UserProvider";
 import { ic_like_active_sm, ic_like_inactive_sm } from "@/imageExports";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -9,19 +10,21 @@ interface Props {
 }
 
 function Favorite({ trainerId }: Props) {
+  const user = useUser();
   const queryClient = useQueryClient();
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(false);
-  const [favoriteTotalCount, setFavoriteTotalCount] = useState<number | undefined>(100);
+  const [favoriteTotalCount, setFavoriteTotalCount] = useState<number | undefined>(0);
   const { data: favorite, isError } = useQuery({
     queryKey: ["favorite", trainerId],
     queryFn: () => getFavorite(trainerId),
     staleTime: 5 * 60 * 1000,
+    enabled: !!user?.id,
   });
   const toggleLikeMutation = useMutation({
     mutationFn: () => toggleFavorite(favorite?.isFavorite, trainerId),
     onSuccess: (data) => {
-      setFavoriteTotalCount(data.favoriteTotalCount);
-      setIsFavorite(data.isFavorite);
+      // setFavoriteTotalCount(data.favoriteTotalCount);
+      // setIsFavorite(data.isFavorite);
       queryClient.invalidateQueries(["favorite", trainerId]);
     },
     onError: (error) => {
@@ -35,7 +38,7 @@ function Favorite({ trainerId }: Props) {
   }, [favorite]);
 
   return (
-    <div className="inline-flex text-lg gap-[10px]">
+    <div className="inline-flex text-lg gap-[10px]" onClick={() => toggleLikeMutation.mutate()}>
       <Image
         src={isFavorite ? ic_like_active_sm : ic_like_inactive_sm}
         width={24}
