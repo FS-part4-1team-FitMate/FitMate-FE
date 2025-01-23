@@ -84,6 +84,8 @@ export default function MobileFilter({
     if (selectedGenders.length > 0) setGender(selectedGenders.join(","));
     if (selectedDirects.length > 0) setIsDirectQuote(selectedDirects.includes("DIRECT"));
     if (selectedRegions.length > 0) setRegion(selectedRegions.join(","));
+
+    closeModal && closeModal();
   };
 
   return (

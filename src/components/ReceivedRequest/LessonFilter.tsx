@@ -26,7 +26,6 @@ export default function LessonFilter({
   setIsDirectQuote,
   lessonTypeChecked,
   genderChecked,
-  regionChecked,
   directChecked,
   setLessonTypeChecked,
   setGenderChecked,
