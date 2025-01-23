@@ -13,9 +13,18 @@ interface LessonInfoProps {
   startDate: string;
   endDate: string;
   locationType: string;
+  address?: string;
 }
 
-export default function LessonInfo({ startDate, endDate, locationType }: LessonInfoProps) {
+export default function LessonInfo({ startDate, endDate, locationType, address }: LessonInfoProps) {
+  const getLocation = () => {
+    if (locationType === "오프라인") {
+      return address;
+    } else {
+      return locationType;
+    }
+  };
+
   return (
     <div className={lesson_detail}>
       <div className={info_text}>
@@ -39,7 +48,7 @@ export default function LessonInfo({ startDate, endDate, locationType }: LessonI
           <div className="w-fit py-[0.2rem] px-[0.6rem] rounded-[0.4rem] bg-bg-400 pc:py-[0.4rem]">
             <p className="text-gray-500 text-md font-medium pc:text-2lg">레슨 장소</p>
           </div>
-          <p>{locationType}</p>
+          <p>{getLocation()}</p>
         </div>
       </div>
     </div>

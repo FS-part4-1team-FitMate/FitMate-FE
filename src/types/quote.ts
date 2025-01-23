@@ -27,3 +27,9 @@ export interface Quote {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface QuoteResult {
+  list: Quote[];
+  hasMore: boolean;
+  totalCount: number;
+}
