@@ -10,8 +10,8 @@ interface CheckboxFilterProps {
   filterType: "lessonType" | "gender" | "direct" | "region";
   onFilterChange?: (filterType: string, value: string) => void;
   count?: { [key: string]: number };
-  isChecked?: boolean[];
-  setIsChecked?: React.Dispatch<React.SetStateAction<boolean[]>>;
+  isChecked: boolean[];
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
 export default function CheckboxFilter({
@@ -73,7 +73,7 @@ export default function CheckboxFilter({
           <p className="text-gray-300 text-lg font-normal pc:text-2lg">전체선택</p>
         </div>
       </div>
-      <div className="flex flex-col gap-[1.6rem]">
+      <div className={filterType === "region" ? "grid grid-cols-3" : "flex flex-col gap-[1.6rem]"}>
         {options.map((option, index) => (
           <div
             key={index}

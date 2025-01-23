@@ -90,6 +90,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
           startDate={formatDate(item.startDate)}
           endDate={formatDate(item.endDate)}
           locationType={locationType_trans[item.locationType as LocationType]}
+          address={item.roadAddress}
         />
       </div>
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
