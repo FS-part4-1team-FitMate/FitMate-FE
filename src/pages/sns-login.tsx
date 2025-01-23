@@ -13,7 +13,11 @@ function SNSLogIn() {
     const accessToken = query.get("accessToken");
     const refreshToken = query.get("refreshToken");
     const user = JSON.parse(query.get("user")!);
-    const hasProfile = eval(query.get("hasProfile")!);
+    const hasProfileString = query.get("hasProfile") as string;
+    let hasProfile = false;
+    if (hasProfileString === "true") {
+      hasProfile = true;
+    }
 
     if (accessToken && refreshToken && user) {
       localStorage.setItem(
@@ -22,7 +26,7 @@ function SNSLogIn() {
       );
 
       // 사용자 정보 업데이트
-      setUser(user);
+      setUser({ ...user, hasProfile });
 
       // 권한에 따라 페이지 이동
       if (user.role === Role.USER) {
