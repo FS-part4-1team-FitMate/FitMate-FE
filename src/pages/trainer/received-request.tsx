@@ -23,6 +23,15 @@ export default function ReceivedRequest() {
   const [region, setRegion] = useState<string>("");
   const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
 
+  const [selectedOptions, setSelectedOptions] = useState({
+    SPORTS: true,
+    FITNESS: true,
+    REHAB: true,
+    MALE: true,
+    FEMALE: true,
+    DIRECT: false,
+  });
+
   const params = { searchTerm, order, sort, lessonType, gender, region, isDirectQuote };
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<LessonResult>(
@@ -61,6 +70,30 @@ export default function ReceivedRequest() {
     MALE: result?.genderCounts?.male || 0,
     FEMALE: result?.genderCounts?.female || 0,
     DIRECT: result?.directQuoteRequestCount || 0,
+  };
+
+  const handleSetCheckedItems = (newItems: string[]) => {
+    const newState = {
+      SPORTS: false,
+      FITNESS: false,
+      REHAB: false,
+      MALE: false,
+      FEMALE: false,
+      DIRECT: false,
+    };
+
+    newItems.forEach((item) => {
+      if (item === "SPORTS") newState.SPORTS = true;
+      if (item === "FITNESS") newState.FITNESS = true;
+      if (item === "REHAB") newState.REHAB = true;
+      if (item === "MALE") newState.MALE = true;
+      if (item === "FEMALE") newState.FEMALE = true;
+      if (item === "DIRECT") newState.DIRECT = true;
+    });
+
+    setSelectedOptions(newState);
+    setSearchTerm("");
+    return;
   };
 
   return (
@@ -104,6 +137,7 @@ export default function ReceivedRequest() {
           setLessonType={setLessonType}
           setGender={setGender}
           setIsDirectQuote={setIsDirectQuote}
+          setRegion={setRegion}
           closeModal={() => setIsModalOpen(false)}
           count={count}
         />

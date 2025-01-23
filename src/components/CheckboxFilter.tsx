@@ -7,9 +7,11 @@ import { filter_trans } from "@/types/dropdown";
 interface CheckboxFilterProps {
   label?: string;
   options: string[];
-  filterType: "lessonType" | "gender" | "direct";
+  filterType: "lessonType" | "gender" | "direct" | "region";
   onFilterChange?: (filterType: string, value: string) => void;
-  count: { [key: string]: number };
+  count?: { [key: string]: number };
+  isChecked?: boolean[];
+  setIsChecked?: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
 export default function CheckboxFilter({
@@ -17,16 +19,16 @@ export default function CheckboxFilter({
   options,
   filterType,
   onFilterChange,
-  count,
+  count = {},
+  isChecked,
+  setIsChecked,
 }: CheckboxFilterProps) {
-  const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(
-    new Array(options.length).fill(false),
-  );
+  const safeCheckedState = isChecked?.length ? isChecked : new Array(options.length).fill(false);
 
   const handleCheckboxClick = (index: number) => {
-    const updatedCheckedState = [...isCheckedFilter];
+    const updatedCheckedState = [...isChecked];
     updatedCheckedState[index] = !updatedCheckedState[index];
-    setIsCheckedFilter(updatedCheckedState);
+    setIsChecked(updatedCheckedState);
 
     const selectedOptions = options.filter((_, idx) => updatedCheckedState[idx]).join(",");
     if (onFilterChange) {
@@ -35,10 +37,10 @@ export default function CheckboxFilter({
   };
 
   const handleSelectAll = () => {
-    const newCheckedState = isCheckedFilter.every((checked) => checked)
+    const newCheckedState = isChecked.every((checked) => checked)
       ? new Array(options.length).fill(false)
       : new Array(options.length).fill(true);
-    setIsCheckedFilter(newCheckedState);
+    setIsChecked(newCheckedState);
 
     if (onFilterChange) {
       const selectedOptions = newCheckedState.every(Boolean) ? options.join(",") : "";
@@ -59,7 +61,7 @@ export default function CheckboxFilter({
           <Image
             className="cursor-pointer"
             src={
-              isCheckedFilter.every((item) => item)
+              safeCheckedState.every((item) => item)
                 ? ic_square_check_active_md
                 : ic_square_check_inactive_md
             }
@@ -78,11 +80,15 @@ export default function CheckboxFilter({
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
             <p className="text-lg font-medium pc:text-2lg">
-              {filter_trans(option)} ({count[option]})
+              {filterType === "region"
+                ? `${filter_trans(option)}`
+                : `${filter_trans(option)} (${count[option]})`}
             </p>
             <Image
               className="cursor-pointer"
-              src={isCheckedFilter[index] ? ic_square_check_active_md : ic_square_check_inactive_md}
+              src={
+                safeCheckedState[index] ? ic_square_check_active_md : ic_square_check_inactive_md
+              }
               width={36}
               height={36}
               onClick={() => handleCheckboxClick(index)}

@@ -2,12 +2,8 @@ import { ic_X_sm } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { GenderFilter, RequestFilter, ServiceFilter } from "@/types/dropdown";
+import { genderFilter, regionFilter, requestFilter, serviceFilter } from "@/types/dropdown";
 import CheckboxFilter from "../CheckboxFilter";
-
-const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
-const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-const receivedRequestFilter: RequestFilter[] = ["DIRECT"];
 
 const container = clsx(
   "absolute left-0 right-0",
@@ -16,10 +12,13 @@ const container = clsx(
   "tablet:rounded-[3.2rem] mobile:rounded-b-none mobile:rounded-t-[3.2rem]",
 );
 
+const regionOptions = regionFilter.filter((_, index: number) => index !== 0);
+
 interface ModalContainerProps {
   setLessonType: React.Dispatch<React.SetStateAction<string>>;
   setGender: React.Dispatch<React.SetStateAction<string>>;
   setIsDirectQuote: React.Dispatch<React.SetStateAction<boolean>>;
+  setRegion: React.Dispatch<React.SetStateAction<string>>;
   closeModal?: () => void;
   count: {};
 }
@@ -27,32 +26,60 @@ export default function MobileFilter({
   setLessonType,
   setGender,
   setIsDirectQuote,
+  setRegion,
   closeModal,
   count,
 }: ModalContainerProps) {
   const [activeTab, setActiveTab] = useState("service");
-  const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(new Array(3).fill(false));
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
-  const handleFilterChange = (filterType: string, value: string) => {
+  const [lessonTypeChecked, setLessonTypeChecked] = useState<boolean[]>(
+    new Array(serviceFilter.length).fill(false),
+  );
+  const [genderChecked, setGenderChecked] = useState<boolean[]>(
+    new Array(genderFilter.length).fill(false),
+  );
+  const [directChecked, setDirectChecked] = useState<boolean[]>(
+    new Array(requestFilter.length).fill(false),
+  );
+  const [regionChecked, setRegionChecked] = useState<boolean[]>(
+    new Array(regionOptions.length).fill(false),
+  );
+
+  const handleFilterChange = (filterType: string, selectedValues: string) => {
+    const selectedArray = selectedValues.split(",");
+
     if (filterType === "lessonType") {
-      setLessonType(value);
+      setLessonTypeChecked(serviceFilter.map((option) => selectedArray.includes(option)));
     } else if (filterType === "gender") {
-      setGender(value);
+      setGenderChecked(genderFilter.map((option) => selectedArray.includes(option)));
     } else if (filterType === "direct") {
-      setIsDirectQuote(value === "DIRECT");
+      setDirectChecked(requestFilter.map((option) => selectedArray.includes(option)));
+    } else if (filterType === "region") {
+      setRegionChecked(regionOptions.map((option) => selectedArray.includes(option)));
     }
   };
 
+  const isAnyFilterChecked = [
+    ...lessonTypeChecked,
+    ...genderChecked,
+    ...directChecked,
+    ...regionChecked,
+  ].some((checked) => checked);
+
   const handleApplyFilters = () => {
-    const selectedOptions = {
-      lessonType: serviceFilter.filter((_, index) => isCheckedFilter[index]),
-      gender: genderFilter.filter((_, index) => isCheckedFilter[index]),
-      filter: receivedRequestFilter.filter((_, index) => isCheckedFilter[index]),
-    };
+    const selectedLessonTypes = serviceFilter.filter((_, index) => lessonTypeChecked[index]);
+    const selectedGenders = genderFilter.filter((_, index) => genderChecked[index]);
+    const selectedDirects = requestFilter.filter((_, index) => directChecked[index]);
+    const selectedRegions = regionOptions.filter((_, index) => regionChecked[index]);
+
+    if (selectedLessonTypes.length > 0) setLessonType(selectedLessonTypes.join(","));
+    if (selectedGenders.length > 0) setGender(selectedGenders.join(","));
+    if (selectedDirects.length > 0) setIsDirectQuote(selectedDirects.includes("DIRECT"));
+    if (selectedRegions.length > 0) setRegion(selectedRegions.join(","));
 
     closeModal && closeModal();
   };
@@ -75,10 +102,16 @@ export default function MobileFilter({
               성별
             </button>
             <button
-              className={`text-2lg ${activeTab === "filter" ? "text-black-400 font-bold" : "text-gray-400 font-semibold"}`}
-              onClick={() => handleTabClick("filter")}
+              className={`text-2lg ${activeTab === "direct" ? "text-black-400 font-bold" : "text-gray-400 font-semibold"}`}
+              onClick={() => handleTabClick("direct")}
             >
               필터
+            </button>
+            <button
+              className={`text-2lg ${activeTab === "region" ? "text-black-400 font-bold" : "text-gray-400 font-semibold"}`}
+              onClick={() => handleTabClick("region")}
+            >
+              지역
             </button>
           </div>
           <Image
@@ -97,6 +130,8 @@ export default function MobileFilter({
               onFilterChange={handleFilterChange}
               options={serviceFilter}
               count={count}
+              isChecked={lessonTypeChecked || []}
+              setIsChecked={setLessonTypeChecked}
             />
           )}
           {activeTab === "gender" && (
@@ -105,20 +140,37 @@ export default function MobileFilter({
               onFilterChange={handleFilterChange}
               options={genderFilter}
               count={count}
+              isChecked={genderChecked || []}
+              setIsChecked={setGenderChecked}
             />
           )}
-          {activeTab === "filter" && (
+          {activeTab === "direct" && (
             <CheckboxFilter
               filterType="direct"
               onFilterChange={handleFilterChange}
-              options={receivedRequestFilter}
+              options={requestFilter}
               count={count}
+              isChecked={directChecked || []}
+              setIsChecked={setDirectChecked}
+            />
+          )}
+          {activeTab === "region" && (
+            <CheckboxFilter
+              filterType="region"
+              onFilterChange={handleFilterChange}
+              options={regionOptions}
+              isChecked={regionChecked || []}
+              setIsChecked={setRegionChecked}
             />
           )}
         </div>
         <button
+          disabled={!isAnyFilterChecked}
           onClick={handleApplyFilters}
-          className="w-full h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold bg-gray-200"
+          className={clsx(
+            "w-full h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold",
+            isAnyFilterChecked ? "bg-blue-300" : "bg-gray-200",
+          )}
         >
           조회하기
         </button>
