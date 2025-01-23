@@ -20,6 +20,8 @@ import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 import Pagination from "@/components/Common/Pagination";
 
+let setTimeoutId: NodeJS.Timeout;
+
 function Profile() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -70,7 +72,6 @@ function Profile() {
     };
   }, []);
 
-  let setTimeoutId: NodeJS.Timeout;
   useEffect(() => {
     clearTimeout(setTimeoutId);
     setTimeoutId = setTimeout(() => {
