@@ -27,9 +27,6 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
 
-  // const lessonId = item.id;
-  // const directQuoteRequestId = item.directQuoteRequest.id;
-
   const { values, setValues, errors, setErrors, handleChange, validate, isInputEmpty } =
     useQuoteValidate({
       price: "",
@@ -90,7 +87,18 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       return;
     }
 
-    rejectionLesson.mutate({ lessonId, directQuoteRequestId, rejectionReason });
+    const lessonId = item.id;
+    const directQuoteRequestId = item.directQuoteRequest?.[0]?.directQuoteRequestId;
+
+    if (item.isDirectQuote && directQuoteRequestId) {
+      rejectionLesson.mutate({
+        lessonId,
+        directQuoteRequestId,
+        rejectionReason,
+      });
+    } else {
+      alert("본인의 지정 견적이 아닙니다.");
+    }
   };
 
   const isRejectedEmpty = (): boolean => {

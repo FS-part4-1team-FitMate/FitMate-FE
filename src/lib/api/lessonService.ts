@@ -27,9 +27,9 @@ export async function getReceiveRequest({
 
 // 지정 견적 반려
 export async function rejectedLesson(
-  lessonId: string,
-  directQuoteRequestId: string,
-  rejectionReason: string,
+  lessonId?: string,
+  directQuoteRequestId?: string,
+  rejectionReason?: string,
 ) {
   const res = await patch(
     `/lessons/${lessonId}/direct-quote/${directQuoteRequestId}/reject`,
