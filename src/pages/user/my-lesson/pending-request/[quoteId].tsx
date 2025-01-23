@@ -1,9 +1,11 @@
 import { ParsedUrlQuery } from "querystring";
 import { GetServerSideProps } from "next";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { getLessonInfo } from "@/lib/api/lessonService";
 import { acceptQuote, getQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import formatPrice from "@/lib/utils/formatPrice";
+import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import Button from "@/components/Common/Button";
@@ -56,6 +58,14 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     },
   );
 
+  const {
+    data: lesson,
+    isLoading: isLessonLoading,
+    isError: isLessonError,
+  } = useQuery<Lesson>(["lesson-info", quoteInfo?.lessonRequestId], () =>
+    getLessonInfo(quoteInfo?.lessonRequestId as string),
+  );
+
   const quoteAccept = useMutation({
     mutationFn: (quoteId: string) => acceptQuote(quoteId),
     onSuccess: () => {
@@ -73,7 +83,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     }
   };
 
-  if (isQuoteLoading || isTrainerLoading) {
+  if (isQuoteLoading || isTrainerLoading || isLessonLoading) {
     return <Loading />;
   }
 
@@ -85,6 +95,10 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     return <div>트레이너 정보를 불러오는 데 실패했습니다.</div>;
   }
 
+  if (isLessonError || !lesson) {
+    return <div>레슨 정보를 불러오는 데 실패했습니다.</div>;
+  }
+
   const trainerInfo = trainer?.profile ?? {};
 
   return (
@@ -92,7 +106,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
       <Title title="견적 상세" />
       <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:max-w-[140rem]">
         <div className="flex flex-col gap-[2.4rem] w-full pc:max-w-[95.5rem] pc:pr-[10rem] pc:gap-16">
-          <FindTrainerCard profile={trainerInfo} />
+          <FindTrainerCard profile={trainerInfo} request={lesson?.isDirectQuote} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
             <ShareSNS label="견적서 공유하기" />

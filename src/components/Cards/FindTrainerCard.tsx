@@ -1,7 +1,8 @@
+import { Lesson } from "@/types/lesson";
 import { Trainer } from "@/types/trainer";
-import { LessonType, Profile } from "@/types/types";
+import { LessonType, Profile, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
-import ChipRequestStatus from "../Chip/ChipRequestStatus";
+import ChipRequest from "../Chip/ChipRequest";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
@@ -9,9 +10,10 @@ interface FindTrainerCardProps {
   item?: Trainer;
   profile?: Profile;
   status?: string;
+  request?: boolean;
 }
 
-export default function FindTrainerCard({ item, profile, status }: FindTrainerCardProps) {
+export default function FindTrainerCard({ item, profile, status, request }: FindTrainerCardProps) {
   if (item) {
     return (
       <CardContainer width="100%" gap="1.6rem">
@@ -19,6 +21,7 @@ export default function FindTrainerCard({ item, profile, status }: FindTrainerCa
           {item?.profile?.lessonType?.map((lessonType, index) => (
             <ChipLessonType key={index} lessonType={lessonType as LessonType} size="lg" />
           ))}
+          {request && <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />}
         </div>
         <p className="text-md font-semibold pc:text-2xl">{item?.profile?.intro}</p>
         <TrainerInfo
@@ -48,6 +51,7 @@ export default function FindTrainerCard({ item, profile, status }: FindTrainerCa
           {profile?.lessonType?.map((lessonType, index) => (
             <ChipLessonType key={index} lessonType={lessonType} size="lg" />
           ))}
+          {request && <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />}
         </div>
         <p className="text-md font-semibold pc:text-2xl">{profile?.intro}</p>
         <TrainerInfo
