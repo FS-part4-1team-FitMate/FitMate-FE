@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { ic_edit_sm, ic_profile_default_md, img_default_md } from "@/imageExports";
+import Head from "next/head";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -89,6 +90,9 @@ function Profile() {
   // TODO: || "채우기 용" 지우기.
   return (
     <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[800px] mx-auto p-[12px]">
+      <Head>
+        <title>{trainerProfile?.profile?.name} 강사님 페이지</title>
+      </Head>
       {myPage ? (
         <h1 className="text-xl font-semibold">마이 페이지</h1>
       ) : (
