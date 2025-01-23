@@ -1,7 +1,6 @@
 import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
-import { useState } from "react";
 import { filter_trans } from "@/types/dropdown";
 
 interface CheckboxFilterProps {

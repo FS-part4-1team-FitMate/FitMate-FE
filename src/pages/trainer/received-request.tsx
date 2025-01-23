@@ -3,7 +3,9 @@ import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
+import { genderFilter, requestFilter, serviceFilter } from "@/types/dropdown";
 import { LessonResult } from "@/types/lesson";
+import { region_options } from "@/types/types";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import Loading from "@/components/Common/Loading";
 import Title from "@/components/Common/Title";
@@ -23,14 +25,18 @@ export default function ReceivedRequest() {
   const [region, setRegion] = useState<string>("");
   const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
 
-  const [selectedOptions, setSelectedOptions] = useState({
-    SPORTS: true,
-    FITNESS: true,
-    REHAB: true,
-    MALE: true,
-    FEMALE: true,
-    DIRECT: false,
-  });
+  const [lessonTypeChecked, setLessonTypeChecked] = useState<boolean[]>(
+    new Array(serviceFilter.length).fill(true),
+  );
+  const [genderChecked, setGenderChecked] = useState<boolean[]>(
+    new Array(genderFilter.length).fill(true),
+  );
+  const [directChecked, setDirectChecked] = useState<boolean[]>(
+    new Array(requestFilter.length).fill(false),
+  );
+  const [regionChecked, setRegionChecked] = useState<boolean[]>(
+    new Array(region_options.length).fill(false),
+  );
 
   const params = { searchTerm, order, sort, lessonType, gender, region, isDirectQuote };
 
@@ -72,30 +78,6 @@ export default function ReceivedRequest() {
     DIRECT: result?.directQuoteRequestCount || 0,
   };
 
-  const handleSetCheckedItems = (newItems: string[]) => {
-    const newState = {
-      SPORTS: false,
-      FITNESS: false,
-      REHAB: false,
-      MALE: false,
-      FEMALE: false,
-      DIRECT: false,
-    };
-
-    newItems.forEach((item) => {
-      if (item === "SPORTS") newState.SPORTS = true;
-      if (item === "FITNESS") newState.FITNESS = true;
-      if (item === "REHAB") newState.REHAB = true;
-      if (item === "MALE") newState.MALE = true;
-      if (item === "FEMALE") newState.FEMALE = true;
-      if (item === "DIRECT") newState.DIRECT = true;
-    });
-
-    setSelectedOptions(newState);
-    setSearchTerm("");
-    return;
-  };
-
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
       <Title title="받은 요청" />
@@ -112,6 +94,14 @@ export default function ReceivedRequest() {
             setGender={setGender}
             setRegion={setRegion}
             setIsDirectQuote={setIsDirectQuote}
+            lessonTypeChecked={lessonTypeChecked}
+            genderChecked={genderChecked}
+            regionChecked={regionChecked}
+            directChecked={directChecked}
+            setLessonTypeChecked={setLessonTypeChecked}
+            setGenderChecked={setGenderChecked}
+            setRegionChecked={setRegionChecked}
+            setDirectChecked={setDirectChecked}
           />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
@@ -140,6 +130,14 @@ export default function ReceivedRequest() {
           setRegion={setRegion}
           closeModal={() => setIsModalOpen(false)}
           count={count}
+          lessonTypeChecked={lessonTypeChecked}
+          genderChecked={genderChecked}
+          regionChecked={regionChecked}
+          directChecked={directChecked}
+          setLessonTypeChecked={setLessonTypeChecked}
+          setGenderChecked={setGenderChecked}
+          setRegionChecked={setRegionChecked}
+          setDirectChecked={setDirectChecked}
         />
       )}
     </div>

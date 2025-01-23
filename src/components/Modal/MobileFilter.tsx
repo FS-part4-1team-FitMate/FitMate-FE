@@ -21,6 +21,14 @@ interface ModalContainerProps {
   setRegion: React.Dispatch<React.SetStateAction<string>>;
   closeModal?: () => void;
   count: {};
+  lessonTypeChecked: boolean[];
+  genderChecked: boolean[];
+  regionChecked: boolean[];
+  directChecked: boolean[];
+  setLessonTypeChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setGenderChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setRegionChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setDirectChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 export default function MobileFilter({
   setLessonType,
@@ -29,25 +37,20 @@ export default function MobileFilter({
   setRegion,
   closeModal,
   count,
+  lessonTypeChecked,
+  genderChecked,
+  regionChecked,
+  directChecked,
+  setLessonTypeChecked,
+  setGenderChecked,
+  setRegionChecked,
+  setDirectChecked,
 }: ModalContainerProps) {
   const [activeTab, setActiveTab] = useState("service");
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
-
-  const [lessonTypeChecked, setLessonTypeChecked] = useState<boolean[]>(
-    new Array(serviceFilter.length).fill(false),
-  );
-  const [genderChecked, setGenderChecked] = useState<boolean[]>(
-    new Array(genderFilter.length).fill(false),
-  );
-  const [directChecked, setDirectChecked] = useState<boolean[]>(
-    new Array(requestFilter.length).fill(false),
-  );
-  const [regionChecked, setRegionChecked] = useState<boolean[]>(
-    new Array(regionOptions.length).fill(false),
-  );
 
   const handleFilterChange = (filterType: string, selectedValues: string) => {
     const selectedArray = selectedValues.split(",");
@@ -68,9 +71,10 @@ export default function MobileFilter({
     ...genderChecked,
     ...directChecked,
     ...regionChecked,
-  ].some((checked) => checked);
+  ].some((checked) => !checked);
 
   const handleApplyFilters = () => {
+    // 모바일에서 필터링을 적용하는 버튼을 눌렀을 때 상태 업데이트
     const selectedLessonTypes = serviceFilter.filter((_, index) => lessonTypeChecked[index]);
     const selectedGenders = genderFilter.filter((_, index) => genderChecked[index]);
     const selectedDirects = requestFilter.filter((_, index) => directChecked[index]);
@@ -80,8 +84,6 @@ export default function MobileFilter({
     if (selectedGenders.length > 0) setGender(selectedGenders.join(","));
     if (selectedDirects.length > 0) setIsDirectQuote(selectedDirects.includes("DIRECT"));
     if (selectedRegions.length > 0) setRegion(selectedRegions.join(","));
-
-    closeModal && closeModal();
   };
 
   return (

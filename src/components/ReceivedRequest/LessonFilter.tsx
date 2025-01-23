@@ -8,6 +8,14 @@ interface LessonFilterProps {
   setGender: React.Dispatch<React.SetStateAction<string>>;
   setRegion: React.Dispatch<React.SetStateAction<string>>;
   setIsDirectQuote: React.Dispatch<React.SetStateAction<boolean>>;
+  lessonTypeChecked: boolean[];
+  genderChecked: boolean[];
+  regionChecked: boolean[];
+  directChecked: boolean[];
+  setLessonTypeChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setGenderChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setRegionChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setDirectChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
 export default function LessonFilter({
@@ -16,6 +24,14 @@ export default function LessonFilter({
   setGender,
   setRegion,
   setIsDirectQuote,
+  lessonTypeChecked,
+  genderChecked,
+  regionChecked,
+  directChecked,
+  setLessonTypeChecked,
+  setGenderChecked,
+  setRegionChecked,
+  setDirectChecked,
 }: LessonFilterProps) {
   const handleFilterChange = (filterType: string, value: string) => {
     if (value === "ALL") {
@@ -41,6 +57,8 @@ export default function LessonFilter({
         filterType="lessonType"
         onFilterChange={handleFilterChange}
         count={count}
+        isChecked={lessonTypeChecked || []}
+        setIsChecked={setLessonTypeChecked}
       />
       <CheckboxFilter
         label="성별"
@@ -48,6 +66,8 @@ export default function LessonFilter({
         filterType="gender"
         onFilterChange={handleFilterChange}
         count={count}
+        isChecked={genderChecked || []}
+        setIsChecked={setGenderChecked}
       />
       <CheckboxFilter
         label="필터"
@@ -55,6 +75,8 @@ export default function LessonFilter({
         filterType="direct"
         onFilterChange={handleFilterChange}
         count={count}
+        isChecked={directChecked || []}
+        setIsChecked={setDirectChecked}
       />
       <Dropdown
         type="filter"
