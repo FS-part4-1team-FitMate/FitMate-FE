@@ -13,8 +13,8 @@ const input = clsx(
 
 interface SendQuoteProps {
   item: Lesson;
-  values: { quote: string; message: string };
-  errors: { quote?: string; message?: string };
+  values: { price: string; message: string };
+  errors: { price?: string; message?: string };
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
@@ -32,13 +32,13 @@ export default function SendQuote({ item, values, errors, onInputChange }: SendQ
       <div className="flex flex-col gap-[1.6rem]">
         <label className="text-lg font-semibold pc:text-xl">견적가를 입력해주세요</label>
         <input
-          id="quote"
+          id="price"
           className={`${input} h-[6.4rem]`}
-          value={values.quote}
+          value={values.price}
           onChange={onInputChange}
           placeholder="견적가 입력"
         />
-        {errors.quote && <p className="pl-6 text-red-200 text-md font-semibold">{errors.quote}</p>}
+        {errors.price && <p className="pl-6 text-red-200 text-md font-semibold">{errors.price}</p>}
       </div>
 
       <HorizontalLine width="100%" />

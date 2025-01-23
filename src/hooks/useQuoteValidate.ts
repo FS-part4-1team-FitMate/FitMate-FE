@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 interface InitialValuesProps {
-  quote: string;
+  price: string;
   message: string;
 }
 
 interface Errors {
-  quote?: string;
+  price?: string;
   message?: string;
 }
 
@@ -18,9 +18,9 @@ export default function useQuoteValidate(initialValues: InitialValuesProps) {
     let isValid = true;
     let newError: Errors = {};
 
-    if (!values.quote || values.quote.length < 1 || isNaN(parseInt(values.quote))) {
+    if (!values.price || values.price.length < 1 || isNaN(parseInt(values.price))) {
       isValid = false;
-      newError.quote = "숫자로 입력해주세요";
+      newError.price = "숫자로 입력해주세요";
     }
 
     if (!values.message || values.message.length < 10) {
@@ -40,7 +40,7 @@ export default function useQuoteValidate(initialValues: InitialValuesProps) {
   };
 
   const isInputEmpty = (): boolean => {
-    return values.quote.trim() === "" || values.message.trim() === "";
+    return values.price.trim() === "" || values.message.trim() === "";
   };
 
   return {

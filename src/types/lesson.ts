@@ -32,7 +32,15 @@ export interface Lesson {
   status: string;
   createdAt: string;
   updatedAt: string;
-  directQuoteRequest?: [];
+  directQuoteRequest?: [
+    {
+      directQuoteRequestId: string | undefined;
+      lessonRequestId: string | undefined;
+      trainerId: string | undefined;
+      status: string | undefined;
+      rejectionReason: string | undefined;
+    },
+  ];
   user: {
     id: string;
     nickname: string;
