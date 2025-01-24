@@ -1,14 +1,13 @@
+import { ic_info_md } from "@/imageExports";
 import { ParsedUrlQuery } from "querystring";
 import { GetServerSideProps } from "next";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getLessonInfo } from "@/lib/api/lessonService";
-import { acceptQuote, getQuote } from "@/lib/api/quoteService";
+import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import { getQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import formatPrice from "@/lib/utils/formatPrice";
-import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
-import Button from "@/components/Common/Button";
 import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 import QuoteInfo from "@/components/Common/QuoteInfo";
@@ -58,32 +57,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     },
   );
 
-  const {
-    data: lesson,
-    isLoading: isLessonLoading,
-    isError: isLessonError,
-  } = useQuery<Lesson>(["lesson-info", quoteInfo?.lessonRequestId], () =>
-    getLessonInfo(quoteInfo?.lessonRequestId as string),
-  );
-
-  const quoteAccept = useMutation({
-    mutationFn: (quoteId: string) => acceptQuote(quoteId),
-    onSuccess: () => {
-      alert("견적이 확정되었습니다.");
-    },
-    onError: (err) => {
-      console.error("견적 확정 실패", err);
-      alert("견적 확정에 실패하였습니다.");
-    },
-  });
-
-  const handleAccept = () => {
-    if (quoteInfo && quoteInfo.id) {
-      quoteAccept.mutate(quoteInfo.id);
-    }
-  };
-
-  if (isQuoteLoading || isTrainerLoading || isLessonLoading) {
+  if (isQuoteLoading || isTrainerLoading) {
     return <Loading />;
   }
 
@@ -95,10 +69,6 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     return <div>트레이너 정보를 불러오는 데 실패했습니다.</div>;
   }
 
-  if (isLessonError || !lesson) {
-    return <div>레슨 정보를 불러오는 데 실패했습니다.</div>;
-  }
-
   const trainerInfo = trainer?.profile ?? {};
 
   return (
@@ -106,7 +76,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
       <Title title="견적 상세" />
       <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:max-w-[140rem]">
         <div className="flex flex-col gap-[2.4rem] w-full pc:max-w-[95.5rem] pc:pr-[10rem] pc:gap-16">
-          <FindTrainerCard profile={trainerInfo} request={lesson?.isDirectQuote} />
+          <FindTrainerCard profile={trainerInfo} status={quoteInfo.status} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
             <ShareSNS label="견적서 공유하기" />
@@ -119,23 +89,16 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">
             <QuoteInfo lessonRequestId={quoteInfo?.lessonRequestId} />
+            {quoteInfo.status !== "ACCEPTED" && (
+              <div className="flex items-center gap-[1.6rem] py-[2.4rem] px-[3.2rem] border border-blue-200 rounded-[1.2rem] bg-blue-100">
+                <Image src={ic_info_md} width={24} height={24} alt="느낌표" />
+                <p className="text-blue-300 text-lg font-regular">확정하지 않은 견적이에요!</p>
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex flex-col gap-16">
-          <div className="flex flex-row gap-[0.8rem] p-4">
-            <Button
-              onClick={handleAccept}
-              className={
-                "h-[6.4rem] p-4 rounded-[1.6rem] font-semibold w-full text-gray-50 bg-blue-300 pc:text-xl pc:w-[32.8rem]"
-              }
-            >
-              견적 확정하기
-            </Button>
-          </div>
-          <div className="hidden pc:flex pc:flex-col pc:gap-16">
-            <HorizontalLine width="100%" />
-            <ShareSNS label="견적서 공유하기" />
-          </div>
+        <div className="hidden pc:flex flex-col gap-16">
+          <ShareSNS label="견적서 공유하기" />
         </div>
       </div>
     </div>

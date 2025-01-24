@@ -12,6 +12,7 @@ interface LessonInfoProps {
   endDate: string;
   locationType: string;
   address?: string;
+  address?: string;
 }
 
 export default function LessonInfo({ startDate, endDate, locationType, address }: LessonInfoProps) {

@@ -1,24 +1,17 @@
-import { ic_filter_active_sm } from "@/imageExports";
 import clsx from "clsx";
-import Image from "next/image";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
-import { GenderFilter, RequestFilter, ServiceFilter, UserSort } from "@/types/dropdown";
+import { genderFilter, requestFilter, serviceFilter } from "@/types/dropdown";
 import { LessonResult } from "@/types/lesson";
+import { region_options } from "@/types/types";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
-import CheckboxFilter from "@/components/CheckboxFilter";
 import Loading from "@/components/Common/Loading";
-import Search from "@/components/Common/Search";
 import Title from "@/components/Common/Title";
-import Dropdown from "@/components/Dropdown/Dropdown";
 import MobileFilter from "@/components/Modal/MobileFilter";
-
-const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
-const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
-const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-const receivedRequestFilter: string[] = ["REGION", "DIRECT"];
+import LessonFilter from "@/components/ReceivedRequest/LessonFilter";
+import ListHeader from "@/components/ReceivedRequest/ListHeader";
 
 export default function ReceivedRequest() {
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
@@ -29,10 +22,23 @@ export default function ReceivedRequest() {
 
   const [lessonType, setLessonType] = useState<string>("");
   const [gender, setGender] = useState<string>("");
-  const [region, setRegion] = useState<string>(""); // 레슨 신청한 지역
+  const [region, setRegion] = useState<string>("");
   const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
 
-  const params = { searchTerm, order, sort, lessonType, gender, region };
+  const [lessonTypeChecked, setLessonTypeChecked] = useState<boolean[]>(
+    new Array(serviceFilter.length).fill(true),
+  );
+  const [genderChecked, setGenderChecked] = useState<boolean[]>(
+    new Array(genderFilter.length).fill(true),
+  );
+  const [directChecked, setDirectChecked] = useState<boolean[]>(
+    new Array(requestFilter.length).fill(false),
+  );
+  const [regionChecked, setRegionChecked] = useState<boolean[]>(
+    new Array(region_options.length).fill(false),
+  );
+
+  const params = { searchTerm, order, sort, lessonType, gender, region, isDirectQuote };
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<LessonResult>(
     ["received-request", params],
@@ -46,6 +52,7 @@ export default function ReceivedRequest() {
         lesson_type: params.lessonType || undefined,
         gender: params.gender || undefined,
         region: params.region || undefined,
+        has_direct_quote: params.isDirectQuote,
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -54,39 +61,22 @@ export default function ReceivedRequest() {
     },
   );
 
+  if (isError) {
+    alert("데이터를 불러오는 중 오류가 발생하였습니다.");
+  }
+
+  const result = data?.pages[0];
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
-  // 검색 처리 함수
-  const handleSearch = (keyword: string) => {
-    setSearchTerm(keyword);
+  const count = {
+    SPORTS: result?.lessonTypeCounts.SPORTS || 0,
+    FITNESS: result?.lessonTypeCounts.FITNESS || 0,
+    REHAB: result?.lessonTypeCounts.REHAB || 0,
+    MALE: result?.genderCounts?.male || 0,
+    FEMALE: result?.genderCounts?.female || 0,
+    DIRECT: result?.directQuoteRequestCount || 0,
   };
-
-  // 정렬 처리 함수
-  const handleSortChange = (order: string, sort: string) => {
-    setOrder(order);
-    setSort(sort);
-  };
-
-  // 필터 처리 함수
-  const handleFilterChange = (filterType: string, value: string) => {
-    if (filterType === "lessonType") {
-      setLessonType(value);
-    } else if (filterType === "gender") {
-      setGender(value);
-    }
-  };
-
-  const handleApplyFilters = (selectedOptions: any) => {
-    setLessonType(selectedOptions.lessonType.join(","));
-    setGender(selectedOptions.gender.join(","));
-    setRegion(selectedOptions.filter.includes("REGION") ? "REGION" : "");
-    setIsDirectQuote(selectedOptions.filter.includes("DIRECT"));
-  };
-
-  if (isError) {
-    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
-  }
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
@@ -98,43 +88,30 @@ export default function ReceivedRequest() {
         )}
       >
         <div className="flex flex-col gap-[4.6rem]">
-          <div className="hidden flex-col gap-[5rem] pc:flex">
-            <CheckboxFilter
-              receivedList={receivedList}
-              label="운동 유형"
-              options={serviceFilter}
-              filterType="lessonType"
-              onFilterChange={handleFilterChange}
-            />
-            <CheckboxFilter
-              receivedList={receivedList}
-              label="성별"
-              options={genderFilter}
-              filterType="gender"
-              onFilterChange={handleFilterChange}
-            />
-            <CheckboxFilter
-              receivedList={receivedList}
-              label="필터"
-              options={receivedRequestFilter}
-              filterType="filter"
-              onFilterChange={handleFilterChange}
-            />
-          </div>
+          <LessonFilter
+            count={count}
+            setLessonType={setLessonType}
+            setGender={setGender}
+            setRegion={setRegion}
+            setIsDirectQuote={setIsDirectQuote}
+            lessonTypeChecked={lessonTypeChecked}
+            genderChecked={genderChecked}
+            regionChecked={regionChecked}
+            directChecked={directChecked}
+            setLessonTypeChecked={setLessonTypeChecked}
+            setGenderChecked={setGenderChecked}
+            setRegionChecked={setRegionChecked}
+            setDirectChecked={setDirectChecked}
+          />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
-          <div className="flex flex-col gap-[2.4rem]">
-            <Search onSearch={handleSearch} />
-            <div className="flex justify-between items-center">
-              <p className="text-sm font-medium pc:text-lg">전체 {totalCount}건</p>
-              <div className="flex gap-[0.4rem]">
-                <Dropdown setSortOrder={handleSortChange} options={userSort} type="sort" />
-                <div className="block pc:hidden" onClick={() => setIsModalOpen(true)}>
-                  <Image src={ic_filter_active_sm} width={32} height={32} alt="모바일 필터" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ListHeader
+            totalCount={totalCount}
+            setIsModalOpen={setIsModalOpen}
+            setSearchTerm={setSearchTerm}
+            setOrder={setOrder}
+            setSort={setSort}
+          />
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             {receivedList.map((item) => (
               <div className="flex flex-col gap-[4.8rem]" key={item.id}>
@@ -147,10 +124,20 @@ export default function ReceivedRequest() {
       </div>
       {isModalopen && (
         <MobileFilter
-          receivedList={receivedList}
-          onFilterChange={handleFilterChange}
+          setLessonType={setLessonType}
+          setGender={setGender}
+          setIsDirectQuote={setIsDirectQuote}
+          setRegion={setRegion}
           closeModal={() => setIsModalOpen(false)}
-          onApplyFilters={handleApplyFilters}
+          count={count}
+          lessonTypeChecked={lessonTypeChecked}
+          genderChecked={genderChecked}
+          regionChecked={regionChecked}
+          directChecked={directChecked}
+          setLessonTypeChecked={setLessonTypeChecked}
+          setGenderChecked={setGenderChecked}
+          setRegionChecked={setRegionChecked}
+          setDirectChecked={setDirectChecked}
         />
       )}
     </div>

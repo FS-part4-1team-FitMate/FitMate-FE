@@ -1,66 +1,33 @@
 import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
-import { useState } from "react";
 import { filter_trans } from "@/types/dropdown";
-import { Lesson } from "@/types/lesson";
 
 interface CheckboxFilterProps {
-  receivedList: Lesson[];
   label?: string;
   options: string[];
-  filterType: "lessonType" | "gender" | "filter";
+  filterType: "lessonType" | "gender" | "direct" | "region";
   onFilterChange?: (filterType: string, value: string) => void;
+  count?: { [key: string]: number };
+  isChecked: boolean[];
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
 }
 
 export default function CheckboxFilter({
-  receivedList,
   label,
   options,
   filterType,
   onFilterChange,
+  count = {},
+  isChecked,
+  setIsChecked,
 }: CheckboxFilterProps) {
-  const [isCheckedFilter, setIsCheckedFilter] = useState<boolean[]>(
-    new Array(options.length).fill(false),
-  );
-
-  const filterCount: { [key: string]: number } = {};
-
-  // 필터 카운트 업데이트
-  if (filterType === "lessonType") {
-    receivedList.forEach((item: Lesson) => {
-      const filterKey = item[filterType];
-      if (filterKey) {
-        filterCount[filterKey] = (filterCount[filterKey] || 0) + 1;
-      }
-    });
-  }
-
-  if (filterType === "gender") {
-    receivedList.forEach((item: Lesson) => {
-      const gender = item.user.profile.gender;
-      if (gender) {
-        filterCount[gender] = (filterCount[gender] || 0) + 1;
-      }
-    });
-  }
-
-  // 수정 필요
-  if (filterType === "filter") {
-    receivedList.forEach((item: Lesson) => {
-      if (item.user.profile.region) {
-        filterCount["REGION"] = (filterCount["REGION"] || 0) + 1;
-      }
-      if (item.isDirectQuote) {
-        filterCount["DIRECT"] = (filterCount["DIRECT"] || 0) + 1;
-      }
-    });
-  }
+  const safeCheckedState = isChecked?.length ? isChecked : new Array(options.length).fill(false);
 
   const handleCheckboxClick = (index: number) => {
-    const updatedCheckedState = [...isCheckedFilter];
+    const updatedCheckedState = [...isChecked];
     updatedCheckedState[index] = !updatedCheckedState[index];
-    setIsCheckedFilter(updatedCheckedState);
+    setIsChecked(updatedCheckedState);
 
     const selectedOptions = options.filter((_, idx) => updatedCheckedState[idx]).join(",");
     if (onFilterChange) {
@@ -69,10 +36,10 @@ export default function CheckboxFilter({
   };
 
   const handleSelectAll = () => {
-    const newCheckedState = isCheckedFilter.every((checked) => checked)
+    const newCheckedState = isChecked.every((checked) => checked)
       ? new Array(options.length).fill(false)
       : new Array(options.length).fill(true);
-    setIsCheckedFilter(newCheckedState);
+    setIsChecked(newCheckedState);
 
     if (onFilterChange) {
       const selectedOptions = newCheckedState.every(Boolean) ? options.join(",") : "";
@@ -93,7 +60,7 @@ export default function CheckboxFilter({
           <Image
             className="cursor-pointer"
             src={
-              isCheckedFilter.every((item) => item)
+              safeCheckedState.every((item) => item)
                 ? ic_square_check_active_md
                 : ic_square_check_inactive_md
             }
@@ -105,18 +72,22 @@ export default function CheckboxFilter({
           <p className="text-gray-300 text-lg font-normal pc:text-2lg">전체선택</p>
         </div>
       </div>
-      <div className="flex flex-col gap-[1.6rem]">
+      <div className={filterType === "region" ? "grid grid-cols-3" : "flex flex-col gap-[1.6rem]"}>
         {options.map((option, index) => (
           <div
             key={index}
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
             <p className="text-lg font-medium pc:text-2lg">
-              {filter_trans(option)} ({filterCount[option] || 0})
+              {filterType === "region"
+                ? `${filter_trans(option)}`
+                : `${filter_trans(option)} (${count[option]})`}
             </p>
             <Image
               className="cursor-pointer"
-              src={isCheckedFilter[index] ? ic_square_check_active_md : ic_square_check_inactive_md}
+              src={
+                safeCheckedState[index] ? ic_square_check_active_md : ic_square_check_inactive_md
+              }
               width={36}
               height={36}
               onClick={() => handleCheckboxClick(index)}
