@@ -22,7 +22,7 @@ export default function PendingRequest() {
       return myLesson.status === "PENDING";
     }) || [];
 
-  if (filterdList.length > 0) {
+  if (isLoading || filterdList?.length > 0) {
     return (
       <div>
         {filterdList?.map((item: MyLesson) => (
