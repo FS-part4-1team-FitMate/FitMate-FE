@@ -37,7 +37,7 @@ function SNSLogIn() {
         }
       } else if (user.role === Role.TRAINER) {
         if (user.hasProfile) {
-          router.replace("/trainer/managing-request/sent-request");
+          router.replace("/trainer/received-request");
         } else {
           router.replace(`/trainer/${user.id}/profile/regist`);
         }
