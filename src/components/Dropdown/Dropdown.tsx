@@ -5,8 +5,8 @@ import { FilterMenu, PastLessonFilterMenu, SortMenu } from "./DropdownMenu";
 
 interface DropdownProps {
   options: string[];
-  type: "sort" | "filter" | "pastLesson";
-  filterType?: "lessonType" | "gender" | "region";
+  type: "sort" | "filter";
+  filterType?: "lessonType" | "gender" | "region" | "pastLesson";
   setSortOrder?: (order: string, sort: string) => void;
   onFilterChange?: (filterType: string, value: string) => void;
   currentValue?: string;
@@ -117,7 +117,7 @@ export default function Dropdown({
     );
   }
 
-  if (type === "pastLesson") {
+  if (filterType === "pastLesson") {
     return (
       <div className="relative flex flex-col w-56 pc:w-[19rem]">
         <PastLessonFilterMenu
@@ -126,7 +126,7 @@ export default function Dropdown({
               ? "border border-blue-300 text-blue-300 bg-blue-50"
               : "border border-gray-100"
           }
-          currentQuote={filter_trans(currentLabel)}
+          currentQuote={currentLabel}
           onToggle={() => setIsOpen((prev) => !prev)}
         />
         {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}

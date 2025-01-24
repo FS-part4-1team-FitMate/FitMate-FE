@@ -6,7 +6,7 @@ export type UserSort = "레슨 빠른 순" | "레슨 느린 순" | "최근 요�
 type ServiceFilter = "ALL" | "REHAB" | "SPORTS" | "FITNESS";
 type GenderFilter = "ALL" | "MALE" | "FEMALE";
 type RequestFilter = "DIRECT";
-type PastLessonFilter = "ALL" | "ACCEPT_QUOTE";
+type PastLessonFilter = "ALL" | "ACCEPTED";
 
 type RegionFilter =
   | "ALL"
@@ -31,7 +31,7 @@ type RegionFilter =
 export const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 export const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
 export const requestFilter: RequestFilter[] = ["DIRECT"];
-export const pastLessonFilter: PastLessonFilter[] = ["ALL", "ACCEPT_QUOTE"];
+export const pastLessonFilter: PastLessonFilter[] = ["ALL", "ACCEPTED"];
 export const regionFilter: RegionFilter[] = [
   "ALL",
   "SEOUL",

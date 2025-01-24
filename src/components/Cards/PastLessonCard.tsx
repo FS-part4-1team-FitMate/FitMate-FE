@@ -8,7 +8,13 @@ import QuoteInfo from "../Common/QuoteInfo";
 import Dropdown from "../Dropdown/Dropdown";
 import QuoteCard from "./QuoteCard";
 
-export default function PastLessonCard({ quote }: { quote: Quote }) {
+export default function PastLessonCard({
+  setStatus,
+  quote,
+}: {
+  setStatus: React.Dispatch<React.SetStateAction<string>>;
+  quote: Quote;
+}) {
   const {
     data: trainer,
     isLoading,
@@ -18,6 +24,17 @@ export default function PastLessonCard({ quote }: { quote: Quote }) {
   if (isError) return <div>error!</div>;
 
   const trainerInfo = trainer?.profile ?? [];
+
+  // 필터 처리 함수
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (value === "ALL") {
+      value = "";
+    }
+
+    if (filterType === "pastLesson") {
+      setStatus(value);
+    }
+  };
 
   return (
     <div
@@ -32,8 +49,13 @@ export default function PastLessonCard({ quote }: { quote: Quote }) {
       <div className="flex flex-col gap-[2.4rem] pc:gap-16">
         <p className="text-lg font-semibold pc:text-2xl">견적서 목록</p>
         <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
-          <Dropdown options={pastLessonFilter} type="pastLesson" />
-          <QuoteCard item={trainerInfo} />
+          <Dropdown
+            options={pastLessonFilter}
+            type="filter"
+            filterType="pastLesson"
+            onFilterChange={handleFilterChange}
+          />
+          <QuoteCard lessonRequestId={quote.lessonRequestId} quote={quote} trainer={trainerInfo} />
         </div>
       </div>
       {isLoading && <Loading />}
