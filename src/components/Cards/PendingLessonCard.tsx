@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getLessonInfo } from "@/lib/api/lessonService";
+import { acceptQuote, rejectQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
@@ -30,11 +31,44 @@ export default function PendingLessonCard({ item }: { item: Quote }) {
     isError: isLessonError,
   } = useQuery<Lesson>(["lesson-info"], () => getLessonInfo(item.lessonRequestId));
 
+  const quoteAccept = useMutation({
+    mutationFn: (quoteId: string) => acceptQuote(quoteId),
+    onSuccess: () => {
+      alert("견적이 확정되었습니다.");
+    },
+    onError: (err) => {
+      console.error("견적 확정 실패", err);
+      alert("견적 확정에 실패하였습니다.");
+    },
+  });
+
+  const handleAccept = () => {
+    if (item && item.id) {
+      quoteAccept.mutate(item.id);
+    }
+  };
+
+  const quoteReject = useMutation({
+    mutationFn: (quoteId: string) => rejectQuote(quoteId),
+    onSuccess: () => {
+      alert("견적이 반려되었습니다.");
+    },
+    onError: (err) => {
+      console.error("견적 반려 실패", err);
+      alert("견적 반려에 실패하였습니다.");
+    },
+  });
+
+  const handleReject = () => {
+    if (item && item.id) {
+      quoteReject.mutate(item.id);
+    }
+  };
+
   if (isTrainerLoading || isLessonLoading) {
     return <Loading />;
   }
 
-  console.log(trainer);
   if (isTrainerError) return <div>트레이너 정보를 불러오지 못했습니다.</div>;
   if (isLessonError) return <div>레슨 정보를 불러오지 못했습니다.</div>;
 
@@ -65,6 +99,7 @@ export default function PendingLessonCard({ item }: { item: Quote }) {
       <QuotePrice price={formatPrice(item.price)} />
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
         <button
+          onClick={handleAccept}
           className={
             "flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50 bg-blue-300"
           }
@@ -72,6 +107,7 @@ export default function PendingLessonCard({ item }: { item: Quote }) {
           견적 확정하기
         </button>
         <button
+          onClick={handleReject}
           className={
             "flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50"
           }
