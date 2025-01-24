@@ -10,12 +10,6 @@ export interface QuoteParams {
   status?: string;
 }
 
-export interface RejectedQuoteParams {
-  page?: number;
-  limit?: number;
-  status?: string;
-}
-
 export interface Quote {
   id: string;
   trainerId: string;
@@ -26,4 +20,10 @@ export interface Quote {
   rejectionReason?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface RejectedQuoteParams {
+  page?: number;
+  limit?: number;
+  status?: string;
 }

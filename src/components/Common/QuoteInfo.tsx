@@ -1,4 +1,8 @@
 import clsx from "clsx";
+import { useQuery } from "@tanstack/react-query";
+import { getLessonInfo } from "@/lib/api/lessonService";
+import formatDate from "@/lib/utils/formatDate";
+import { Lesson } from "@/types/lesson";
 
 const content_area = clsx(
   "flex flex-col gap-[1.6rem]",
@@ -10,35 +14,38 @@ const content_wrap = "flex items-center gap-[3.2rem]";
 const label = "w-36 text-gray-300 text-md font-normal pc:text-2lg";
 const content = "text-md font-normal pc:text-2lg";
 
-/**
- *
- * @TODO data props로 받아와서 연결해야함
- */
+export default function QuoteInfo({ lessonRequestId }: { lessonRequestId: string }) {
+  const { data, isLoading, isError } = useQuery<Lesson>({
+    queryKey: ["trainer-info", lessonRequestId],
+    queryFn: () => getLessonInfo(lessonRequestId),
+  });
 
-export default function QuoteInfo() {
+  if (isLoading) return <div>로딩중</div>;
+  if (isError) return <div>견정 확정에 실패하였습니다.</div>;
+
   return (
     <div className="flex flex-col gap-[2.4rem] pc:gap-16">
       <p className="font-semibold text-lg pc:text-2xl">견적 정보</p>
       <div className={content_area}>
         <div className={content_wrap}>
           <p className={label}>견적 요청일</p>
-          <p className={content}>25.02.02</p>
+          <p className={content}>{formatDate(data.createdAt)}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>서비스 </p>
-          <p className={content}>스포츠</p>
+          <p className={content}>{data.lessonType}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>레슨 시작일</p>
-          <p className={content}>25.02.02</p>
+          <p className={content}>{data.startDate}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>레슨 종료일</p>
-          <p className={content}>25.02.12</p>
+          <p className={content}>{data.endDate}</p>
         </div>
         <div className={content_wrap}>
           <p className={label}>레슨 장소 </p>
-          <p className={content}>온라인</p>
+          <p className={content}>{data.locationType}</p>
         </div>
       </div>
     </div>

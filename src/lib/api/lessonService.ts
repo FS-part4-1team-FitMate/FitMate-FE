@@ -24,3 +24,9 @@ export async function getReceiveRequest({
   });
   return res.data;
 }
+
+// 레슨 상세 조회
+export async function getLessonInfo(lessonId: string) {
+  const res = await get(`/lessons/${lessonId}`);
+  return res.data;
+}
