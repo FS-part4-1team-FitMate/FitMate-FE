@@ -6,10 +6,9 @@ import Button from "../Common/Button";
 
 const container = clsx(
   "absolute left-0 right-0",
-  "flex flex-col w-fit mx-auto pt-[3.2rem] pb-16 px-[2.4rem] bg-gray-50",
+  "flex flex-col gap-[2.6rem] w-fit mx-auto pt-[3.2rem] pb-16 px-[2.4rem] bg-gray-50",
   "pc:top-[10%] pc:bottom-auto tablet:top-[10%] tablet:bottom-auto mobile:bottom-0",
-  "pc:gap-16 tablet:gap-[2.6rem] mobile:gap-[2.6rem]",
-  "pc:rounded-[3.2rem] tablet:rounded-[3.2rem] mobile:rounded-b-none mobile:rounded-t-[3.2rem]",
+  "pc:gap-16 pc:rounded-[3.2rem] tablet:rounded-[3.2rem] mobile:rounded-b-none mobile:rounded-t-[3.2rem]",
 );
 
 const icon = clsx(
@@ -36,9 +35,9 @@ export default function ModalContainer({
 }: ModalContainerProps) {
   return (
     <div className="fixed top-0 left-0  w-screen h-screen bg-black-400 bg-opacity-50 z-10">
-      <div className={container}>
+      <div className={`${container} h-[80vh] overflow-y-auto scrollbar-none`}>
         <div className="flex justify-between items-center">
-          <h1 className="font-bold pc:text-2xl tablet:text-2lg mobile:text-2lg">{title}</h1>
+          <h1 className="text-2lg font-bold pc:text-2xl">{title}</h1>
           <Image
             className={icon}
             src={ic_X_md}

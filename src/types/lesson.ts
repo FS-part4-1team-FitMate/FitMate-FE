@@ -64,3 +64,77 @@ export interface LessonResult {
   };
   directQuoteRequestCount: number;
 }
+
+export interface MyLesson {
+  id: string;
+  userId: string;
+  lessonType: string;
+  lessonSubType?: string;
+  startDate: string;
+  endDate: string;
+  lessonCount: number;
+  lessonTime: number;
+  quoteEndDate: string;
+  locationType: string;
+  postcode?: string;
+  roadAddress?: string;
+  detailAddress?: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  directQuoteRequests: [
+    {
+      directQuoteRequestId: string | undefined;
+      lessonRequestId: string | undefined;
+      trainerId: string | undefined;
+      status: string | undefined;
+      rejectionReason: string | undefined;
+    },
+  ];
+  lessonQuotes: [
+    {
+      id: string;
+      lessonRequestId: string;
+      trainerId: string;
+      price: number;
+      status: string;
+      createdAt: string;
+      updatedAt: string;
+      rejectionReason: null;
+      trainer: {
+        id: string;
+        nickname: string;
+        profile: {
+          name: string;
+          region: string[];
+        };
+      };
+    },
+  ];
+  user: {
+    id: string;
+    nickname: string;
+    profile: {
+      name: string;
+      gender: string;
+      region: string[];
+    };
+  };
+  isDirectQuote: false;
+}
+
+export interface MyLessonResult {
+  list: MyLesson[];
+  totalCount: number;
+  hasMore: boolean;
+  lessonTypeCounts: {
+    SPORTS: number;
+    FITNESS: number;
+    REHAB: number;
+  };
+  genderCounts: {
+    male: number;
+    female: number;
+  };
+  directQuoteRequestCount: number;
+}

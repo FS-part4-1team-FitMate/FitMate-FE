@@ -1,9 +1,5 @@
-import { useState } from "react";
-import { GenderFilter, ServiceFilter } from "@/types/dropdown";
+import { genderFilter, serviceFilter } from "@/types/dropdown";
 import Dropdown from "../Dropdown/Dropdown";
-
-const genderFilter: GenderFilter[] = ["ALL", "FEMALE", "MALE"];
-const serviceFilter: ServiceFilter[] = ["ALL", "REHAB", "SPORTS", "FITNESS"];
 
 interface FilterTrainerProps {
   gender?: string;
