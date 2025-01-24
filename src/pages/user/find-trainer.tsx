@@ -42,10 +42,11 @@ export default function FindTrainer() {
         lessonType: params.lessonType || undefined,
         gender: params.gender || undefined,
       }),
-    // 이전 데이터 유지하면서 부드럽게 화면전환하는 효과? (테스트용)
-    // {
-    //   keepPreviousData: true,
-    // }
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.hasMore ? allPages.length + 1 : undefined;
+      },
+    },
   );
 
   const list = data?.pages.flatMap((page) => page.trainers) ?? [];
@@ -83,6 +84,7 @@ export default function FindTrainer() {
     return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
   }
 
+  console.log(list);
   return (
     <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
       <div className="hidden pc:block">
