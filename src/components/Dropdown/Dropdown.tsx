@@ -41,7 +41,7 @@ export default function Dropdown({
     if (filterType === "lessonType") {
       return "서비스";
     }
-    if (filterType === "region") {
+    if (filterType === "region" || filterType === "pastLesson") {
       return filter_trans(options[0]);
     }
     return options[0];

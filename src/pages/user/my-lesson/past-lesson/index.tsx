@@ -1,40 +1,43 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getQuoteList } from "@/lib/api/quoteService";
-import { QuoteParams, QuoteResult } from "@/types/quote";
+import InfiniteScroll from "react-infinite-scroller";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getMyLessonRequest } from "@/lib/api/lessonService";
+import { MyLesson, MyLessonResult } from "@/types/lesson";
 import PastLessonCard from "@/components/Cards/PastLessonCard";
 import Loading from "@/components/Common/Loading";
-import Pagination from "@/components/Common/Pagination";
 
 export default function PastLesson() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [status, setStatus] = useState<string>("ACCEPTED");
-  const [params, setParams] = useState<QuoteParams>({
-    page: currentPage,
-    limit: 1,
-    order: "created_at",
-    sort: "asc",
-    status,
-  });
-
-  const { data, isLoading, isError } = useQuery<QuoteResult>(["past-lesson", params], () =>
-    getQuoteList(params),
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<MyLessonResult>(
+    ["my-lesson"],
+    () => getMyLessonRequest(),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.hasMore ? allPages.length + 1 : undefined;
+      },
+    },
   );
 
   if (isError) return <div>error!</div>;
 
-  const quoteList = data?.list || [];
-  const totalPages = data?.list.length || 0;
+  const myLessonList = data?.pages.flatMap((page) => page.list) ?? [];
+  const filterdList = myLessonList.filter((myLesson) => {
+    myLesson.status === "COMPLETED";
+  });
 
-  console.log(params.status);
+  if (filterdList.length === 0) {
+    /** @TODO UI 변경할 예정 */
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="p-32 text-2xl">완료된 레슨이 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-16 max-w-[192rem] m-auto py-16 bg-bg-100 pc:py-[6.4rem] pc:px-16 tablet:px-16 mobile:px-0">
-      {quoteList.map((item) => (
-        <PastLessonCard setStatus={setStatus} quote={item} />
-      ))}
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-      {isLoading && <Loading />}
-    </div>
+    <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
+      <div className="flex flex-col gap-16 max-w-[192rem] m-auto py-16 bg-bg-100 pc:py-[6.4rem] pc:px-16 tablet:px-16 mobile:px-0">
+        {filterdList?.map((item: MyLesson) => <PastLessonCard key={item.id} myLesson={item} />)}
+        {isLoading && <Loading />}
+      </div>
+    </InfiniteScroll>
   );
 }

@@ -1,38 +1,17 @@
 import clsx from "clsx";
-import { useQuery } from "@tanstack/react-query";
-import { getTrainerInfo } from "@/lib/api/trainerService";
 import { pastLessonFilter } from "@/types/dropdown";
-import { Quote } from "@/types/quote";
-import Loading from "../Common/Loading";
+import { MyLesson } from "@/types/lesson";
 import QuoteInfo from "../Common/QuoteInfo";
 import Dropdown from "../Dropdown/Dropdown";
 import QuoteCard from "./QuoteCard";
 
-export default function PastLessonCard({
-  setStatus,
-  quote,
-}: {
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-  quote: Quote;
-}) {
-  const {
-    data: trainer,
-    isLoading,
-    isError,
-  } = useQuery(["trainer-info"], () => getTrainerInfo(quote.trainerId));
-
-  if (isError) return <div>error!</div>;
-
-  const trainerInfo = trainer?.profile ?? [];
+export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
+  const quotes = myLesson.lessonQuotes;
 
   // 필터 처리 함수
   const handleFilterChange = (filterType: string, value: string) => {
     if (value === "ALL") {
       value = "";
-    }
-
-    if (filterType === "pastLesson") {
-      setStatus(value);
     }
   };
 
@@ -45,20 +24,22 @@ export default function PastLessonCard({
         "mobile:max-w-[37.5rem] mobile:px-[2.4rem] mobile:rounded-0",
       )}
     >
-      <QuoteInfo lessonRequestId={quote.lessonRequestId} />
+      <QuoteInfo lessonRequestId={myLesson.id} />
       <div className="flex flex-col gap-[2.4rem] pc:gap-16">
         <p className="text-lg font-semibold pc:text-2xl">견적서 목록</p>
         <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
+          {/* 드롭다운 필터 적용해야함 */}
           <Dropdown
             options={pastLessonFilter}
             type="filter"
             filterType="pastLesson"
             onFilterChange={handleFilterChange}
           />
-          <QuoteCard lessonRequestId={quote.lessonRequestId} quote={quote} trainer={trainerInfo} />
+          {quotes.map((quote) => (
+            <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
+          ))}
         </div>
       </div>
-      {isLoading && <Loading />}
     </div>
   );
 }

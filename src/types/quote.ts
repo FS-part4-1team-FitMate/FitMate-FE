@@ -21,7 +21,7 @@ export interface Quote {
   trainerId: string;
   lessonRequestId: string;
   price: number;
-  message: string;
+  message?: string;
   status: string;
   rejectionReason?: string | null;
   createdAt: string;
