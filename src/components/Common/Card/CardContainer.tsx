@@ -9,13 +9,16 @@ const card_container = clsx(
 
 interface CardContainerProps {
   width: string;
-  gap: string;
+  gap?: string;
   children: ReactNode;
 }
 
-export default function CardContainer({ width, gap, children }: CardContainerProps) {
+export default function CardContainer({ width, gap = "2.4rem", children }: CardContainerProps) {
   return (
-    <div className={`${card_container} gap-[${gap}]`} style={{ width: width }}>
+    <div
+      className={`${card_container} pc:gap-[${gap}] tablet:gap-[1.4rem] mobile:gap-[1.4rem]`}
+      style={{ width: width }}
+    >
       {children}
     </div>
   );
