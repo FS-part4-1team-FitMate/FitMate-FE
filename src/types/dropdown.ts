@@ -62,7 +62,7 @@ export const filter_trans = (filter: string): string => {
     SPORTS: "스포츠",
     REHAB: "재활운동",
     DIRECT: "지정 견적 요청",
-    ACCEPT_QUOTE: "확정한 견적",
+    ACCEPTED: "확정한 견적",
     ALL: "전체",
     SEOUL: "서울",
     GYEONGGI: "경기",

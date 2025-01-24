@@ -5,7 +5,7 @@ import { acceptQuote, rejectQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
-import { Lesson } from "@/types/lesson";
+import { Lesson, MyLesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import { Profile } from "@/types/trainer";
 import { LessonType, LocationType, locationType_trans } from "@/types/types";
@@ -16,20 +16,20 @@ import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import Loading from "../Common/Loading";
 
-export default function PendingLessonCard({ item }: { item: Quote }) {
+export default function PendingLessonCard({ item, quote }: { item: MyLesson; quote: Quote }) {
   const {
     data: trainer,
     isLoading: isTrainerLoading,
     isError: isTrainerError,
-  } = useQuery<Profile>(["trainer-info", item.trainerId], () => getTrainerInfo(item.trainerId), {
-    enabled: !!item.trainerId,
+  } = useQuery<Profile>(["trainer-info", quote.trainerId], () => getTrainerInfo(quote.trainerId), {
+    enabled: !!quote.trainerId,
   });
 
   const {
     data: lesson,
     isLoading: isLessonLoading,
     isError: isLessonError,
-  } = useQuery<Lesson>(["lesson-info"], () => getLessonInfo(item.lessonRequestId));
+  } = useQuery<Lesson>(["lesson-info"], () => getLessonInfo(item.id));
 
   const quoteAccept = useMutation({
     mutationFn: (quoteId: string) => acceptQuote(quoteId),
@@ -96,7 +96,7 @@ export default function PendingLessonCard({ item }: { item: Quote }) {
           address={lesson?.roadAddress}
         />
       </Link>
-      <QuotePrice price={formatPrice(item.price)} />
+      <QuotePrice price={formatPrice(quote.price)} />
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
         <button
           onClick={handleAccept}

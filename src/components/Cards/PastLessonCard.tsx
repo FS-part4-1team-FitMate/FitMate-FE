@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useState } from "react";
 import { pastLessonFilter } from "@/types/dropdown";
 import { MyLesson } from "@/types/lesson";
 import QuoteInfo from "../Common/QuoteInfo";
@@ -6,14 +7,22 @@ import Dropdown from "../Dropdown/Dropdown";
 import QuoteCard from "./QuoteCard";
 
 export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
-  const quotes = myLesson.lessonQuotes;
+  const [filterValue, setFilterValue] = useState<string>("");
 
   // 필터 처리 함수
   const handleFilterChange = (filterType: string, value: string) => {
-    if (value === "ALL") {
-      value = "";
-    }
+    setFilterValue(value);
   };
+
+  // 필터링된 quotes
+  const filteredQuotes = myLesson.lessonQuotes.filter((quote) => {
+    if (filterValue === "ACCEPTED") {
+      return quote.status === "ACCEPTED";
+    }
+    return quote.status === "REJECTED" || quote.status === "ACCEPTED";
+  });
+
+  console.log(filterValue);
 
   return (
     <div
@@ -28,14 +37,13 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
       <div className="flex flex-col gap-[2.4rem] pc:gap-16">
         <p className="text-lg font-semibold pc:text-2xl">견적서 목록</p>
         <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
-          {/* 드롭다운 필터 적용해야함 */}
           <Dropdown
             options={pastLessonFilter}
             type="filter"
             filterType="pastLesson"
             onFilterChange={handleFilterChange}
           />
-          {quotes.map((quote) => (
+          {filteredQuotes.map((quote) => (
             <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
           ))}
         </div>

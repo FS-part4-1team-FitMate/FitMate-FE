@@ -18,9 +18,9 @@ export default function PastLesson() {
 
   if (isError) return <div>error!</div>;
 
-  const myLessonList = data?.pages.flatMap((page) => page.list) ?? [];
+  const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
   const filterdList = myLessonList.filter((myLesson) => {
-    myLesson.status === "COMPLETED";
+    return myLesson.status === "COMPLETED";
   });
 
   if (filterdList.length === 0) {
