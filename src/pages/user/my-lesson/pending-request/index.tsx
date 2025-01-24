@@ -32,9 +32,12 @@ export default function PendingRequest() {
   }
 
   return (
-    <div className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]">
+    <div>
       {filterdList?.map((item: MyLesson) => (
-        <div key={item.id}>
+        <div
+          key={item.id}
+          className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]"
+        >
           {item.lessonQuotes.map((quote) => (
             <PendingLessonCard key={quote.id} item={item} quote={quote} />
           ))}
