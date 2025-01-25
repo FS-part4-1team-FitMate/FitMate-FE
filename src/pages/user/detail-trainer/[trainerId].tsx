@@ -47,7 +47,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
 
   if (isError) return <div>error!!</div>;
 
-  const trainerInfo = data?.profile ?? {};
+  const trainerInfo = data?.profile ?? [];
 
   return (
     <div

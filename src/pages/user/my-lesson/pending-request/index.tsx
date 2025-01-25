@@ -22,7 +22,23 @@ export default function PendingRequest() {
       return myLesson.status === "PENDING";
     }) || [];
 
-  if (filterdList.length === 0) {
+  if (isLoading || filterdList?.length > 0) {
+    return (
+      <div>
+        {filterdList?.map((item: MyLesson) => (
+          <div
+            key={item.id}
+            className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]"
+          >
+            {item.lessonQuotes.map((quote) => (
+              <PendingLessonCard key={quote.id} item={item} quote={quote} />
+            ))}
+          </div>
+        ))}
+        {isLoading && <Loading />}
+      </div>
+    );
+  } else {
     /** @TODO UI 변경할 예정 */
     return (
       <div className="flex justify-center items-center h-full">
@@ -30,20 +46,4 @@ export default function PendingRequest() {
       </div>
     );
   }
-
-  return (
-    <div>
-      {filterdList?.map((item: MyLesson) => (
-        <div
-          key={item.id}
-          className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]"
-        >
-          {item.lessonQuotes.map((quote) => (
-            <PendingLessonCard key={quote.id} item={item} quote={quote} />
-          ))}
-        </div>
-      ))}
-      {isLoading && <Loading />}
-    </div>
-  );
 }
