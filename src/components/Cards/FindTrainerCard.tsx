@@ -1,4 +1,3 @@
-import { Lesson } from "@/types/lesson";
 import { Trainer } from "@/types/trainer";
 import { LessonType, Profile, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";

@@ -8,7 +8,6 @@ import Favorite from "../Common/Card/TrainerInfo/Favorite";
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  console.log(profile.userId);
   const { data } = useQuery(["my-lesson"], () => getMyLessonRequest());
 
   const lessonId = data?.list?.id;
