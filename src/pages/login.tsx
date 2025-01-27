@@ -56,7 +56,7 @@ function LogIn() {
         }
       } else if (user.role === Role.TRAINER) {
         if (user.hasProfile) {
-          router.push("/trainer/managing-request/sent-request");
+          router.push("/trainer/received-request");
         } else {
           router.push(`/trainer/${user.id}/profile/regist`);
         }

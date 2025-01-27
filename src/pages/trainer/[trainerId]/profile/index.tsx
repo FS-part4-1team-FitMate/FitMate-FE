@@ -17,6 +17,7 @@ import Button from "@/components/Common/Button";
 import Experience from "@/components/Common/Card/TrainerInfo/Experience";
 import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
 import Rating from "@/components/Common/Card/TrainerInfo/Rating";
+import Favorite from "@/components/Common/Favorite";
 import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 import Pagination from "@/components/Common/Pagination";
@@ -59,7 +60,7 @@ function Profile() {
       if (pageParam) {
         setPage(Number(pageParam)); // 페이지 번호를 상태로 설정
       }
-      router.replace(pathname + search);
+      router.push(pathname + search);
     };
 
     // 초기 실행
@@ -77,7 +78,7 @@ function Profile() {
     clearTimeout(setTimeoutId);
     setTimeoutId = setTimeout(() => {
       window.history.pushState({}, "", `${window.location.pathname}?page=${page}`);
-    }, 1024);
+    }, 256);
   }, [page]);
 
   if (isLoading) {
@@ -129,6 +130,8 @@ function Profile() {
             <Experience experience={trainerProfile?.profile?.experience} />
             <VerticalLine height="16px" />
             <LessonCount lessonCount={trainerProfile?.profile?.lessonCount} />
+            <VerticalLine height="16px" />
+            <Favorite trainerId={trainerId as string} />
           </div>
           <div className="flex items-center gap-[12px]">
             <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>

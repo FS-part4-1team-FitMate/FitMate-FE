@@ -18,7 +18,7 @@ function Favorite({ trainerId }: Props) {
     queryKey: ["favorite", trainerId],
     queryFn: () => getFavorite(trainerId),
     staleTime: 5 * 60 * 1000,
-    enabled: !!user?.id,
+    enabled: !!trainerId,
   });
   const toggleLikeMutation = useMutation({
     mutationFn: () => toggleFavorite(favorite?.isFavorite, trainerId),
@@ -38,14 +38,17 @@ function Favorite({ trainerId }: Props) {
   }, [favorite]);
 
   return (
-    <div className="inline-flex text-lg gap-[10px]" onClick={() => toggleLikeMutation.mutate()}>
+    <div
+      className="inline-flex text-lg items-center gap-[5px] cursor-pointer"
+      onClick={() => toggleLikeMutation.mutate()}
+    >
       <Image
         src={isFavorite ? ic_like_active_sm : ic_like_inactive_sm}
         width={24}
         height={24}
         alt="isFavorite"
       />
-      &nbsp;{favoriteTotalCount}
+      {favoriteTotalCount || 0}
     </div>
   );
 }

@@ -17,8 +17,6 @@ export const getReview = async ({ page, limit }: FetchReviewsParams) => {
 
 //특정 트레이너 리뷰들 가져오기기
 export const getReviews = async (trainerId: string, { page, limit }: FetchReviewsParams) => {
-  const response = await get(`/reviews/${trainerId}`, {
-    params: { page, limit },
-  });
+  const response = await get(`/reviews`, { trainer_id: trainerId, page, limit });
   return response.data;
 };
