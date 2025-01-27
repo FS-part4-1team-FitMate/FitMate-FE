@@ -33,7 +33,6 @@ function Favorite({ trainerId }: Props) {
   });
 
   useEffect(() => {
-    console.log(favorite);
     setIsFavorite(favorite?.isFavorite);
     setFavoriteTotalCount(favorite?.favoriteTotalCount);
   }, [favorite]);
