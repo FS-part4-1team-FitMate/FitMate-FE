@@ -48,14 +48,14 @@ export default function TrainerInfo({
       <div className="flex flex-col flex-grow gap-[1.2rem] pc:gap-[0.8rem]">
         <div className="flex justify-between items-center">
           <p className="text-md font-semibold pc:text-2lg">{name} 강사님</p>
-          <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount} />
+          <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount || 0} />
         </div>
         <div className="flex justify-start items-center gap-[0.8rem] pc:gap-[1.6rem]">
-          <Rating rating={rating} reviewCount={reviewCount} />
+          <Rating rating={rating || 0} reviewCount={reviewCount || 0} />
           <VerticalLine height="1.4rem" />
-          <Experience experience={experience} />
+          <Experience experience={experience || 0} />
           <VerticalLine height="1.4rem" />
-          <LessonCount lessonCount={lessonCount} />
+          <LessonCount lessonCount={lessonCount || 0} />
         </div>
       </div>
     </div>

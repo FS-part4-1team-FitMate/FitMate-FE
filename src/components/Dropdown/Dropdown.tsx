@@ -97,6 +97,23 @@ export default function Dropdown({
     );
   }
 
+  if (filterType === "pastLesson") {
+    return (
+      <div className="relative flex flex-col w-56 pc:w-[19rem]">
+        <PastLessonFilterMenu
+          className={
+            isOpen === true
+              ? "border border-blue-300 text-blue-300 bg-blue-50"
+              : "border border-gray-100"
+          }
+          currentQuote={currentLabel}
+          onToggle={() => setIsOpen((prev) => !prev)}
+        />
+        {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}
+      </div>
+    );
+  }
+
   if (type === "filter") {
     return (
       <div className="relative flex flex-col w-40 pc:w-full">
@@ -113,23 +130,6 @@ export default function Dropdown({
           />
         </div>
         {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
-      </div>
-    );
-  }
-
-  if (filterType === "pastLesson") {
-    return (
-      <div className="relative flex flex-col w-56 pc:w-[19rem]">
-        <PastLessonFilterMenu
-          className={
-            isOpen === true
-              ? "border border-blue-300 text-blue-300 bg-blue-50"
-              : "border border-gray-100"
-          }
-          currentQuote={currentLabel}
-          onToggle={() => setIsOpen((prev) => !prev)}
-        />
-        {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
   }

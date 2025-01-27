@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getLessonInfo } from "@/lib/api/lessonService";
 import { acceptQuote, rejectQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
+import { getFavorite } from "@/lib/api/userService";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
-import { Lesson, MyLesson } from "@/types/lesson";
+import { MyLesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
-import { Profile } from "@/types/trainer";
+import { FavoriteInfo, Profile } from "@/types/trainer";
 import { LessonType, LocationType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
@@ -25,11 +25,9 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
     enabled: !!quote.trainerId,
   });
 
-  const {
-    data: lesson,
-    isLoading: isLessonLoading,
-    isError: isLessonError,
-  } = useQuery<Lesson>(["lesson-info"], () => getLessonInfo(item.id));
+  const { data: favoriteInfo } = useQuery<FavoriteInfo>(["favorite"], () =>
+    getFavorite(trainer?.profile.userId as string),
+  );
 
   const quoteAccept = useMutation({
     mutationFn: (quoteId: string) => acceptQuote(quoteId),
@@ -43,8 +41,8 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
   });
 
   const handleAccept = () => {
-    if (item && item.id) {
-      quoteAccept.mutate(item.id);
+    if (quote && quote.id) {
+      quoteAccept.mutate(quote.id);
     }
   };
 
@@ -60,17 +58,16 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
   });
 
   const handleReject = () => {
-    if (item && item.id) {
-      quoteReject.mutate(item.id);
+    if (quote && quote.id) {
+      quoteReject.mutate(quote.id);
     }
   };
 
-  if (isTrainerLoading || isLessonLoading) {
+  if (isTrainerLoading) {
     return <Loading />;
   }
 
   if (isTrainerError) return <div>트레이너 정보를 불러오지 못했습니다.</div>;
-  if (isLessonError) return <div>레슨 정보를 불러오지 못했습니다.</div>;
 
   const trainerInfo = trainer?.profile ?? [];
 
@@ -85,15 +82,15 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
         reviewCount={trainerInfo?.reviewCount || 0}
         experience={trainerInfo?.experience || 0}
         lessonCount={trainerInfo?.lessonCount || 0}
-        isFavorited={true}
-        favoriteCount={23}
+        isFavorited={favoriteInfo?.isFavorite}
+        favoriteCount={favoriteInfo?.favoriteTotalCount || 0}
       />
       <Link href={`/user/my-lesson/pending-request/${item.id}`}>
         <LessonInfo
-          startDate={formatDate(lesson?.startDate)}
-          endDate={formatDate(lesson?.endDate)}
-          locationType={locationType_trans[lesson?.locationType as LocationType]}
-          address={lesson?.roadAddress}
+          startDate={formatDate(item?.startDate)}
+          endDate={formatDate(item?.endDate)}
+          locationType={locationType_trans[item?.locationType as LocationType]}
+          address={item?.roadAddress}
         />
       </Link>
       <QuotePrice price={formatPrice(quote.price)} />
