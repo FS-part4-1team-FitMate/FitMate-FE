@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createDirectQuote, getMyLessonRequest } from "@/lib/api/lessonService";
+import { MyLessonResult } from "@/types/lesson";
 import { Profile } from "@/types/types";
 import Button from "../Common/Button";
 import Favorite from "../Common/Card/TrainerInfo/Favorite";
@@ -8,10 +9,11 @@ import Favorite from "../Common/Card/TrainerInfo/Favorite";
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data } = useQuery(["my-lesson"], () => getMyLessonRequest());
+  const { data: myLessonList } = useQuery<MyLessonResult>(["my-lesson"], () =>
+    getMyLessonRequest(),
+  );
 
-  const lessonId = data?.list?.id;
-  const trainerId = profile?.userId;
+  const lessonId = myLessonList?.list[0]?.id;
 
   const directQuote = useMutation({
     mutationFn: ({ lessonId, trainerId }: { lessonId: string; trainerId: string }) =>
@@ -35,8 +37,9 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   };
 
   const handleSendDirectQuote = async () => {
+    const trainerId = profile?.userId;
     if (lessonId && trainerId) {
-      directQuote.mutate({ lessonId, trainerId });
+      directQuote.mutate({ lessonId, trainerId: trainerId });
     }
   };
 
