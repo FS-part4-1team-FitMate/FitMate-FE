@@ -99,7 +99,7 @@ export default function Dropdown({
 
   if (type === "filter") {
     return (
-      <div className="relative flex flex-col w-40 pc:w-[32.8rem]">
+      <div className="relative flex flex-col w-40 pc:w-full">
         <div className="flex flex-col gap-[1.6rem]">
           {getLabel()}
           <FilterMenu

@@ -4,6 +4,7 @@ import { GetServerSideProps } from "next";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTrainerInfo } from "@/lib/api/trainerService";
+import { getFavorite } from "@/lib/api/userService";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
@@ -45,9 +46,15 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
     },
   );
 
-  if (isError) return <div>error!!</div>;
+  const {
+    data: favoriteInfo,
+    isLoading: isFavoriteLoading,
+    isError: isFavoriteError,
+  } = useQuery(["favorite"], () => getFavorite(trainerId as string));
 
-  const trainerInfo = data?.profile ?? [];
+  if (isError || isFavoriteError) return <div>error!!</div>;
+
+  const trainerInfo = data?.profile ?? {};
 
   return (
     <div
@@ -58,7 +65,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
       )}
     >
       <div className={"flex flex-col gap-[2.4rem] w-full pc:gap-16 pc:pr-[10rem]"}>
-        <FindTrainerCard profile={trainerInfo} />
+        <FindTrainerCard profile={trainerInfo} favoriteInfo={favoriteInfo} />
         <div className="flex flex-col gap-4 pc:hidden">
           <HorizontalLine width="100%" />
           <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" />
@@ -76,7 +83,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
           <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" />
         </div>
       </div>
-      {isLoading && <Loading />}
+      {isLoading || (isFavoriteLoading && <Loading />)}
     </div>
   );
 }

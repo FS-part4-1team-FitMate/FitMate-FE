@@ -46,7 +46,10 @@ export function FilterList({ options, onOptionClick }: DropdownListProps) {
     <div className={option_list}>
       {options.map((option, index) => (
         <div
-          className="hover:bg-blue-100 hover:text-blue-300 cursor-pointer py-[0.6rem] px-[1.4rem] border-r-[0.1rem] border-line-200 pc:py-[1.6rem] pc:px-[2.4rem]"
+          className={clsx(
+            "hover:bg-blue-100 hover:text-blue-300 cursor-pointer py-[0.6rem] px-[1.4rem] border-line-200 pc:py-[1.6rem] pc:px-[2.4rem]",
+            options.includes("SEOUL") && "border-r-[0.1rem]",
+          )}
           key={index}
           onClick={() => onOptionClick(option)}
         >
