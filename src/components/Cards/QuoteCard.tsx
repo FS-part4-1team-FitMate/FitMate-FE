@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getTrainerInfo } from "@/lib/api/trainerService";
+import { getFavorite } from "@/lib/api/userService";
 import formatPrice from "@/lib/utils/formatPrice";
 import { MyLesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
@@ -20,6 +21,10 @@ export default function QuoteCard({ myLesson, quote }: QuoteCardProps) {
     getTrainerInfo(quote.trainerId),
   );
 
+  const { data: favoriteInfo } = useQuery(["favorite"], () => getFavorite(quote.trainerId), {
+    enabled: !!quote.trainerId,
+  });
+
   if (isError) return <div>error!</div>;
 
   const trainer = data?.profile || [];
@@ -29,17 +34,15 @@ export default function QuoteCard({ myLesson, quote }: QuoteCardProps) {
       <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
         <ChipLessonType lessonType={myLesson?.lessonType as LessonType} size="lg" />
       </div>
-      <p className="text-black-300 text-md font-semibold pc:text-2xl">
-        고객님에게 맞춤형 레슨을 해드립니다.
-      </p>
+      <p className="text-black-300 text-md font-semibold pc:text-2xl">{trainer?.intro}</p>
       <TrainerInfo
         name={trainer.name}
         rating={trainer.rating}
         reviewCount={trainer.reviewCount}
         experience={trainer.experience}
         lessonCount={trainer.lessonCount}
-        isFavorited={true}
-        favoriteCount={23}
+        isFavorited={favoriteInfo?.isFavorite}
+        favoriteCount={favoriteInfo?.favoriteTotalCount}
       />
       <QuotePrice price={formatPrice(quote.price)} />
       {isLoading && <Loading />}

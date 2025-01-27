@@ -17,7 +17,7 @@ export interface Trainer {
   profile: {
     profileImage: string | null;
     intro: string;
-    lessonType: string[];
+    lessonType: LessonType[];
     experience: number;
     rating: number;
     reviewCount: number;
@@ -62,3 +62,8 @@ export type Profile = {
     updatedAt: Date;
   };
 };
+
+export interface FavoriteInfo {
+  isFavorite?: boolean;
+  favoriteTotalCount?: number;
+}

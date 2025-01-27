@@ -7,9 +7,10 @@ import { getFavorite, toggleFavorite } from "@/lib/api/userService";
 
 interface Props {
   trainerId: string;
+  noneCount?: boolean;
 }
 
-function Favorite({ trainerId }: Props) {
+function Favorite({ trainerId, noneCount = false }: Props) {
   const user = useUser();
   const queryClient = useQueryClient();
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(false);
@@ -48,7 +49,7 @@ function Favorite({ trainerId }: Props) {
         height={24}
         alt="isFavorite"
       />
-      {favoriteTotalCount || 0}
+      {noneCount ? "" : favoriteTotalCount || 0}
     </div>
   );
 }

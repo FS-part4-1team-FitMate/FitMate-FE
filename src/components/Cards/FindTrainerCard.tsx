@@ -1,5 +1,5 @@
-import { Trainer } from "@/types/trainer";
-import { LessonType, Profile, RequestType } from "@/types/types";
+import { FavoriteInfo, Profile, Trainer } from "@/types/trainer";
+import { LessonType, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
 import CardContainer from "../Common/Card/CardContainer";
@@ -7,12 +7,19 @@ import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 interface FindTrainerCardProps {
   item?: Trainer;
-  profile?: Profile;
+  profile?: Profile["profile"];
   status?: string;
   request?: boolean;
+  favoriteInfo?: FavoriteInfo;
 }
 
-export default function FindTrainerCard({ item, profile, status, request }: FindTrainerCardProps) {
+export default function FindTrainerCard({
+  item,
+  profile,
+  status,
+  request,
+  favoriteInfo,
+}: FindTrainerCardProps) {
   if (item) {
     return (
       <CardContainer width="100%" gap="1.6rem">
@@ -56,11 +63,11 @@ export default function FindTrainerCard({ item, profile, status, request }: Find
         <TrainerInfo
           name={profile?.name}
           rating={profile?.rating || 0}
-          reviewCount={profile?.reviewCount || 0}
+          reviewCount={profile.reviewCount || 0}
           experience={profile?.experience || 0}
           lessonCount={profile?.lessonCount || 0}
-          isFavorited={false}
-          favoriteCount={0}
+          isFavorited={favoriteInfo?.isFavorite}
+          favoriteCount={favoriteInfo?.favoriteTotalCount || 0}
         />
       </CardContainer>
     );
