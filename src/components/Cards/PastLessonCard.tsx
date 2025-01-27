@@ -22,8 +22,6 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
     return quote.status === "REJECTED" || quote.status === "ACCEPTED";
   });
 
-  console.log(filterValue);
-
   return (
     <div
       className={clsx(

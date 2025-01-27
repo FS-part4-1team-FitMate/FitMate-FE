@@ -84,7 +84,6 @@ export default function FindTrainer() {
     return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
   }
 
-  console.log(list);
   return (
     <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
       <div className="hidden pc:block">
@@ -98,9 +97,9 @@ export default function FindTrainer() {
             onFilterReset={handleFilterReset}
             onFilterChange={handleFilterChange}
           />
-          <FavoriteTrainer />
+          <FavoriteTrainer list={list} />
         </div>
-        <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[11rem]">
+        <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[5rem]">
           <div className="flex flex-col gap-[2.4rem]">
             <div className="flex justify-between items-center w-full pt-[1.6rem] pc:justify-end pc:pt-0">
               <div className="block pc:hidden">

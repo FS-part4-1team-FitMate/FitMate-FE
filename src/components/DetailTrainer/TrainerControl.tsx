@@ -1,16 +1,19 @@
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createDirectQuote, getMyLessonRequest } from "@/lib/api/lessonService";
+import { MyLessonResult } from "@/types/lesson";
 import { Profile } from "@/types/types";
 import Button from "../Common/Button";
-import Favorite from "../Common/Card/TrainerInfo/Favorite";
+import Favorite from "../Common/Favorite";
 
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data } = useQuery(["my-lesson"], () => getMyLessonRequest());
+  const { data: myLessonList } = useQuery<MyLessonResult>(["my-lesson"], () =>
+    getMyLessonRequest(),
+  );
 
-  const lessonId = data?.list?.id;
+  const lessonId = myLessonList?.list[0]?.id;
   const trainerId = profile?.userId;
 
   const directQuote = useMutation({
@@ -36,7 +39,7 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
 
   const handleSendDirectQuote = async () => {
     if (lessonId && trainerId) {
-      directQuote.mutate({ lessonId, trainerId });
+      directQuote.mutate({ lessonId, trainerId: trainerId });
     }
   };
 
@@ -47,10 +50,10 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
       </h1>
       <div className="flex flex-row gap-[0.8rem] w-full p-4 pc:flex-col pc:gap-[3.2rem] pc:px-0">
         <Button className="h-[5.4rem] p-4 rounded-[1.6rem] font-semibold pc:w-[35.3rem] pc:text-xl hidden gap-4 border border-line-200 bg-gray-50 pc:flex">
-          <Favorite /> 강사님 찜하기
+          <Favorite trainerId={trainerId} noneCount={true} /> 강사님 찜하기
         </Button>
         <div className="flex justify-center items-center w-[5.4rem] h-[5.4rem] p-4 border border-line-200 rounded-[1.6rem] pc:hidden">
-          <Favorite />
+          <Favorite trainerId={trainerId} noneCount={true} />
         </div>
         <Button
           onClick={handleLessonRequest}

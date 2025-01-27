@@ -29,14 +29,13 @@ export async function getReceiveRequest({
 
 // 지정 견적 반려
 export async function rejectedLesson(
-  lessonId?: string,
-  directQuoteRequestId?: string,
-  rejectionReason?: string,
+  lessonId: string,
+  directQuoteRequestId: string,
+  rejectionReason: string,
 ) {
-  const res = await patch(
-    `/lessons/${lessonId}/direct-quote/${directQuoteRequestId}/reject`,
+  const res = await patch(`/lessons/${lessonId}/direct-quote/${directQuoteRequestId}/reject`, {
     rejectionReason,
-  );
+  });
   return res.data;
 }
 
@@ -54,7 +53,7 @@ export async function getMyLessonRequest() {
 
 // 지정 견적 요청 (유저)
 export async function createDirectQuote(lessonId: string, trainerId: string) {
-  const res = await post(`/lessons/${lessonId}/direct-quote`, trainerId);
+  const res = await post(`/lessons/${lessonId}/direct-quote`, { trainerId });
   return res.data;
 }
 

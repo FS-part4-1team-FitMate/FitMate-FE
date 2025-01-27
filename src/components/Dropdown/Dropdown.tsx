@@ -97,26 +97,6 @@ export default function Dropdown({
     );
   }
 
-  if (type === "filter") {
-    return (
-      <div className="relative flex flex-col w-40 pc:w-[32.8rem]">
-        <div className="flex flex-col gap-[1.6rem]">
-          {getLabel()}
-          <FilterMenu
-            className={
-              isOpen === true
-                ? "border border-blue-300 text-blue-300 bg-blue-50"
-                : "border border-gray-100"
-            }
-            currentFilter={currentLabel}
-            onToggle={() => setIsOpen((prev) => !prev)}
-          />
-        </div>
-        {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
-      </div>
-    );
-  }
-
   if (filterType === "pastLesson") {
     return (
       <div className="relative flex flex-col w-56 pc:w-[19rem]">
@@ -130,6 +110,26 @@ export default function Dropdown({
           onToggle={() => setIsOpen((prev) => !prev)}
         />
         {isOpen && <PastLessonFilterList options={options} onOptionClick={handleOptionClick} />}
+      </div>
+    );
+  }
+
+  if (type === "filter") {
+    return (
+      <div className="relative flex flex-col w-40 pc:w-full">
+        <div className="flex flex-col gap-[1.6rem]">
+          {getLabel()}
+          <FilterMenu
+            className={
+              isOpen === true
+                ? "border border-blue-300 text-blue-300 bg-blue-50"
+                : "border border-gray-100"
+            }
+            currentFilter={currentLabel}
+            onToggle={() => setIsOpen((prev) => !prev)}
+          />
+        </div>
+        {isOpen && <FilterList options={options} onOptionClick={handleOptionClick} />}
       </div>
     );
   }
