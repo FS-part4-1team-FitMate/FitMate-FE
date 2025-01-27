@@ -50,7 +50,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
     data: favoriteInfo,
     isLoading: isFavoriteLoading,
     isError: isFavoriteError,
-  } = useQuery(["favorite"], () => getFavorite(trainerId as string));
+  } = useQuery(["favorite"], () => getFavorite(trainerId as string), { enabled: !!trainerId });
 
   if (isError || isFavoriteError) return <div>error!!</div>;
 

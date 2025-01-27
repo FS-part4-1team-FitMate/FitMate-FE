@@ -43,13 +43,17 @@ export type Profile = {
     name: string;
     phone?: string;
     profileImage?: string | FileList;
+    profileImageCount?: number;
+    contentType?: string;
     gender: Gender;
     lessonType: LessonType[];
+    locationType: LocationType[];
     region: Region[];
     intro?: string;
     description?: string;
     experience?: number;
     certification?: string | FileList;
+    certificationCount?: number;
     certificationValidated?: boolean;
     rating?: number;
     lessonCount?: number;

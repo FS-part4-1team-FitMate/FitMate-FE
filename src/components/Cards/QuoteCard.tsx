@@ -21,7 +21,9 @@ export default function QuoteCard({ myLesson, quote }: QuoteCardProps) {
     getTrainerInfo(quote.trainerId),
   );
 
-  const { data: favoriteInfo } = useQuery(["favorite"], () => getFavorite(quote.trainerId));
+  const { data: favoriteInfo } = useQuery(["favorite"], () => getFavorite(quote.trainerId), {
+    enabled: !!quote.trainerId,
+  });
 
   if (isError) return <div>error!</div>;
 

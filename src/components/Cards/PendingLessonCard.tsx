@@ -25,8 +25,10 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
     enabled: !!quote.trainerId,
   });
 
-  const { data: favoriteInfo } = useQuery<FavoriteInfo>(["favorite"], () =>
-    getFavorite(trainer?.profile.userId as string),
+  const { data: favoriteInfo } = useQuery<FavoriteInfo>(
+    ["favorite"],
+    () => getFavorite(trainer?.profile.userId as string),
+    { enabled: !!quote.trainerId },
   );
 
   const quoteAccept = useMutation({
