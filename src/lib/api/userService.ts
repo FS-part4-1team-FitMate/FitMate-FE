@@ -19,8 +19,8 @@ export const getFavorite = async (
   favoriteTotalCount: number;
 }> => {
   try {
-    const result = await instance.get(`/trainers/${trainerId}/favorite`);
-    return result.data;
+    const res = await instance.get(`/trainers/${trainerId}/favorite`);
+    return res.data;
   } catch (err) {
     throw err;
   }
