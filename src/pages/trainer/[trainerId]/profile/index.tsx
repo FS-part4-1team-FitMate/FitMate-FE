@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getReviews } from "@/lib/api/ReviewService";
+import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { getProfile } from "@/lib/api/authService";
 import { region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
@@ -50,6 +50,14 @@ function Profile() {
     staleTime: 5 * 60 * 1000,
     enabled: !!trainerId,
   });
+  const [avgRating, setAvgRating] = useState(0);
+  const { data: reviewStat } = useQuery({
+    queryKey: ["reviewStat", trainerId],
+    queryFn: () => getReviewStat(trainerId as string),
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    enabled: !!trainerId,
+  });
   // console.log(reviews);
 
   useEffect(() => {
@@ -80,6 +88,22 @@ function Profile() {
       window.history.pushState({}, "", `${window.location.pathname}?page=${page}`);
     }, 256);
   }, [page]);
+
+  useEffect(() => {
+    if (reviewStat) {
+      let total = 0;
+      let sum = 0;
+      for (let stat of reviewStat) {
+        total += stat.count;
+        sum += stat.count * stat.rating;
+      }
+      if (total !== 0) {
+        setAvgRating(sum / total);
+      } else {
+        setAvgRating(0);
+      }
+    }
+  }, [reviewStat]);
 
   if (isLoading) {
     return <Loading />;
@@ -122,10 +146,7 @@ function Profile() {
         </div>
         <div className="flex flex-col gap-[10px] bg-white p-[10px] w-full">
           <div className="flex gap-[8px] justify-normal items-center">
-            <Rating
-              rating={trainerProfile?.profile?.rating}
-              reviewCount={trainerProfile?.profile?.reviewCount}
-            />
+            <Rating rating={avgRating} reviewCount={trainerProfile?.profile?.reviewCount} />
             <VerticalLine height="16px" />
             <Experience experience={trainerProfile?.profile?.experience} />
             <VerticalLine height="16px" />
@@ -177,8 +198,8 @@ function Profile() {
       <HorizontalLine width="100%" />
       <div className="text-xl font-semibold">리뷰 ({trainerProfile?.profile?.reviewCount})</div>
       <div className="tablet:flex tablet:flex-row tablet:justify-center tablet:gap-[50px] mx-auto max-w-full">
-        <RatingAvgCard ratingAvg={trainerProfile?.profile?.rating as number} />
-        <RatingStatCard ratingStat={[1, 0, 0, 10, 32]} />
+        <RatingAvgCard ratingAvg={avgRating} />
+        <RatingStatCard ratingStat={reviewStat} />
       </div>
       <div className="flex flex-col gap-[24px]">
         {reviews?.reviews.map((review) => {

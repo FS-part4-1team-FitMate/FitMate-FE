@@ -1,4 +1,4 @@
-import { FetchReviewsParams, ReviewParams } from "@/types/reviews";
+import { FetchReviewsParams, Review, ReviewParams } from "@/types/reviews";
 import { get, patch, post } from "./method";
 
 //리뷰 작성
@@ -24,5 +24,10 @@ export const getReviews = async (
   totalCount: number;
 }> => {
   const response = await get(`/reviews`, { trainer_id: trainerId, page, limit });
+  return response.data;
+};
+
+export const getReviewStat = async (trainerId: string) => {
+  const response = await get(`/reviews/rating-stats/${trainerId}`);
   return response.data;
 };
