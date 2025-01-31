@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Link from "next/link";
 import { useState } from "react";
 import { pastLessonFilter } from "@/types/dropdown";
 import { MyLesson } from "@/types/lesson";
@@ -46,7 +47,9 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
             currentValue={filterValue}
           />
           {filteredQuotes.map((quote) => (
-            <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
+            <Link href={`/user/my-lesson/past-lesson/${quote.id}`}>
+              <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
+            </Link>
           ))}
         </div>
       </div>
