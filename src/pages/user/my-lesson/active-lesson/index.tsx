@@ -5,7 +5,7 @@ import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
 import Loading from "@/components/Common/Loading";
 
 export default function ActiveLesson() {
-  const { data, isLoading, isError } = useQuery<MyLessonResult>(["my-lesson"], () =>
+  const { data, isLoading, isError } = useQuery<MyLessonResult>(["active-lesson"], () =>
     getMyLessonRequest({
       page: 1,
       limit: 3,

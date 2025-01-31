@@ -7,7 +7,7 @@ import Loading from "@/components/Common/Loading";
 
 export default function PendingRequest() {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<MyLessonResult>(
-    ["my-lesson"],
+    ["pending-list"],
     ({ pageParam = 1 }) =>
       getMyLessonRequest({
         page: pageParam,

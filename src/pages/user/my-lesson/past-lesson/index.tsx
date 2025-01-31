@@ -7,8 +7,13 @@ import Loading from "@/components/Common/Loading";
 
 export default function PastLesson() {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<MyLessonResult>(
-    ["my-lesson"],
-    () => getMyLessonRequest(),
+    ["past-list"],
+    ({ pageParam = 1 }) =>
+      getMyLessonRequest({
+        page: pageParam,
+        limit: 2,
+        status: "COMPLETED",
+      }),
     {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.hasMore ? allPages.length + 1 : undefined;
@@ -16,19 +21,16 @@ export default function PastLesson() {
     },
   );
 
+  const pastList = data?.pages?.flatMap((page) => page.list) ?? [];
+
+  if (isLoading) return <Loading />;
   if (isError) return <div>error!</div>;
 
-  const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
-  const filterdList = myLessonList.filter((myLesson) => {
-    return myLesson.status === "COMPLETED";
-  });
-
-  if (filterdList.length > 0) {
+  if (pastList.length > 0) {
     return (
       <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
         <div className="flex flex-col gap-16 max-w-[192rem] m-auto py-16 bg-bg-100 pc:py-[6.4rem] pc:px-16 tablet:px-16 mobile:px-0">
-          {filterdList?.map((item: MyLesson) => <PastLessonCard key={item.id} myLesson={item} />)}
-          {isLoading && <Loading />}
+          {pastList?.map((item: MyLesson) => <PastLessonCard key={item.id} myLesson={item} />)}
         </div>
       </InfiniteScroll>
     );
