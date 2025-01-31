@@ -1,3 +1,4 @@
+import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyLessonRequest } from "@/lib/api/lessonService";
@@ -7,7 +8,7 @@ import Loading from "@/components/Common/Loading";
 
 export default function PastLesson() {
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<MyLessonResult>(
-    ["past-list"],
+    ["my-lesson", { limit: 2, status: "COMPLETED" }],
     ({ pageParam = 1 }) =>
       getMyLessonRequest({
         page: pageParam,
@@ -34,7 +35,9 @@ export default function PastLesson() {
         </div>
       </InfiniteScroll>
     );
-  } else {
+  }
+
+  if (pastList.length === 0) {
     /** @TODO UI 변경할 예정 */
     return (
       <div className="flex justify-center items-center h-full">

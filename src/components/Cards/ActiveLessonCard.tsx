@@ -14,16 +14,20 @@ export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quot
    * @TODO UI 변경해야함
    */
   const { data, isLoading, isError } = useQuery(
-    ["trainer-info"],
+    ["trainer-info", quote.trainerId],
     () => getTrainerInfo(quote.trainerId),
     {
       enabled: !!quote.trainerId,
     },
   );
 
-  const { data: favorite } = useQuery(["favorite-info"], () => getFavorite(quote.trainerId), {
-    enabled: !!quote.trainerId,
-  });
+  const { data: favorite } = useQuery(
+    ["favorite", quote.trainerId],
+    () => getFavorite(quote.trainerId),
+    {
+      enabled: !!quote.trainerId,
+    },
+  );
 
   const trainerInfo = data?.profile ?? {};
 

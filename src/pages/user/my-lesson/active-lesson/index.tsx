@@ -5,12 +5,14 @@ import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
 import Loading from "@/components/Common/Loading";
 
 export default function ActiveLesson() {
-  const { data, isLoading, isError } = useQuery<MyLessonResult>(["active-lesson"], () =>
-    getMyLessonRequest({
-      page: 1,
-      limit: 3,
-      status: "QUOTE_CONFIRMED",
-    }),
+  const { data, isLoading, isError } = useQuery<MyLessonResult>(
+    ["active-lesson", { page: 1, limit: 3, status: "QUOTE_CONFIRMED" }],
+    () =>
+      getMyLessonRequest({
+        page: 1,
+        limit: 3,
+        status: "QUOTE_CONFIRMED",
+      }),
   );
 
   const activeLesson = data?.list ?? [];
