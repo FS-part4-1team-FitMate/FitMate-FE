@@ -178,20 +178,24 @@ function Profile() {
       <div className="text-xl font-semibold">리뷰 ({trainerProfile?.profile?.reviewCount})</div>
       <div className="tablet:flex tablet:flex-row tablet:justify-center tablet:gap-[50px] mx-auto max-w-full">
         <RatingAvgCard ratingAvg={trainerProfile?.profile?.rating as number} />
-        <RatingStatCard ratingStat={[100, 0, 0, 0, 120]} />
+        <RatingStatCard ratingStat={[1, 0, 0, 10, 32]} />
       </div>
       <div className="flex flex-col gap-[24px]">
-        <ReviewCard
-          rating={4}
-          nickname="kipid"
-          createdAt="2025-01-09"
-          content={"기초부터 차근차근 잘 가르쳐 주십니다.\n\n짱입니다요."}
-        />
+        {reviews?.reviews.map((review) => {
+          return (
+            <ReviewCard
+              rating={review.rating as 1 | 2 | 3 | 4 | 5}
+              nickname={review.user.nickname}
+              createdAt={review.createdAt}
+              content={review.content}
+            />
+          );
+        })}
       </div>
       <div className="text-2lg flex justify-center items-center mx-auto my-[24px] gap-[16px]">
         <Pagination
           currentPage={page}
-          totalPages={reviews?.totalCount || 10}
+          totalPages={Math.ceil(reviews?.totalCount! / limit) || 1}
           onPageChange={setPage}
         />
       </div>
