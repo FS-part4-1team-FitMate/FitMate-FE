@@ -1,6 +1,7 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { ic_designate_md, ic_edit_sm } from "@/imageExports";
 import axios from "axios";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -168,6 +169,10 @@ function ProfileEdit() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <Head>
+        <title>강사님 프로필 수정</title>
+        <meta name="description" content="강사님 프로필 수정 페이지입니다." />
+      </Head>
       <main className="pc:flex justify-center items-start gap-[32px]">
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
           <div className={profile_menu}>
