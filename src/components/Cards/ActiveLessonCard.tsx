@@ -7,6 +7,7 @@ import { LessonType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
+import Loading from "../Common/Loading";
 
 export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quote: Quote }) {
   /**
@@ -16,17 +17,16 @@ export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quot
     ["trainer-info"],
     () => getTrainerInfo(quote.trainerId),
     {
-      enabled: !!!quote.trainerId,
+      enabled: !!quote.trainerId,
     },
   );
 
   const { data: favorite } = useQuery(["favorite-info"], () => getFavorite(quote.trainerId), {
-    enabled: !!!quote.trainerId,
+    enabled: !!quote.trainerId,
   });
 
-  const trainerInfo = data?.profile ?? [];
+  const trainerInfo = data?.profile ?? {};
 
-  if (isLoading) return <div>loading...</div>;
   if (isError) return <div>error!</div>;
 
   return (
@@ -43,6 +43,7 @@ export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quot
         isFavorited={favorite?.isFavorite}
         favoriteCount={favorite?.favoriteTotalCount}
       />
+      {isLoading && <Loading />}
     </CardContainer>
   );
 }

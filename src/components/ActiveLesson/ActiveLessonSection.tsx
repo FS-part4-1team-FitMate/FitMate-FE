@@ -16,10 +16,13 @@ export default function ActiveLessonSection({
       return (
         <>
           {items.map((item: MyLesson) => (
-            <React.Fragment>
-              {item.lessonQuotes.map((quote) => (
-                <ActiveLessonCard key={item.id} item={item} quote={quote} />
-              ))}
+            <React.Fragment key={item.id}>
+              {item.lessonQuotes.map(
+                (quote) =>
+                  quote.status === "ACCEPTED" && (
+                    <ActiveLessonCard key={quote.id} item={item} quote={quote} />
+                  ),
+              )}
             </React.Fragment>
           ))}
         </>
