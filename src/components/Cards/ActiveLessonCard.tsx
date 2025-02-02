@@ -1,12 +1,13 @@
+import { Lesson } from "@/types/lesson";
 import { LessonType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
-/**
- * 임시로 any 타입 지정
- */
-export default function ActiveLessonCard({ item }: { item: any }) {
+export default function ActiveLessonCard({ items }: { items: Lesson[] }) {
+  /**
+   * @TODO UI 변경해야함
+   */
   return (
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">

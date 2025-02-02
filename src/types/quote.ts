@@ -1,13 +1,19 @@
 export interface QuoteData {
   lessonRequestId: string;
-  quote: number;
+  price: number;
   message: string;
 }
 
 export interface QuoteParams {
   page?: number;
   limit?: number;
+  order?: string;
+  sort?: string;
   status?: string;
+  trainer_id?: string;
+  min_price?: number;
+  max_price?: number;
+  lesson_request_id?: string;
 }
 
 export interface Quote {
@@ -15,15 +21,22 @@ export interface Quote {
   trainerId: string;
   lessonRequestId: string;
   price: number;
-  message: string;
+  message?: string;
   status: string;
   rejectionReason?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
+<<<<<<< HEAD
 export interface RejectedQuoteParams {
   page?: number;
   limit?: number;
   status?: string;
+=======
+export interface QuoteResult {
+  list: Quote[];
+  hasMore: boolean;
+  totalCount: number;
+>>>>>>> dev
 }

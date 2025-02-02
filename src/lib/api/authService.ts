@@ -1,77 +1,81 @@
 import { Gender, LessonType, Profile, ProfileEdittable, Region, Role, User } from "@/types/types";
 import instance from "./instance";
 
-export function postLogin(data: { email: string; password: string }): Promise<{
-  data: {
-    user: User;
-    accessToken: string;
-    refreshToken: string;
-  };
+export async function postLogin(data: { email: string; password: string }): Promise<{
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+  hasProfile: boolean;
 }> {
   try {
-    return instance.post("/auth/login", data);
+    const res = await instance.post("/auth/login", data);
+    return res.data;
   } catch (err) {
     throw err;
   }
 }
 
-export function postSignUpUser(data: {
+export async function postSignUpUser(data: {
   nickname: string;
   email: string;
   password: string;
   passwordConfirm?: string;
 }): Promise<{
-  data: {
-    user: User;
-    accessToken: string;
-    refreshToken: string;
-  };
+  user: User;
+  accessToken: string;
+  refreshToken: string;
 }> {
   try {
     delete data.passwordConfirm;
-    return instance.post("/auth/signup/user", data);
+    const res = await instance.post("/auth/signup?role=USER", data);
+    return res.data;
   } catch (err) {
     throw err;
   }
 }
 
-export function postSignUpTrainer(data: {
+export async function postSignUpTrainer(data: {
   nickname: string;
   email: string;
   password: string;
   passwordConfirm?: string;
 }): Promise<{
-  data: {
-    user: User;
-    accessToken: string;
-    refreshToken: string;
-  };
+  user: User;
+  accessToken: string;
+  refreshToken: string;
 }> {
   try {
     delete data.passwordConfirm;
-    return instance.post("/auth/signup/trainer", data);
+    const res = await instance.post("/auth/signup?role=TRAINER", data);
+    return res.data;
   } catch (err) {
     throw err;
   }
 }
 
-export function getProfile(userId: string): Promise<Profile> {
+export async function getProfile(userId: string): Promise<{
+  profile: Profile;
+  profileImagePresignedUrl?: string;
+  certificationPresignedUrl?: string;
+}> {
   try {
-    return instance.get(`/profile/${userId}`);
+    const res = await instance.get(`/profile/${userId}`);
+    return res.data;
   } catch (err) {
     throw err;
   }
 }
 
-export function getTrainerDetails(trainerId: string): Promise<Profile> {
-  try {
-    return instance.get(`/trainers/${trainerId}`);
-  } catch (err) {
-    throw err;
-  }
-}
+// export async function getTrainerDetails(trainerId: string): Promise<Profile> {
+//   try {
+//     const res = await instance.get(`/trainers/${trainerId}`);
+//     return res.data;
+//   } catch (err) {
+//     throw err;
+//   }
+// }
 
-export function postProfile(data: {
+export async function postProfile(data: {
   profileImage?: FileList;
   name: string;
   phone: string;
@@ -82,20 +86,27 @@ export function postProfile(data: {
   intro?: string;
   description?: string;
 }): Promise<{
-  user: User;
+  profile: Profile;
+  profileImagePresignedUrl?: string;
+  certificationPresignedUrl?: string;
 }> {
   try {
-    return instance.post("/auth/profile", data);
+    const res = await instance.post("/profile", data);
+    return res.data;
   } catch (err) {
     throw err;
   }
 }
 
-export function patchProfile(data: Partial<ProfileEdittable>): Promise<{
+export async function patchProfile(
+  userId: string,
+  data: Partial<ProfileEdittable>,
+): Promise<{
   user: User;
 }> {
   try {
-    return instance.patch("/auth/profile", data);
+    const res = await instance.patch(`/profile/${userId}`, data);
+    return res.data;
   } catch (err) {
     throw err;
   }

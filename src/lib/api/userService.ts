@@ -12,20 +12,21 @@ export const getFavoriteTrainers = async ({
   return data;
 };
 
-export const getFavorite = (
+export const getFavorite = async (
   trainerId: string,
 ): Promise<{
   isFavorite: boolean;
   favoriteTotalCount: number;
 }> => {
   try {
-    return instance.get(`/trainer/${trainerId}/favorite`);
+    const res = await instance.get(`/trainers/${trainerId}/favorite`);
+    return res.data;
   } catch (err) {
     throw err;
   }
 };
 
-export const toggleFavorite = (
+export const toggleFavorite = async (
   isFavorite: boolean | undefined,
   trainerId: string,
 ): Promise<{
@@ -34,9 +35,9 @@ export const toggleFavorite = (
 }> => {
   try {
     if (isFavorite) {
-      return instance.delete(`/trainer/${trainerId}/favorite`);
+      return (await instance.delete(`/trainers/${trainerId}/favorite`)).data;
     }
-    return instance.post(`/trainer/${trainerId}/favorite`);
+    return (await instance.post(`/trainers/${trainerId}/favorite`)).data;
   } catch (err) {
     throw err;
   }

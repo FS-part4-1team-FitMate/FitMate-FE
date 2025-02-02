@@ -50,9 +50,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <button
             key={index}
             className={`px-3 py-2 rounded-md ${
-              currentPage === page
-                ? "bg-black text-white"
-                : "text-gray-500 hover:bg-gray-200"
+              currentPage === page ? "bg-black-400 text-white" : "text-gray-500 hover:bg-gray-200"
             }`}
             onClick={() => onPageChange(page)}
           >
@@ -62,13 +60,11 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <span key={index} className="px-3 py-2 text-gray-500">
             {page}
           </span>
-        )
+        ),
       )}
       <button
         className={`px-3 py-2 rounded-md ${
-          currentPage === totalPages
-            ? "text-gray-400 cursor-not-allowed"
-            : "text-black"
+          currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-black"
         }`}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}

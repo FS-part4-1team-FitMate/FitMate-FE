@@ -8,12 +8,13 @@ import {
   logo_xl,
 } from "@/imageExports";
 import "dotenv/config";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { postLogin } from "@/lib/api/authService";
+import { getProfile, postLogin } from "@/lib/api/authService";
 import { EMAIL_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
@@ -46,15 +47,16 @@ function LogIn() {
 
   useEffect(() => {
     if (user?.id) {
+      const userData = JSON.parse(localStorage.getItem("userData")!);
       if (user.role === Role.USER) {
-        if ("profile" in user && user.profile?.name) {
+        if (user.hasProfile) {
           router.push("/user/my-lesson/active-lesson");
         } else {
           router.push("/user/profile/regist");
         }
       } else if (user.role === Role.TRAINER) {
-        if ("profile" in user && user.profile?.name) {
-          router.push("/trainer/managing-request/sent-request");
+        if (user.hasProfile) {
+          router.push("/trainer/received-request");
         } else {
           router.push(`/trainer/${user.id}/profile/regist`);
         }
@@ -64,21 +66,20 @@ function LogIn() {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const response = await postLogin(data);
-      console.log(response); // TODO: remove this.
-      const userData = response.data;
+      const userData = await postLogin(data);
       console.log(userData); // TODO: remove this.
       if ("user" in userData) {
         const { user } = userData;
+        user.hasProfile = userData.hasProfile;
         setUser(user);
         if (user.role === Role.USER) {
-          if ("profile" in user && user.profile?.name) {
+          if (user.hasProfile) {
             router.push("/user/my-lesson/active-lesson");
           } else {
             router.push("/user/profile/regist");
           }
         } else if (user.role === Role.TRAINER) {
-          if ("profile" in user && user.profile?.name) {
+          if (user.hasProfile) {
             router.push("/trainer/managing-request/sent-request");
           } else {
             router.push(`/trainer/${user.id}/profile/regist`);
@@ -93,7 +94,11 @@ function LogIn() {
 
   return (
     <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
-      <Image src={logo_xl} alt="Logo" width={384} height={124} priority />
+      <Head>
+        <title>로그인 | 핏메이트</title>
+        <meta name="description" content="핏메이트 로그인 페이지입니다." />
+      </Head>
+      <Image className="h-auto" src={logo_xl} alt="Logo" width={384} height={124} priority />
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[16px] items-stretch w-full"

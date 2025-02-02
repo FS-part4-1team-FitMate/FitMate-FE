@@ -1,30 +1,34 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
-import { ic_designate_md, ic_edit_sm, ic_visibility_off, ic_visibility_on } from "@/imageExports";
+import { ic_designate_md, ic_edit_sm } from "@/imageExports";
+import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { patchProfile } from "@/lib/api/authService";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getProfile, patchProfile } from "@/lib/api/authService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, LocationType, ProfileEdittable, Region } from "@/types/types";
+import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
-import InputPassword from "@/components/Common/InputPassword";
+import Loading from "@/components/Common/Loading";
 import PopUp from "@/components/Common/PopUp";
 import Textarea from "@/components/Common/Textarea";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
-type FormType = Partial<ProfileEdittable> & {
-  currPassword: string;
-  password: string;
-  passwordConfirm: string;
-};
+type FormType = Partial<ProfileEdittable>;
+//  & {
+//   currPassword: string;
+//   password: string;
+//   passwordConfirm: string;
+// };
 
 function ProfileEdit() {
-  const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
-  const [pwdIsVisible, setPwdIsVisible] = useState(false);
-  const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
+  const queryClient = useQueryClient();
+  // const [curPwdIsVisible, setCurPwdIsVisible] = useState(false);
+  // const [pwdIsVisible, setPwdIsVisible] = useState(false);
+  // const [pwdCfmIsVisible, setPwdCfmIsVisible] = useState(false);
   const router = useRouter();
   const { trainerId } = router.query;
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
@@ -35,28 +39,53 @@ function ProfileEdit() {
   >(null);
   const {
     register,
-    watch,
+    // watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "all",
     defaultValues: {
       profileImage: user?.profile?.profileImage,
+      profileImageCount: 0,
+      contentType: "",
       name: user?.profile?.name,
       phone: user?.profile?.phone,
       gender: user?.profile?.gender,
-      lessonType: user?.profile?.lessonType,
       certification: user?.profile?.certification,
+      certificationCount: 0,
       region: user?.profile?.region,
       locationType: user?.profile?.locationType,
       experience: user?.profile?.experience,
       intro: user?.profile?.intro,
       description: user?.profile?.description,
-      currPassword: "",
-      password: "",
-      passwordConfirm: "",
+      // currPassword: "",
+      // password: "",
+      // passwordConfirm: "",
     } as FormType,
   });
+  const {
+    data: profileData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: () => getProfile(user?.id!),
+    cacheTime: 60 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
+    enabled: !!user?.id,
+  });
+
+  useEffect(() => {
+    if (user && profileData) {
+      setUser({
+        ...user,
+        ...profileData,
+      });
+      reset(profileData.profile);
+      setSelectedRegion(profileData.profile.region);
+    }
+  }, [profileData]);
 
   const onSubmit = async (data: FormType) => {
     // data.region = selectedRegion;
@@ -65,7 +94,7 @@ function ProfileEdit() {
     const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
       const typedKey = key as keyof ProfileEdittable;
       const newValue = data[typedKey];
-      if (newValue !== undefined && newValue !== profile[typedKey]) {
+      if (newValue !== undefined && newValue !== profile?.[typedKey]) {
         return { ...acc, [typedKey]: newValue };
       }
       return acc;
@@ -74,32 +103,87 @@ function ProfileEdit() {
       changedData.region = selectedRegion;
     }
     console.log(changedData); // TODO: remove this.
-    try {
-      const userData = await patchProfile(changedData);
-      if ("user" in userData) {
-        setUser(userData.user);
+    if (changedData.experience) {
+      changedData.experience = Number(Number(changedData.experience).toFixed(0));
+    }
+    let profileImageFileToUpload;
+    if ("profileImage" in changedData && changedData?.profileImage?.length) {
+      const profileImage = changedData.profileImage;
+      if (profileImage instanceof FileList && profileImage[0]?.name) {
+        profileImageFileToUpload = profileImage[0];
+        changedData.profileImageCount = 1;
+        changedData.contentType = profileImage[0].type;
+        delete changedData.profileImage;
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+    }
+    let certificationFileToUpload;
+    if ("certification" in changedData && changedData?.certification?.length) {
+      const certification = changedData.certification;
+      if (certification instanceof FileList && certification[0]?.name) {
+        certificationFileToUpload = certification[0];
+        changedData.certificationCount = 1;
+        changedData.contentType = certification[0].type;
+        delete changedData.certification;
+      }
+    }
+    try {
+      delete changedData.updatedAt;
+      console.log("changedData: ", changedData); // TODO: remove this.
+      const userData = await patchProfile(user?.id!, changedData);
+      console.log(userData); // TODO: remove this.
+      if ("profileImagePresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.profileImagePresignedUrl as string,
+          profileImageFileToUpload,
+        );
+        console.log(result); // TODO: remove this.
+      }
+      if ("certificationPresignedUrl" in userData) {
+        const result = await axios.put(
+          userData.certificationPresignedUrl as string,
+          certificationFileToUpload,
+        );
+        console.log(result); // TODO: remove this.
+      }
+      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...user, ...userData };
+      setUser((prev) => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS));
+      queryClient.invalidateQueries({
+        queryKey: ["profile", user?.id],
+      });
+      router.push(`/trainer/${user?.id}/profile`);
     } catch (err) {
       setError({ message: (err as Error).message });
     }
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <div className="text-2lg text-center">에러 발생.</div>;
+  }
+
   return (
-    <form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <main className="pc:flex justify-center items-start gap-[32px]">
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
           <div className={profile_menu}>
-            <h1 className="text-xl font-bold">강사님 프로필 등록</h1>
-            <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
+            <h1 className="text-xl font-bold">강사님 프로필 수정</h1>
           </div>
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="profileImage" className="text-lg font-semibold">
-              프로필 이미지
-            </label>
-            <ImageUploader register={register("profileImage")} />
-          </div>
+          <ImageUploader
+            id="profileImage"
+            label="프로필 이미지"
+            defImage={
+              profileData?.profileImagePresignedUrl
+                ? profileData.profileImagePresignedUrl
+                : undefined
+            }
+            register={register("profileImage")}
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="name"
@@ -185,17 +269,18 @@ function ProfileEdit() {
           </div>
           {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <label htmlFor="certification" className="text-lg font-semibold">
-              자격증
-            </label>
-            <ImageUploader
-              register={register("certification")}
-              width={300}
-              height={300}
-              defImage={ic_designate_md.src}
-            />
-          </div>
+          <ImageUploader
+            id="certification"
+            label="자격증"
+            register={register("certification")}
+            width={300}
+            height={300}
+            defImage={
+              profileData?.certificationPresignedUrl
+                ? profileData.certificationPresignedUrl
+                : ic_designate_md.src
+            }
+          />
           <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
@@ -215,43 +300,9 @@ function ProfileEdit() {
           </div>
           {errors.region && <p className={error_class}>{errors.region.message}</p>}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <div className="flex flex-col gap-[8px]">
-              <label className="text-lg font-semibold">강의 주소 타입</label>
-              <p className={note_class}>* 반드시 하나 이상을 선택해 주세요!</p>
-            </div>
-            <div className="flex gap-[16px]">
-              <label className="text-lg">
-                <input
-                  {...register("locationType", {
-                    validate: (value) =>
-                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                  })}
-                  type="checkbox"
-                  name="locationType"
-                  value={LocationType.OFFLINE}
-                />
-                &nbsp;오프라인
-              </label>
-              <label className="text-lg">
-                <input
-                  {...register("locationType", {
-                    validate: (value) =>
-                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                  })}
-                  type="checkbox"
-                  name="locationType"
-                  value={LocationType.ONLINE}
-                />
-                &nbsp;온라인
-              </label>
-            </div>
-            {errors.locationType && <p className={error_class}>{errors.locationType.message}</p>}
-          </div>
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Input
             id="experience"
-            label="경력 (연, 소수점 입력 가능)"
+            label="경력 (연, 소수점 입력 불가)"
             type="number"
             register={register("experience", {
               min: {
@@ -284,13 +335,13 @@ function ProfileEdit() {
             placeholder="상세 설명을 입력해 주세요."
           ></Textarea>
           {errors.description && <p className={error_class}>{errors.description.message}</p>}
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
+          {/* <hr className="w-full border-[1px] border-solid border-gray-300" />
           <InputPassword
             id="currPassword"
             label="현재 비밀번호"
             pwdIsVisible={curPwdIsVisible}
             setPwdIsVisible={setCurPwdIsVisible}
-            {...register("currPassword", {
+            register={register("currPassword", {
               required: "비밀번호를 입력해 주세요.",
               minLength: {
                 value: 8,
@@ -310,9 +361,9 @@ function ProfileEdit() {
             pwdIsVisible={pwdIsVisible}
             setPwdIsVisible={setPwdIsVisible}
             register={register("password", {
-              minLength: {
-                value: 8,
-                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+              pattern: {
+                value: PWD_REGEX,
+                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
               },
             })}
             placeholder="새로운 비밀번호를 입력해 주세요."
@@ -323,7 +374,7 @@ function ProfileEdit() {
             label="새로운 비밀번호 확인"
             pwdIsVisible={pwdCfmIsVisible}
             setPwdIsVisible={setPwdCfmIsVisible}
-            {...register("passwordConfirm", {
+            register={register("passwordConfirm", {
               validate: (value) => {
                 if (value !== watch("password")) {
                   return "비밀번호가 일치하지 않습니다.";
@@ -334,7 +385,7 @@ function ProfileEdit() {
           />
           {errors.passwordConfirm && (
             <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
-          )}
+          )} */}
           <hr className="w-full border-[1px] border-solid border-gray-300" />
           <Button type="submit" className="w-full bg-blue-500 text-white disabled:bg-slate-600">
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
@@ -342,7 +393,9 @@ function ProfileEdit() {
           <Button
             type="button"
             className="w-full border border-solid border-slate-800 bg-slate-200 text-black-500"
-            onClick={() => router.push(`/trainer/${trainerId}/profile`)}
+            onClick={() => {
+              router.push(`/trainer/${trainerId}/profile`);
+            }}
           >
             취소하기
           </Button>
