@@ -1,60 +1,86 @@
-import React, { useRef, useCallback } from "react";
+import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import SentRequestCard from "@/components/Cards/SentRequestCard";
-import { getRejectedQuote } from "@/lib/api/quoteService";
+import { getRejectedRequest } from "@/lib/api/requestService";
+import RejectedRequestCard from "@/components/Cards/RejectedRequestCard";
+import Tab from "@/components/Tab";
+import { useUser } from "@/contexts/UserProvider";
 
-export default function RejectedQuotesList() {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-  } = useInfiniteQuery(
-    ["rejectedQuotes"],
-    getRejectedQuote,
-    {
-      getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
-    }
-  );
+type rejectedRequestQueryKey = [
+  string,
+  {
+    trainer_id?: string;
+    limit?: number;
+  }
+];
 
-  const observerRef = useRef<IntersectionObserver | null>(null);
+export default function RejectedRequest() {
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (isLoading) return;
+  const user = useUser();
+  const trainerId = user?.id;
+  const queryKey: rejectedRequestQueryKey = [
+    "rejectedRequest",
+        {
+          trainer_id: trainerId,
+          limit: 10,
+        },
+      ]
 
-      if (observerRef.current) observerRef.current.disconnect();
+      const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+      } = useInfiniteQuery(
+        queryKey,
+        ({ pageParam = 1 }) => {
+          if (!trainerId) {
+            throw new Error("Trainer ID is required");
+          }
+          return getRejectedRequest({
+            pageParam,
+            trainer_id: trainerId,
+            limit: 10,
+          });
+        },
+        {
+          enabled: !!trainerId,
+          getNextPageParam: (lastPage) =>
+            lastPage.nextPage ? lastPage.nextPage : undefined,
+        }
+      );
 
-      observerRef.current = new IntersectionObserver((entries) => {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
           fetchNextPage();
         }
-      });
+      },
+      { threshold: 1.0 }
+    );
 
-      if (node) observerRef.current.observe(node);
-    },
-    [isLoading, hasNextPage, fetchNextPage]
-  );
+    if (observerRef.current) observer.observe(observerRef.current);
+
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    };
+  }, [fetchNextPage, hasNextPage]);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4">
-      {data?.pages.map((page, pageIndex) => (
-        <React.Fragment key={pageIndex}>
-          {page.data.map((item, itemIndex) => {
-            const isLastItem =
-              pageIndex === data.pages.length - 1 &&
-              itemIndex === page.data.length - 1;
-            return (
-              <div
-                key={item.id}
-                ref={isLastItem ? lastElementRef : undefined}
-              >
-                <SentRequestCard item={item} />
-              </div>
-            );
-          })}
-        </React.Fragment>
-      ))}
+    <div className="p-10 bg-gray-50 min-h-screen">
+      <Tab />
+      <div className="grid grid-cols-2 gap-4">
+        {data?.pages.map((page, pageIndex) => (
+          <React.Fragment key={pageIndex}>
+            {page.results.map((quote: any) => (
+              <RejectedRequestCard key={quote.id} item={quote} />
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+      {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}
+      <div ref={observerRef} className="h-10" />
     </div>
   );
 }

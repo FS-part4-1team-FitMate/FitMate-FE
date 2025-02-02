@@ -31,3 +31,17 @@ export async function createLessonRequest(data: {
       throw new Error("견적 요청을 불러오는 중 오류가 발생했습니다.");
     }
   }
+
+  export async function getRejectedRequest({
+    pageParam,
+    trainer_id,
+    limit
+  }: { pageParam: number, trainer_id: string, limit: number }): Promise<any> {
+    try {
+      const response = await instance.get(`/quotes?trainer_id=${trainer_id}&limit=${limit}&page=${pageParam}&status=REJECTED`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch sent requests:", error);
+      throw new Error("견적 요청을 불러오는 중 오류가 발생했습니다.");
+    }
+  }
