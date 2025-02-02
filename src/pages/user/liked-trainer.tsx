@@ -2,15 +2,18 @@ import React, { useEffect, useRef} from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import FavoiriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
 import { getFavoriteTrainers } from "@/lib/api/userService";
+import { LessonType } from "@/types/types";
 
 interface Trainer {
   id: number;
+  name: string;
   rating: number;
   reviewCount: number;
   experience: number;
   lessonCount: number;
   isFavorited: boolean;
   favoriteCount: number;
+  lessonType: LessonType[];
 }
 
 const LikedTrainerPage = ({ userId }: { userId: string}) => {
@@ -62,15 +65,17 @@ const LikedTrainerPage = ({ userId }: { userId: string}) => {
         {data?.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
             {page.trainers.map((trainer: Trainer) => (
-                <FavoiriteTrainerCard
+              <FavoiriteTrainerCard
                 key={trainer.id}
+                name={trainer.name}
                 rating={trainer.rating}
                 reviewCount={trainer.reviewCount}
                 experience={trainer.experience}
                 lessonCount={trainer.lessonCount}
                 isFavorited={trainer.isFavorited}
                 favoriteCount={trainer.favoriteCount}
-                />
+                lessonType={trainer.lessonType}
+              />
             ))}
             </React.Fragment>
         ))}
