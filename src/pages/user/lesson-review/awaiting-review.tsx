@@ -5,25 +5,7 @@ import ReviewModal from "@/components/Modal/ReviewModal";
 import Tab from "@/components/Tab";
 import WriteReviewCard from "@/components/Cards/writeReviewCard";
 
-const fetchReviews = async () => {
-  return [
-    {
-      id: 1,
-      name: "김코드 기사님",
-      date: "2024.07.01",
-      price: "210,000원",
-    },
-    {
-      id: 2,
-      name: "이코드 기사님",
-      date: "2024.07.03",
-      price: "250,000원",
-    },
-  ];
-};
-
 export default function AwaitingReview() {
-  const [reviews, setReviews] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
