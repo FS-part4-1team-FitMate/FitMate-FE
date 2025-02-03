@@ -54,7 +54,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
 
   if (isError || isFavoriteError) return <div>error!!</div>;
 
-  const trainerInfo = data?.profile ?? {};
+  const trainerInfo = data?.profile;
 
   return (
     <div
@@ -68,7 +68,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
         <FindTrainerCard profile={trainerInfo} favoriteInfo={favoriteInfo} />
         <div className="flex flex-col gap-4 pc:hidden">
           <HorizontalLine width="100%" />
-          <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" />
+          <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" trainerInfo={trainerInfo} />
         </div>
         <HorizontalLine width="100%" />
         <TrainerInfo profile={trainerInfo} />
@@ -80,7 +80,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
         <TrainerControl profile={trainerInfo} />
         <div className="hidden flex-col gap-16 pc:flex">
           <HorizontalLine width="100%" />
-          <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" />
+          <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" trainerInfo={trainerInfo} />
         </div>
       </div>
       {isLoading || (isFavoriteLoading && <Loading />)}
