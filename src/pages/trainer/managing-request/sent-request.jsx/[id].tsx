@@ -1,6 +1,6 @@
 import SentRequestCard from "@/components/Cards/SentRequestCard";
-import QuoteInfo from "@/components/Common/QuoteInfo";
 import { HorizontalLine } from "@/components/Common/Line";
+import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 
 export default function Detailrequest() {
@@ -9,9 +9,7 @@ export default function Detailrequest() {
       <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-[3.2rem]">
           <h1 className="text-2xl font-bold">견적 상세</h1>
-          <SentRequestCard 
-            item={item}
-          />
+          <SentRequestCard item={item} />
         </div>
         <div className="flex flex-col gap-[3.2rem]">
           <h1 className="text-2xl font-bold">견적가</h1>
@@ -19,7 +17,7 @@ export default function Detailrequest() {
         </div>
         <HorizontalLine width="100%" />
         <div>
-            <QuoteInfo />
+          <QuoteInfo />
         </div>
       </div>
       <div className="flex flex-col gap-16">
