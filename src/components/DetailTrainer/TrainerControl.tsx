@@ -10,7 +10,7 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { data: myLessonList } = useQuery<MyLessonResult>(["my-lesson"], () =>
-    getMyLessonRequest(),
+    getMyLessonRequest({ page: 1 }),
   );
 
   const lessonId = myLessonList?.list[0]?.id;
@@ -30,7 +30,7 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   });
 
   const handleLessonRequest = () => {
-    if (!lessonId) {
+    if (!lessonId || myLessonList.list[0].status !== "PENDING") {
       router.push("/user/create-request");
     } else {
       handleSendDirectQuote();

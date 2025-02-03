@@ -3,8 +3,10 @@ import { ParsedUrlQuery } from "querystring";
 import { GetServerSideProps } from "next";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import { getFavorite } from "@/lib/api/userService";
+import { ReviewResult } from "@/types/reviews";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
@@ -38,11 +40,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function DetailTrainer({ trainerId }: { trainerId: string | null }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 3;
   const { data, isLoading, isError } = useQuery(
     ["trainer-detail", trainerId],
     () => getTrainerInfo(trainerId as string),
     {
       enabled: !!trainerId,
+    },
+  );
+
+  const { data: reviewStat } = useQuery(["review-stat"], () => getReviewStat(trainerId as string));
+  const {
+    data: reviewList,
+    isLoading: isReviewLoading,
+    isError: isReviewError,
+  } = useQuery<ReviewResult>(
+    ["reviews", currentPage],
+    () => getReviews(trainerId as string, { page: currentPage, limit: pageSize }),
+    {
+      enabled: !!trainerId,
+      keepPreviousData: true,
     },
   );
 
@@ -52,9 +69,11 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
     isError: isFavoriteError,
   } = useQuery(["favorite"], () => getFavorite(trainerId as string), { enabled: !!trainerId });
 
-  if (isError || isFavoriteError) return <div>error!!</div>;
+  if (isError || isReviewError || isFavoriteError) return <div>error!!</div>;
 
   const trainerInfo = data?.profile;
+  const reviews = reviewList?.reviews || [];
+  const totalCount = reviewList?.totalCount || 0;
 
   return (
     <div
@@ -73,8 +92,12 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
         <HorizontalLine width="100%" />
         <TrainerInfo profile={trainerInfo} />
         {/* 리뷰 리스트 api 연결해야함 */}
-        <TrainerReview reviewList={trainerInfo} />
-        <Pagination currentPage={currentPage} totalPages={5} onPageChange={setCurrentPage} />
+        <TrainerReview reviewList={reviews} reviewStat={reviewStat} totalCount={totalCount} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(totalCount / pageSize)}
+          onPageChange={setCurrentPage}
+        />
       </div>
       <div className="flex flex-col gap-[2.4rem] pc:gap-16">
         <TrainerControl profile={trainerInfo} />
@@ -83,7 +106,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
           <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" trainerInfo={trainerInfo} />
         </div>
       </div>
-      {isLoading || (isFavoriteLoading && <Loading />)}
+      {(isLoading || isReviewLoading || isFavoriteLoading) && <Loading />}
     </div>
   );
 }
