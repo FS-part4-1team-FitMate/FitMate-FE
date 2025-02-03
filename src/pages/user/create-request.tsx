@@ -359,7 +359,7 @@ const createRequest = () => {
               className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
               disabled={!watch("address")}
             >
-              견적 확정하기
+              견적 요청하기
             </button>
           </div>
         )}
