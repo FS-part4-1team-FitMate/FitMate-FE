@@ -46,8 +46,12 @@ export async function getLessonInfo(lessonId: string) {
 }
 
 // 내가 신청한 레슨 목록 조회 (유저)
-export async function getMyLessonRequest() {
-  const res = await get("/lessons/me");
+export async function getMyLessonRequest({ page, limit, status }: LessonParams) {
+  const res = await get("/lessons/me", {
+    page,
+    limit,
+    status,
+  });
   return res.data;
 }
 

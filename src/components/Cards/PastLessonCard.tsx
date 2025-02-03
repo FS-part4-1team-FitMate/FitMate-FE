@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Link from "next/link";
 import { useState } from "react";
 import { pastLessonFilter } from "@/types/dropdown";
 import { MyLesson } from "@/types/lesson";
@@ -11,15 +12,18 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
 
   // 필터 처리 함수
   const handleFilterChange = (filterType: string, value: string) => {
-    setFilterValue(value);
+    if (value === "ALL") {
+      value = "";
+    }
+    if (filterType === "pastLesson") {
+      setFilterValue(value);
+    }
   };
 
-  // 필터링된 quotes
+  // 필터링된 리스트
   const filteredQuotes = myLesson.lessonQuotes.filter((quote) => {
-    if (filterValue === "ACCEPTED") {
-      return quote.status === "ACCEPTED";
-    }
-    return quote.status === "REJECTED" || quote.status === "ACCEPTED";
+    if (!filterValue) return true;
+    return quote.status === filterValue;
   });
 
   return (
@@ -40,9 +44,12 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
             type="filter"
             filterType="pastLesson"
             onFilterChange={handleFilterChange}
+            currentValue={filterValue}
           />
           {filteredQuotes.map((quote) => (
-            <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
+            <Link href={`/user/my-lesson/past-lesson/${quote.id}`}>
+              <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
+            </Link>
           ))}
         </div>
       </div>
