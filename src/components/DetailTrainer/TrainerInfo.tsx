@@ -28,7 +28,7 @@ export default function TrainerInfo({ profile }: { profile: Profile }) {
         <p className="text-black-400 text-md font-normal pc:text-2lg">{profile?.description}</p>
       </TrainerContent>
       <TrainerContent label="제공 서비스">
-        <div className="text-black-400 text-md font-normal pc:text-2lg">
+        <div className="flex gap-4">
           {profile?.lessonType?.map((lessonType: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={lessonType} size="lg" />
           ))}

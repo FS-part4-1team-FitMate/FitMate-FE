@@ -1,13 +1,28 @@
 import { ic_clip_md, share_ic_facebook_md, share_ic_kakao_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
+import { useEffect } from "react";
+import { Profile } from "@/types/trainer";
+import { kakaoTalkShare } from "./KakaoShare";
 
 const link_wrap = clsx(
   "flex justify-center items-center w-16 h-16 p-[0.8rem] border border-line-200 rounded-[0.8rem]",
   "pc:w-[6.4rem] pc:h-[6.4rem] pc:p-4 pc:rounded-[1.6rem]",
 );
 
-export default function ShareSNS({ label }: { label: string }) {
+export default function ShareSNS({
+  label,
+  trainerInfo,
+}: {
+  label: string;
+  trainerInfo?: Profile["profile"];
+}) {
+  useEffect(() => {
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_API_KEY);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col gap-[0.8rem] pc:gap-[2.2rem]">
       <p className="text-md font-semibold pc:text-xl">{label}</p>
@@ -26,6 +41,7 @@ export default function ShareSNS({ label }: { label: string }) {
           src={share_ic_kakao_md}
           width={64}
           height={64}
+          onClick={trainerInfo ? () => kakaoTalkShare({ trainerInfo }) : undefined}
           alt="카카오톡 공유"
         />
         <Image
