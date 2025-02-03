@@ -80,7 +80,7 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
       className={clsx(
         "relative flex flex-col justify-between gap-16 m-auto mt-[2.4rem] mb-16 px-8",
         "pc:flex-row pc:gap-0 pc:mt-[5.6rem] pc:max-w-[144rem]",
-        "tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
+        "tablet:max-w-[74.4rem] mobile:max-w-auto",
       )}
     >
       <div className={"flex flex-col gap-[2.4rem] w-full pc:gap-16 pc:pr-[10rem]"}>
