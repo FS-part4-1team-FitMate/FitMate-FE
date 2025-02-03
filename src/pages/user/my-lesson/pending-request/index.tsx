@@ -6,26 +6,23 @@ import Loading from "@/components/Common/Loading";
 
 export default function PendingRequest() {
   const { data, isLoading, isError } = useQuery<MyLessonResult>(
-    ["my-lesson"],
-    () => getMyLessonRequest(),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        return lastPage.hasMore ? allPages.length + 1 : undefined;
-      },
-    },
+    ["my-lesson", { page: 1, limit: 8, status: "PENDING" }],
+    () =>
+      getMyLessonRequest({
+        page: 1,
+        limit: 8,
+        status: "PENDING",
+      }),
   );
+
+  const pendingList = data?.list ?? [];
 
   if (isError) return <div>error!</div>;
 
-  const filterdList =
-    data?.list?.filter((myLesson) => {
-      return myLesson.status === "PENDING";
-    }) || [];
-
-  if (isLoading || filterdList?.length > 0) {
+  if (isLoading || pendingList?.length > 0) {
     return (
       <div>
-        {filterdList?.map((item: MyLesson) => (
+        {pendingList?.map((item: MyLesson) => (
           <div
             key={item.id}
             className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]"
