@@ -1,13 +1,63 @@
 import { ic_clip_md, share_ic_facebook_md, share_ic_kakao_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
+import { useEffect } from "react";
+import { Profile } from "@/types/trainer";
+import { lessonType_trans } from "@/types/types";
 
 const link_wrap = clsx(
   "flex justify-center items-center w-16 h-16 p-[0.8rem] border border-line-200 rounded-[0.8rem]",
   "pc:w-[6.4rem] pc:h-[6.4rem] pc:p-4 pc:rounded-[1.6rem]",
 );
 
-export default function ShareSNS({ label }: { label: string }) {
+export default function ShareSNS({
+  label,
+  trainerInfo,
+}: {
+  label: string;
+  trainerInfo?: Profile["profile"];
+}) {
+  useEffect(() => {
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_API_KEY);
+    }
+  }, []);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+
+      alert("링크가 복사되었습니다.");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      alert("링크 복사에 실패했습니다.");
+    }
+  };
+
+  const handleKakaoTalkShare = () => {
+    const { Kakao, location } = window;
+    const lessonType = trainerInfo?.lessonType.map((lesson) => {
+      return lessonType_trans[lesson].ko;
+    });
+
+    Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: "맞춤형 트레이닝 서비스, 핏메이트",
+        description: `${lessonType} 관련 레슨을 받고 싶으신가요? ${trainerInfo?.name} 강사님을 추천합니다. 핏메이트에서 확인해 보세요!`,
+        imageUrl: "https://i.imgur.com/eFR67w5.png",
+        link: {
+          mobileWebUrl: location.href,
+          webUrl: location.href,
+        },
+      },
+    });
+  };
+
+  const handleFaceBookShare = () => {
+    return window.open(`http://www.facebook.com/sharer/sharer.php?u=${location.href}`);
+  };
+
   return (
     <div className="flex flex-col gap-[0.8rem] pc:gap-[2.2rem]">
       <p className="text-md font-semibold pc:text-xl">{label}</p>
@@ -18,6 +68,7 @@ export default function ShareSNS({ label }: { label: string }) {
             src={ic_clip_md}
             width={36}
             height={36}
+            onClick={handleCopyLink}
             alt="링크 공유"
           />
         </div>
@@ -26,6 +77,7 @@ export default function ShareSNS({ label }: { label: string }) {
           src={share_ic_kakao_md}
           width={64}
           height={64}
+          onClick={handleKakaoTalkShare}
           alt="카카오톡 공유"
         />
         <Image
@@ -33,6 +85,7 @@ export default function ShareSNS({ label }: { label: string }) {
           src={share_ic_facebook_md}
           width={64}
           height={64}
+          onClick={handleFaceBookShare}
           alt="페이스북 공유"
         />
       </div>

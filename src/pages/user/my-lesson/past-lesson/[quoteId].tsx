@@ -79,7 +79,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           <FindTrainerCard profile={trainerInfo} status={quoteInfo.status} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
-            <ShareSNS label="견적서 공유하기" />
+            <ShareSNS label="견적서 공유하기" trainerInfo={trainerInfo} />
           </div>
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
@@ -98,7 +98,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           </div>
         </div>
         <div className="hidden pc:flex flex-col gap-16">
-          <ShareSNS label="견적서 공유하기" />
+          <ShareSNS label="견적서 공유하기" trainerInfo={trainerInfo} />
         </div>
       </div>
     </div>

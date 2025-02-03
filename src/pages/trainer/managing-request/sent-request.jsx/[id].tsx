@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import SentRequestCard from "@/components/Cards/SentRequestCard";
-import QuoteInfo from "@/components/Common/QuoteInfo";
-import { HorizontalLine } from "@/components/Common/Line";
-import ShareSNS from "@/components/Common/ShareSNS";
 import { getQuote } from "@/lib/api/quoteService";
+import SentRequestCard from "@/components/Cards/SentRequestCard";
+import { HorizontalLine } from "@/components/Common/Line";
+import QuoteInfo from "@/components/Common/QuoteInfo";
+import ShareSNS from "@/components/Common/ShareSNS";
 
 export default function Detailrequest({ requestId }: { requestId: string | null }) {
   const { data, isLoading, isError } = useQuery({
