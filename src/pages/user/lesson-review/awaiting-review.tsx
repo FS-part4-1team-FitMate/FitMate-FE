@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { getReview } from "@/lib/api/ReviewService";
+import { ReviewItem } from "@/types/reviews";
+import WriteReviewCard from "@/components/Cards/writeReviewCard";
 import Pagination from "@/components/Common/Pagination";
 import ReviewModal from "@/components/Modal/ReviewModal";
 import Tab from "@/components/Tab";
-import WriteReviewCard from "@/components/Cards/writeReviewCard";
 
 export default function AwaitingReview() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,14 +15,12 @@ export default function AwaitingReview() {
   const ITEMS_PER_PAGE = 6;
 
   const { data } = useQuery(
-    ["reviews", currentPage],
-    () => fetchReviews(currentPage, ITEMS_PER_PAGE),
+    ["reviews", { page: currentPage, limit: ITEMS_PER_PAGE }],
+    () => getReview({ page: currentPage, limit: ITEMS_PER_PAGE }),
     {
       keepPreviousData: true,
-    }
+    },
   );
-
-
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -38,25 +38,22 @@ export default function AwaitingReview() {
       </div>
 
       <div className="grid gap-6">
-        {data.reviews.map((review: any) => (
+        {data?.reviews.map((review: any) => (
           <div key={review.id} className="p-4 border rounded-lg shadow-sm">
-            <WriteReviewCard
-              item={review}
-              onClick={() => handleWriteReview(review)}
-            />
+            <WriteReviewCard item={review} onClick={() => handleWriteReview(review)} />
           </div>
         ))}
       </div>
 
       <Pagination
         currentPage={currentPage}
-        totalPages={Math.ceil(data.total / ITEMS_PER_PAGE)}
+        totalPages={Math.ceil(data?.totalCount! / ITEMS_PER_PAGE || 1)}
         onPageChange={handlePageChange}
       />
 
       {isModalOpen && (
         <ReviewModal
-          review={selectedReview}
+          review={selectedReview! as ReviewItem}
           closeModal={() => setIsModalOpen(false)}
         />
       )}
