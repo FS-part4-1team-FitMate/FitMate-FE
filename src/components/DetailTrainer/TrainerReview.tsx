@@ -11,7 +11,15 @@ export default function TrainerReview({ reviewList }: { reviewList: Profile }) {
         <h1 className="text-black-400 text-lg font-bold pc:text-2xl">리뷰 (150)</h1>
         <div className="flex items-center gap-4 py-16 px-[6.4rem] rounded-[3.2rem] bg-bg-200">
           <RatingAvgCard ratingAvg={3} />
-          <RatingStatCard ratingStat={[0, 0, 1, 2, 3]} />
+          <RatingStatCard
+            ratingStat={[
+              { rating: 1, count: 0 },
+              { rating: 2, count: 0 },
+              { rating: 3, count: 1 },
+              { rating: 4, count: 2 },
+              { rating: 5, count: 3 },
+            ]}
+          />
         </div>
       </div>
       <ReviewCard
