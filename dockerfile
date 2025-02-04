@@ -18,7 +18,7 @@ RUN npm run build
 FROM node:22.13.1 AS runtime
 
 # Create a non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Set working directory
 WORKDIR /app
@@ -30,10 +30,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 
 # Ensure correct permissions
-RUN chown -R appuser:appgroup /app
+# RUN chown -R appuser:appgroup /app
 
 # Switch to non-root user
-USER appuser
+# USER appuser
 
 # Expose application port
 EXPOSE 3001
