@@ -9,8 +9,9 @@ import Favorite from "../Common/Favorite";
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data: myLessonList } = useQuery<MyLessonResult>(["my-lesson"], () =>
-    getMyLessonRequest(),
+  const { data: myLessonList } = useQuery<MyLessonResult>(
+    ["my-lesson", { page: 1, limit: 1 }],
+    () => getMyLessonRequest({ page: 1, limit: 1 }),
   );
 
   const lessonId = myLessonList?.list[0]?.id;
