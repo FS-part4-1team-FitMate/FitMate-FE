@@ -1,4 +1,4 @@
-import ReviewCard from "@/components/Cards/ReviewCard";
+import MyReviewCard from "@/components/Cards/MyReviewCard";
 import Pagination from "@/components/Common/Pagination";
 import Tab from "@/components/Tab";
 import { getReview } from "@/lib/api/ReviewService";
@@ -26,10 +26,9 @@ export default function ReviewListPage() {
         <Tab />
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {data.reviews.map((review: any) => (
-            <ReviewCard
+            <MyReviewCard
               key={review.id}
-              title={review.title}
-              date={review.date}
+              createdAt={review.date}
               price={review.price}
               tags={review.tags}
               content={review.content}
