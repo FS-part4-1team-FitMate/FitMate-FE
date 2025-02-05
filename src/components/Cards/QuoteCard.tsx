@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import { getFavorite } from "@/lib/api/userService";
@@ -25,7 +26,7 @@ export default function QuoteCard({ myLesson, quote }: QuoteCardProps) {
     enabled: !!quote.trainerId,
   });
 
-  if (isError) return <div>error!</div>;
+  if (isError) return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
 
   const trainer = data?.profile || [];
 

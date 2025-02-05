@@ -47,8 +47,8 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
             currentValue={filterValue}
           />
           {filteredQuotes.map((quote) => (
-            <Link href={`/user/my-lesson/past-lesson/${quote.id}`}>
-              <QuoteCard key={quote.id} myLesson={myLesson} quote={quote} />
+            <Link href={`/user/my-lesson/past-lesson/${quote.id}`} key={quote.id}>
+              <QuoteCard myLesson={myLesson} quote={quote} />
             </Link>
           ))}
         </div>

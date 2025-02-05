@@ -1,4 +1,4 @@
-import { useState } from "react";
+import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyLessonRequest } from "@/lib/api/lessonService";
@@ -25,7 +25,7 @@ export default function PastLesson() {
   const pastList = data?.pages?.flatMap((page) => page.list) ?? [];
 
   if (isLoading) return <Loading />;
-  if (isError) return <div>error!</div>;
+  if (isError) return toast.error("받았던 레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
 
   if (pastList.length > 0) {
     return (
