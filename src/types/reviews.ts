@@ -14,6 +14,13 @@ export interface Review {
   };
 }
 
+export interface ReviewItem {
+  id: number;
+  name: string;
+  date: string;
+  price: string;
+}
+
 export interface FetchReviewsParams {
   page: number;
   limit: number;

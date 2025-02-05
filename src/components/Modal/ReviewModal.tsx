@@ -1,13 +1,15 @@
 import { ic_star_active_md, ic_star_inactive_md } from "@/imageExports";
 import Image from "next/image";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { patchReview, postReview } from "@/lib/api/ReviewService";
+import { ReviewItem } from "@/types/reviews";
 import WriteReviewCard from "@/components/Cards/writeReviewCard";
 import Textarea from "../Common/Textarea";
 import ModalContainer from "./ModalContainer";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ReviewModalProps {
-  review: { id: number; title: string; date: string; price: string };
+  review: ReviewItem;
   closeModal: () => void;
 }
 
@@ -16,9 +18,17 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
   const [content, setContent] = useState("");
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(submitReview, {
+  const postMutation = useMutation({
+    mutationFn: postReview,
     onSuccess: () => {
-      queryClient.invalidateQueries("reviews");
+      queryClient.invalidateQueries(["reviews"]);
+      closeModal();
+    },
+  });
+  const patchMutation = useMutation({
+    mutationFn: patchReview,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["reviews"]);
       closeModal();
     },
   });
@@ -29,17 +39,20 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
       return;
     }
 
-    mutation.mutate({ id: review.id, rating, content });
+    patchMutation.mutate({ id: review.id, rating, content });
   };
 
   return (
     <ModalContainer
       title="리뷰 쓰기"
-      buttonText={mutation.isLoading ? "등록 중..." : "리뷰 등록"}
+      buttonText={patchMutation.isLoading ? "등록 중..." : "리뷰 등록"}
       closeModal={closeModal}
       onButtonClick={handleSubmit}
     >
-      <WriteReviewCard item={review} />
+      <WriteReviewCard
+        item={review}
+        onClick={() => postMutation.mutate({ id: review.id, rating, content })}
+      />
       <p className="mt-8 text-lg font-semibold">평점을 선택해 주세요</p>
 
       <div className="flex gap-2 mb-4">
