@@ -25,3 +25,13 @@ export interface FetchReviewsParams {
   page: number;
   limit: number;
 }
+
+export interface ReviewResult {
+  reviews: Review[];
+  totalCount: number;
+}
+
+export interface ReviewStat {
+  rating: number;
+  count: number;
+}

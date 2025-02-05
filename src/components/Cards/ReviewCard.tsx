@@ -12,7 +12,7 @@ function ReviewCard({ rating, createdAt, nickname, content }: Props) {
   return (
     <div className="flex flex-col gap-[12px]">
       <div className="flex justify-start items-center">
-        <div className="text-md font-medium">{nickname.substring(0, 3)}****</div>
+        <div className="text-md font-medium">{nickname?.substring(0, 3)}****</div>
         <VerticalLine height="14px" />
         <div className="text-md text-slate-500">{createdAt}</div>
       </div>

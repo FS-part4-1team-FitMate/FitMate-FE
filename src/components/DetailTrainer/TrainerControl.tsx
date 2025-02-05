@@ -31,7 +31,7 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   });
 
   const handleLessonRequest = () => {
-    if (!lessonId) {
+    if (!lessonId || myLessonList.list[0].status !== "PENDING") {
       router.push("/user/create-request");
     } else {
       handleSendDirectQuote();

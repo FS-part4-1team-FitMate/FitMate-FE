@@ -44,6 +44,16 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta property="og:title" content="핏메이트" />
+        <meta
+          property="og:description"
+          content="맞춤형 트레이닝 서비스, 핏메이트와 함께 해보세요!"
+        />
+        <meta property="og:image" content="https://i.imgur.com/eFR67w5.png" />
+        <meta
+          property="og:url"
+          content={typeof window !== "undefined" ? window.location.href : ""}
+        />
       </Head>
       <QueryClientProvider client={queryClient}>
         <UserProvider>
