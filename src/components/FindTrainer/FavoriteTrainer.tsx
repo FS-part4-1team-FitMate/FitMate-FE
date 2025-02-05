@@ -20,6 +20,7 @@ export default function FavoriteTrainer({ list }: { list: Trainer[] }) {
       <p className="text-xl font-semibold">찜한 강사님</p>
       {filteredList.map((item) => (
         <FavoiriteTrainerCard
+          key={item.id}
           name={item.nickname}
           rating={item.profile.rating}
           reviewCount={item.profile.reviewCount}

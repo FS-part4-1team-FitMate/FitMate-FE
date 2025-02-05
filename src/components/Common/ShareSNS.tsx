@@ -2,6 +2,7 @@ import { ic_clip_md, share_ic_facebook_md, share_ic_kakao_md } from "@/imageExpo
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { Profile } from "@/types/trainer";
 import { lessonType_trans } from "@/types/types";
 
@@ -27,10 +28,10 @@ export default function ShareSNS({
     try {
       await navigator.clipboard.writeText(location.href);
 
-      alert("링크가 복사되었습니다.");
+      toast.success("링크가 복사되었습니다.");
     } catch (err) {
       console.error("Failed to copy:", err);
-      alert("링크 복사에 실패했습니다.");
+      toast.error("링크 복사에 실패했습니다.");
     }
   };
 
@@ -62,16 +63,17 @@ export default function ShareSNS({
     <div className="flex flex-col gap-[0.8rem] pc:gap-[2.2rem]">
       <p className="text-md font-semibold pc:text-xl">{label}</p>
       <div className="flex items-center gap-[1.6rem]">
-        <div className={link_wrap}>
-          <Image
-            className="w-[2.4rem] h-[2.4rem] pc:w-[3.6rem] pc:h-[3.6rem]"
-            src={ic_clip_md}
-            width={36}
-            height={36}
-            onClick={handleCopyLink}
-            alt="링크 공유"
-          />
-        </div>
+        <button onClick={handleCopyLink}>
+          <div className={link_wrap}>
+            <Image
+              className="w-[2.4rem] h-[2.4rem] pc:w-[3.6rem] pc:h-[3.6rem]"
+              src={ic_clip_md}
+              width={36}
+              height={36}
+              alt="링크 공유"
+            />
+          </div>
+        </button>
         <Image
           className="w-16 h-16 pc:w-[6.4rem] pc:h-[6.4rem]"
           src={share_ic_kakao_md}

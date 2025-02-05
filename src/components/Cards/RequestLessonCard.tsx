@@ -2,6 +2,7 @@ import { ic_edit_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { rejectedLesson } from "@/lib/api/lessonService";
 import { sendQuote } from "@/lib/api/quoteService";
@@ -38,12 +39,12 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     mutationFn: (quoteData: QuoteData) => sendQuote(quoteData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["send-quote"] });
-      alert("견적을 전송하였습니다.");
+      toast.success("견적을 전송하였습니다.");
       setIsQuoteModalOpen(false);
     },
     onError: (error: any) => {
       console.error("견적 전송에 실패하였습니다.", error.message);
-      alert("견적 전송에 실패하였습니다.");
+      toast.error("견적 전송에 실패하였습니다.");
     },
   });
 
@@ -59,17 +60,18 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     }) => rejectedLesson(lessonId, directQuoteRequestId, rejectionReason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cancel-lesson"] });
-      alert("요청을 반려하였습니다.");
+      toast.success("요청을 반려하였습니다.");
       setIsRejectedModalOpen(false);
     },
     onError: (error: any) => {
       console.error("요청 반려에 실패하였습니다.", error.message);
-      alert("요청 반려에 실패하였습니다.");
+      toast.error("요청 반려에 실패하였습니다.");
     },
   });
 
   const handleSendQuote = async () => {
     if (!validate()) {
+      toast.error("정해진 규칙에 맞게 작성해주세요!");
       return;
     }
 
@@ -83,7 +85,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
 
   const handleRejectedRequest = async () => {
     if (rejectionReason.length < 10) {
-      alert("반려 사유는 최소 10자 이상 입력해주세요.");
+      toast.error("반려 사유는 최소 10자 이상 입력해주세요.");
       return;
     }
 
@@ -97,7 +99,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
         rejectionReason,
       });
     } else {
-      alert("본인의 지정 견적이 아닙니다.");
+      toast.error("본인의 지정 견적이 아닙니다.");
     }
   };
 
@@ -163,7 +165,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       {isQuoteModalOpen && (
         <ModalContainer
           title="견적 보내기"
-          buttonText="견적 보내기"
+          buttonText={uploadQuote.isLoading ? "견적 전송 중 ..." : "견적 보내기"}
           closeModal={closeModal}
           onButtonClick={handleSendQuote}
           isButtonEnabled={!isInputEmpty()}
@@ -175,7 +177,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       {isRejectedModalOpen && (
         <ModalContainer
           title="요청 반려"
-          buttonText="반려하기"
+          buttonText={rejectionLesson.isLoading ? "반려 중 ..." : "반려하기"}
           closeModal={closeModal}
           onButtonClick={handleRejectedRequest}
           isButtonEnabled={!isRejectedEmpty()}

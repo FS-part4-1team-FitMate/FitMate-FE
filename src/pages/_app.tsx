@@ -4,7 +4,8 @@ import type { AppProps } from "next/app";
 import localFont from "next/font/local";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GNB from "@/components/GNB/GNB";
 import Tab from "@/components/Tab";
@@ -18,13 +19,17 @@ const pretendard = localFont({
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            // 보통 SSR에서는 staleTime을 0 이상으로 해줌으로써
-            // 클라이언트 사이드에서 바로 다시 데이터를 refetch 하는 것을 피한다.
             staleTime: 60 * 1000,
           },
         },
@@ -43,6 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
+        <title>핏메이트 - 맞춤형 트레이닝 서비스</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:title" content="핏메이트" />
         <meta
@@ -59,6 +65,18 @@ export default function App({ Component, pageProps }: AppProps) {
         <UserProvider>
           <ViewportProvider>
             <div className={pretendard.className}>
+              {isClient && (
+                <Toaster
+                  position="top-center"
+                  toastOptions={{
+                    style: {
+                      maxWidth: "100%",
+                      fontSize: "1.6rem",
+                    },
+                    duration: 3000,
+                  }}
+                />
+              )}
               <GNB />
               {isActiveTab && <Tab />}
               <Component {...pageProps} />
