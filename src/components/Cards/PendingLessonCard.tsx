@@ -78,24 +78,26 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
       <div className="text-2lg font-medium">
         <ChipLessonType lessonType={LessonType.REHAB} size="lg" />
       </div>
-      <TrainerInfo
-        name={trainerInfo?.name}
-        rating={trainerInfo?.rating || 0}
-        reviewCount={trainerInfo?.reviewCount || 0}
-        experience={trainerInfo?.experience || 0}
-        lessonCount={trainerInfo?.lessonCount || 0}
-        isFavorited={favoriteInfo?.isFavorite}
-        favoriteCount={favoriteInfo?.favoriteTotalCount || 0}
-      />
-      <Link href={`/user/my-lesson/pending-request/${item.id}`}>
-        <LessonInfo
-          startDate={formatDate(item?.startDate)}
-          endDate={formatDate(item?.endDate)}
-          locationType={locationType_trans[item?.locationType as LocationType]}
-          address={item?.roadAddress}
-        />
+      <Link href={`/user/my-lesson/pending-request/${quote.id}`}>
+        <div className="flex flex-col gap-8">
+          <TrainerInfo
+            name={trainerInfo?.name}
+            rating={trainerInfo?.rating || 0}
+            reviewCount={trainerInfo?.reviewCount || 0}
+            experience={trainerInfo?.experience || 0}
+            lessonCount={trainerInfo?.lessonCount || 0}
+            isFavorited={favoriteInfo?.isFavorite}
+            favoriteCount={favoriteInfo?.favoriteTotalCount || 0}
+          />
+          <LessonInfo
+            startDate={formatDate(item?.startDate)}
+            endDate={formatDate(item?.endDate)}
+            locationType={locationType_trans[item?.locationType as LocationType]}
+            address={item?.roadAddress}
+          />
+          <QuotePrice price={formatPrice(quote.price)} />
+        </div>
       </Link>
-      <QuotePrice price={formatPrice(quote.price)} />
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
         <button
           onClick={handleAccept}
