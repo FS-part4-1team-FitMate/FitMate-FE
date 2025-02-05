@@ -55,6 +55,7 @@ export default function DetailPendingRequest() {
     mutationFn: (quoteId: string) => acceptQuote(quoteId),
     onSuccess: () => {
       toast.success("견적이 확정되었습니다.");
+      router.push("/user/my-lesson/active-lesson");
     },
     onError: (err) => {
       console.error("견적 확정 실패", err);
