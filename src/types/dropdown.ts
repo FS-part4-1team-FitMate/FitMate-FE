@@ -3,6 +3,13 @@ import path from "path";
 export type TrainerSort = "리뷰 많은 순" | "평점 높은 순" | "경력 높은 순" | "확정 횟수 많은 순";
 export type UserSort = "레슨 빠른 순" | "레슨 느린 순" | "최근 요청 순";
 
+export const trainerSort: TrainerSort[] = [
+  "리뷰 많은 순",
+  "평점 높은 순",
+  "경력 높은 순",
+  "확정 횟수 많은 순",
+];
+
 type ServiceFilter = "ALL" | "REHAB" | "SPORTS" | "FITNESS";
 type GenderFilter = "ALL" | "MALE" | "FEMALE";
 type RequestFilter = "DIRECT";

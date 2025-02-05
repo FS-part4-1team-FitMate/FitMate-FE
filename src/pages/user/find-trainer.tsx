@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getTrainerList } from "@/lib/api/trainerService";
-import { TrainerSort } from "@/types/dropdown";
+import { trainerSort } from "@/types/dropdown";
 import { TrainerResult } from "@/types/trainer";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import Loading from "@/components/Common/Loading";
@@ -12,13 +13,6 @@ import Title from "@/components/Common/Title";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import FavoriteTrainer from "@/components/FindTrainer/FavoriteTrainer";
 import FilterTrainer from "@/components/FindTrainer/FilterTrainer";
-
-const trainerSort: TrainerSort[] = [
-  "리뷰 많은 순",
-  "평점 높은 순",
-  "경력 높은 순",
-  "확정 횟수 많은 순",
-];
 
 export default function FindTrainer() {
   const [order, setOrder] = useState<string>("reviewCount");
@@ -49,8 +43,6 @@ export default function FindTrainer() {
     },
   );
 
-  const list = data?.pages.flatMap((page) => page.trainers) ?? [];
-
   // 검색 처리 함수
   const handleSearch = (keyword: string) => {
     setSearchTerm(keyword);
@@ -80,9 +72,13 @@ export default function FindTrainer() {
     setGender("");
   };
 
-  if (isError) {
-    return <div>데이터를 불러오는 중 오류가 발생하였습니다.</div>;
-  }
+  if (isLoading) return <Loading />;
+  if (isError) return toast.error("강사님 목록을 불러오는 중 오류가 발생했어요! 😢");
+
+  const list = data?.pages.flatMap((page) => page.trainers) ?? [];
+  const filteredList = list.filter((trainer) => {
+    return trainer.profile !== null;
+  });
 
   return (
     <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
@@ -114,15 +110,12 @@ export default function FindTrainer() {
           </div>
           <div className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap[2.4rem]">
             <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-              {list.map((item) => (
-                <div key={item.id}>
-                  <Link href={`/user/detail-trainer/${item.id}`}>
-                    <FindTrainerCard item={item} />
-                  </Link>
-                </div>
+              {filteredList.map((item) => (
+                <Link href={`/user/detail-trainer/${item.id}`} key={item.id}>
+                  <FindTrainerCard item={item} />
+                </Link>
               ))}
             </InfiniteScroll>
-            {isLoading && <Loading />}
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
+import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
-import { ParsedUrlQuery } from "querystring";
-import { GetServerSideProps } from "next";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
@@ -16,50 +18,37 @@ import TrainerControl from "@/components/DetailTrainer/TrainerControl";
 import TrainerInfo from "@/components/DetailTrainer/TrainerInfo";
 import TrainerReview from "@/components/DetailTrainer/TrainerReview";
 
-interface Params extends ParsedUrlQuery {
-  trainerId: string;
-}
+export default function DetailTrainer() {
+  const router = useRouter();
+  const { trainerId } = router.query;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { trainerId } = context.params as Params;
-
-  if (!trainerId) {
-    return {
-      props: {
-        trainerId: null,
-      },
-    };
-  }
-
-  return {
-    props: {
-      trainerId,
-    },
-  };
-};
-
-export default function DetailTrainer({ trainerId }: { trainerId: string | null }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 3;
-  const { data, isLoading, isError } = useQuery(
-    ["trainer-detail", trainerId],
-    () => getTrainerInfo(trainerId as string),
+
+  const {
+    data: trainer,
+    isLoading: isTrainerLoading,
+    isError: isTrainerError,
+  } = useQuery(["trainer-detail", trainerId], () => getTrainerInfo(trainerId as string), {
+    enabled: !!trainerId,
+  });
+
+  const { data: reviewStat } = useQuery(
+    ["review-stat", trainerId],
+    () => getReviewStat(trainerId as string),
     {
       enabled: !!trainerId,
+      cacheTime: 5 * 60 * 1000,
+      staleTime: 5 * 60 * 1000,
     },
   );
 
-  const { data: reviewStat } = useQuery(["review-stat"], () => getReviewStat(trainerId as string), {
-    enabled: !!trainerId,
-    cacheTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-  });
   const {
     data: reviewList,
     isLoading: isReviewLoading,
     isError: isReviewError,
   } = useQuery<ReviewResult>(
-    ["reviews", currentPage],
+    ["reviews", trainerId, currentPage],
     () => getReviews(trainerId as string, { page: currentPage, limit: pageSize }),
     {
       enabled: !!trainerId,
@@ -71,11 +60,16 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
     data: favoriteInfo,
     isLoading: isFavoriteLoading,
     isError: isFavoriteError,
-  } = useQuery(["favorite"], () => getFavorite(trainerId as string), { enabled: !!trainerId });
+  } = useQuery(["favorite", trainerId], () => getFavorite(trainerId as string), {
+    enabled: !!trainerId,
+  });
 
-  if (isError || isReviewError || isFavoriteError) return <div>error!!</div>;
+  if (isTrainerLoading || isReviewLoading || isFavoriteLoading) return <Loading />;
+  if (isTrainerError) return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
+  if (isReviewError) return toast.error("리뷰 목록을 불러오는 중 에러가 발생했어요! 😢");
+  if (isFavoriteError) return toast.error("좋아요 정보를 불러오는 중 에러가 발생했어요! 😢");
 
-  const trainerInfo = data?.profile;
+  const trainerInfo = trainer?.profile;
   const reviews = reviewList?.reviews || [];
   const totalCount = reviewList?.totalCount || 0;
 
@@ -95,13 +89,22 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
         </div>
         <HorizontalLine width="100%" />
         <TrainerInfo profile={trainerInfo} />
-        {/* 리뷰 리스트 api 연결해야함 */}
-        <TrainerReview reviewList={reviews} reviewStat={reviewStat} totalCount={totalCount} />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(totalCount / pageSize)}
-          onPageChange={setCurrentPage}
-        />
+        <h1 className="text-black-400 text-lg font-bold pc:text-2xl">리뷰 ({totalCount})</h1>
+        {totalCount === 0 ? (
+          <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+            <Image src={img_non_review_md} alt="non-review" />
+            <h1 className="text-gray-400 text-lg font-regular">아직 등록된 리뷰가 없어요!</h1>
+          </div>
+        ) : (
+          <>
+            <TrainerReview reviewList={reviews} reviewStat={reviewStat} totalCount={totalCount} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(totalCount / pageSize)}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
       </div>
       <div className="flex flex-col gap-[2.4rem] pc:gap-16">
         <TrainerControl profile={trainerInfo} />
@@ -110,7 +113,6 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
           <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" trainerInfo={trainerInfo} />
         </div>
       </div>
-      {(isLoading || isReviewLoading || isFavoriteLoading) && <Loading />}
     </div>
   );
 }
