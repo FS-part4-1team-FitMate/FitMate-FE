@@ -62,8 +62,8 @@ export default function App({ Component, pageProps }: AppProps) {
                 position="top-center"
                 toastOptions={{
                   style: {
+                    maxWidth: "100%",
                     fontSize: "1.6rem",
-                    padding: "2rem",
                   },
                   duration: 3000,
                 }}

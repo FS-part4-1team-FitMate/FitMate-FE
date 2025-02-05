@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReceiveRequest } from "@/lib/api/lessonService";
@@ -62,7 +63,7 @@ export default function ReceivedRequest() {
   );
 
   if (isError) {
-    alert("데이터를 불러오는 중 오류가 발생하였습니다.");
+    toast.error("데이터를 불러오는 중 오류가 발생했습니다! 😢");
   }
 
   const result = data?.pages[0];
