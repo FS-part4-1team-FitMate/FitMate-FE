@@ -165,7 +165,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       {isQuoteModalOpen && (
         <ModalContainer
           title="견적 보내기"
-          buttonText="견적 보내기"
+          buttonText={uploadQuote.isLoading ? "견적 전송 중 ..." : "견적 보내기"}
           closeModal={closeModal}
           onButtonClick={handleSendQuote}
           isButtonEnabled={!isInputEmpty()}
@@ -177,7 +177,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       {isRejectedModalOpen && (
         <ModalContainer
           title="요청 반려"
-          buttonText="반려하기"
+          buttonText={rejectionLesson.isLoading ? "반려 중 ..." : "반려하기"}
           closeModal={closeModal}
           onButtonClick={handleRejectedRequest}
           isButtonEnabled={!isRejectedEmpty()}
