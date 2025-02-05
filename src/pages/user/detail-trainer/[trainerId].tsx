@@ -49,7 +49,11 @@ export default function DetailTrainer({ trainerId }: { trainerId: string | null 
     },
   );
 
-  const { data: reviewStat } = useQuery(["review-stat"], () => getReviewStat(trainerId as string));
+  const { data: reviewStat } = useQuery(["review-stat"], () => getReviewStat(trainerId as string), {
+    enabled: !!trainerId,
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+  });
   const {
     data: reviewList,
     isLoading: isReviewLoading,
