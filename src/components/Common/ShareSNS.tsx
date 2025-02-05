@@ -2,11 +2,9 @@ import { ic_clip_md, share_ic_facebook_md, share_ic_kakao_md } from "@/imageExpo
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { Profile } from "@/types/trainer";
 import { lessonType_trans } from "@/types/types";
-import styles from "@/styles/toast.module.css";
 
 const link_wrap = clsx(
   "flex justify-center items-center w-16 h-16 p-[0.8rem] border border-line-200 rounded-[0.8rem]",
@@ -30,16 +28,7 @@ export default function ShareSNS({
     try {
       await navigator.clipboard.writeText(location.href);
 
-      toast.success("링크가 복사되었습니다.", {
-        position: "top-center",
-        autoClose: 1500, // 3초 후 자동으로 닫힘
-        hideProgressBar: true, // 진행률 표시 안 함
-        closeOnClick: true, // 클릭 시 닫기
-        pauseOnHover: true, // 마우스 올리면 일시정지
-        draggable: true, // 드래그 가능
-        progress: undefined, // 진행률 표시
-        className: styles.toast,
-      });
+      toast.success("링크가 복사되었습니다.");
     } catch (err) {
       console.error("Failed to copy:", err);
       toast.error("링크 복사에 실패했습니다.");
