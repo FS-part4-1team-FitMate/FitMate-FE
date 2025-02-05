@@ -18,7 +18,7 @@ const img_profile = clsx(
 );
 
 interface TrainerInfoProps {
-  name?: string;
+  name?: string | null;
   rating?: number;
   reviewCount?: number;
   experience?: number;

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { getProfile } from "@/lib/api/authService";
+import formatDate from "@/lib/utils/formatDate";
 import { region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
 import RatingStatCard from "@/components/Cards/RatingStatCard";
@@ -52,7 +53,7 @@ function Profile() {
   });
   const [avgRating, setAvgRating] = useState(0);
   const { data: reviewStat } = useQuery({
-    queryKey: ["reviewStat", trainerId],
+    queryKey: ["review-stat", trainerId],
     queryFn: () => getReviewStat(trainerId as string),
     cacheTime: 5 * 60 * 1000,
     staleTime: 5 * 60 * 1000,
@@ -118,11 +119,7 @@ function Profile() {
       <Head>
         <title>{trainerProfile?.profile?.name} 강사님 페이지</title>
       </Head>
-      {myPage ? (
-        <h1 className="text-xl font-semibold">마이 페이지</h1>
-      ) : (
-        <h1 className="text-xl font-semibold">강사님 페이지</h1>
-      )}
+      <h1 className="text-xl font-semibold">{myPage ? "마이 페이지" : "강사님 페이지"}</h1>
       <HorizontalLine width="100%" />
       <div className="flex flex-col justify-normal items-start p-[12px] bg-slate-100 w-full">
         <div className="flex gap-[16px] mb-[12px]">
@@ -138,9 +135,9 @@ function Profile() {
             className="object-cover rounded-full border-[2px] border-solid border-slate-800 w-[50px] h-[50px]"
           />
           <div className="flex flex-col justify-between items-start">
-            <div className="text-lg">{trainerProfile?.profile?.name || "김코드"}</div>
+            <div className="text-lg">{trainerProfile?.profile?.name}</div>
             <div className="text-md text-slate-500 truncate whitespace-nowrap">
-              {trainerProfile?.profile?.intro || "한 줄 자기소개가 들어갑니다."}
+              {trainerProfile?.profile?.intro}
             </div>
           </div>
         </div>
@@ -158,7 +155,7 @@ function Profile() {
             <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>
             <div className="text-lg flex justify-normal items-center gap-[5px]">
               {trainerProfile?.profile?.lessonType.map((lessonType) => {
-                return <ChipLessonType lessonType={lessonType} size="lg" />;
+                return <ChipLessonType key={lessonType} lessonType={lessonType} size="lg" />;
               })}
             </div>
           </div>
@@ -205,9 +202,9 @@ function Profile() {
         {reviews?.reviews.map((review) => {
           return (
             <ReviewCard
-              rating={review.rating as 1 | 2 | 3 | 4 | 5}
+              rating={review.rating}
               nickname={review.user.nickname}
-              createdAt={review.createdAt}
+              createdAt={formatDate(review.createdAt)}
               content={review.content}
             />
           );
