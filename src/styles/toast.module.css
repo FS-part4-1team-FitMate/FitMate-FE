@@ -1,0 +1,15 @@
+.toast {
+    background-color: #F5FAFF;
+    color: #242945;
+    font-size: 1.6rem;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.Toastify__toast--success {
+    background-color: #1B92FF;
+}
+
+.Toastify__toast--success .Toastify__toast-icon {
+    color: white;
+}

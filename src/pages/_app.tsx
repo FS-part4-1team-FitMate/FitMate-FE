@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
+import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GNB from "@/components/GNB/GNB";
 import Tab from "@/components/Tab";
@@ -49,6 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <UserProvider>
           <ViewportProvider>
             <div className={pretendard.className}>
+              <ToastContainer />
               <GNB />
               {isActiveTab && <Tab />}
               <Component {...pageProps} />
