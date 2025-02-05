@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { acceptQuote, rejectQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
@@ -17,6 +19,7 @@ import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import Loading from "../Common/Loading";
 
 export default function PendingLessonCard({ item, quote }: { item: MyLesson; quote: Quote }) {
+  const router = useRouter();
   const {
     data: trainer,
     isLoading: isTrainerLoading,
@@ -34,11 +37,12 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
   const quoteAccept = useMutation({
     mutationFn: (quoteId: string) => acceptQuote(quoteId),
     onSuccess: () => {
-      alert("견적이 확정되었습니다.");
+      toast.success("견적이 확정되었습니다.");
+      router.push("/user/my-lesson/active-lesson");
     },
     onError: (err) => {
       console.error("견적 확정 실패", err);
-      alert("견적 확정에 실패하였습니다.");
+      toast.error("견적 확정에 실패하였습니다.");
     },
   });
 
@@ -51,11 +55,11 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
   const quoteReject = useMutation({
     mutationFn: (quoteId: string) => rejectQuote(quoteId),
     onSuccess: () => {
-      alert("견적이 반려되었습니다.");
+      toast.success("견적이 반려되었습니다.");
     },
     onError: (err) => {
       console.error("견적 반려 실패", err);
-      alert("견적 반려에 실패하였습니다.");
+      toast.error("견적 반려에 실패하였습니다.");
     },
   });
 
@@ -65,11 +69,8 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
     }
   };
 
-  if (isTrainerLoading) {
-    return <Loading />;
-  }
-
-  if (isTrainerError) return <div>트레이너 정보를 불러오지 못했습니다.</div>;
+  if (isTrainerLoading) return <Loading />;
+  if (isTrainerError) return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
 
   const trainerInfo = trainer?.profile ?? [];
 
@@ -99,13 +100,14 @@ export default function PendingLessonCard({ item, quote }: { item: MyLesson; quo
         </div>
       </Link>
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
+        {/* 버튼 공통 컴포넌트로 변경 */}
         <button
           onClick={handleAccept}
           className={
             "flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50 bg-blue-300"
           }
         >
-          견적 확정하기
+          {quoteAccept.isLoading ? "견적 확정 중 ..." : "견적 확정하기"}
         </button>
         <button
           onClick={handleReject}

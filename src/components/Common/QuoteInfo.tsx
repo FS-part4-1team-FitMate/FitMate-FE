@@ -1,9 +1,7 @@
 import clsx from "clsx";
-import { useQuery } from "@tanstack/react-query";
-import { getLessonInfo } from "@/lib/api/lessonService";
 import formatDate from "@/lib/utils/formatDate";
 import formatDateTime from "@/lib/utils/formatDateTime";
-import { Lesson } from "@/types/lesson";
+import { Lesson, MyLesson } from "@/types/lesson";
 import { LessonType, LocationType, lessonType_trans, locationType_trans } from "@/types/types";
 
 const content_area = clsx(
@@ -16,7 +14,7 @@ const content_wrap = "flex items-center gap-[3.2rem]";
 const label = "w-36 text-gray-300 text-md font-normal pc:text-2lg";
 const content = "text-md font-normal pc:text-2lg";
 
-export default function QuoteInfo({ lesson }: { lesson: Lesson }) {
+export default function QuoteInfo({ lesson }: { lesson: MyLesson | Lesson }) {
   const getLocation = () => {
     if (lesson?.locationType === "OFFLINE") {
       return lesson.roadAddress;

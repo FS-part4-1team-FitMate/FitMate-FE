@@ -35,7 +35,7 @@ export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
         "mobile:max-w-[37.5rem] mobile:px-[2.4rem] mobile:rounded-0",
       )}
     >
-      <QuoteInfo lessonRequestId={myLesson.id} />
+      <QuoteInfo lesson={myLesson} />
       <div className="flex flex-col gap-[2.4rem] pc:gap-16">
         <p className="text-lg font-semibold pc:text-2xl">견적서 목록</p>
         <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">

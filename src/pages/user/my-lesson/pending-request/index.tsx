@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getMyLessonRequest } from "@/lib/api/lessonService";
 import { MyLesson, MyLessonResult } from "@/types/lesson";
@@ -15,11 +16,12 @@ export default function PendingRequest() {
       }),
   );
 
+  if (isLoading) return <Loading />;
+  if (isError) return toast.error("대기중인 견적 목록을 불러오는 중 에러가 발생했어요! 😢");
+
   const pendingList = data?.list ?? [];
 
-  if (isError) return <div>error!</div>;
-
-  if (isLoading || pendingList?.length > 0) {
+  if (pendingList?.length > 0) {
     return (
       <div>
         {pendingList?.map((item: MyLesson) => (
@@ -32,7 +34,6 @@ export default function PendingRequest() {
             ))}
           </div>
         ))}
-        {isLoading && <Loading />}
       </div>
     );
   } else {

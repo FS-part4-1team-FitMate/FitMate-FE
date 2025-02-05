@@ -18,14 +18,19 @@ interface QuoteCardProps {
 }
 
 export default function QuoteCard({ myLesson, quote }: QuoteCardProps) {
-  const { data, isLoading, isError } = useQuery(["trainer-info", quote.trainerId], () =>
-    getTrainerInfo(quote.trainerId),
+  const { data, isLoading, isError } = useQuery(
+    ["trainer-info", quote.trainerId],
+    () => getTrainerInfo(quote.trainerId),
+    {
+      enabled: !!quote.trainerId,
+    },
   );
 
   const { data: favoriteInfo } = useQuery(["favorite"], () => getFavorite(quote.trainerId), {
     enabled: !!quote.trainerId,
   });
 
+  if (isLoading) return <Loading />;
   if (isError) return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
 
   const trainer = data?.profile || [];
@@ -46,7 +51,6 @@ export default function QuoteCard({ myLesson, quote }: QuoteCardProps) {
         favoriteCount={favoriteInfo?.favoriteTotalCount}
       />
       <QuotePrice price={formatPrice(quote.price)} />
-      {isLoading && <Loading />}
     </CardContainer>
   );
 }
