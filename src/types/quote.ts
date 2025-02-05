@@ -28,15 +28,14 @@ export interface Quote {
   updatedAt: string;
 }
 
-<<<<<<< HEAD
 export interface RejectedQuoteParams {
   page?: number;
   limit?: number;
   status?: string;
-=======
+}
+
 export interface QuoteResult {
   list: Quote[];
   hasMore: boolean;
   totalCount: number;
->>>>>>> dev
 }

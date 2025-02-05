@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { ko } from "date-fns/locale";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { ko } from "date-fns/locale";
-import ProgressBar from "@/components/CreateRequest/ProgressBar";
-import ChatBubble from "@/components/CreateRequest/ChatBubble";
+import { Controller, useForm } from "react-hook-form";
 import { createLessonRequest } from "@/lib/api/requestService";
+import ChatBubble from "@/components/CreateRequest/ChatBubble";
+import ProgressBar from "@/components/CreateRequest/ProgressBar";
 
 type FormValues = {
   lessonType: string;
@@ -17,12 +17,12 @@ type FormValues = {
   address?: string;
 };
 
-
-
 const createRequest = () => {
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [chatHistory, setChatHistory] = useState<{ type: "question" | "answer"; content: string }[]>([]);
+  const [chatHistory, setChatHistory] = useState<
+    { type: "question" | "answer"; content: string }[]
+  >([]);
   const [currentAnswer, setCurrentAnswer] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
 
@@ -52,6 +52,18 @@ const createRequest = () => {
     if (chatHistory.length === 0) {
       setChatHistory([{ type: "question", content: "어떤 운동을 하고 싶으세요?" }]);
     }
+
+    let script: HTMLScriptElement;
+    if (!window.daum) {
+      // 다음 주소 API 스크립트 동적 로드
+      script = document.createElement("script");
+      script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    return () => {
+      document.body.removeChild(script); // 컴포넌트 언마운트 시 정리
+    };
   }, []);
 
   const questions = [
@@ -63,7 +75,7 @@ const createRequest = () => {
     "주소를 입력해주세요.",
   ];
 
-   const getOptionsForSecondQuestion = (lessonType: string) => {
+  const getOptionsForSecondQuestion = (lessonType: string) => {
     switch (lessonType) {
       case "스포츠":
         return ["구기 스포츠", "계절 스포츠", "격투 스포츠"];
@@ -75,8 +87,6 @@ const createRequest = () => {
         return [];
     }
   };
-  
-  
 
   const handleAnswer = () => {
     if (step < 3) {
@@ -101,16 +111,13 @@ const createRequest = () => {
       setCurrentAnswer("");
     }
   };
-  
 
   const handleEdit = (editStep: number) => {
     setStep(editStep);
     const fieldToEdit = fields[editStep];
     const currentValue = watch(fieldToEdit)?.toString() || "";
     setCurrentAnswer(currentValue);
-    setChatHistory((prev) =>
-      prev.slice(0, editStep * 2 + 1)
-    );
+    setChatHistory((prev) => prev.slice(0, editStep * 2 + 1));
     setProgress((editStep / questions.length) * 100);
   };
 
@@ -135,7 +142,6 @@ const createRequest = () => {
     }
   };
 
-
   const onSubmit = async (data: FormValues) => {
     console.log("제출 데이터:", data);
     try {
@@ -148,7 +154,10 @@ const createRequest = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-6 bg-gray-100 min-h-screen">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col space-y-6 bg-gray-100 min-h-screen"
+    >
       <div className="bg-white p-10 w-full space-y-6 px-[20rem]">
         <h1 className="text-xl">견적 요청</h1>
         <ProgressBar progress={progress} />
@@ -171,7 +180,6 @@ const createRequest = () => {
         ))}
       </div>
 
-      
       <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-lg rounded-tl-lg rounded-none self-end mr-[22rem]">
         {step === 0 && (
           <div className="space-y-4">
@@ -245,7 +253,8 @@ const createRequest = () => {
               selected={dateRange[0]}
               onChange={(dates) => {
                 console.log("dates:", dates);
-                setDateRange(dates as [Date, Date])}}
+                setDateRange(dates as [Date, Date]);
+              }}
               startDate={dateRange[0]}
               endDate={dateRange[1]}
               selectsRange
@@ -265,7 +274,6 @@ const createRequest = () => {
             </button>
           </div>
         )}
-   
 
         {step === 3 && (
           <div className="space-y-4">
@@ -339,18 +347,19 @@ const createRequest = () => {
                   type="button"
                   className="w-full py-2 px-4 rounded-lg text-lg border"
                   value={watch("address") || ""}
-                  onClick={() => new daum.Postcode({
-                    oncomplete: function(data: any) {
-                        var addr = '';
-                        if (data.userSelectedType === 'R') {
-                            addr = data.roadAddress;
+                  onClick={() =>
+                    new window.daum.Postcode({
+                      oncomplete: function (data: any) {
+                        var addr = "";
+                        if (data.userSelectedType === "R") {
+                          addr = data.roadAddress;
                         } else {
-                            addr = data.jibunAddress;
+                          addr = data.jibunAddress;
                         }
                         setValue("address", addr);
-                    }
-                    
-                  }).open()}
+                      },
+                    }).open()
+                  }
                 />
               )}
             />
