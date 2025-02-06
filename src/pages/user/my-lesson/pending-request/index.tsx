@@ -22,9 +22,12 @@ export default function PendingRequest() {
         {pendingList?.map((item: MyLesson) => (
           <InfiniteScroll key={item.id} hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             <div className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]">
-              {item.lessonQuotes.map((quote) => (
-                <PendingLessonCard key={quote.id} item={item} quote={quote} />
-              ))}
+              {item.lessonQuotes.map(
+                (quote) =>
+                  quote.status === "PENDING" && (
+                    <PendingLessonCard key={quote.id} item={item} quote={quote} />
+                  ),
+              )}
             </div>
           </InfiniteScroll>
         ))}

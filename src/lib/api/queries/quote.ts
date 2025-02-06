@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Quote } from "@/types/quote";
 import { acceptQuote, getQuote, rejectQuote } from "../quoteService";
 
@@ -30,10 +30,13 @@ export const useQuoteAccept = () => {
 
 // 견적 반려
 export const useQuoteRejection = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (quoteId: string) => rejectQuote(quoteId),
     onSuccess: () => {
       toast.success("견적이 반려되었습니다.");
+      queryClient.invalidateQueries(["my-lesson"]);
     },
     onError: (err) => {
       console.error("견적 반려 실패", err);
