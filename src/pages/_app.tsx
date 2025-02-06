@@ -63,7 +63,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
+        <ErrorBoundary client={queryClient}>
           <UserProvider>
             <ViewportProvider>
               <div className={pretendard.className}>
