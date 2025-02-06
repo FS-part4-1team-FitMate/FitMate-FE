@@ -12,8 +12,8 @@ interface TrainerReviewProps {
 
 export default function TrainerReview({ reviewList, reviewStat, totalCount }: TrainerReviewProps) {
   const sum =
-    reviewList?.reduce((sum, review) => {
-      return sum + review.rating;
+    reviewStat?.reduce((sum, review) => {
+      return sum + review.rating * review.count;
     }, 0) ?? 0;
 
   return (
