@@ -1,5 +1,5 @@
 # Use the official Node.js LTS image for building
-FROM node:22.13.1 AS builder
+FROM node:lts AS builder
 
 # Set working directory
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # Use a minimal runtime image
-FROM node:22.13.1 AS runtime
+FROM node:lts AS runtime
 
 # Create a non-root user
 # RUN addgroup -S appgroup && adduser -S appuser -G appgroup
