@@ -1,8 +1,12 @@
+import { UserProvider } from "@/contexts/UserProvider";
+import ViewportProvider from "@/contexts/ViewportProvider";
 import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GNB from "./GNB/GNB";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
+  client: QueryClient;
 }
 
 interface ErrorBoundaryState {
@@ -30,8 +34,14 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       // 폴백 UI를 커스텀할 수 있습니다.
       return (
         <>
-          <GNB />
-          <h1 className="text-xl text-center">Something went wrong.</h1>
+          <QueryClientProvider client={this.props.client}>
+            <UserProvider>
+              <ViewportProvider>
+                <GNB />
+                <h1 className="text-xl text-center">Something went wrong.</h1>
+              </ViewportProvider>
+            </UserProvider>
+          </QueryClientProvider>
         </>
       );
     }
