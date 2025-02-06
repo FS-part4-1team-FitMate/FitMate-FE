@@ -1,4 +1,5 @@
 import React from "react";
+import GNB from "./GNB/GNB";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -27,7 +28,12 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   render(): React.ReactNode {
     if (this.state.hasError) {
       // 폴백 UI를 커스텀할 수 있습니다.
-      return <h1>Something went wrong.</h1>;
+      return (
+        <>
+          <GNB />
+          <h1 className="text-xl text-center">Something went wrong.</h1>
+        </>
+      );
     }
 
     return this.props.children;
