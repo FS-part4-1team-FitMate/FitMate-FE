@@ -23,14 +23,22 @@ import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 import Pagination from "@/components/Common/Pagination";
 
-let setTimeoutId: NodeJS.Timeout;
-
 function Profile() {
   const router = useRouter();
+  const { query } = router;
+  const { trainerId } = query;
   const searchParams = useSearchParams();
-  const { trainerId } = router.query;
   const user = useUser();
   const myPage = trainerId === user?.id;
+  const [page, setPage] = useState(Number(query.page) || 1);
+  const limit = 2;
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", trainerId, { page, limit }],
+    queryFn: () => getReviews(trainerId as string, { page, limit }),
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    enabled: !!trainerId,
+  });
   const {
     data: trainerProfile,
     isLoading,
@@ -42,15 +50,6 @@ function Profile() {
     staleTime: 60 * 60 * 1000,
     enabled: !!trainerId,
   });
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
-  const { data: reviews } = useQuery({
-    queryKey: ["reviews", trainerId, { page, limit }],
-    queryFn: () => getReviews(trainerId as string, { page, limit }),
-    cacheTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-    enabled: !!trainerId,
-  });
   const [avgRating, setAvgRating] = useState(0);
   const { data: reviewStat } = useQuery({
     queryKey: ["review-stat", trainerId],
@@ -59,36 +58,38 @@ function Profile() {
     staleTime: 5 * 60 * 1000,
     enabled: !!trainerId,
   });
-  // console.log(reviews);
 
   useEffect(() => {
-    const handleSearchChange = () => {
-      const { pathname, search } = window.location;
-      const params = new URLSearchParams(window.location.search);
-      const pageParam = params.get("page");
-      if (pageParam) {
-        setPage(Number(pageParam)); // 페이지 번호를 상태로 설정
-      }
-      router.push(pathname + search);
-    };
+    // const handleSearchChange = () => {
+    // const { pathname, search } = window.location;
+    // const params = new URLSearchParams(search);
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      setPage(Number(pageParam) || 1); // 페이지 번호를 상태로 설정
+    }
+    // router.push({
+    //   pathname: router.pathname,
+    //   query: { trainerId, page },
+    // });
+    // };
 
-    // 초기 실행
-    handleSearchChange();
+    // // 초기 실행
+    // handleSearchChange();
 
-    // URL 검색 변화를 감지
-    window.addEventListener("popstate", handleSearchChange);
+    // // URL 검색 변화를 감지
+    // window.addEventListener("popstate", handleSearchChange);
 
-    return () => {
-      window.removeEventListener("popstate", handleSearchChange);
-    };
-  }, []);
+    // return () => {
+    //   window.removeEventListener("popstate", handleSearchChange);
+    // };
+  }, [query]);
 
   useEffect(() => {
-    clearTimeout(setTimeoutId);
-    setTimeoutId = setTimeout(() => {
-      window.history.pushState({}, "", `${window.location.pathname}?page=${page}`);
-    }, 256);
-  }, [page]);
+    router.push({
+      pathname: router.pathname,
+      query: { trainerId, page },
+    });
+  }, [trainerId, page]);
 
   useEffect(() => {
     if (reviewStat) {

@@ -28,7 +28,7 @@ export default function Detailrequest({ requestId }: { requestId: string | null 
         </div>
         <HorizontalLine width="100%" />
         <div>
-          <QuoteInfo lessonRequestId={data.id} />
+          <QuoteInfo lesson={data} />
         </div>
       </div>
       <div className="flex flex-col gap-16">

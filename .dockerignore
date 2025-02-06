@@ -1,0 +1,21 @@
+# 운영체제 파일
+.DS_Store
+Thumbs.db
+
+# Node.js 관련 파일 (예: 로컬 개발 환경에서 설치된 모듈)
+node_modules/
+.next/
+.github/
+.git/
+
+# 빌드 아티팩트
+dist/
+build/
+
+# 로그 파일
+*.log
+
+# 기타 불필요한 파일
+*.md
+*.txt
+Dockerfile

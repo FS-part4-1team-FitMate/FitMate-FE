@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import GNB from "@/components/GNB/GNB";
 import Tab from "@/components/Tab";
 import "@/styles/globals.css";
@@ -62,27 +63,29 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <UserProvider>
-          <ViewportProvider>
-            <div className={pretendard.className}>
-              {isClient && (
-                <Toaster
-                  position="top-center"
-                  toastOptions={{
-                    style: {
-                      maxWidth: "100%",
-                      fontSize: "1.6rem",
-                    },
-                    duration: 3000,
-                  }}
-                />
-              )}
-              <GNB />
-              {isActiveTab && <Tab />}
-              <Component {...pageProps} />
-            </div>
-          </ViewportProvider>
-        </UserProvider>
+        <ErrorBoundary client={queryClient}>
+          <UserProvider>
+            <ViewportProvider>
+              <div className={pretendard.className}>
+                {isClient && (
+                  <Toaster
+                    position="top-center"
+                    toastOptions={{
+                      style: {
+                        maxWidth: "100%",
+                        fontSize: "1.6rem",
+                      },
+                      duration: 3000,
+                    }}
+                  />
+                )}
+                <GNB />
+                {isActiveTab && <Tab />}
+                <Component {...pageProps} />
+              </div>
+            </ViewportProvider>
+          </UserProvider>
+        </ErrorBoundary>
       </QueryClientProvider>
     </>
   );
