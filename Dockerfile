@@ -39,4 +39,4 @@ COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3001
 
 # Define runtime command
-CMD ["npm", "start"]
+CMD ["pm2", "start", "npm", "--", "start"]
