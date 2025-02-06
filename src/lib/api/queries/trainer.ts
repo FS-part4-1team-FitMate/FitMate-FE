@@ -1,7 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
-import { FavoriteInfo, Profile } from "@/types/trainer";
-import { getTrainerInfo } from "../trainerService";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { FavoriteInfo, Profile, TrainerParams, TrainerResult } from "@/types/trainer";
+import { getTrainerInfo, getTrainerList } from "../trainerService";
 import { getFavorite } from "../userService";
+
+// 트레이너 목록 조회
+export const useGetTrainerList = ({ keyword, order, sort, lessonType, gender }: TrainerParams) => {
+  return useInfiniteQuery<TrainerResult>(
+    ["trainer-list", { keyword, order, sort, lessonType, gender }],
+    ({ pageParam = 1 }) =>
+      getTrainerList({
+        page: pageParam,
+        limit: 5,
+        keyword,
+        order,
+        sort,
+        lessonType,
+        gender,
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.hasMore ? allPages.length + 1 : undefined;
+      },
+    },
+  );
+};
 
 // 트레이너 프로필 조회
 export const useGetTrainer = (trainerId: string) => {
