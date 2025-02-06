@@ -23,6 +23,9 @@ FROM node:22.13.1 AS runtime
 # Set working directory
 WORKDIR /app
 
+# pm2 글로벌 설치
+RUN npm install -g pm2
+
 # Copy necessary files from the builder stage
 COPY --from=builder /app/package.json /app/package-lock.json ./
 COPY --from=builder /app/.next ./.next
@@ -35,8 +38,12 @@ COPY --from=builder /app/node_modules ./node_modules
 # Switch to non-root user
 # USER appuser
 
+# 환경 변수 설정
+ENV NODE_ENV=production
+ENV PORT=3001
+
 # Expose application port
 EXPOSE 3001
 
 # Define runtime command
-CMD ["pm2", "start", "npm", "--", "start"]
+CMD ["pm2-runtime", "start", "npm", "--", "start"]
