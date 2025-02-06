@@ -209,14 +209,10 @@ function LogInButton() {
   );
 }
 
-interface NotificationsProps {
-  right: string;
-}
-
-function Notifications({ right }: NotificationsProps) {
+function Notifications() {
   return (
     <div
-      className={`absolute top-[30px] right-${right} w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10`}
+      className={`absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10`}
     >
       알림
     </div>
@@ -312,7 +308,7 @@ function GNB() {
                   height={24}
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
-                {notiIsOpen && <Notifications right="0" />}
+                {notiIsOpen && <Notifications />}
               </div>
               <div ref={refMyProfile} className="relative">
                 <div
@@ -367,7 +363,7 @@ function GNB() {
                   height={24}
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
-                {notiIsOpen && <Notifications right="[-30px]" />}
+                {notiIsOpen && <Notifications />}
               </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
