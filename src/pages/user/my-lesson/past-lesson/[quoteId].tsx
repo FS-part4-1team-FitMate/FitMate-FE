@@ -2,13 +2,10 @@ import { ic_info_md } from "@/imageExports";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { getLessonInfo } from "@/lib/api/lessonService";
-import { getQuote } from "@/lib/api/quoteService";
-import { getTrainerInfo } from "@/lib/api/trainerService";
+import { useGetLesson } from "@/lib/api/queries/lesson";
+import { useGetQuote } from "@/lib/api/queries/quote";
+import { useGetTrainer } from "@/lib/api/queries/trainer";
 import formatPrice from "@/lib/utils/formatPrice";
-import { Lesson } from "@/types/lesson";
-import { Quote } from "@/types/quote";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
@@ -24,49 +21,27 @@ export default function DetailPastRequest() {
     data: quoteInfo,
     isLoading: isQuoteLoading,
     isError: isQuoteError,
-  } = useQuery<Quote>(["quote-detail", quoteId], () => getQuote(quoteId as string), {
-    enabled: !!quoteId,
-  });
+  } = useGetQuote(quoteId as string);
 
   const {
     data: trainer,
     isLoading: isTrainerLoading,
     isError: isTrainerError,
-  } = useQuery(
-    ["trainer-detail", quoteInfo?.trainerId],
-    () => getTrainerInfo(quoteInfo?.trainerId as string),
-    {
-      enabled: !!quoteInfo?.trainerId,
-    },
-  );
+  } = useGetTrainer(quoteInfo?.trainerId as string);
 
   const {
     data: lesson,
     isLoading: isLessonLoading,
     isError: isLessonError,
-  } = useQuery<Lesson>(
-    ["lesson-info", quoteInfo?.lessonRequestId],
-    () => getLessonInfo(quoteInfo?.lessonRequestId as string),
-    {
-      enabled: !!quoteInfo?.trainerId,
-    },
-  );
+  } = useGetLesson(quoteInfo?.lessonRequestId as string);
 
-  if (isQuoteLoading || isTrainerLoading || isLessonLoading) {
-    return <Loading />;
-  }
+  if (isQuoteLoading || isTrainerLoading || isLessonLoading) return <Loading />;
 
-  if (isQuoteError || !quoteInfo) {
+  if (isQuoteError || !quoteInfo)
     return toast.error("견적 정보를 불러오는 중 에러가 발생했어요! 😢");
-  }
-
-  if (isTrainerError || !trainer) {
+  if (isTrainerError || !trainer)
     return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
-  }
-
-  if (isLessonError || !lesson) {
-    return toast.error("레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
-  }
+  if (isLessonError || !lesson) return toast.error("레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
 
   const trainerInfo = trainer?.profile ?? {};
   const lessonData = lesson ?? {};

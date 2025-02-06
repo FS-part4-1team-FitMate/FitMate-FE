@@ -1,8 +1,17 @@
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useMutation } from "@tanstack/react-query";
-import { acceptQuote, rejectQuote } from "../quoteService";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Quote } from "@/types/quote";
+import { acceptQuote, getQuote, rejectQuote } from "../quoteService";
 
+// 견적 상세 조회
+export const useGetQuote = (quoteId: string) => {
+  return useQuery<Quote>(["quote-detail", quoteId], () => getQuote(quoteId), {
+    enabled: !!quoteId,
+  });
+};
+
+// 견적 확정
 export const useQuoteAccept = () => {
   const router = useRouter();
 
@@ -19,6 +28,7 @@ export const useQuoteAccept = () => {
   });
 };
 
+// 견적 반려
 export const useQuoteRejection = () => {
   return useMutation({
     mutationFn: (quoteId: string) => rejectQuote(quoteId),
