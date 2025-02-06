@@ -1,26 +1,15 @@
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getMyLessonRequest } from "@/lib/api/lessonService";
-import { MyLesson, MyLessonResult } from "@/types/lesson";
+import { useGetMyLessonList } from "@/lib/api/query/lesson";
+import { MyLesson } from "@/types/lesson";
 import PastLessonCard from "@/components/Cards/PastLessonCard";
 import Loading from "@/components/Common/Loading";
 
 export default function PastLesson() {
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<MyLessonResult>(
-    ["my-lesson", { limit: 2, status: "COMPLETED" }],
-    ({ pageParam = 1 }) =>
-      getMyLessonRequest({
-        page: pageParam,
-        limit: 2,
-        status: "COMPLETED",
-      }),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        return lastPage.hasMore ? allPages.length + 1 : undefined;
-      },
-    },
-  );
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList({
+    limit: 2,
+    status: "COMPLETED",
+  });
 
   const pastList = data?.pages?.flatMap((page) => page.list) ?? [];
 

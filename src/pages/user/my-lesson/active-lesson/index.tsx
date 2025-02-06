@@ -1,25 +1,15 @@
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { getMyLessonRequest } from "@/lib/api/lessonService";
-import { MyLessonResult } from "@/types/lesson";
+import { useGetMyLessonList } from "@/lib/api/query/lesson";
 import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
 import Loading from "@/components/Common/Loading";
 
 export default function ActiveLesson() {
-  const { data, isLoading, isError } = useQuery<MyLessonResult>(
-    ["active-lesson", { page: 1, limit: 3, status: "QUOTE_CONFIRMED" }],
-    () =>
-      getMyLessonRequest({
-        page: 1,
-        limit: 3,
-        status: "QUOTE_CONFIRMED",
-      }),
-  );
+  const { data, isLoading, isError } = useGetMyLessonList({ limit: 1, status: "QUOTE_CONFIRMED" });
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("받았던 레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
 
-  const activeLesson = data?.list ?? [];
+  const activeLesson = data?.pages?.flatMap((page) => page.list) ?? [];
 
   const rehabLessons = activeLesson.filter((lesson) => lesson.lessonType === "REHAB");
   const sportsLessons = activeLesson.filter((lesson) => lesson.lessonType === "SPORTS");
