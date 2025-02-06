@@ -1,16 +1,16 @@
+import { useUser } from "@/contexts/UserProvider";
 import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSentRequest } from "@/lib/api/requestService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
 import Tab from "@/components/Tab";
-import { useUser } from "@/contexts/UserProvider";
 
 type SentRequestQueryKey = [
   string,
   {
     trainer_id?: string;
     limit?: number;
-  }
+  },
 ];
 
 export default function SentRequest() {
@@ -20,35 +20,29 @@ export default function SentRequest() {
   const trainerId = user?.id;
   const queryKey: SentRequestQueryKey = [
     "sentRequest",
-        {
-          trainer_id: trainerId,
-          limit: 10,
-        },
-      ]
+    {
+      trainer_id: trainerId,
+      limit: 10,
+    },
+  ];
 
-      const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-      } = useInfiniteQuery(
-        queryKey,
-        ({ pageParam = 1 }) => {
-          if (!trainerId) {
-            throw new Error("Trainer ID is required");
-          }
-          return getSentRequest({
-            pageParam,
-            trainer_id: trainerId,
-            limit: 10,
-          });
-        },
-        {
-          enabled: !!trainerId,
-          getNextPageParam: (lastPage) =>
-            lastPage.nextPage ? lastPage.nextPage : undefined,
-        }
-      );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    queryKey,
+    ({ pageParam = 1 }) => {
+      if (!trainerId) {
+        throw new Error("Trainer ID is required");
+      }
+      return getSentRequest({
+        pageParam,
+        trainer_id: trainerId,
+        limit: 10,
+      });
+    },
+    {
+      enabled: !!trainerId,
+      getNextPageParam: (lastPage) => (lastPage.nextPage ? lastPage.nextPage : undefined),
+    },
+  );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -57,7 +51,7 @@ export default function SentRequest() {
           fetchNextPage();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     if (observerRef.current) observer.observe(observerRef.current);
@@ -73,9 +67,7 @@ export default function SentRequest() {
       <div className="grid grid-cols-2 gap-4">
         {data?.pages.map((page, pageIndex) => (
           <React.Fragment key={pageIndex}>
-            {page.results.map((quote: any) => (
-              <SentRequestCard key={quote.id} item={quote} />
-            ))}
+            {page?.results?.map((quote: any) => <SentRequestCard key={quote.id} item={quote} />)}
           </React.Fragment>
         ))}
       </div>
