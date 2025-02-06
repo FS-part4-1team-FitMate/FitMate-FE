@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
-import { useGetMyLessonList } from "@/lib/api/query/lesson";
+import { useGetMyLessonList } from "@/lib/api/queries/lesson";
 import { MyLesson } from "@/types/lesson";
 import PastLessonCard from "@/components/Cards/PastLessonCard";
 import Loading from "@/components/Common/Loading";

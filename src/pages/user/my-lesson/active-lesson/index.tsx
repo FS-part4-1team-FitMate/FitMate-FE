@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { useGetMyLessonList } from "@/lib/api/query/lesson";
+import { useGetMyLessonList } from "@/lib/api/queries/lesson";
 import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
 import Loading from "@/components/Common/Loading";
 
