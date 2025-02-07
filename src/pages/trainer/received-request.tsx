@@ -11,6 +11,13 @@ import MobileFilter from "@/components/Modal/MobileFilter";
 import LessonFilter from "@/components/ReceivedRequest/LessonFilter";
 import ListHeader from "@/components/ReceivedRequest/ListHeader";
 
+// prettier-ignore
+const regions = [
+  'SEOUL', 'GYEONGGI', 'INCHEON', 'DAEJEON', 'DAEGU', 'ULSAN', 'BUSAN',
+  'GWANGJU', 'SEJONG', 'GANGWON', 'CHUNGBUK', 'CHUNGNAM', 'JEONBUK',
+  'JEONNAM', 'GYEONGBUK', 'GYEONGNAM', 'JEJU'
+];
+
 export default function ReceivedRequest() {
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
   const [params, setParams] = useState<LessonParams>({
@@ -37,25 +44,7 @@ export default function ReceivedRequest() {
       NORMAL: true,
       DIRECT: true,
     },
-    region: {
-      SEOUL: true,
-      GYEONGGI: true,
-      INCHEON: true,
-      DAEJEON: true,
-      DAEGU: true,
-      ULSAN: true,
-      BUSAN: true,
-      GWANGJU: true,
-      SEJONG: true,
-      GANGWON: true,
-      CHUNGBUK: true,
-      CHUNGNAM: true,
-      JEONBUK: true,
-      JEONNAM: true,
-      GYEONGBUK: true,
-      GYEONGNAM: true,
-      JEJU: true,
-    },
+    region: Object.fromEntries(regions.map((region) => [region, true])),
   });
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetReceivedLesson({

@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Lesson, LessonParams, LessonResult, MyLessonResult } from "@/types/lesson";
+import { Lesson, LessonParams, LessonResult } from "@/types/lesson";
 import {
   createDirectQuote,
   getLessonInfo,
@@ -47,12 +47,12 @@ export const useGetReceivedLesson = ({
 
 // 내 레슨 전체 목록 조회
 export const useGetMyLessons = ({ status }: LessonParams) => {
-  return useQuery<MyLessonResult>(["my-lesson"], () => getMyLessonRequest({ status }));
+  return useQuery<LessonResult>(["my-lesson"], () => getMyLessonRequest({ status }));
 };
 
 // 내 레슨 조회 (무한 스크롤)
 export const useGetMyLessonList = ({ limit, status }: LessonParams) => {
-  return useInfiniteQuery<MyLessonResult>(
+  return useInfiniteQuery<LessonResult>(
     ["my-lesson", { limit, status }],
     ({ pageParam = 1 }) =>
       getMyLessonRequest({
