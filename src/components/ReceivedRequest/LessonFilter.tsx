@@ -1,51 +1,36 @@
 import { genderFilter, regionFilter, requestFilter, serviceFilter } from "@/types/dropdown";
+import { FilterCheck } from "@/types/lesson";
 import CheckboxFilter from "../CheckboxFilter";
 import Dropdown from "../Dropdown/Dropdown";
 
 interface LessonFilterProps {
   count: {};
-  setLessonType: React.Dispatch<React.SetStateAction<string>>;
-  setGender: React.Dispatch<React.SetStateAction<string>>;
-  setRegion: React.Dispatch<React.SetStateAction<string>>;
-  setIsDirectQuote: React.Dispatch<React.SetStateAction<boolean>>;
-  lessonTypeChecked: boolean[];
-  genderChecked: boolean[];
-  regionChecked: boolean[];
-  directChecked: boolean[];
-  setLessonTypeChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
-  setGenderChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
-  setRegionChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
-  setDirectChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setParams: React.Dispatch<React.SetStateAction<{}>>;
+  checked: FilterCheck;
+  setChecked: React.Dispatch<React.SetStateAction<FilterCheck>>;
 }
 
-export default function LessonFilter({
-  count,
-  setLessonType,
-  setGender,
-  setRegion,
-  setIsDirectQuote,
-  lessonTypeChecked,
-  genderChecked,
-  directChecked,
-  setLessonTypeChecked,
-  setGenderChecked,
-  setRegionChecked,
-  setDirectChecked,
-}: LessonFilterProps) {
+export default function LessonFilter({ count, setParams, checked, setChecked }: LessonFilterProps) {
   const handleFilterChange = (filterType: string, value: string) => {
     if (value === "ALL") {
       value = "";
     }
 
-    if (filterType === "lessonType") {
-      setLessonType(value);
-    } else if (filterType === "gender") {
-      setGender(value);
-    } else if (filterType === "direct") {
-      setIsDirectQuote(value === "DIRECT");
-    } else if (filterType === "region") {
-      setRegion(value);
-    }
+    setParams((prevState) => {
+      let newParams = { ...prevState };
+
+      if (filterType === "lessonType") {
+        newParams = { ...newParams, lesson_type: value };
+      } else if (filterType === "gender") {
+        newParams = { ...newParams, gender: value };
+      } else if (filterType === "direct") {
+        newParams = { ...newParams, has_direct_quote: value === "DIRECT" };
+      } else if (filterType === "region") {
+        newParams = { ...newParams, region: value };
+      }
+
+      return newParams;
+    });
   };
 
   return (
@@ -56,8 +41,8 @@ export default function LessonFilter({
         filterType="lessonType"
         onFilterChange={handleFilterChange}
         count={count}
-        isChecked={lessonTypeChecked || []}
-        setIsChecked={setLessonTypeChecked}
+        isChecked={checked.lessonType}
+        setIsChecked={setChecked}
       />
       <CheckboxFilter
         label="성별"
@@ -65,17 +50,17 @@ export default function LessonFilter({
         filterType="gender"
         onFilterChange={handleFilterChange}
         count={count}
-        isChecked={genderChecked || []}
-        setIsChecked={setGenderChecked}
+        isChecked={checked.gender}
+        setIsChecked={setChecked}
       />
       <CheckboxFilter
         label="필터"
         options={requestFilter}
-        filterType="direct"
+        filterType="isDirectQuote"
         onFilterChange={handleFilterChange}
         count={count}
-        isChecked={directChecked || []}
-        setIsChecked={setDirectChecked}
+        isChecked={checked.isDirectQuote}
+        setIsChecked={setChecked}
       />
       <Dropdown
         type="filter"

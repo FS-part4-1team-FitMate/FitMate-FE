@@ -2,11 +2,8 @@ import clsx from "clsx";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getReceiveRequest } from "@/lib/api/lessonService";
-import { genderFilter, requestFilter, serviceFilter } from "@/types/dropdown";
-import { LessonResult } from "@/types/lesson";
-import { region_options } from "@/types/types";
+import { useGetReceivedLesson } from "@/lib/api/queries/lesson";
+import { FilterCheck, LessonParams } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import Loading from "@/components/Common/Loading";
 import Title from "@/components/Common/Title";
@@ -16,51 +13,60 @@ import ListHeader from "@/components/ReceivedRequest/ListHeader";
 
 export default function ReceivedRequest() {
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [params, setParams] = useState<LessonParams>({
+    order: "lesson_time",
+    sort: "asc",
+    lesson_type: "",
+    gender: "",
+    region: "",
+    has_direct_quote: false,
+    keyword: "",
+  });
 
-  const [order, setOrder] = useState<string>("start_date");
-  const [sort, setSort] = useState<string>("asc");
-
-  const [lessonType, setLessonType] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
-  const [region, setRegion] = useState<string>("");
-  const [isDirectQuote, setIsDirectQuote] = useState<boolean>(false);
-
-  const [lessonTypeChecked, setLessonTypeChecked] = useState<boolean[]>(
-    new Array(serviceFilter.length).fill(true),
-  );
-  const [genderChecked, setGenderChecked] = useState<boolean[]>(
-    new Array(genderFilter.length).fill(true),
-  );
-  const [directChecked, setDirectChecked] = useState<boolean[]>(
-    new Array(requestFilter.length).fill(false),
-  );
-  const [regionChecked, setRegionChecked] = useState<boolean[]>(
-    new Array(region_options.length).fill(false),
-  );
-
-  const params = { searchTerm, order, sort, lessonType, gender, region, isDirectQuote };
-
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useInfiniteQuery<LessonResult>(
-    ["received-request", params],
-    ({ pageParam = 1 }) =>
-      getReceiveRequest({
-        page: pageParam,
-        limit: 10,
-        keyword: params.searchTerm,
-        order: params.order,
-        sort: params.sort,
-        lesson_type: params.lessonType || undefined,
-        gender: params.gender || undefined,
-        region: params.region || undefined,
-        has_direct_quote: params.isDirectQuote,
-      }),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        return lastPage.hasMore ? allPages.length + 1 : undefined;
-      },
+  const [checked, setChecked] = useState<FilterCheck>({
+    lessonType: {
+      SPORTS: true,
+      REHAB: true,
+      FITNESS: true,
     },
-  );
+    gender: {
+      MALE: true,
+      FEMALE: true,
+    },
+    isDirectQuote: {
+      NORMAL: true,
+      DIRECT: true,
+    },
+    region: {
+      SEOUL: true,
+      GYEONGGI: true,
+      INCHEON: true,
+      DAEJEON: true,
+      DAEGU: true,
+      ULSAN: true,
+      BUSAN: true,
+      GWANGJU: true,
+      SEJONG: true,
+      GANGWON: true,
+      CHUNGBUK: true,
+      CHUNGNAM: true,
+      JEONBUK: true,
+      JEONNAM: true,
+      GYEONGBUK: true,
+      GYEONGNAM: true,
+      JEJU: true,
+    },
+  });
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetReceivedLesson({
+    keyword: params.keyword,
+    order: params.order,
+    sort: params.sort,
+    lesson_type: params.lesson_type || undefined,
+    gender: params.gender || undefined,
+    region: params.region || undefined,
+    has_direct_quote: params.has_direct_quote || undefined,
+  });
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("레슨 요청 목록을 불러오는 중 에러가 발생했어요! 😢");
@@ -75,6 +81,7 @@ export default function ReceivedRequest() {
     REHAB: result?.lessonTypeCounts.REHAB || 0,
     MALE: result?.genderCounts?.male || 0,
     FEMALE: result?.genderCounts?.female || 0,
+    NORMAL: result?.totalCount - result?.directQuoteRequestCount || 0,
     DIRECT: result?.directQuoteRequestCount || 0,
   };
 
@@ -90,27 +97,16 @@ export default function ReceivedRequest() {
         <div className="flex flex-col gap-[4.6rem]">
           <LessonFilter
             count={count}
-            setLessonType={setLessonType}
-            setGender={setGender}
-            setRegion={setRegion}
-            setIsDirectQuote={setIsDirectQuote}
-            lessonTypeChecked={lessonTypeChecked}
-            genderChecked={genderChecked}
-            regionChecked={regionChecked}
-            directChecked={directChecked}
-            setLessonTypeChecked={setLessonTypeChecked}
-            setGenderChecked={setGenderChecked}
-            setRegionChecked={setRegionChecked}
-            setDirectChecked={setDirectChecked}
+            setParams={setParams}
+            checked={checked}
+            setChecked={setChecked}
           />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
           <ListHeader
             totalCount={totalCount}
             setIsModalOpen={setIsModalOpen}
-            setSearchTerm={setSearchTerm}
-            setOrder={setOrder}
-            setSort={setSort}
+            setParams={setParams}
           />
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             {receivedList.map((item) => (
@@ -123,20 +119,11 @@ export default function ReceivedRequest() {
       </div>
       {isModalopen && (
         <MobileFilter
-          setLessonType={setLessonType}
-          setGender={setGender}
-          setIsDirectQuote={setIsDirectQuote}
-          setRegion={setRegion}
+          setParams={setParams}
           closeModal={() => setIsModalOpen(false)}
           count={count}
-          lessonTypeChecked={lessonTypeChecked}
-          genderChecked={genderChecked}
-          regionChecked={regionChecked}
-          directChecked={directChecked}
-          setLessonTypeChecked={setLessonTypeChecked}
-          setGenderChecked={setGenderChecked}
-          setRegionChecked={setRegionChecked}
-          setDirectChecked={setDirectChecked}
+          checked={checked}
+          setChecked={setChecked}
         />
       )}
     </div>

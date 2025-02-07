@@ -138,3 +138,10 @@ export interface MyLessonResult {
   };
   directQuoteRequestCount: number;
 }
+
+export interface FilterCheck {
+  lessonType: { [key: string]: boolean };
+  gender: { [key: string]: boolean };
+  isDirectQuote: { [key: string]: boolean };
+  region: { [key: string]: boolean };
+}

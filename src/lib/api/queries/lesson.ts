@@ -1,7 +1,44 @@
 import toast from "react-hot-toast";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Lesson, LessonParams, MyLessonResult } from "@/types/lesson";
-import { createDirectQuote, getLessonInfo, getMyLessonRequest } from "../lessonService";
+import { Lesson, LessonParams, LessonResult, MyLessonResult } from "@/types/lesson";
+import {
+  createDirectQuote,
+  getLessonInfo,
+  getMyLessonRequest,
+  getReceiveRequest,
+} from "../lessonService";
+
+// 레슨 요청 목록 조회
+export const useGetReceivedLesson = ({
+  keyword,
+  order,
+  sort,
+  lesson_type,
+  gender,
+  region,
+  has_direct_quote,
+}: LessonParams) => {
+  return useInfiniteQuery<LessonResult>(
+    ["received-request", { keyword, order, sort, lesson_type, gender, region, has_direct_quote }],
+    ({ pageParam = 1 }) =>
+      getReceiveRequest({
+        page: pageParam,
+        limit: 5,
+        keyword,
+        order,
+        sort,
+        lesson_type,
+        gender,
+        region,
+        has_direct_quote,
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.hasMore ? allPages.length + 1 : undefined;
+      },
+    },
+  );
+};
 
 // 내 레슨 전체 목록 조회
 export const useGetMyLessons = ({ status }: LessonParams) => {

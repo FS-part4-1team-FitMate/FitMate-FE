@@ -1,5 +1,3 @@
-import path from "path";
-
 export type TrainerSort = "리뷰 많은 순" | "평점 높은 순" | "경력 높은 순" | "확정 횟수 많은 순";
 export type UserSort = "레슨 빠른 순" | "레슨 느린 순" | "최근 요청 순";
 
@@ -10,9 +8,11 @@ export const trainerSort: TrainerSort[] = [
   "확정 횟수 많은 순",
 ];
 
+export const userSort: UserSort[] = ["레슨 빠른 순", "레슨 느린 순", "최근 요청 순"];
+
 type ServiceFilter = "ALL" | "REHAB" | "SPORTS" | "FITNESS";
 type GenderFilter = "ALL" | "MALE" | "FEMALE";
-type RequestFilter = "DIRECT";
+type RequestFilter = "NORMAL" | "DIRECT";
 type PastLessonFilter = "ALL" | "ACCEPTED";
 
 type RegionFilter =
@@ -37,7 +37,7 @@ type RegionFilter =
 
 export const serviceFilter: ServiceFilter[] = ["REHAB", "SPORTS", "FITNESS"];
 export const genderFilter: GenderFilter[] = ["MALE", "FEMALE"];
-export const requestFilter: RequestFilter[] = ["DIRECT"];
+export const requestFilter: RequestFilter[] = ["NORMAL", "DIRECT"];
 export const pastLessonFilter: PastLessonFilter[] = ["ALL", "ACCEPTED"];
 export const regionFilter: RegionFilter[] = [
   "ALL",
@@ -68,6 +68,7 @@ export const filter_trans = (filter: string): string => {
     FITNESS: "피트니스",
     SPORTS: "스포츠",
     REHAB: "재활운동",
+    NORMAL: "일반 견적 요청",
     DIRECT: "지정 견적 요청",
     ACCEPTED: "확정한 견적",
     ALL: "전체",
