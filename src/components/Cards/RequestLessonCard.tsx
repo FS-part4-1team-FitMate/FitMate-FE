@@ -61,6 +61,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     };
     uploadQuote.mutate(quoteData, {
       onSuccess: () => {
+        setIsSendQuote(true);
         setIsQuoteModalOpen(false);
       },
     });
