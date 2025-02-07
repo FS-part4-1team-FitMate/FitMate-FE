@@ -62,6 +62,7 @@ export default function ReceivedRequest() {
     keyword: params.keyword,
     order: params.order,
     sort: params.sort,
+    status: "PENDING",
     lesson_type: params.lesson_type || undefined,
     gender: params.gender || undefined,
     region: params.region || undefined,
@@ -109,11 +110,23 @@ export default function ReceivedRequest() {
             setParams={setParams}
           />
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-            {receivedList.map((item) => (
-              <div className="flex flex-col gap-[4.8rem]" key={item.id}>
-                <RequestLessonCard item={item} />
-              </div>
-            ))}
+            {receivedList.length > 0 ? (
+              receivedList.map((item) => {
+                const itemStartDate = new Date(item.startDate);
+                const currentTime = new Date();
+
+                if (itemStartDate > currentTime) {
+                  return (
+                    <div className="flex flex-col gap-[4.8rem]" key={item.id}>
+                      <RequestLessonCard item={item} />
+                    </div>
+                  );
+                }
+                return null;
+              })
+            ) : (
+              <div>등록된 요청이 없습니다.</div>
+            )}
           </InfiniteScroll>
         </div>
       </div>

@@ -1,15 +1,12 @@
 import { ic_edit_md } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { rejectedLesson } from "@/lib/api/lessonService";
-import { sendQuote } from "@/lib/api/quoteService";
+import { useRejectedQuote, useSendQuote } from "@/lib/api/queries/quote";
 import formatDate from "@/lib/utils/formatDate";
 import formatTime from "@/lib/utils/formatTime";
 import { Lesson } from "@/types/lesson";
-import { QuoteData } from "@/types/quote";
 import { LessonType, LocationType, RequestType, locationType_trans } from "@/types/types";
 import useQuoteValidate from "@/hooks/useQuoteValidate";
 import ChipLessonType from "../Chip/ChipLessonType";
@@ -23,10 +20,9 @@ import RejectedRequest from "../Modal/RejectedRequest";
 import SendQuote from "../Modal/SendQuote";
 
 export default function RequestLessonCard({ item }: { item: Lesson }) {
-  const queryClient = useQueryClient();
-
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
+  const [isSendQuote, setIsSendQuote] = useState<boolean>(false);
 
   const { values, setValues, errors, setErrors, handleChange, validate, isInputEmpty } =
     useQuoteValidate({
@@ -35,40 +31,23 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     });
   const [rejectionReason, setRejectionReason] = useState<string>("");
 
-  const uploadQuote = useMutation({
-    mutationFn: (quoteData: QuoteData) => sendQuote(quoteData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["send-quote"] });
-      toast.success("견적을 전송하였습니다.");
-      setIsQuoteModalOpen(false);
-    },
-    onError: (error: any) => {
-      console.error("견적 전송에 실패하였습니다.", error.message);
-      toast.error("견적 전송에 실패하였습니다.");
-    },
-  });
+  const getUserId = () => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+      return parsedData?.user?.id;
+    }
+    return null;
+  };
 
-  const rejectionLesson = useMutation({
-    mutationFn: ({
-      lessonId,
-      directQuoteRequestId,
-      rejectionReason,
-    }: {
-      lessonId: string;
-      directQuoteRequestId: string;
-      rejectionReason: string;
-    }) => rejectedLesson(lessonId, directQuoteRequestId, rejectionReason),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cancel-lesson"] });
-      toast.success("요청을 반려하였습니다.");
-      setIsRejectedModalOpen(false);
-    },
-    onError: (error: any) => {
-      console.error("요청 반려에 실패하였습니다.", error.message);
-      toast.error("요청 반려에 실패하였습니다.");
-    },
-  });
+  const loggedInUserId = getUserId();
 
+  useEffect(() => {
+    const sendQuote = item.lessonQuotes.some((quote) => quote.trainerId === loggedInUserId);
+    setIsSendQuote(sendQuote);
+  }, [item.lessonQuotes, loggedInUserId]);
+
+  const uploadQuote = useSendQuote();
   const handleSendQuote = async () => {
     if (!validate()) {
       toast.error("정해진 규칙에 맞게 작성해주세요!");
@@ -80,9 +59,14 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       price: parseInt(values.price),
       message: values.message,
     };
-    uploadQuote.mutate(quoteData);
+    uploadQuote.mutate(quoteData, {
+      onSuccess: () => {
+        setIsQuoteModalOpen(false);
+      },
+    });
   };
 
+  const rejectionLesson = useRejectedQuote();
   const handleRejectedRequest = async () => {
     if (rejectionReason.length < 10) {
       toast.error("반려 사유는 최소 10자 이상 입력해주세요.");
@@ -98,8 +82,17 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
         directQuoteRequestId,
         rejectionReason,
       });
+      setIsRejectedModalOpen(true);
     } else {
       toast.error("본인의 지정 견적이 아닙니다.");
+    }
+  };
+
+  const handleSendQuoteClick = () => {
+    if (isSendQuote) {
+      toast.error("이미 견적을 보냈습니다!");
+    } else {
+      setIsQuoteModalOpen(true);
     }
   };
 
@@ -146,8 +139,11 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       </div>
       <div className="flex gap-[1.1rem] pc:flex-row tablet:flex-row mobile:flex-col">
         <Button
-          onClick={() => setIsQuoteModalOpen(true)}
-          className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50 bg-blue-300`}
+          onClick={handleSendQuoteClick}
+          className={clsx(
+            "flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50",
+            isSendQuote ? "bg-gray-300 cursor-default" : "bg-blue-300",
+          )}
         >
           견적 보내기
           <Image src={ic_edit_md} width={24} height={24} alt="견적 보내기" />

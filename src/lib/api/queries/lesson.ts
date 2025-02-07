@@ -13,13 +13,17 @@ export const useGetReceivedLesson = ({
   keyword,
   order,
   sort,
+  status,
   lesson_type,
   gender,
   region,
   has_direct_quote,
 }: LessonParams) => {
   return useInfiniteQuery<LessonResult>(
-    ["received-request", { keyword, order, sort, lesson_type, gender, region, has_direct_quote }],
+    [
+      "received-request",
+      { keyword, order, sort, status, lesson_type, gender, region, has_direct_quote },
+    ],
     ({ pageParam = 1 }) =>
       getReceiveRequest({
         page: pageParam,
@@ -27,6 +31,7 @@ export const useGetReceivedLesson = ({
         keyword,
         order,
         sort,
+        status,
         lesson_type,
         gender,
         region,

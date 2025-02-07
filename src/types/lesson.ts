@@ -41,56 +41,6 @@ export interface Lesson {
       rejectionReason: string | undefined;
     },
   ];
-  user: {
-    id: string;
-    nickname: string;
-    profile: Pick<Profile, "name" | "gender" | "region">;
-  };
-  isDirectQuote: boolean;
-}
-
-export interface LessonResult {
-  list: Lesson[];
-  totalCount: number;
-  hasMore: boolean;
-  lessonTypeCounts: {
-    SPORTS: number;
-    FITNESS: number;
-    REHAB: number;
-  };
-  genderCounts: {
-    male: number;
-    female: number;
-  };
-  directQuoteRequestCount: number;
-}
-
-export interface MyLesson {
-  id: string;
-  userId: string;
-  lessonType: LessonType;
-  lessonSubType?: string;
-  startDate: string;
-  endDate: string;
-  lessonCount: number;
-  lessonTime: number;
-  quoteEndDate: string;
-  locationType: LocationType;
-  postcode?: string;
-  roadAddress?: string;
-  detailAddress?: string;
-  status: LessonRequestStatus;
-  createdAt: string;
-  updatedAt: string;
-  directQuoteRequests: [
-    {
-      directQuoteRequestId: string | undefined;
-      lessonRequestId: string | undefined;
-      trainerId: string | undefined;
-      status: string | undefined;
-      rejectionReason: string | undefined;
-    },
-  ];
   lessonQuotes: [
     {
       id: string;
@@ -114,17 +64,13 @@ export interface MyLesson {
   user: {
     id: string;
     nickname: string;
-    profile: {
-      name: string;
-      gender: string;
-      region: string[];
-    };
+    profile: Pick<Profile, "name" | "gender" | "region">;
   };
-  isDirectQuote: false;
+  isDirectQuote: boolean;
 }
 
-export interface MyLessonResult {
-  list: MyLesson[];
+export interface LessonResult {
+  list: Lesson[];
   totalCount: number;
   hasMore: boolean;
   lessonTypeCounts: {
