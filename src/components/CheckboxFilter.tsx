@@ -93,9 +93,7 @@ export default function CheckboxFilter({
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
             <p className="text-lg font-medium pc:text-2lg">
-              {filterType === "region"
-                ? `${filter_trans(option)}`
-                : `${filter_trans(option)} (${count[option]})`}
+              {filterType === "region" ? `${filter_trans(option)}` : `${filter_trans(option)}`}
             </p>
             <Image
               className="cursor-pointer"

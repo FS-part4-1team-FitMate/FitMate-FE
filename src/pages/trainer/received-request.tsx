@@ -72,19 +72,8 @@ export default function ReceivedRequest() {
   if (isLoading) return <Loading />;
   if (isError) return toast.error("레슨 요청 목록을 불러오는 중 에러가 발생했어요! 😢");
 
-  const result = data?.pages[0];
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
-
-  const count = {
-    SPORTS: result?.lessonTypeCounts.SPORTS || 0,
-    FITNESS: result?.lessonTypeCounts.FITNESS || 0,
-    REHAB: result?.lessonTypeCounts.REHAB || 0,
-    MALE: result?.genderCounts?.male || 0,
-    FEMALE: result?.genderCounts?.female || 0,
-    NORMAL: result?.totalCount - result?.directQuoteRequestCount || 0,
-    DIRECT: result?.directQuoteRequestCount || 0,
-  };
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
@@ -96,12 +85,7 @@ export default function ReceivedRequest() {
         )}
       >
         <div className="flex flex-col gap-[4.6rem]">
-          <LessonFilter
-            count={count}
-            setParams={setParams}
-            checked={checked}
-            setChecked={setChecked}
-          />
+          <LessonFilter setParams={setParams} checked={checked} setChecked={setChecked} />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
           <ListHeader
@@ -134,7 +118,6 @@ export default function ReceivedRequest() {
         <MobileFilter
           setParams={setParams}
           closeModal={() => setIsModalOpen(false)}
-          count={count}
           checked={checked}
           setChecked={setChecked}
         />

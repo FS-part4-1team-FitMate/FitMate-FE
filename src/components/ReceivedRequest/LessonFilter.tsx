@@ -4,13 +4,12 @@ import CheckboxFilter from "../CheckboxFilter";
 import Dropdown from "../Dropdown/Dropdown";
 
 interface LessonFilterProps {
-  count: {};
   setParams: React.Dispatch<React.SetStateAction<{}>>;
   checked: FilterCheck;
   setChecked: React.Dispatch<React.SetStateAction<FilterCheck>>;
 }
 
-export default function LessonFilter({ count, setParams, checked, setChecked }: LessonFilterProps) {
+export default function LessonFilter({ setParams, checked, setChecked }: LessonFilterProps) {
   const handleFilterChange = (filterType: string, value: string) => {
     if (value === "ALL") {
       value = "";
@@ -40,7 +39,6 @@ export default function LessonFilter({ count, setParams, checked, setChecked }: 
         options={serviceFilter}
         filterType="lessonType"
         onFilterChange={handleFilterChange}
-        count={count}
         isChecked={checked.lessonType}
         setIsChecked={setChecked}
       />
@@ -49,7 +47,6 @@ export default function LessonFilter({ count, setParams, checked, setChecked }: 
         options={genderFilter}
         filterType="gender"
         onFilterChange={handleFilterChange}
-        count={count}
         isChecked={checked.gender}
         setIsChecked={setChecked}
       />
@@ -58,7 +55,6 @@ export default function LessonFilter({ count, setParams, checked, setChecked }: 
         options={requestFilter}
         filterType="isDirectQuote"
         onFilterChange={handleFilterChange}
-        count={count}
         isChecked={checked.isDirectQuote}
         setIsChecked={setChecked}
       />

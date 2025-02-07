@@ -18,14 +18,12 @@ const regionOptions = regionFilter.filter((_, index: number) => index !== 0);
 interface ModalContainerProps {
   setParams: React.Dispatch<React.SetStateAction<{}>>;
   closeModal?: () => void;
-  count: {};
   checked: FilterCheck;
   setChecked: React.Dispatch<React.SetStateAction<FilterCheck>>;
 }
 export default function MobileFilter({
   setParams,
   closeModal,
-  count,
   checked,
   setChecked,
 }: ModalContainerProps) {
@@ -152,7 +150,6 @@ export default function MobileFilter({
               filterType="lessonType"
               onFilterChange={handleFilterChange}
               options={serviceFilter}
-              count={count}
               isChecked={checked.lessonType}
               setIsChecked={setChecked}
             />
@@ -162,7 +159,6 @@ export default function MobileFilter({
               filterType="gender"
               onFilterChange={handleFilterChange}
               options={genderFilter}
-              count={count}
               isChecked={checked.gender}
               setIsChecked={setChecked}
             />
@@ -172,7 +168,6 @@ export default function MobileFilter({
               filterType="isDirectQuote"
               onFilterChange={handleFilterChange}
               options={requestFilter}
-              count={count}
               isChecked={checked.isDirectQuote}
               setIsChecked={setChecked}
             />
