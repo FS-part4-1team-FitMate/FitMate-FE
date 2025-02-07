@@ -2,12 +2,12 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useState } from "react";
 import { pastLessonFilter } from "@/types/dropdown";
-import { MyLesson } from "@/types/lesson";
+import { Lesson } from "@/types/lesson";
 import QuoteInfo from "../Common/QuoteInfo";
 import Dropdown from "../Dropdown/Dropdown";
 import QuoteCard from "./QuoteCard";
 
-export default function PastLessonCard({ myLesson }: { myLesson: MyLesson }) {
+export default function PastLessonCard({ myLesson }: { myLesson: Lesson }) {
   const [filterValue, setFilterValue] = useState<string>("");
 
   // 필터 처리 함수

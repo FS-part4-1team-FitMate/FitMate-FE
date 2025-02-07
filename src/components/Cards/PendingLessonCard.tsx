@@ -4,7 +4,7 @@ import { useQuoteAccept, useQuoteRejection } from "@/lib/api/queries/quote";
 import { useGetFavoriteInfo, useGetTrainer } from "@/lib/api/queries/trainer";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
-import { MyLesson } from "@/types/lesson";
+import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import { locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
@@ -16,7 +16,7 @@ import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import Loading from "../Common/Loading";
 
-export default function PendingLessonCard({ item, quote }: { item: MyLesson; quote: Quote }) {
+export default function PendingLessonCard({ item, quote }: { item: Lesson; quote: Quote }) {
   const {
     data: trainer,
     isLoading: isTrainerLoading,

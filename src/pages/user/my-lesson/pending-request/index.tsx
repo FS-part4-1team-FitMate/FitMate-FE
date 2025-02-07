@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
-import { MyLesson } from "@/types/lesson";
+import { Lesson } from "@/types/lesson";
 import PendingLessonCard from "@/components/Cards/PendingLessonCard";
 import Loading from "@/components/Common/Loading";
 
@@ -19,7 +19,7 @@ export default function PendingRequest() {
   if (pendingList?.length > 0) {
     return (
       <>
-        {pendingList?.map((item: MyLesson) => (
+        {pendingList?.map((item: Lesson) => (
           <InfiniteScroll key={item.id} hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             <div className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]">
               {item.lessonQuotes.map(

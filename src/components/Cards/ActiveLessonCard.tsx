@@ -1,13 +1,13 @@
 import toast from "react-hot-toast";
 import { useGetFavoriteInfo, useGetTrainer } from "@/lib/api/queries/trainer";
-import { MyLesson } from "@/types/lesson";
+import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import Loading from "../Common/Loading";
 
-export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quote: Quote }) {
+export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote: Quote }) {
   const { data: trainer, isLoading, isError } = useGetTrainer(quote?.trainerId);
   const { data: favorite } = useGetFavoriteInfo(quote?.trainerId);
 
