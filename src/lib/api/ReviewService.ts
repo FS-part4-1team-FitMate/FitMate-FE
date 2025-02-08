@@ -3,12 +3,24 @@ import { get, patch, post } from "./method";
 
 //리뷰 작성
 export const postReview = async ({ id, rating, content }: ReviewParams) => {
-  const response = await post(`/reviews/${id}`, { id, rating, content });
+  const response = await post(`/reviews`, { lessonQuoteId: id, rating, content });
+  return response.data;
+};
+
+//리뷰 수정
+export const patchReview = async ({ id, rating, content }: ReviewParams) => {
+  const response = await patch(`/reviews`, { id, rating, content });
   return response.data;
 };
 
 //리뷰 가져오기
-export const getReview = async ({ page, limit }: FetchReviewsParams) => {
+export const getReview = async ({
+  page,
+  limit,
+}: FetchReviewsParams): Promise<{
+  reviews: Review[];
+  totalCount: number;
+}> => {
   const response = await get("/reviews", {
     params: { page, limit },
   });

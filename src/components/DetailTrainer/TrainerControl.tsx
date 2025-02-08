@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createDirectQuote, getMyLessonRequest } from "@/lib/api/lessonService";
 import { MyLessonResult } from "@/types/lesson";
@@ -9,8 +10,9 @@ import Favorite from "../Common/Favorite";
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data: myLessonList } = useQuery<MyLessonResult>(["my-lesson"], () =>
-    getMyLessonRequest(),
+  const { data: myLessonList } = useQuery<MyLessonResult>(
+    ["my-lesson", { page: 1, status: "PENDING" }],
+    () => getMyLessonRequest({ page: 1, status: "PENDING" }),
   );
 
   const lessonId = myLessonList?.list[0]?.id;
@@ -21,16 +23,16 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
       createDirectQuote(lessonId, trainerId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["direct-quote"] });
-      alert("지정 견적을 요청하였습니다.");
+      toast.success("지정 견적을 요청하였습니다.");
     },
     onError: (error: any) => {
       console.error("견적 요청에 실패하였습니다.", error.message);
-      alert("견적 요청에 실패하였습니다.");
+      toast.error("견적 요청에 실패하였습니다.");
     },
   });
 
   const handleLessonRequest = () => {
-    if (!lessonId) {
+    if (!lessonId || myLessonList.list.length === 0) {
       router.push("/user/create-request");
     } else {
       handleSendDirectQuote();

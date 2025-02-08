@@ -1,5 +1,5 @@
-import { ParsedUrlQuery } from "querystring";
-import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getLessonInfo } from "@/lib/api/lessonService";
 import { acceptQuote, getQuote } from "@/lib/api/quoteService";
@@ -15,29 +15,10 @@ import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 import Title from "@/components/Common/Title";
 
-interface Params extends ParsedUrlQuery {
-  quoteId: string;
-}
+export default function DetailPendingRequest() {
+  const router = useRouter();
+  const { quoteId } = router.query;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { quoteId } = context.params as Params;
-
-  if (!quoteId) {
-    return {
-      props: {
-        quoteId: null,
-      },
-    };
-  }
-
-  return {
-    props: {
-      quoteId,
-    },
-  };
-};
-
-export default function DetailPendingRequest({ quoteId }: { quoteId: string | null }) {
   const {
     data: quoteInfo,
     isLoading: isQuoteLoading,
@@ -62,18 +43,23 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     data: lesson,
     isLoading: isLessonLoading,
     isError: isLessonError,
-  } = useQuery<Lesson>(["lesson-info", quoteInfo?.lessonRequestId], () =>
-    getLessonInfo(quoteInfo?.lessonRequestId as string),
+  } = useQuery<Lesson>(
+    ["lesson-info", quoteInfo?.lessonRequestId],
+    () => getLessonInfo(quoteInfo?.lessonRequestId as string),
+    {
+      enabled: !!quoteInfo?.lessonRequestId,
+    },
   );
 
   const quoteAccept = useMutation({
     mutationFn: (quoteId: string) => acceptQuote(quoteId),
     onSuccess: () => {
-      alert("견적이 확정되었습니다.");
+      toast.success("견적이 확정되었습니다.");
+      router.push("/user/my-lesson/active-lesson");
     },
     onError: (err) => {
       console.error("견적 확정 실패", err);
-      alert("견적 확정에 실패하였습니다.");
+      toast.error("견적 확정에 실패하였습니다.");
     },
   });
 
@@ -88,28 +74,29 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
   }
 
   if (isQuoteError || !quoteInfo) {
-    return <div>견적 정보를 불러오는 데 실패했습니다.</div>;
+    return toast.error("견적 정보를 불러오는 중 에러가 발생했어요! 😢");
   }
 
   if (isTrainerError || !trainer) {
-    return <div>트레이너 정보를 불러오는 데 실패했습니다.</div>;
+    return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
   }
 
   if (isLessonError || !lesson) {
-    return <div>레슨 정보를 불러오는 데 실패했습니다.</div>;
+    return toast.error("레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
   }
 
   const trainerInfo = trainer?.profile ?? {};
+  const lessonData = lesson ?? {};
 
   return (
     <div className="flex flex-col gap-[1.6rem] pc:gap-[2.4rem]">
       <Title title="견적 상세" />
       <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:max-w-[140rem]">
         <div className="flex flex-col gap-[2.4rem] w-full pc:max-w-[95.5rem] pc:pr-[10rem] pc:gap-16">
-          <FindTrainerCard profile={trainerInfo} request={lesson?.isDirectQuote} />
+          <FindTrainerCard profile={trainerInfo} request={lessonData?.isDirectQuote} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
-            <ShareSNS label="견적서 공유하기" />
+            <ShareSNS label="견적서 공유하기" trainerInfo={trainerInfo} />
           </div>
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
@@ -118,7 +105,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           </div>
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">
-            <QuoteInfo lessonRequestId={quoteInfo?.lessonRequestId} />
+            <QuoteInfo lesson={lessonData} />
           </div>
         </div>
         <div className="flex flex-col gap-16">
@@ -129,12 +116,12 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
                 "h-[6.4rem] p-4 rounded-[1.6rem] font-semibold w-full text-gray-50 bg-blue-300 pc:text-xl pc:w-[32.8rem]"
               }
             >
-              견적 확정하기
+              {quoteAccept.isLoading ? "견적 확정 중 ..." : "견적 확정하기"}
             </Button>
           </div>
           <div className="hidden pc:flex pc:flex-col pc:gap-16">
             <HorizontalLine width="100%" />
-            <ShareSNS label="견적서 공유하기" />
+            <ShareSNS label="견적서 공유하기" trainerInfo={trainerInfo} />
           </div>
         </div>
       </div>

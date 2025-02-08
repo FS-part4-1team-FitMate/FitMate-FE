@@ -40,19 +40,19 @@ export type Profile = {
   profile: {
     id: string;
     userId: string;
-    name: string;
-    phone?: string;
-    profileImage?: string | FileList;
+    name?: string | null;
+    phone?: string | null;
+    profileImage?: string | FileList | null;
     profileImageCount?: number;
     contentType?: string;
     gender: Gender;
     lessonType: LessonType[];
     locationType: LocationType[];
     region: Region[];
-    intro?: string;
-    description?: string;
-    experience?: number;
-    certification?: string | FileList;
+    intro?: string | null;
+    description?: string | null;
+    experience?: number | null;
+    certification?: string | FileList | null;
     certificationCount?: number;
     certificationValidated?: boolean;
     rating?: number;

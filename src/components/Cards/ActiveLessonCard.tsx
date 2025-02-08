@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import { getFavorite } from "@/lib/api/userService";
@@ -29,9 +30,10 @@ export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quot
     },
   );
 
-  const trainerInfo = data?.profile ?? {};
+  if (isLoading) return <Loading />;
+  if (isError) return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
 
-  if (isError) return <div>error!</div>;
+  const trainerInfo = data?.profile ?? {};
 
   return (
     <CardContainer width="100%" gap="1.6rem">
@@ -47,7 +49,6 @@ export default function ActiveLessonCard({ item, quote }: { item: MyLesson; quot
         isFavorited={favorite?.isFavorite}
         favoriteCount={favorite?.favoriteTotalCount}
       />
-      {isLoading && <Loading />}
     </CardContainer>
   );
 }

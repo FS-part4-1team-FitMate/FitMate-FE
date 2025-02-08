@@ -1,11 +1,13 @@
 import { ic_info_md } from "@/imageExports";
-import { ParsedUrlQuery } from "querystring";
-import { GetServerSideProps } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
+import { getLessonInfo } from "@/lib/api/lessonService";
 import { getQuote } from "@/lib/api/quoteService";
 import { getTrainerInfo } from "@/lib/api/trainerService";
 import formatPrice from "@/lib/utils/formatPrice";
+import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Line";
@@ -14,29 +16,10 @@ import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 import Title from "@/components/Common/Title";
 
-interface Params extends ParsedUrlQuery {
-  quoteId: string;
-}
+export default function DetailPastRequest() {
+  const router = useRouter();
+  const { quoteId } = router.query;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { quoteId } = context.params as Params;
-
-  if (!quoteId) {
-    return {
-      props: {
-        quoteId: null,
-      },
-    };
-  }
-
-  return {
-    props: {
-      quoteId,
-    },
-  };
-};
-
-export default function DetailPendingRequest({ quoteId }: { quoteId: string | null }) {
   const {
     data: quoteInfo,
     isLoading: isQuoteLoading,
@@ -57,19 +40,36 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
     },
   );
 
-  if (isQuoteLoading || isTrainerLoading) {
+  const {
+    data: lesson,
+    isLoading: isLessonLoading,
+    isError: isLessonError,
+  } = useQuery<Lesson>(
+    ["lesson-info", quoteInfo?.lessonRequestId],
+    () => getLessonInfo(quoteInfo?.lessonRequestId as string),
+    {
+      enabled: !!quoteInfo?.trainerId,
+    },
+  );
+
+  if (isQuoteLoading || isTrainerLoading || isLessonLoading) {
     return <Loading />;
   }
 
   if (isQuoteError || !quoteInfo) {
-    return <div>견적 정보를 불러오는 데 실패했습니다.</div>;
+    return toast.error("견적 정보를 불러오는 중 에러가 발생했어요! 😢");
   }
 
   if (isTrainerError || !trainer) {
-    return <div>트레이너 정보를 불러오는 데 실패했습니다.</div>;
+    return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
+  }
+
+  if (isLessonError || !lesson) {
+    return toast.error("레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
   }
 
   const trainerInfo = trainer?.profile ?? {};
+  const lessonData = lesson ?? {};
 
   return (
     <div className="flex flex-col gap-[1.6rem] pc:gap-[2.4rem]">
@@ -79,7 +79,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           <FindTrainerCard profile={trainerInfo} status={quoteInfo.status} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
-            <ShareSNS label="견적서 공유하기" />
+            <ShareSNS label="견적서 공유하기" trainerInfo={trainerInfo} />
           </div>
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
@@ -88,7 +88,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           </div>
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">
-            <QuoteInfo lessonRequestId={quoteInfo?.lessonRequestId} />
+            <QuoteInfo lesson={lessonData} />
             {quoteInfo.status !== "ACCEPTED" && (
               <div className="flex items-center gap-[1.6rem] py-[2.4rem] px-[3.2rem] border border-blue-200 rounded-[1.2rem] bg-blue-100">
                 <Image src={ic_info_md} width={24} height={24} alt="느낌표" />
@@ -98,7 +98,7 @@ export default function DetailPendingRequest({ quoteId }: { quoteId: string | nu
           </div>
         </div>
         <div className="hidden pc:flex flex-col gap-16">
-          <ShareSNS label="견적서 공유하기" />
+          <ShareSNS label="견적서 공유하기" trainerInfo={trainerInfo} />
         </div>
       </div>
     </div>

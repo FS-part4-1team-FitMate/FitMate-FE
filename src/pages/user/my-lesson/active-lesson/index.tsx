@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { getMyLessonRequest } from "@/lib/api/lessonService";
 import { MyLessonResult } from "@/types/lesson";
@@ -15,9 +16,10 @@ export default function ActiveLesson() {
       }),
   );
 
-  const activeLesson = data?.list ?? [];
+  if (isLoading) return <Loading />;
+  if (isError) return toast.error("받았던 레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
 
-  if (isError) return <div>error!</div>;
+  const activeLesson = data?.list ?? [];
 
   const rehabLessons = activeLesson.filter((lesson) => lesson.lessonType === "REHAB");
   const sportsLessons = activeLesson.filter((lesson) => lesson.lessonType === "SPORTS");
@@ -30,7 +32,6 @@ export default function ActiveLesson() {
         <ActiveLessonSection title="스포츠" items={sportsLessons} />
         <ActiveLessonSection title="피트니스" items={fitnessLessons} />
       </div>
-      {isLoading && <Loading />}
     </div>
   );
 }

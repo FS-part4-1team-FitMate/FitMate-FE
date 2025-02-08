@@ -1,21 +1,28 @@
+
 import MyReviewCard from "@/components/Cards/MyReviewCard";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getReview } from "@/lib/api/ReviewService";
+import { Review } from "@/types/reviews";
+import ReviewCard from "@/components/Cards/ReviewCard";
 import Pagination from "@/components/Common/Pagination";
 import Tab from "@/components/Tab";
-import { getReview } from "@/lib/api/ReviewService";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 
 export default function ReviewListPage() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 6;
-  
-    const { data } = useQuery(
-      ["reviews", currentPage],
-      () => getReview({ page: currentPage, limit: ITEMS_PER_PAGE}),
-      {
-        keepPreviousData: true,
-      }
-    );
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
+
+  const { data } = useQuery(
+    ["reviews", { page: currentPage, limit: ITEMS_PER_PAGE }],
+    () => getReview({ page: currentPage, limit: ITEMS_PER_PAGE }),
+    {
+      keepPreviousData: true,
+    },
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
     const handlePageChange = (page: number) => {
       setCurrentPage(page);
@@ -41,5 +48,11 @@ export default function ReviewListPage() {
           onPageChange={handlePageChange}
         />
       </div>
-    );
-  }
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.ceil(data?.totalCount! / ITEMS_PER_PAGE || 1)}
+        onPageChange={handlePageChange}
+      />
+    </div>
+  );
+}

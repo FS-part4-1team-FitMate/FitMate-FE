@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { getProfile } from "@/lib/api/authService";
+import formatDate from "@/lib/utils/formatDate";
 import { region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
 import RatingStatCard from "@/components/Cards/RatingStatCard";
@@ -22,14 +23,22 @@ import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 import Pagination from "@/components/Common/Pagination";
 
-let setTimeoutId: NodeJS.Timeout;
-
 function Profile() {
   const router = useRouter();
+  const { query } = router;
+  const { trainerId } = query;
   const searchParams = useSearchParams();
-  const { trainerId } = router.query;
   const user = useUser();
   const myPage = trainerId === user?.id;
+  const [page, setPage] = useState(Number(query.page) || 1);
+  const limit = 2;
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", trainerId, { page, limit }],
+    queryFn: () => getReviews(trainerId as string, { page, limit }),
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    enabled: !!trainerId,
+  });
   const {
     data: trainerProfile,
     isLoading,
@@ -41,53 +50,46 @@ function Profile() {
     staleTime: 60 * 60 * 1000,
     enabled: !!trainerId,
   });
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
-  const { data: reviews } = useQuery({
-    queryKey: ["reviews", trainerId, { page, limit }],
-    queryFn: () => getReviews(trainerId as string, { page, limit }),
-    cacheTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-    enabled: !!trainerId,
-  });
   const [avgRating, setAvgRating] = useState(0);
   const { data: reviewStat } = useQuery({
-    queryKey: ["reviewStat", trainerId],
+    queryKey: ["review-stat", trainerId],
     queryFn: () => getReviewStat(trainerId as string),
     cacheTime: 5 * 60 * 1000,
     staleTime: 5 * 60 * 1000,
     enabled: !!trainerId,
   });
-  // console.log(reviews);
 
   useEffect(() => {
-    const handleSearchChange = () => {
-      const { pathname, search } = window.location;
-      const params = new URLSearchParams(window.location.search);
-      const pageParam = params.get("page");
-      if (pageParam) {
-        setPage(Number(pageParam)); // 페이지 번호를 상태로 설정
-      }
-      router.push(pathname + search);
-    };
+    // const handleSearchChange = () => {
+    // const { pathname, search } = window.location;
+    // const params = new URLSearchParams(search);
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      setPage(Number(pageParam) || 1); // 페이지 번호를 상태로 설정
+    }
+    // router.push({
+    //   pathname: router.pathname,
+    //   query: { trainerId, page },
+    // });
+    // };
 
-    // 초기 실행
-    handleSearchChange();
+    // // 초기 실행
+    // handleSearchChange();
 
-    // URL 검색 변화를 감지
-    window.addEventListener("popstate", handleSearchChange);
+    // // URL 검색 변화를 감지
+    // window.addEventListener("popstate", handleSearchChange);
 
-    return () => {
-      window.removeEventListener("popstate", handleSearchChange);
-    };
-  }, []);
+    // return () => {
+    //   window.removeEventListener("popstate", handleSearchChange);
+    // };
+  }, [query]);
 
   useEffect(() => {
-    clearTimeout(setTimeoutId);
-    setTimeoutId = setTimeout(() => {
-      window.history.pushState({}, "", `${window.location.pathname}?page=${page}`);
-    }, 256);
-  }, [page]);
+    router.push({
+      pathname: router.pathname,
+      query: { trainerId, page },
+    });
+  }, [trainerId, page]);
 
   useEffect(() => {
     if (reviewStat) {
@@ -118,11 +120,7 @@ function Profile() {
       <Head>
         <title>{trainerProfile?.profile?.name} 강사님 페이지</title>
       </Head>
-      {myPage ? (
-        <h1 className="text-xl font-semibold">마이 페이지</h1>
-      ) : (
-        <h1 className="text-xl font-semibold">강사님 페이지</h1>
-      )}
+      <h1 className="text-xl font-semibold">{myPage ? "마이 페이지" : "강사님 페이지"}</h1>
       <HorizontalLine width="100%" />
       <div className="flex flex-col justify-normal items-start p-[12px] bg-slate-100 w-full">
         <div className="flex gap-[16px] mb-[12px]">
@@ -138,9 +136,9 @@ function Profile() {
             className="object-cover rounded-full border-[2px] border-solid border-slate-800 w-[50px] h-[50px]"
           />
           <div className="flex flex-col justify-between items-start">
-            <div className="text-lg">{trainerProfile?.profile?.name || "김코드"}</div>
+            <div className="text-lg">{trainerProfile?.profile?.name}</div>
             <div className="text-md text-slate-500 truncate whitespace-nowrap">
-              {trainerProfile?.profile?.intro || "한 줄 자기소개가 들어갑니다."}
+              {trainerProfile?.profile?.intro}
             </div>
           </div>
         </div>
@@ -158,7 +156,7 @@ function Profile() {
             <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>
             <div className="text-lg flex justify-normal items-center gap-[5px]">
               {trainerProfile?.profile?.lessonType.map((lessonType) => {
-                return <ChipLessonType lessonType={lessonType} size="lg" />;
+                return <ChipLessonType key={lessonType} lessonType={lessonType} size="lg" />;
               })}
             </div>
           </div>
@@ -205,9 +203,9 @@ function Profile() {
         {reviews?.reviews.map((review) => {
           return (
             <ReviewCard
-              rating={review.rating as 1 | 2 | 3 | 4 | 5}
+              rating={review.rating}
               nickname={review.user.nickname}
-              createdAt={review.createdAt}
+              createdAt={formatDate(review.createdAt)}
               content={review.content}
             />
           );

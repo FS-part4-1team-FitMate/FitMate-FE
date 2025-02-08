@@ -6,7 +6,7 @@ export interface ReviewParams {
 
 export interface Review {
   id: number;
-  rating: number;
+  rating: 1 | 2 | 3 | 4 | 5;
   content: string;
   createdAt: string;
   user: {
@@ -14,7 +14,24 @@ export interface Review {
   };
 }
 
+export interface ReviewItem {
+  id: number;
+  name: string;
+  date: string;
+  price: string;
+}
+
 export interface FetchReviewsParams {
   page: number;
   limit: number;
+}
+
+export interface ReviewResult {
+  reviews: Review[];
+  totalCount: number;
+}
+
+export interface ReviewStat {
+  rating: number;
+  count: number;
 }
