@@ -1,12 +1,90 @@
+import { GetServerSideProps } from "next";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function QueryParamsTest() {
+interface QueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  filter?: string;
+}
+
+interface PageProps {
+  initialQuery: QueryParams;
+}
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
+  const { page = 1, limit = 10, search = "", filter = "" } = context.query;
+
+  return {
+    props: {
+      initialQuery: {
+        page: Number(page),
+        limit: Number(limit),
+        search: search as string,
+        filter: filter as string,
+      },
+    },
+  };
+};
+
+function QueryParamsTest({ initialQuery }: PageProps) {
   const router = useRouter();
   const { query } = router;
-  const [page, setPage] = useState(Number(query.page) || 1);
-  const [limit, setLimit] = useState(Number(query.limit) || 10);
-  const [search, setSearch] = useState((query.search as string) || "");
+  console.log("query", query);
+  const [page, setPage] = useState(Number(initialQuery.page) || 1);
+  const [limit, setLimit] = useState(Number(initialQuery.limit) || 10);
+  const [search, setSearch] = useState((initialQuery.search as string) || "");
+  const [filter, setFilter] = useState((initialQuery.filter as string) || "");
+
+  useEffect(() => {
+    router.push({
+      pathname: router.pathname,
+      query: { page, limit, search, filter },
+    });
+  }, [page, limit, search, filter]);
+
+  useEffect(() => {
+    setPage(Number(query.page) || 1);
+    setLimit(Number(query.limit) || 10);
+    setSearch((query.search as string) || "");
+    setFilter((query.filter as string) || "");
+  }, [query]);
+
+  return (
+    <div>
+      <h1 className="text-2lg">Query Params Test</h1>
+      <p className="text-lg m-4">page: {page}</p>
+      <p className="text-lg m-4">limit: {limit}</p>
+      <p className="text-lg m-4">search: {search}</p>
+      <p className="text-lg m-4">filter: {filter}</p>
+      <button
+        className="text-lg inline-block bg-blue-700 text-white m-4 p-4"
+        onClick={() => setPage(page + 1)}
+      >
+        Next Page
+      </button>
+      <button
+        className="text-lg inline-block bg-blue-700 text-white m-4 p-4"
+        onClick={() => setLimit(limit + 10)}
+      >
+        Increase Limit
+      </button>
+      <button
+        className="text-lg inline-block bg-blue-700 text-white m-4 p-4"
+        onClick={() => setSearch("search")}
+      >
+        Search
+      </button>
+      <button
+        className="text-lg inline-block bg-blue-700 text-white m-4 p-4"
+        onClick={() => setFilter("filter")}
+      >
+        Filter
+      </button>
+    </div>
+  );
 }
 
 export default QueryParamsTest;
