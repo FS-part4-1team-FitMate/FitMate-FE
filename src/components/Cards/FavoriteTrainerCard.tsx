@@ -31,7 +31,7 @@ export default function FavoiriteTrainerCard({
       <CardContainer width="100%" gap="1.6rem">
         <div className="w-fit">
           {lessonType.map((type: LessonType, index: number) => (
-            <ChipLessonType key={index} lessonType={type} size="lg" />
+            <ChipLessonType key={index} lessonType={type} />
           ))}
         </div>
         <TrainerInfo
@@ -52,7 +52,7 @@ export default function FavoiriteTrainerCard({
       <CardContainer width="32.7rem" gap="1.6rem" size="sm">
         <div className="w-fit">
           {lessonType.map((type: LessonType, index: number) => (
-            <ChipLessonType key={index} lessonType={type} size="lg" />
+            <ChipLessonType key={index} lessonType={type} />
           ))}
         </div>
         <TrainerInfo

@@ -1,14 +1,9 @@
 import { Region, region_trans } from "@/types/types";
 
-interface Props {
-  region: Region;
-  size: "lg" | "xl";
-}
-
-function ChipRegion({ region, size }: Props) {
+function ChipRegion({ region }: { region: Region }) {
   return (
     <div
-      className={`inline-block text-${size} rounded-full border border-solid border-slate-900 text-slate-900 py-[4px] px-[12px]`}
+      className={`inline-block py-[0.6rem] px-[1.2rem] border border-gray-100 rounded-full text-blue-400 text-md font-medium bg-bg-100 shadow-card pc:text-2lg  pc:py-4 pc:px-8`}
     >
       {region_trans[region]}
     </div>

@@ -47,8 +47,8 @@ export default function PendingLessonCard({ item, quote }: { item: Lesson; quote
   return (
     <CardContainer width="100%" gap="2.4rem">
       <div className="flex items-center gap-[1.2rem]">
-        <ChipRequestStatus requestStatus={item.status} size="lg" />
-        <ChipLessonType lessonType={item.lessonType} size="lg" />
+        <ChipRequestStatus requestStatus={item.status} />
+        <ChipLessonType lessonType={item.lessonType} />
       </div>
       <Link href={`/user/my-lesson/pending-request/${quote.id}`}>
         <div className="flex flex-col gap-8">

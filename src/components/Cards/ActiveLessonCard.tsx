@@ -19,7 +19,7 @@ export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote:
   return (
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
-        <ChipLessonType lessonType={item.lessonType} size="lg" />
+        <ChipLessonType lessonType={item.lessonType} />
       </div>
       <TrainerInfo
         name={trainerInfo.name}

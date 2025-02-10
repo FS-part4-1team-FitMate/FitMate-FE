@@ -21,7 +21,7 @@ export default function QuoteCard({ myLesson, quote }: { myLesson: Lesson; quote
   return (
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
-        <ChipLessonType lessonType={myLesson?.lessonType} size="lg" />
+        <ChipLessonType lessonType={myLesson?.lessonType} />
       </div>
       <p className="text-black-300 text-md font-semibold pc:text-2xl">{trainerInfo?.intro}</p>
       <TrainerInfo

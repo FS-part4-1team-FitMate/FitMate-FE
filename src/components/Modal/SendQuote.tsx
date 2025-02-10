@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Lesson } from "@/types/lesson";
-import { LessonType, RequestType } from "@/types/types";
+import { RequestType } from "@/types/types";
 import UserCard from "../Cards/UserCard";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
@@ -23,10 +23,8 @@ export default function SendQuote({ item, values, errors, onInputChange }: SendQ
     <div className="flex flex-col gap-8 pc:gap-[3.2rem]">
       <div className="flex flex-col gap-[1.4rem] pc:gap-[2.4rem]">
         <div className="flex gap-[1.2rem]">
-          <ChipLessonType lessonType={item.lessonType as LessonType} size="lg" />
-          {item.isDirectQuote === true && (
-            <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />
-          )}
+          <ChipLessonType lessonType={item.lessonType} />
+          {item.isDirectQuote === true && <ChipRequest requestType={RequestType.SPECIFIC} />}
         </div>
         <UserCard item={item} />
       </div>
