@@ -1,13 +1,9 @@
-import { LessonType } from "@/types/types";
+import formatDate from "@/lib/utils/formatDate";
+import { LessonType, LocationType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import LessonInfo from "../Common/Card/LessonInfo";
 import { HorizontalLine } from "../Common/Line";
-import ChipLessonType from "../Chip/ChipLessonType";
-import formatDate from "@/lib/utils/formatDate";
-import Link from "next/link";
-import { LessonType, LocationType, locationType_trans } from "@/types/types";
-import { Quote } from "@/types/quote";
 
 /**
  *
