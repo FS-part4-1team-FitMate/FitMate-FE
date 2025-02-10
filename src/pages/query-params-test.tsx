@@ -14,6 +14,7 @@ interface PageProps {
   initialQuery: QueryParams;
 }
 
+// 초기 로딩시 router.query 도 빈 JSON 객체이고, useSearchParams() 도 빈 JSON 객체이기 때문에 getServerSideProps 에서 초기값을 설정해 주어야 함.
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
   const { page = 1, limit = 10, search = "", filter = "" } = context.query;
 
