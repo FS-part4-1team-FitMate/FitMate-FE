@@ -1,3 +1,4 @@
+import { NotificationContextType, useNotifications } from "@/contexts/NotificationProvider";
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
 import { ic_menu, ic_noti, ic_profile_default_sm, logo_xl } from "@/imageExports";
@@ -209,12 +210,23 @@ function LogInButton() {
   );
 }
 
-function Notifications() {
+interface NotificationsProps {
+  notifications: NotificationContextType;
+}
+
+function Notifications({ notifications }: NotificationsProps) {
   return (
     <div
       className={`absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10`}
     >
-      알림
+      <h3 className="text-lg m-0 p-0">알림</h3>
+      {notifications?.notifications?.map((noti) => {
+        return (
+          <div key={noti.id} className="text-md my-[10px]">
+            {noti.message}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -241,6 +253,7 @@ function GNB() {
     staleTime: 60 * 60 * 1000,
     enabled: !!user?.id,
   });
+  const notifications = useNotifications();
 
   const handleOutsideClick = (e: MouseEvent) => {
     if (refMyProfile.current && !refMyProfile.current.contains(e.target as Node)) {
@@ -308,7 +321,7 @@ function GNB() {
                   height={24}
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
-                {notiIsOpen && <Notifications />}
+                {notiIsOpen && <Notifications notifications={notifications} />}
               </div>
               <div ref={refMyProfile} className="relative">
                 <div
@@ -363,7 +376,7 @@ function GNB() {
                   height={24}
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
-                {notiIsOpen && <Notifications />}
+                {notiIsOpen && <Notifications notifications={notifications} />}
               </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
