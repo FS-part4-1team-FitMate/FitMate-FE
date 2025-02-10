@@ -1,8 +1,7 @@
+import { ReviewStat } from "@/types/reviews";
+
 interface Props {
-  ratingStat: {
-    rating: number;
-    count: number;
-  }[];
+  ratingStat: ReviewStat[];
 }
 
 function RatingStatCard({ ratingStat }: Props) {
