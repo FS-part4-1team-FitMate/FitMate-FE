@@ -25,6 +25,7 @@ interface TrainerInfoProps {
   lessonCount?: number;
   isFavorited?: boolean;
   favoriteCount?: number;
+  size?: "sm" | "lg";
 }
 
 export default function TrainerInfo({
@@ -35,29 +36,59 @@ export default function TrainerInfo({
   lessonCount,
   isFavorited,
   favoriteCount,
+  size = "lg",
 }: TrainerInfoProps) {
-  return (
-    <div className={container}>
-      <Image
-        className={img_profile}
-        src={ic_profile_default_md}
-        width={56}
-        height={56}
-        alt="프로필 사진"
-      />
-      <div className="flex flex-col flex-grow gap-[1.2rem] pc:gap-[0.8rem]">
-        <div className="flex justify-between items-center">
-          <p className="text-md font-semibold pc:text-2lg">{name} 강사님</p>
-          <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount || 0} />
-        </div>
-        <div className="flex justify-start items-center gap-[0.8rem] pc:gap-[1.6rem]">
-          <Rating rating={rating || 0} reviewCount={reviewCount || 0} />
-          <VerticalLine height="1.4rem" />
-          <Experience experience={experience || 0} />
-          <VerticalLine height="1.4rem" />
-          <LessonCount lessonCount={lessonCount || 0} />
+  if (size === "lg") {
+    return (
+      <div className={container}>
+        <Image
+          className={img_profile}
+          src={ic_profile_default_md}
+          width={56}
+          height={56}
+          alt="프로필 사진"
+        />
+        <div className="flex flex-col flex-grow gap-[1.2rem] pc:gap-[0.8rem]">
+          <div className="flex justify-between items-center">
+            <p className="text-md font-semibold pc:text-2lg">{name} 강사님</p>
+            <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount || 0} />
+          </div>
+          <div className="flex justify-start items-center gap-[0.8rem] pc:gap-[1.6rem]">
+            <Rating rating={rating || 0} reviewCount={reviewCount || 0} />
+            <VerticalLine height="1.4rem" />
+            <Experience experience={experience || 0} />
+            <VerticalLine height="1.4rem" />
+            <LessonCount lessonCount={lessonCount || 0} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (size === "sm") {
+    return (
+      <div className="flex items-center gap-[1.2rem] w-full p-4 border border-line-100 rounded-[0.6rem] shadow-card">
+        <Image
+          className="border-2 border-blue-400 w-[4.6rem] h-[4.6rem] rounded-full"
+          src={ic_profile_default_md}
+          width={56}
+          height={56}
+          alt="프로필 사진"
+        />
+        <div className="flex flex-col flex-grow gap-4">
+          <div className="flex justify-between items-center">
+            <p className="text-md font-semibold">{name} 강사님</p>
+            <Favorite isFavorited={isFavorited} favoriteCount={favoriteCount || 0} />
+          </div>
+          <div className="flex justify-between items-center">
+            <Rating rating={rating || 0} reviewCount={reviewCount || 0} size="sm" />
+            <VerticalLine height="1.2rem" />
+            <Experience experience={experience || 0} size="sm" />
+            <VerticalLine height="1.2rem" />
+            <LessonCount lessonCount={lessonCount || 0} size="sm" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }

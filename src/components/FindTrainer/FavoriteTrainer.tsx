@@ -12,7 +12,7 @@ export default function FavoriteTrainer({ trainerList }: { trainerList: Trainer[
   }, []);
 
   return (
-    <div className={clsx(!isUser ? "hidden" : "flex flex-col gap-[1.6rem] w-[45rem]")}>
+    <div className={clsx(!isUser ? "hidden" : "flex flex-col gap-[1.6rem] w-[32.7rem]")}>
       <p className="text-xl font-semibold">찜한 강사님</p>
       {trainerList.map(
         (trainer) =>
@@ -27,6 +27,7 @@ export default function FavoriteTrainer({ trainerList }: { trainerList: Trainer[
               isFavorited={trainer.isFavorite}
               favoriteCount={trainer._count.favoritedByUsers}
               lessonType={trainer.profile.lessonType}
+              size="sm"
             />
           ),
       )}
