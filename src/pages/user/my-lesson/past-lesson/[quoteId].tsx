@@ -49,8 +49,8 @@ export default function DetailPastRequest() {
   return (
     <div className="flex flex-col gap-[1.6rem] pc:gap-[2.4rem]">
       <Title title="견적 상세" />
-      <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:max-w-[140rem]">
-        <div className="flex flex-col gap-[2.4rem] w-full pc:max-w-[95.5rem] pc:pr-[10rem] pc:gap-16">
+      <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:justify-between pc:max-w-[140rem]">
+        <div className="flex flex-col gap-[2.4rem] w-full pc:max-w-[95.5rem] pc:pr-16 pc:gap-16">
           <FindTrainerCard profile={trainerInfo} status={quoteInfo.status} />
           <div className="flex flex-col gap-4 pc:hidden">
             <HorizontalLine width="100%" />
