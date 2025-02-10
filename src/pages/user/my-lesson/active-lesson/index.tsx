@@ -1,5 +1,7 @@
 import toast from "react-hot-toast";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
+import { LessonType, lessonType_trans } from "@/types/types";
+import ActiveEmpty from "@/components/ActiveLesson/ActiveEmpty";
 import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
 import Loading from "@/components/Common/Loading";
 
@@ -11,17 +13,28 @@ export default function ActiveLesson() {
 
   const activeLesson = data?.pages?.flatMap((page) => page.list) ?? [];
 
-  const rehabLessons = activeLesson.filter((lesson) => lesson.lessonType === "REHAB");
-  const sportsLessons = activeLesson.filter((lesson) => lesson.lessonType === "SPORTS");
-  const fitnessLessons = activeLesson.filter((lesson) => lesson.lessonType === "FITNESS");
+  const filteredService = (lessonType: LessonType) => {
+    if (lessonType === "REHAB") {
+      return activeLesson.filter((lesson) => lesson.lessonType === "REHAB");
+    } else if (lessonType === "SPORTS") {
+      return activeLesson.filter((lesson) => lesson.lessonType === "SPORTS");
+    } else if (lessonType === "FITNESS") {
+      return activeLesson.filter((lesson) => lesson.lessonType === "FITNESS");
+    }
+  };
 
   return (
     <div className="flex max-w-[192rem] m-auto py-16 px-8 bg-bg-100 pc:py-[6.4rem]">
-      <div className="flex flex-col gap-8 max-w-[140rem] w-full m-auto">
-        <ActiveLessonSection title="재활운동" items={rehabLessons} />
-        <ActiveLessonSection title="스포츠" items={sportsLessons} />
-        <ActiveLessonSection title="피트니스" items={fitnessLessons} />
-      </div>
+      {activeLesson.length > 0 ? (
+        activeLesson.map((lesson) => (
+          <ActiveLessonSection
+            title={lessonType_trans[lesson.lessonType].ko}
+            items={filteredService(lesson.lessonType) || []}
+          />
+        ))
+      ) : (
+        <ActiveEmpty />
+      )}
     </div>
   );
 }
