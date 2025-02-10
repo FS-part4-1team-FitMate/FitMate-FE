@@ -69,7 +69,6 @@ function LogIn() {
     try {
       setIsSubmitting(true);
       const userData = await postLogin(data);
-      console.log(userData); // TODO: remove this.
       if ("user" in userData) {
         const { user } = userData;
         user.hasProfile = userData.hasProfile;
