@@ -54,7 +54,7 @@ function Profile({ initialQuery }: PageProps) {
   const user = useUser();
   const myPage = trainerId === user?.id;
   const [page, setPage] = useState(Number(initialQuery.page) || 1);
-  const limit = 2;
+  const limit = 2; // TODO: set to 5
   const { data: reviews } = useQuery({
     queryKey: ["reviews", trainerId, { page, limit }],
     queryFn: () => getReviews(trainerId as string, { page, limit }),
@@ -106,7 +106,6 @@ function Profile({ initialQuery }: PageProps) {
     return <div className="text-2lg text-center">오류 발생!</div>;
   }
 
-  // TODO: || "채우기 용" 지우기.
   return (
     <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[800px] mx-auto p-[12px]">
       <Head>

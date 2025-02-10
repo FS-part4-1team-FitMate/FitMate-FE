@@ -89,7 +89,6 @@ function Regist() {
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result); // TODO: remove this.
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
       userDataLS.user = { ...user, ...userData, hasProfile: true };

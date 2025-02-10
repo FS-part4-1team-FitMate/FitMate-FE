@@ -95,7 +95,6 @@ function ProfileEdit() {
     if (!deepEqual(data.region, selectedRegion)) {
       changedData.region = selectedRegion;
     }
-    console.log(changedData); // TODO: remove this.
     let profileImageFileToUpload;
     if ("profileImage" in changedData && changedData?.profileImage?.length) {
       const profileImage = changedData.profileImage;
@@ -109,15 +108,12 @@ function ProfileEdit() {
     }
     try {
       delete changedData.updatedAt;
-      console.log("changedData: ", changedData); // TODO: remove this.
       const userData = await patchProfile(user?.id!, changedData);
-      console.log(userData); // TODO: remove this.
       if ("profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result); // TODO: remove this.
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
       userDataLS.user = { ...user, ...userData };
