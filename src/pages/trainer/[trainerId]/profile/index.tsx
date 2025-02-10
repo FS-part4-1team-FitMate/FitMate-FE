@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { ic_edit_sm, ic_profile_default_md, img_default_md } from "@/imageExports";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -24,14 +25,35 @@ import { HorizontalLine, VerticalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 import Pagination from "@/components/Common/Pagination";
 
-function Profile() {
+interface QueryParams {
+  page?: number;
+  trainerId?: string;
+}
+
+interface PageProps {
+  initialQuery: QueryParams;
+}
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
+  const { page = 1, trainerId = "" } = context.query;
+
+  return {
+    props: {
+      initialQuery: {
+        page: Number(page),
+        trainerId: trainerId as string,
+      },
+    },
+  };
+};
+
+function Profile({ initialQuery }: PageProps) {
   const router = useRouter();
   const { query } = router;
   const { trainerId } = query;
-  const searchParams = useSearchParams();
   const user = useUser();
   const myPage = trainerId === user?.id;
-  const [page, setPage] = useState(Number(query.page) || 1);
+  const [page, setPage] = useState(Number(initialQuery.page) || 1);
   const limit = 2;
   const { data: reviews } = useQuery({
     queryKey: ["reviews", trainerId, { page, limit }],
@@ -61,36 +83,15 @@ function Profile() {
   });
 
   useEffect(() => {
-    // const handleSearchChange = () => {
-    // const { pathname, search } = window.location;
-    // const params = new URLSearchParams(search);
-    const pageParam = searchParams.get("page");
-    if (pageParam) {
-      setPage(Number(pageParam) || 1); // 페이지 번호를 상태로 설정
-    }
-    // router.push({
-    //   pathname: router.pathname,
-    //   query: { trainerId, page },
-    // });
-    // };
-
-    // // 초기 실행
-    // handleSearchChange();
-
-    // // URL 검색 변화를 감지
-    // window.addEventListener("popstate", handleSearchChange);
-
-    // return () => {
-    //   window.removeEventListener("popstate", handleSearchChange);
-    // };
-  }, [query]);
-
-  useEffect(() => {
     router.push({
       pathname: router.pathname,
       query: { trainerId, page },
     });
   }, [trainerId, page]);
+
+  useEffect(() => {
+    setPage(Number(query.page) || 1);
+  }, [query]);
 
   useEffect(() => {
     if (reviewStat) {
