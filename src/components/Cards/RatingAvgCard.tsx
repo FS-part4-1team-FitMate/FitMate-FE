@@ -6,12 +6,12 @@ interface Props {
 
 function RatingAvgCard({ ratingAvg }: Props) {
   return (
-    <div className="flex flex-col justify-normal items-center mx-auto my-[48px] gap-[16px]">
-      <div className="flex items-center">
-        <span className="text-7xl font-semibold">{ratingAvg.toFixed(1)}&nbsp;</span>
-        <span className="text-5xl text-slate-500">/ 5</span>
+    <div className="flex flex-col justify-normal items-center gap-[16px]">
+      <div className="flex items-baseline">
+        <span className="text-black-400 text-[6.4rem] font-bold">{ratingAvg.toFixed(1)}&nbsp;</span>
+        <span className="text-gray-100 text-[3.8rem] font-bold">/ 5</span>
       </div>
-      <StarPoints rating={ratingAvg / 5} r={16} r0={9} />
+      <StarPoints rating={ratingAvg / 5} r={16} r0={9} background={false} />
     </div>
   );
 }
