@@ -76,7 +76,7 @@ export default function FindTrainer() {
             onFilterReset={handleFilterReset}
             onFilterChange={handleFilterChange}
           />
-          <FavoriteTrainer trainerList={trainerList} />
+          <FavoriteTrainer />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[5rem]">
           <div className="flex flex-col gap-[2.4rem]">
@@ -91,18 +91,24 @@ export default function FindTrainer() {
             </div>
             <Search onSearch={handleSearch} />
           </div>
-          <div className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap[2.4rem]">
-            <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-              {trainerList.map(
-                (trainer) =>
-                  trainer.profile !== null && (
-                    <Link href={`/user/detail-trainer/${trainer.id}`} key={trainer.id}>
-                      <FindTrainerCard trainer={trainer} />
-                    </Link>
-                  ),
-              )}
-            </InfiniteScroll>
-          </div>
+          <InfiniteScroll
+            className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap-[2.4rem]"
+            hasMore={hasNextPage}
+            loadMore={() => fetchNextPage()}
+          >
+            {trainerList.map(
+              (trainer) =>
+                trainer.profile !== null && (
+                  <Link
+                    className="rounded-[1.6rem] hover:border-[0.15rem] hover:border-blue-300"
+                    href={`/user/detail-trainer/${trainer.id}`}
+                    key={trainer.id}
+                  >
+                    <FindTrainerCard trainer={trainer} />
+                  </Link>
+                ),
+            )}
+          </InfiniteScroll>
         </div>
       </div>
     </div>

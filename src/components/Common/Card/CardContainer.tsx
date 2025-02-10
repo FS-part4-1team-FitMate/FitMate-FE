@@ -21,10 +21,7 @@ export default function CardContainer({
   );
 
   return (
-    <div
-      className={`${card_container} pc:gap-[${gap}] tablet:gap-[1.4rem] mobile:gap-[1.4rem]`}
-      style={{ width: width }}
-    >
+    <div className={`${card_container} gap-[1.4rem] pc:gap-[${gap}]`} style={{ width: width }}>
       {children}
     </div>
   );
