@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
@@ -9,7 +10,17 @@ import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
 
 export default function PendingRequest() {
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList({
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+      setUserId(parsedData?.user?.id);
+    }
+  }, []);
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList(userId, {
     limit: 4,
     status: "PENDING",
   });
@@ -55,13 +66,13 @@ export default function PendingRequest() {
               r="8"
               transform="rotate(-45 15.7279 16.9492)"
               stroke="#4DA9FF"
-              stroke-width="2"
+              strokeWidth="2"
             />
             <path
               d="M22.4243 23.4238L26.1242 27.1238"
               stroke="#4DA9FF"
-              stroke-width="2"
-              stroke-linecap="round"
+              strokeWidth="2"
+              strokeLinecap="round"
             />
           </svg>
           <h1 className="text-gray-300 text-2xl font-bold text-nowrap">

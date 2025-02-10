@@ -19,13 +19,13 @@ export default function ActiveEmpty() {
             r="8"
             transform="rotate(-45 15.7279 16.9492)"
             stroke="#4DA9FF"
-            stroke-width="2"
+            strokeWidth="2"
           />
           <path
             d="M22.4243 23.4238L26.1242 27.1238"
             stroke="#4DA9FF"
-            stroke-width="2"
-            stroke-linecap="round"
+            strokeWidth="2"
+            strokeLinecap="round"
           />
         </svg>
         <h1 className="text-gray-300 text-2xl font-bold text-nowrap">진행 중인 레슨이 없습니다.</h1>

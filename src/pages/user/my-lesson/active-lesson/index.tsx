@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
 import { LessonType, lessonType_trans } from "@/types/types";
@@ -6,7 +7,20 @@ import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
 import Loading from "@/components/Common/Loading";
 
 export default function ActiveLesson() {
-  const { data, isLoading, isError } = useGetMyLessonList({ limit: 1, status: "QUOTE_CONFIRMED" });
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+      setUserId(parsedData?.user?.id);
+    }
+  }, []);
+
+  const { data, isLoading, isError } = useGetMyLessonList(userId, {
+    limit: 1,
+    status: "QUOTE_CONFIRMED",
+  });
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("받았던 레슨 정보를 불러오는 중 에러가 발생했어요! 😢");

@@ -51,9 +51,9 @@ export const useGetMyLessons = ({ status }: LessonParams) => {
 };
 
 // 내 레슨 조회 (무한 스크롤)
-export const useGetMyLessonList = ({ limit, status }: LessonParams) => {
+export const useGetMyLessonList = (userId: string, { limit, status }: LessonParams) => {
   return useInfiniteQuery<LessonResult>(
-    ["my-lesson", { limit, status }],
+    ["my-lesson", userId, { limit, status }],
     ({ pageParam = 1 }) =>
       getMyLessonRequest({
         page: pageParam,
