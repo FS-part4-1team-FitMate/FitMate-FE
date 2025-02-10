@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { getProfile } from "@/lib/api/authService";
+import { calcAvgRating } from "@/lib/utils/calcAvgRating";
 import formatDate from "@/lib/utils/formatDate";
 import { region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
@@ -93,17 +94,7 @@ function Profile() {
 
   useEffect(() => {
     if (reviewStat) {
-      let total = 0;
-      let sum = 0;
-      for (let stat of reviewStat) {
-        total += stat.count;
-        sum += stat.count * stat.rating;
-      }
-      if (total !== 0) {
-        setAvgRating(sum / total);
-      } else {
-        setAvgRating(0);
-      }
+      setAvgRating(calcAvgRating(reviewStat));
     }
   }, [reviewStat]);
 
