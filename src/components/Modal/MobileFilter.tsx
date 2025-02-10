@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { genderFilter, regionFilter, requestFilter, serviceFilter } from "@/types/dropdown";
+import { FilterCheck } from "@/types/lesson";
 import CheckboxFilter from "../CheckboxFilter";
 
 const container = clsx(
@@ -15,36 +16,16 @@ const container = clsx(
 const regionOptions = regionFilter.filter((_, index: number) => index !== 0);
 
 interface ModalContainerProps {
-  setLessonType: React.Dispatch<React.SetStateAction<string>>;
-  setGender: React.Dispatch<React.SetStateAction<string>>;
-  setIsDirectQuote: React.Dispatch<React.SetStateAction<boolean>>;
-  setRegion: React.Dispatch<React.SetStateAction<string>>;
+  setParams: React.Dispatch<React.SetStateAction<{}>>;
   closeModal?: () => void;
-  count: {};
-  lessonTypeChecked: boolean[];
-  genderChecked: boolean[];
-  regionChecked: boolean[];
-  directChecked: boolean[];
-  setLessonTypeChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
-  setGenderChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
-  setRegionChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
-  setDirectChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  checked: FilterCheck;
+  setChecked: React.Dispatch<React.SetStateAction<FilterCheck>>;
 }
 export default function MobileFilter({
-  setLessonType,
-  setGender,
-  setIsDirectQuote,
-  setRegion,
+  setParams,
   closeModal,
-  count,
-  lessonTypeChecked,
-  genderChecked,
-  regionChecked,
-  directChecked,
-  setLessonTypeChecked,
-  setGenderChecked,
-  setRegionChecked,
-  setDirectChecked,
+  checked,
+  setChecked,
 }: ModalContainerProps) {
   const [activeTab, setActiveTab] = useState("service");
 
@@ -52,38 +33,74 @@ export default function MobileFilter({
     setActiveTab(tab);
   };
 
-  const handleFilterChange = (filterType: string, selectedValues: string) => {
-    const selectedArray = selectedValues.split(",");
-
-    if (filterType === "lessonType") {
-      setLessonTypeChecked(serviceFilter.map((option) => selectedArray.includes(option)));
-    } else if (filterType === "gender") {
-      setGenderChecked(genderFilter.map((option) => selectedArray.includes(option)));
-    } else if (filterType === "direct") {
-      setDirectChecked(requestFilter.map((option) => selectedArray.includes(option)));
-    } else if (filterType === "region") {
-      setRegionChecked(regionOptions.map((option) => selectedArray.includes(option)));
+  const handleFilterChange = (filterType: string, value: string) => {
+    if (value === "ALL") {
+      value = "";
     }
+
+    setChecked((prevState) => {
+      const newChecked = { ...prevState };
+
+      if (filterType === "lessonType") {
+        newChecked.lessonType[value] = !newChecked.lessonType[value];
+      } else if (filterType === "gender") {
+        newChecked.gender[value] = !newChecked.gender[value];
+      } else if (filterType === "direct") {
+        newChecked.isDirectQuote[value] = value === "DIRECT";
+      } else if (filterType === "region") {
+        newChecked.region[value] = !newChecked.region[value];
+      }
+
+      return newChecked;
+    });
   };
 
-  const isAnyFilterChecked = [
-    ...lessonTypeChecked,
-    ...genderChecked,
-    ...directChecked,
-    ...regionChecked,
-  ].some((checked) => !checked);
-
   const handleApplyFilters = () => {
-    // 모바일에서 필터링을 적용하는 버튼을 눌렀을 때 상태 업데이트
-    const selectedLessonTypes = serviceFilter.filter((_, index) => lessonTypeChecked[index]);
-    const selectedGenders = genderFilter.filter((_, index) => genderChecked[index]);
-    const selectedDirects = requestFilter.filter((_, index) => directChecked[index]);
-    const selectedRegions = regionOptions.filter((_, index) => regionChecked[index]);
+    setParams((prevState: any) => {
+      let newParams = { ...prevState };
 
-    if (selectedLessonTypes.length > 0) setLessonType(selectedLessonTypes.join(","));
-    if (selectedGenders.length > 0) setGender(selectedGenders.join(","));
-    if (selectedDirects.length > 0) setIsDirectQuote(selectedDirects.includes("DIRECT"));
-    if (selectedRegions.length > 0) setRegion(selectedRegions.join(","));
+      if (checked.lessonType) {
+        const selectedLessonTypes = Object.keys(checked.lessonType).filter(
+          (key) => checked.lessonType[key],
+        );
+        if (selectedLessonTypes.length === Object.keys(checked.lessonType).length) {
+          newParams.lesson_type = "";
+        } else if (selectedLessonTypes.length > 0) {
+          newParams.lesson_type = selectedLessonTypes.join(",");
+        }
+      }
+
+      if (checked.gender) {
+        const selectedGenders = Object.keys(checked.gender).filter((key) => checked.gender[key]);
+        if (selectedGenders.length === Object.keys(checked.gender).length) {
+          newParams.gender = "";
+        } else if (selectedGenders.length > 0) {
+          newParams.gender = selectedGenders.join(",");
+        }
+      }
+
+      if (checked.isDirectQuote !== undefined) {
+        const selectedDirectQuote = Object.keys(checked.isDirectQuote).filter(
+          (key) => checked.isDirectQuote[key],
+        );
+        if (selectedDirectQuote.length === Object.keys(checked.isDirectQuote).length) {
+          newParams.has_direct_quote = "";
+        } else if (selectedDirectQuote.length > 0) {
+          newParams.has_direct_quote = selectedDirectQuote.includes("DIRECT") ? true : false;
+        }
+      }
+
+      if (checked.region) {
+        const selectedRegions = Object.keys(checked.region).filter((key) => checked.region[key]);
+        if (selectedRegions.length === Object.keys(checked.region).length) {
+          newParams.region = "";
+        } else if (selectedRegions.length > 0) {
+          newParams.region = selectedRegions.join(",");
+        }
+      }
+
+      return newParams;
+    });
 
     closeModal && closeModal();
   };
@@ -133,9 +150,8 @@ export default function MobileFilter({
               filterType="lessonType"
               onFilterChange={handleFilterChange}
               options={serviceFilter}
-              count={count}
-              isChecked={lessonTypeChecked || []}
-              setIsChecked={setLessonTypeChecked}
+              isChecked={checked.lessonType}
+              setIsChecked={setChecked}
             />
           )}
           {activeTab === "gender" && (
@@ -143,19 +159,17 @@ export default function MobileFilter({
               filterType="gender"
               onFilterChange={handleFilterChange}
               options={genderFilter}
-              count={count}
-              isChecked={genderChecked || []}
-              setIsChecked={setGenderChecked}
+              isChecked={checked.gender}
+              setIsChecked={setChecked}
             />
           )}
           {activeTab === "direct" && (
             <CheckboxFilter
-              filterType="direct"
+              filterType="isDirectQuote"
               onFilterChange={handleFilterChange}
               options={requestFilter}
-              count={count}
-              isChecked={directChecked || []}
-              setIsChecked={setDirectChecked}
+              isChecked={checked.isDirectQuote}
+              setIsChecked={setChecked}
             />
           )}
           {activeTab === "region" && (
@@ -163,18 +177,14 @@ export default function MobileFilter({
               filterType="region"
               onFilterChange={handleFilterChange}
               options={regionOptions}
-              isChecked={regionChecked || []}
-              setIsChecked={setRegionChecked}
+              isChecked={checked.region}
+              setIsChecked={setChecked}
             />
           )}
         </div>
         <button
-          disabled={!isAnyFilterChecked}
           onClick={handleApplyFilters}
-          className={clsx(
-            "w-full h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold",
-            isAnyFilterChecked ? "bg-blue-300" : "bg-gray-200",
-          )}
+          className="w-full h-[6.4rem] mx-auto p-[1.6rem] rounded-[1.6rem] text-gray-50 text-xl font-semibold bg-blue-300"
         >
           조회하기
         </button>

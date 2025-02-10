@@ -4,11 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
-import { getTrainerInfo } from "@/lib/api/trainerService";
-import { getFavorite } from "@/lib/api/userService";
-import { ReviewResult } from "@/types/reviews";
+import { useGetRatingStat, useGetReviewList } from "@/lib/api/queries/review";
+import { useGetFavoriteInfo, useGetTrainer } from "@/lib/api/queries/trainer";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
@@ -29,42 +26,24 @@ export default function DetailTrainer() {
     data: trainer,
     isLoading: isTrainerLoading,
     isError: isTrainerError,
-  } = useQuery(["trainer-detail", trainerId], () => getTrainerInfo(trainerId as string), {
-    enabled: !!trainerId,
-  });
+  } = useGetTrainer(trainerId as string);
 
-  const { data: reviewStat } = useQuery(
-    ["review-stat", trainerId],
-    () => getReviewStat(trainerId as string),
-    {
-      enabled: !!trainerId,
-      cacheTime: 5 * 60 * 1000,
-      staleTime: 5 * 60 * 1000,
-    },
-  );
+  const { data: reviewStat } = useGetRatingStat(trainerId as string);
 
   const {
     data: reviewList,
     isLoading: isReviewLoading,
     isError: isReviewError,
-  } = useQuery<ReviewResult>(
-    ["reviews", trainerId, currentPage],
-    () => getReviews(trainerId as string, { page: currentPage, limit: pageSize }),
-    {
-      enabled: !!trainerId,
-      keepPreviousData: true,
-    },
-  );
+  } = useGetReviewList(trainerId as string, currentPage, pageSize);
 
   const {
     data: favoriteInfo,
     isLoading: isFavoriteLoading,
     isError: isFavoriteError,
-  } = useQuery(["favorite", trainerId], () => getFavorite(trainerId as string), {
-    enabled: !!trainerId,
-  });
+  } = useGetFavoriteInfo(trainerId as string);
 
   if (isTrainerLoading || isReviewLoading || isFavoriteLoading) return <Loading />;
+
   if (isTrainerError) return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
   if (isReviewError) return toast.error("리뷰 목록을 불러오는 중 에러가 발생했어요! 😢");
   if (isFavoriteError) return toast.error("좋아요 정보를 불러오는 중 에러가 발생했어요! 😢");
@@ -97,7 +76,11 @@ export default function DetailTrainer() {
           </div>
         ) : (
           <>
-            <TrainerReview reviewList={reviews} reviewStat={reviewStat} totalCount={totalCount} />
+            <TrainerReview
+              reviewList={reviews}
+              reviewStat={reviewStat || []}
+              totalCount={totalCount}
+            />
             <Pagination
               currentPage={currentPage}
               totalPages={Math.ceil(totalCount / pageSize)}
