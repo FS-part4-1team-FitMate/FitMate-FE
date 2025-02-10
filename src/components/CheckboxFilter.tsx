@@ -2,15 +2,16 @@ import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageE
 import clsx from "clsx";
 import Image from "next/image";
 import { filter_trans } from "@/types/dropdown";
+import { FilterCheck } from "@/types/lesson";
 
 interface CheckboxFilterProps {
   label?: string;
   options: string[];
-  filterType: "lessonType" | "gender" | "direct" | "region";
+  filterType: "lessonType" | "gender" | "isDirectQuote" | "region";
   onFilterChange?: (filterType: string, value: string) => void;
   count?: { [key: string]: number };
-  isChecked: boolean[];
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean[]>>;
+  isChecked: { [key: string]: boolean };
+  setIsChecked: React.Dispatch<React.SetStateAction<FilterCheck>>;
 }
 
 export default function CheckboxFilter({
@@ -22,27 +23,40 @@ export default function CheckboxFilter({
   isChecked,
   setIsChecked,
 }: CheckboxFilterProps) {
-  const safeCheckedState = isChecked?.length ? isChecked : new Array(options.length).fill(false);
+  const handleCheckboxClick = (option: string) => {
+    const updatedCheckedState = { ...isChecked, [option]: !isChecked[option] };
+    setIsChecked((prevState) => ({
+      ...prevState,
+      [filterType]: updatedCheckedState,
+    }));
 
-  const handleCheckboxClick = (index: number) => {
-    const updatedCheckedState = [...isChecked];
-    updatedCheckedState[index] = !updatedCheckedState[index];
-    setIsChecked(updatedCheckedState);
-
-    const selectedOptions = options.filter((_, idx) => updatedCheckedState[idx]).join(",");
+    const selectedOptions = Object.keys(updatedCheckedState)
+      .filter((option) => updatedCheckedState[option])
+      .join(",");
     if (onFilterChange) {
       onFilterChange(filterType, selectedOptions);
     }
   };
 
   const handleSelectAll = () => {
-    const newCheckedState = isChecked.every((checked) => checked)
-      ? new Array(options.length).fill(false)
-      : new Array(options.length).fill(true);
-    setIsChecked(newCheckedState);
+    const allSelected = options.every((option) => isChecked[option]);
+    const newCheckedState = options.reduce(
+      (acc, option) => {
+        acc[option] = !allSelected;
+        return acc;
+      },
+      {} as { [key: string]: boolean },
+    );
 
+    setIsChecked((prevState) => ({
+      ...prevState,
+      [filterType]: newCheckedState,
+    }));
+
+    const selectedOptions = Object.keys(newCheckedState)
+      .filter((option) => newCheckedState[option])
+      .join(",");
     if (onFilterChange) {
-      const selectedOptions = newCheckedState.every(Boolean) ? options.join(",") : "";
       onFilterChange(filterType, selectedOptions);
     }
   };
@@ -60,7 +74,7 @@ export default function CheckboxFilter({
           <Image
             className="cursor-pointer"
             src={
-              safeCheckedState.every((item) => item)
+              options.every((option) => isChecked[option])
                 ? ic_square_check_active_md
                 : ic_square_check_inactive_md
             }
@@ -79,18 +93,14 @@ export default function CheckboxFilter({
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
             <p className="text-lg font-medium pc:text-2lg">
-              {filterType === "region"
-                ? `${filter_trans(option)}`
-                : `${filter_trans(option)} (${count[option]})`}
+              {filterType === "region" ? `${filter_trans(option)}` : `${filter_trans(option)}`}
             </p>
             <Image
               className="cursor-pointer"
-              src={
-                safeCheckedState[index] ? ic_square_check_active_md : ic_square_check_inactive_md
-              }
+              src={isChecked[option] ? ic_square_check_active_md : ic_square_check_inactive_md}
               width={36}
               height={36}
-              onClick={() => handleCheckboxClick(index)}
+              onClick={() => handleCheckboxClick(option)}
               alt="체크박스"
             />
           </div>

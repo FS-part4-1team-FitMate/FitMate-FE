@@ -6,7 +6,7 @@ import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 interface FindTrainerCardProps {
-  item?: Trainer;
+  trainer?: Trainer;
   profile?: Profile["profile"];
   status?: string;
   request?: boolean;
@@ -14,30 +14,30 @@ interface FindTrainerCardProps {
 }
 
 export default function FindTrainerCard({
-  item,
+  trainer,
   profile,
   status,
   request,
   favoriteInfo,
 }: FindTrainerCardProps) {
-  if (item) {
+  if (trainer) {
     return (
       <CardContainer width="100%" gap="1.6rem">
         <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
-          {item?.profile?.lessonType?.map((lessonType, index) => (
-            <ChipLessonType key={index} lessonType={lessonType as LessonType} size="lg" />
+          {trainer?.profile?.lessonType?.map((lessonType: LessonType, index: number) => (
+            <ChipLessonType key={index} lessonType={lessonType} size="lg" />
           ))}
           {request && <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />}
         </div>
-        <p className="text-md font-semibold pc:text-2xl">{item?.profile?.intro}</p>
+        <p className="text-md font-semibold pc:text-2xl">{trainer?.profile?.intro}</p>
         <TrainerInfo
-          name={item?.nickname}
-          rating={item?.profile?.rating || 0}
-          reviewCount={item?.profile?.reviewCount || 0}
-          experience={item?.profile?.experience || 0}
-          lessonCount={item?.profile?.lessonCount || 0}
-          isFavorited={item?.isFavorite}
-          favoriteCount={item?._count?.favoritedByUsers || 0}
+          name={trainer?.nickname}
+          rating={trainer?.profile?.rating || 0}
+          reviewCount={trainer?.profile?.reviewCount || 0}
+          experience={trainer?.profile?.experience || 0}
+          lessonCount={trainer?.profile?.lessonCount || 0}
+          isFavorited={trainer?.isFavorite}
+          favoriteCount={trainer?._count?.favoritedByUsers || 0}
         />
       </CardContainer>
     );
@@ -54,7 +54,7 @@ export default function FindTrainerCard({
               확정 견적
             </div>
           )}
-          {profile?.lessonType?.map((lessonType, index) => (
+          {profile?.lessonType?.map((lessonType: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={lessonType} size="lg" />
           ))}
           {request && <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />}

@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { LessonType, Profile, Region } from "@/types/types";
+import { Profile } from "@/types/trainer";
+import { LessonType, Region } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRegion from "../Chip/ChipRegion";
 import { HorizontalLine } from "../Common/Line";
@@ -21,7 +22,7 @@ function TrainerContent({ label, children }: TrainerInfoProps) {
   );
 }
 
-export default function TrainerInfo({ profile }: { profile: Profile }) {
+export default function TrainerInfo({ profile }: { profile: Profile["profile"] }) {
   return (
     <>
       <TrainerContent label="상세 설명">

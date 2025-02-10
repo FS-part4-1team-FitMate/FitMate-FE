@@ -1,12 +1,9 @@
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getLessonInfo } from "@/lib/api/lessonService";
-import { acceptQuote, getQuote } from "@/lib/api/quoteService";
-import { getTrainerInfo } from "@/lib/api/trainerService";
+import { useGetLesson } from "@/lib/api/queries/lesson";
+import { useGetQuote, useQuoteAccept } from "@/lib/api/queries/quote";
+import { useGetTrainer } from "@/lib/api/queries/trainer";
 import formatPrice from "@/lib/utils/formatPrice";
-import { Lesson } from "@/types/lesson";
-import { Quote } from "@/types/quote";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import Button from "@/components/Common/Button";
 import { HorizontalLine } from "@/components/Common/Line";
@@ -23,67 +20,34 @@ export default function DetailPendingRequest() {
     data: quoteInfo,
     isLoading: isQuoteLoading,
     isError: isQuoteError,
-  } = useQuery<Quote>(["quote-detail", quoteId], () => getQuote(quoteId as string), {
-    enabled: !!quoteId,
-  });
+  } = useGetQuote(quoteId as string);
 
   const {
     data: trainer,
     isLoading: isTrainerLoading,
     isError: isTrainerError,
-  } = useQuery(
-    ["trainer-detail", quoteInfo?.trainerId],
-    () => getTrainerInfo(quoteInfo?.trainerId as string),
-    {
-      enabled: !!quoteInfo?.trainerId,
-    },
-  );
+  } = useGetTrainer(quoteInfo?.trainerId as string);
 
   const {
     data: lesson,
     isLoading: isLessonLoading,
     isError: isLessonError,
-  } = useQuery<Lesson>(
-    ["lesson-info", quoteInfo?.lessonRequestId],
-    () => getLessonInfo(quoteInfo?.lessonRequestId as string),
-    {
-      enabled: !!quoteInfo?.lessonRequestId,
-    },
-  );
+  } = useGetLesson(quoteInfo?.lessonRequestId as string);
 
-  const quoteAccept = useMutation({
-    mutationFn: (quoteId: string) => acceptQuote(quoteId),
-    onSuccess: () => {
-      toast.success("견적이 확정되었습니다.");
-      router.push("/user/my-lesson/active-lesson");
-    },
-    onError: (err) => {
-      console.error("견적 확정 실패", err);
-      toast.error("견적 확정에 실패하였습니다.");
-    },
-  });
-
+  const quoteAccept = useQuoteAccept();
   const handleAccept = () => {
     if (quoteInfo && quoteInfo.id) {
       quoteAccept.mutate(quoteInfo.id);
     }
   };
 
-  if (isQuoteLoading || isTrainerLoading || isLessonLoading) {
-    return <Loading />;
-  }
+  if (isQuoteLoading || isTrainerLoading || isLessonLoading) return <Loading />;
 
-  if (isQuoteError || !quoteInfo) {
+  if (isQuoteError || !quoteInfo)
     return toast.error("견적 정보를 불러오는 중 에러가 발생했어요! 😢");
-  }
-
-  if (isTrainerError || !trainer) {
+  if (isTrainerError || !trainer)
     return toast.error("트레이너 정보를 불러오는 중 에러가 발생했어요! 😢");
-  }
-
-  if (isLessonError || !lesson) {
-    return toast.error("레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
-  }
+  if (isLessonError || !lesson) return toast.error("레슨 정보를 불러오는 중 에러가 발생했어요! 😢");
 
   const trainerInfo = trainer?.profile ?? {};
   const lessonData = lesson ?? {};

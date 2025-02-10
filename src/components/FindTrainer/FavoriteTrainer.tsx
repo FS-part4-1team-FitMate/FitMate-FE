@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Trainer } from "@/types/trainer";
 import FavoiriteTrainerCard from "../Cards/FavoriteTrainerCard";
 
-export default function FavoriteTrainer({ list }: { list: Trainer[] }) {
+export default function FavoriteTrainer({ trainerList }: { trainerList: Trainer[] }) {
   const [isUser, setIsUser] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -11,26 +11,25 @@ export default function FavoriteTrainer({ list }: { list: Trainer[] }) {
     setIsUser(!!userData);
   }, []);
 
-  const filteredList = list.filter((item) => {
-    return item?.isFavorite === true;
-  });
-
   return (
     <div className={clsx(!isUser ? "hidden" : "flex flex-col gap-[1.6rem] w-[45rem]")}>
       <p className="text-xl font-semibold">찜한 강사님</p>
-      {filteredList.map((item) => (
-        <FavoiriteTrainerCard
-          key={item.id}
-          name={item.nickname}
-          rating={item.profile.rating}
-          reviewCount={item.profile.reviewCount}
-          experience={item.profile.experience}
-          lessonCount={item.profile.lessonCount}
-          isFavorited={item.isFavorite}
-          favoriteCount={item._count.favoritedByUsers}
-          lessonType={item.profile.lessonType}
-        />
-      ))}
+      {trainerList.map(
+        (trainer) =>
+          trainer?.isFavorite === true && (
+            <FavoiriteTrainerCard
+              key={trainer.id}
+              name={trainer.nickname}
+              rating={trainer.profile.rating}
+              reviewCount={trainer.profile.reviewCount}
+              experience={trainer.profile.experience}
+              lessonCount={trainer.profile.lessonCount}
+              isFavorited={trainer.isFavorite}
+              favoriteCount={trainer._count.favoritedByUsers}
+              lessonType={trainer.profile.lessonType}
+            />
+          ),
+      )}
     </div>
   );
 }
