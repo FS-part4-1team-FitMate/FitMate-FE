@@ -76,7 +76,7 @@ export default function ShareSNS({
           </div>
         </Button>
         <Image
-          className="w-16 h-16 pc:w-[6.4rem] pc:h-[6.4rem]"
+          className="w-16 h-16 cursor-pointer pc:w-[6.4rem] pc:h-[6.4rem]"
           src={share_ic_kakao_md}
           width={64}
           height={64}
@@ -84,7 +84,7 @@ export default function ShareSNS({
           alt="카카오톡 공유"
         />
         <Image
-          className="w-16 h-16 pc:w-[6.4rem] pc:h-[6.4rem]"
+          className="w-16 h-16 cursor-pointer pc:w-[6.4rem] pc:h-[6.4rem]"
           src={share_ic_facebook_md}
           width={64}
           height={64}
