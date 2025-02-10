@@ -54,7 +54,7 @@ function Profile({ initialQuery }: PageProps) {
   const user = useUser();
   const myPage = trainerId === user?.id;
   const [page, setPage] = useState(Number(initialQuery.page) || 1);
-  const limit = 2; // TODO: set to 5
+  const limit = 5;
   const { data: reviews } = useQuery({
     queryKey: ["reviews", trainerId, { page, limit }],
     queryFn: () => getReviews(trainerId as string, { page, limit }),
@@ -194,6 +194,7 @@ function Profile({ initialQuery }: PageProps) {
         {reviews?.reviews.map((review) => {
           return (
             <ReviewCard
+              key={review.id}
               rating={review.rating}
               nickname={review.user.nickname}
               createdAt={formatDate(review.createdAt)}
