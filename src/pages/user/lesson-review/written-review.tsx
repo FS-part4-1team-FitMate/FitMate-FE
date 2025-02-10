@@ -1,3 +1,5 @@
+
+import MyReviewCard from "@/components/Cards/MyReviewCard";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReview } from "@/lib/api/ReviewService";
@@ -22,19 +24,29 @@ export default function ReviewListPage() {
     setCurrentPage(page);
   };
 
-  return (
-    <div className="p-6">
-      <Tab />
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {data?.reviews.map((review: Review) => (
-          <ReviewCard
-            key={review.id}
-            rating={review.rating}
-            createdAt={review.createdAt}
-            nickname={review.user.nickname}
-            content={review.content}
-          />
-        ))}
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+  
+    return (
+      <div className="p-6">
+        <Tab />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {data.reviews.map((review: any) => (
+            <MyReviewCard
+              key={review.id}
+              createdAt={review.date}
+              price={review.price}
+              tags={review.tags}
+              content={review.content}
+            />
+          ))}
+        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(data.total / ITEMS_PER_PAGE)}
+          onPageChange={handlePageChange}
+        />
       </div>
       <Pagination
         currentPage={currentPage}
