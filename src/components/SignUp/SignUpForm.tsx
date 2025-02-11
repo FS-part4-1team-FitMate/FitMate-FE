@@ -99,7 +99,12 @@ function SignUpForm({ role }: Props) {
   });
   const onSubmitVeriKey = async (data: { emailVeriKey: string }) => {
     const res = await checkEmailVeriKey({ email: watch("email"), code: data.emailVeriKey });
+    console.log(res);
     setError({ message: res.message });
+    if (res.message === "이메일 인증 성공") {
+      setEmailVerified(true);
+      setEmailVeriKeyOpen(true);
+    }
   };
 
   return (
@@ -160,7 +165,7 @@ function SignUpForm({ role }: Props) {
           placeholder="이메일을 입력해 주세요."
         />
         <Button
-          className="inline-block text-md bg-blue-700 text-white mr-[10px]"
+          className="inline-block text-md bg-blue-700 text-white w-max"
           onClick={() => {
             const msg = sendEmailVeriKey(watch("email"));
             setEmailVeriKeyOpen(true);
