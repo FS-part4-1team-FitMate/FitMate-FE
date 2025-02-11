@@ -3,21 +3,14 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { Profile } from "@/types/trainer";
-import { lessonType_trans } from "@/types/types";
+import { Profile, lessonType_trans } from "@/types/types";
 
 const link_wrap = clsx(
   "flex justify-center items-center w-16 h-16 p-[0.8rem] border border-line-200 rounded-[0.8rem]",
   "pc:w-[6.4rem] pc:h-[6.4rem] pc:p-4 pc:rounded-[1.6rem]",
 );
 
-export default function ShareSNS({
-  label,
-  trainerInfo,
-}: {
-  label: string;
-  trainerInfo?: Profile["profile"];
-}) {
+export default function ShareSNS({ label, trainerInfo }: { label: string; trainerInfo?: Profile }) {
   useEffect(() => {
     if (!window.Kakao.isInitialized()) {
       window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_API_KEY);
