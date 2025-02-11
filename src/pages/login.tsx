@@ -72,6 +72,9 @@ function LogIn() {
     try {
       setIsSubmitting(true);
       const userData = await postLogin(data);
+      if ("message" in userData) {
+        setError({ message: userData.message });
+      }
       if ("user" in userData) {
         const { user } = userData;
         user.hasProfile = userData.hasProfile;
