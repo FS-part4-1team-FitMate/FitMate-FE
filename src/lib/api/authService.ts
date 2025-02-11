@@ -33,7 +33,8 @@ export async function checkEmailVeriKey(data: { email: string; code: string }): 
     const res = await post("/auth/verify-code", data);
     return res.data;
   } catch (err) {
-    throw err;
+    const error = err as { response: { data: { message: string } } };
+    return error?.response?.data;
   }
 }
 
