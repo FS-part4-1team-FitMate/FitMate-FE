@@ -1,17 +1,47 @@
 import { User } from "@/types/types";
-import instance from "./instance";
+import { post } from "./method";
 
-export async function postLogin(data: { email: string; password: string }): Promise<{
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-  hasProfile: boolean;
-}> {
+export async function postLogin(data: { email: string; password: string }): Promise<
+  | {
+      user: User;
+      accessToken: string;
+      refreshToken: string;
+      hasProfile: boolean;
+    }
+  | {
+      message: string;
+    }
+> {
   try {
-    const res = await instance.post("/auth/login", data);
+    const res = await post("/auth/login", data);
     return res.data;
   } catch (err) {
-    throw err;
+    const error = err as { response: { data: { message: string } } };
+    return error?.response?.data;
+  }
+}
+
+export async function sendEmailVeriKey(email: string): Promise<{
+  message: string;
+}> {
+  try {
+    const res = await post("/auth/email-verification", { email });
+    return res.data;
+  } catch (err) {
+    const error = err as { response: { data: { message: string } } };
+    return error?.response?.data;
+  }
+}
+
+export async function checkEmailVeriKey(data: { email: string; code: string }): Promise<{
+  message: string;
+}> {
+  try {
+    const res = await post("/auth/verify-code", data);
+    return res.data;
+  } catch (err) {
+    const error = err as { response: { data: { message: string } } };
+    return error?.response?.data;
   }
 }
 
@@ -20,17 +50,23 @@ export async function postSignUpUser(data: {
   email: string;
   password: string;
   passwordConfirm?: string;
-}): Promise<{
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}> {
+}): Promise<
+  | {
+      user: User;
+      accessToken: string;
+      refreshToken: string;
+    }
+  | {
+      message: string;
+    }
+> {
   try {
     delete data.passwordConfirm;
-    const res = await instance.post("/auth/signup?role=USER", data);
+    const res = await post("/auth/signup?role=USER", data);
     return res.data;
   } catch (err) {
-    throw err;
+    const error = err as { response: { data: { message: string } } };
+    return error?.response?.data;
   }
 }
 
@@ -39,16 +75,22 @@ export async function postSignUpTrainer(data: {
   email: string;
   password: string;
   passwordConfirm?: string;
-}): Promise<{
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}> {
+}): Promise<
+  | {
+      user: User;
+      accessToken: string;
+      refreshToken: string;
+    }
+  | {
+      message: string;
+    }
+> {
   try {
     delete data.passwordConfirm;
-    const res = await instance.post("/auth/signup?role=TRAINER", data);
+    const res = await post("/auth/signup?role=TRAINER", data);
     return res.data;
   } catch (err) {
-    throw err;
+    const error = err as { response: { data: { message: string } } };
+    return error?.response?.data;
   }
 }

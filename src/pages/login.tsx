@@ -17,6 +17,9 @@ import { useForm } from "react-hook-form";
 import { postLogin } from "@/lib/api/authService";
 import { EMAIL_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
+import Button from "@/components/Common/Button";
+import Input from "@/components/Common/Input";
+import InputPassword from "@/components/Common/InputPassword";
 import PopUp from "@/components/Common/PopUp";
 
 function LogIn() {
@@ -69,6 +72,9 @@ function LogIn() {
     try {
       setIsSubmitting(true);
       const userData = await postLogin(data);
+      if ("message" in userData) {
+        setError({ message: userData.message });
+      }
       if ("user" in userData) {
         const { user } = userData;
         user.hasProfile = userData.hasProfile;
@@ -105,57 +111,42 @@ function LogIn() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[16px] items-stretch w-full"
       >
-        <label className="w-full text-lg" htmlFor="email">
-          이메일
-        </label>
-        <input
-          className="w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl"
-          {...register("email", {
+        <Input
+          id="email"
+          label="이메일"
+          type="email"
+          register={register("email", {
             required: "이메일을 입력해 주세요.",
             pattern: {
               value: EMAIL_REGEX,
               message: "유효한 이메일을 입력해 주세요.",
             },
           })}
-          type="email"
-          id="email"
           placeholder="이메일"
         />
         {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
-        <label className="w-full text-lg" htmlFor="password">
-          비밀번호
-        </label>
-        <div className="relative w-full h-[40px] text-slate-700">
-          <input
-            className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
-            {...register("password", {
-              required: "비밀번호를 입력해 주세요.",
-              minLength: {
-                value: 8,
-                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
-              },
-            })}
-            type={pwdIsVisible ? "text" : "password"}
-            id="password"
-            placeholder="비밀번호"
-          />
-          <Image
-            className="absolute right-[8px] top-[8px] bottom-[8px]"
-            width={24}
-            height={24}
-            src={pwdIsVisible ? ic_visibility_on : ic_visibility_off}
-            alt="eye"
-            onClick={() => setPwdIsVisible((prev) => !prev)}
-          />
-        </div>
+        <InputPassword
+          id="password"
+          label="비밀번호"
+          register={register("password", {
+            required: "비밀번호를 입력해 주세요.",
+            minLength: {
+              value: 8,
+              message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+            },
+          })}
+          placeholder="비밀번호"
+          pwdIsVisible={pwdIsVisible}
+          setPwdIsVisible={setPwdIsVisible}
+        />
         {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
-        <button
+        <Button
           className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
           type="submit"
           disabled={!!errors.email || !!errors.password || isSubmitting}
         >
           로그인
-        </button>
+        </Button>
       </form>
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 로그인</div>
