@@ -3,8 +3,7 @@ import { ic_edit_sm } from "@/imageExports";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useQuery } from "@tanstack/react-query";
-import { getProfile } from "@/lib/api/authService";
+import { useGetUser } from "@/lib/api/queries/user";
 import { profile_menu } from "@/types/constants";
 import { gender_trans, lessonType_trans, region_trans } from "@/types/types";
 import Button from "@/components/Common/Button";
@@ -13,17 +12,7 @@ import Loading from "@/components/Common/Loading";
 function Profile() {
   const router = useRouter();
   const user = useUser();
-  const {
-    data: profileData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: () => getProfile(user?.id!),
-    cacheTime: 60 * 60 * 1000,
-    staleTime: 60 * 60 * 1000,
-    enabled: !!user?.id,
-  });
+  const { data: profileData, isLoading, isError } = useGetUser(user?.id!);
 
   if (isLoading) {
     return <Loading />;
