@@ -2,8 +2,8 @@ import { ic_star_active_md } from "@/imageExports";
 import Image from "next/image";
 
 interface RatingProps {
-  rating?: number;
-  reviewCount?: number;
+  rating?: number | null;
+  reviewCount?: number | null;
   size?: "sm" | "lg";
 }
 

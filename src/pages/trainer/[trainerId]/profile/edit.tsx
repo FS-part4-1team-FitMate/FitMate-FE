@@ -6,8 +6,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getProfile, patchProfile } from "@/lib/api/authService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useGetUser } from "@/lib/api/queries/user";
+import { patchProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
@@ -65,17 +66,7 @@ function ProfileEdit() {
       // passwordConfirm: "",
     } as FormType,
   });
-  const {
-    data: profileData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: () => getProfile(user?.id!),
-    cacheTime: 60 * 60 * 1000,
-    staleTime: 60 * 60 * 1000,
-    enabled: !!user?.id,
-  });
+  const { data: profileData, isLoading, isError } = useGetUser(user?.id!);
 
   useEffect(() => {
     if (user && profileData) {
@@ -90,7 +81,6 @@ function ProfileEdit() {
 
   const onSubmit = async (data: FormType) => {
     // data.region = selectedRegion;
-    console.log(data); // TODO: remove this.
     const profile: ProfileEdittable = user?.profile!;
     const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
       const typedKey = key as keyof ProfileEdittable;
@@ -103,7 +93,6 @@ function ProfileEdit() {
     if (data.region !== selectedRegion) {
       changedData.region = selectedRegion;
     }
-    console.log(changedData); // TODO: remove this.
     if (changedData.experience) {
       changedData.experience = Number(Number(changedData.experience).toFixed(0));
     }
@@ -129,22 +118,18 @@ function ProfileEdit() {
     }
     try {
       delete changedData.updatedAt;
-      console.log("changedData: ", changedData); // TODO: remove this.
       const userData = await patchProfile(user?.id!, changedData);
-      console.log(userData); // TODO: remove this.
       if ("profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result); // TODO: remove this.
       }
       if ("certificationPresignedUrl" in userData) {
         const result = await axios.put(
           userData.certificationPresignedUrl as string,
           certificationFileToUpload,
         );
-        console.log(result); // TODO: remove this.
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
       userDataLS.user = { ...user, ...userData };

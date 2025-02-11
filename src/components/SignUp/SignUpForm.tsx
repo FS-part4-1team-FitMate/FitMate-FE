@@ -1,22 +1,23 @@
 import { useSetUser } from "@/contexts/UserProvider";
-import {
-  ic_google_sm,
-  ic_kakao_sm,
-  ic_naver_sm,
-  ic_visibility_off,
-  ic_visibility_on,
-  logo_xl,
-} from "@/imageExports";
+import { ic_google_sm, ic_kakao_sm, ic_naver_sm, logo_xl } from "@/imageExports";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { postSignUpTrainer, postSignUpUser } from "@/lib/api/authService";
+import {
+  checkEmailVeriKey,
+  postSignUpTrainer,
+  postSignUpUser,
+  sendEmailVeriKey,
+} from "@/lib/api/authService";
 import { EMAIL_REGEX, PWD_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
+import Button from "../Common/Button";
+import Input from "../Common/Input";
+import InputPassword from "../Common/InputPassword";
 
 const input_class =
   "w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl";
@@ -28,6 +29,8 @@ interface Props {
 function SignUpForm({ role }: Props) {
   const router = useRouter();
   const setUser = useSetUser();
+  const [emailVerified, setEmailVerified] = useState<boolean | null>(null);
+  const [emailVeriKeyOpen, setEmailVeriKeyOpen] = useState(false);
   const [error, setError] = useState<
     | null
     | Error
@@ -51,25 +54,31 @@ function SignUpForm({ role }: Props) {
       email: "",
       password: "",
       passwordConfirm: "",
+      emailVeriKey: "",
     },
   });
-
   const onSubmit = async (data: {
     nickname: string;
     email: string;
     password: string;
-    passwordConfirm: string;
+    passwordConfirm?: string;
+    emailVeriKey?: string;
   }) => {
     if (data.password !== data.passwordConfirm) {
       setError({ message: "비밀번호가 일치하지 않습니다." });
       return;
     }
     try {
+      delete data.passwordConfirm;
+      delete data.emailVeriKey;
       let userData;
       if (role === Role.USER) {
         userData = await postSignUpUser({ ...data });
       } else if (role === Role.TRAINER) {
         userData = await postSignUpTrainer({ ...data });
+      }
+      if ("message" in userData!) {
+        setError({ message: userData.message });
       }
       if (userData && "user" in userData) {
         setUser(userData.user);
@@ -119,102 +128,140 @@ function SignUpForm({ role }: Props) {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[16px] items-stretch w-full"
       >
-        <label className="w-full text-lg" htmlFor="nickname">
-          닉네임
-        </label>
-        <input
-          className={input_class}
-          {...register("nickname", {
+        <Input
+          id="nickname"
+          label="닉네임"
+          type="text"
+          register={register("nickname", {
             required: "닉네임을 입력해 주세요.",
           })}
-          type="text"
-          id="nickname"
           placeholder="닉네임을 입력해 주세요."
         />
         {errors.nickname && <p className="text-red-400 text-sm">{errors.nickname.message}</p>}
-        <label className="w-full text-lg" htmlFor="email">
-          이메일
-        </label>
-        <input
-          className={input_class}
-          {...register("email", {
+        <Input
+          id="email"
+          label="이메일"
+          type="email"
+          register={register("email", {
             required: "이메일을 입력해 주세요.",
             pattern: {
               value: EMAIL_REGEX,
               message: "유효한 이메일을 입력해 주세요.",
             },
           })}
-          type="email"
-          id="email"
           placeholder="이메일을 입력해 주세요."
         />
+        <Button
+          className="inline-block text-md bg-blue-700 text-white w-max"
+          onClick={() => {
+            const msg = sendEmailVeriKey(watch("email"));
+            setEmailVeriKeyOpen(true);
+          }}
+        >
+          이메일 인증하기
+        </Button>
+        {emailVeriKeyOpen && (
+          <>
+            <div className="flex gap-[10px] justify-normal items-center">
+              <label htmlFor="emailVeriKey" className="inline-block text-md">
+                인증번호:
+              </label>
+              <input
+                id="emailVeriKey"
+                type="text"
+                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px] px-[10px] h-[30px] border border-gray-300"
+                {...register("emailVeriKey", {
+                  required: "인증번호를 입력해 주세요.",
+                  validate: (value) => {
+                    if (value.length !== 6) {
+                      return "6자리를 입력해주세요.";
+                    }
+                    return true;
+                  },
+                })}
+                placeholder="인증번호"
+              />
+              <Button
+                className="inline-block text-md bg-blue-700 text-white"
+                type="button"
+                onClick={async () => {
+                  const res = await checkEmailVeriKey({
+                    email: watch("email"),
+                    code: watch("emailVeriKey"),
+                  });
+                  console.log(res);
+                  setError({ message: res.message });
+                  if (res.message === "이메일 인증 성공") {
+                    setEmailVerified(true);
+                    setEmailVeriKeyOpen(true);
+                  } else {
+                    setEmailVerified(false);
+                    setEmailVeriKeyOpen(true);
+                  }
+                }}
+              >
+                확인
+              </Button>
+            </div>
+            {errors.emailVeriKey && (
+              <p className="text-red-400 text-sm">{errors.emailVeriKey.message}</p>
+            )}
+          </>
+        )}
+        {emailVerified === null ? (
+          <></>
+        ) : emailVerified ? (
+          <p className="text-green-400 text-sm">이메일 인증 성공</p>
+        ) : (
+          <p className="text-red-400 text-sm">이메일 인증 실패</p>
+        )}
         {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
-        <label className="w-full text-lg" htmlFor="password">
-          비밀번호
-        </label>
-        <div className="relative w-full h-[40px] text-slate-700">
-          <input
-            className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
-            {...register("password", {
-              required: "비밀번호를 입력해 주세요.",
-              pattern: {
-                value: PWD_REGEX,
-                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
-              },
-            })}
-            type={pwdIsVisible ? "text" : "password"}
-            id="password"
-            placeholder="비밀번호를 입력해 주세요."
-          />
-          <Image
-            className="absolute right-[8px] top-[8px] bottom-[8px]"
-            width={24}
-            height={24}
-            src={pwdIsVisible ? ic_visibility_on : ic_visibility_off}
-            alt="eye"
-            onClick={() => setPwdIsVisible((prev) => !prev)}
-          />
-        </div>
+        <InputPassword
+          id="password"
+          label="비밀번호"
+          register={register("password", {
+            required: "비밀번호를 입력해 주세요.",
+            pattern: {
+              value: PWD_REGEX,
+              message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
+            },
+          })}
+          placeholder="비밀번호를 입력해 주세요."
+          pwdIsVisible={pwdIsVisible}
+          setPwdIsVisible={setPwdIsVisible}
+        />
         {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
-        <label className="w-full text-lg" htmlFor="passwordConfirm">
-          비밀번호 확인
-        </label>
-        <div className="relative w-full h-[40px] text-slate-700">
-          <input
-            className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
-            {...register("passwordConfirm", {
-              required: "비밀번호를 다시 한번 입력해 주세요.",
-              validate: (value) => {
-                if (value !== watch("password")) {
-                  return "비밀번호가 일치하지 않습니다.";
-                }
-              },
-            })}
-            type={pwdCfmIsVisible ? "text" : "password"}
-            id="passwordComfirm"
-            placeholder="비밀번호를 다시 한번 입력해 주세요."
-          />
-          <Image
-            className="absolute right-[8px] top-[8px] bottom-[8px]"
-            width={24}
-            height={24}
-            src={pwdCfmIsVisible ? ic_visibility_on : ic_visibility_off}
-            alt="eye"
-            onClick={() => setPwdCfmIsVisible((prev) => !prev)}
-          />
-        </div>
+        <InputPassword
+          id="passwordConfirm"
+          label="비밀번호 확인"
+          register={register("passwordConfirm", {
+            required: "비밀번호를 다시 한번 입력해 주세요.",
+            validate: (value) => {
+              if (value !== watch("password")) {
+                return "비밀번호가 일치하지 않습니다.";
+              }
+            },
+          })}
+          placeholder="비밀번호를 다시 한번 입력해 주세요."
+          pwdIsVisible={pwdCfmIsVisible}
+          setPwdIsVisible={setPwdCfmIsVisible}
+        />
         {errors.passwordConfirm && (
           <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
         )}
-        <button
+        <Button
           className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
           type="submit"
           disabled={
-            !!errors.nickname || !!errors.email || !!errors.password || !!errors.passwordConfirm
+            !!errors.nickname ||
+            !!errors.email ||
+            !!errors.password ||
+            !!errors.passwordConfirm ||
+            !emailVerified
           }
         >
           {role === Role.USER ? "일반회원 " : "강사님으로 "}가입하기
-        </button>
+        </Button>
       </form>
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 간편 가입하기</div>

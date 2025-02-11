@@ -35,34 +35,6 @@ export interface TrainerResult {
   hasMore: boolean;
 }
 
-export type Profile = {
-  certificationPresignedUrl: string;
-  profile: {
-    id: string;
-    userId: string;
-    name?: string | null;
-    phone?: string | null;
-    profileImage?: string | FileList | null;
-    profileImageCount?: number;
-    contentType?: string;
-    gender: Gender;
-    lessonType: LessonType[];
-    locationType: LocationType[];
-    region: Region[];
-    intro?: string | null;
-    description?: string | null;
-    experience?: number | null;
-    certification?: string | FileList | null;
-    certificationCount?: number;
-    certificationValidated?: boolean;
-    rating?: number;
-    lessonCount?: number;
-    reviewCount?: number;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-};
-
 export interface FavoriteInfo {
   isFavorite?: boolean;
   favoriteTotalCount?: number;

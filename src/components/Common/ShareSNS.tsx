@@ -3,17 +3,10 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { Profile } from "@/types/trainer";
-import { lessonType_trans } from "@/types/types";
+import { Profile, lessonType_trans } from "@/types/types";
 import Button from "./Button";
 
-export default function ShareSNS({
-  label,
-  trainerInfo,
-}: {
-  label: string;
-  trainerInfo?: Profile["profile"];
-}) {
+export default function ShareSNS({ label, trainerInfo }: { label: string; trainerInfo?: Profile }) {
   useEffect(() => {
     if (!window.Kakao.isInitialized()) {
       window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_API_KEY);

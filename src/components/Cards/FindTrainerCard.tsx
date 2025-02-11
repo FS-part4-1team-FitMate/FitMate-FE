@@ -1,5 +1,5 @@
-import { FavoriteInfo, Profile, Trainer } from "@/types/trainer";
-import { LessonRequestStatus, LessonType, RequestType } from "@/types/types";
+import { FavoriteInfo, Trainer } from "@/types/trainer";
+import { LessonRequestStatus, LessonType, Profile, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
 import ChipRequestStatus from "../Chip/ChipRequestStatus";
@@ -8,7 +8,7 @@ import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 interface FindTrainerCardProps {
   trainer?: Trainer;
-  profile?: Profile["profile"];
+  profile?: Profile;
   status?: string;
   request?: boolean;
   favoriteInfo?: FavoriteInfo;

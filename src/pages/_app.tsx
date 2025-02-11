@@ -1,3 +1,4 @@
+import { NotificationProvider } from "@/contexts/NotificationProvider";
 import { UserProvider } from "@/contexts/UserProvider";
 import ViewportProvider from "@/contexts/ViewportProvider";
 import type { AppProps } from "next/app";
@@ -65,25 +66,27 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary client={queryClient}>
           <UserProvider>
-            <ViewportProvider>
-              <div className={pretendard.className}>
-                {isClient && (
-                  <Toaster
-                    position="top-center"
-                    toastOptions={{
-                      style: {
-                        maxWidth: "100%",
-                        fontSize: "1.6rem",
-                      },
-                      duration: 3000,
-                    }}
-                  />
-                )}
-                <GNB />
-                {isActiveTab && <Tab />}
-                <Component {...pageProps} />
-              </div>
-            </ViewportProvider>
+            <NotificationProvider>
+              <ViewportProvider>
+                <div className={pretendard.className}>
+                  {isClient && (
+                    <Toaster
+                      position="top-center"
+                      toastOptions={{
+                        style: {
+                          maxWidth: "100%",
+                          fontSize: "1.6rem",
+                        },
+                        duration: 3000,
+                      }}
+                    />
+                  )}
+                  <GNB />
+                  {isActiveTab && <Tab />}
+                  <Component {...pageProps} />
+                </div>
+              </ViewportProvider>
+            </NotificationProvider>
           </UserProvider>
         </ErrorBoundary>
       </QueryClientProvider>

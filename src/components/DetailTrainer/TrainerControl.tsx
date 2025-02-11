@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { useDirectQuote, useGetMyLessons } from "@/lib/api/queries/lesson";
-import { Profile } from "@/types/trainer";
+import { Profile } from "@/types/types";
 import Button from "../Common/Button";
 import Favorite from "../Common/Favorite";
 
-export default function TrainerControl({ profile }: { profile: Profile["profile"] }) {
+export default function TrainerControl({ profile }: { profile: Profile }) {
   const router = useRouter();
 
   const { data: myLessonList } = useGetMyLessons({ status: "PENDING" });
@@ -35,10 +35,10 @@ export default function TrainerControl({ profile }: { profile: Profile["profile"
       </h1>
       <div className="flex flex-row gap-[0.8rem] w-full p-4 pc:flex-col pc:gap-[3.2rem] pc:px-0">
         <Button className="hover:bg-red-100 hover:border hover:border-red-200 hover:text-red-200 h-[5.4rem] p-4 rounded-[1.6rem] font-semibold pc:w-[35.3rem] pc:text-xl hidden gap-4 border border-line-200 bg-gray-50 pc:flex">
-          <Favorite trainerId={trainerId} noneCount={true} /> 강사님 찜하기
+          <Favorite trainerId={trainerId as string} noneCount={true} /> 강사님 찜하기
         </Button>
         <div className="flex justify-center items-center w-[5.4rem] h-[5.4rem] p-4 border border-line-200 rounded-[1.6rem] pc:hidden">
-          <Favorite trainerId={trainerId} noneCount={true} />
+          <Favorite trainerId={trainerId as string} noneCount={true} />
         </div>
         <Button
           onClick={handleLessonRequest}
