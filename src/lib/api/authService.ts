@@ -15,6 +15,28 @@ export async function postLogin(data: { email: string; password: string }): Prom
   }
 }
 
+export async function sendEmailVeriKey(email: string): Promise<{
+  message: string;
+}> {
+  try {
+    const res = await instance.post("/auth/email-verification", { email });
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function checkEmailVeriKey(data: { email: string; code: string }): Promise<{
+  message: string;
+}> {
+  try {
+    const res = await instance.post("/auth/verify-code", data);
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
 export async function postSignUpUser(data: {
   nickname: string;
   email: string;
