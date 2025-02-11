@@ -174,35 +174,38 @@ function SignUpForm({ role }: Props) {
           이메일 인증하기
         </Button>
         {emailVeriKeyOpen && (
-          <form
-            onSubmit={handleSubmitVeriKey(onSubmitVeriKey)}
-            className="flex gap-[10px] justify-normal items-center"
-          >
-            <label htmlFor="emailVeriKey" className="inline-block text-md">
-              인증번호:
-            </label>
-            <input
-              id="emailVeriKey"
-              type="text"
-              className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px]"
-              {...registerVeriKey("emailVeriKey", {
-                required: "인증번호를 입력해 주세요.",
-                validate: (value) => {
-                  if (value.length !== 6) {
-                    return "6자리를 입력해주세요.";
-                  }
-                  return true;
-                },
-              })}
-              placeholder="인증번호"
-            />
-            <Button className="inline-block text-md bg-blue-700 text-white" type="submit">
-              확인
-            </Button>
+          <>
+            <form
+              onSubmit={handleSubmitVeriKey(onSubmitVeriKey)}
+              className="flex gap-[10px] justify-normal items-center"
+            >
+              <label htmlFor="emailVeriKey" className="inline-block text-md">
+                인증번호:
+              </label>
+              <input
+                id="emailVeriKey"
+                type="text"
+                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px]"
+                {...registerVeriKey("emailVeriKey", {
+                  required: "인증번호를 입력해 주세요.",
+                  validate: (value) => {
+                    if (value.length !== 6) {
+                      return "6자리를 입력해주세요.";
+                    }
+                    return true;
+                  },
+                })}
+                placeholder="인증번호"
+              />
+              <Button className="inline-block text-md bg-blue-700 text-white" type="submit">
+                확인
+              </Button>
+            </form>
             {errorsVeriKey.emailVeriKey && (
               <p className="text-red-400 text-sm">{errorsVeriKey.emailVeriKey.message}</p>
             )}
-          </form>
+            {emailVerified && <p className="text-green-400 text-sm">이메일 인증 성공</p>}
+          </>
         )}
         {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
         <InputPassword
