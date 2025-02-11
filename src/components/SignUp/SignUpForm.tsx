@@ -185,7 +185,7 @@ function SignUpForm({ role }: Props) {
               <input
                 id="emailVeriKey"
                 type="text"
-                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px] h-[30px] border border-gray-300"
+                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px] px-[10px] h-[30px] border border-gray-300"
                 {...registerVeriKey("emailVeriKey", {
                   required: "인증번호를 입력해 주세요.",
                   validate: (value) => {
@@ -206,7 +206,11 @@ function SignUpForm({ role }: Props) {
             )}
           </>
         )}
-        {emailVerified && <p className="text-green-400 text-sm">이메일 인증 성공</p>}
+        {emailVerified ? (
+          <p className="text-green-400 text-sm">이메일 인증 성공</p>
+        ) : (
+          <p className="text-red-400 text-sm">이메일 인증 실패</p>
+        )}
         {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
         <InputPassword
           id="password"
