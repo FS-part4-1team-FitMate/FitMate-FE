@@ -77,6 +77,9 @@ function SignUpForm({ role }: Props) {
       } else if (role === Role.TRAINER) {
         userData = await postSignUpTrainer({ ...data });
       }
+      if ("message" in userData!) {
+        setError({ message: userData.message });
+      }
       if (userData && "user" in userData) {
         setUser(userData.user);
         localStorage.setItem("userData", JSON.stringify(userData));
