@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { createLessonRequest } from "@/lib/api/requestService";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
-import { LessonType } from "@/types/types";
+import { LessonType, lessonType_trans } from "@/types/types";
 
 type FormValues = {
   lessonType: LessonType;
@@ -57,16 +57,17 @@ const createRequest = () => {
       setChatHistory([{ type: "question", content: "어떤 운동을 하고 싶으세요?" }]);
     }
 
-    let script: HTMLScriptElement;
+    let script: HTMLScriptElement | null = null;
     if (!window.daum) {
-      // 다음 주소 API 스크립트 동적 로드
       script = document.createElement("script");
       script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
       script.async = true;
       document.body.appendChild(script);
     }
     return () => {
-      document.body.removeChild(script); // 컴포넌트 언마운트 시 정리
+      if (script) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -75,6 +76,7 @@ const createRequest = () => {
     "어떤 활동을 원하세요?",
     "기간을 정해주세요.",
     "몇 번을 원하시나요?",
+    "시간을 정해주세요",
     "수업 장소 유형을 선택해주세요.",
     "주소를 입력해주세요.",
   ];
@@ -207,7 +209,7 @@ const createRequest = () => {
                     onChange={() => setCurrentAnswer(option)}
                     checked={currentAnswer === option}
                   />
-                  <span className="text-lg">{option}</span>
+                  <span className="text-lg">{lessonType_trans[option]?.ko}</span>
                 </label>
               ))}
             </div>
