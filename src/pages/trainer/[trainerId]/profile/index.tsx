@@ -3,12 +3,12 @@ import { ic_edit_sm, ic_profile_default_md, img_default_md } from "@/imageExport
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
-import { getProfile } from "@/lib/api/authService";
+import { useGetRatingStat, useGetReviewList } from "@/lib/api/queries/review";
+import { useGetTrainer } from "@/lib/api/queries/trainer";
 import { calcAvgRating } from "@/lib/utils/calcAvgRating";
 import formatDate from "@/lib/utils/formatDate";
 import { region_trans } from "@/types/types";
@@ -55,32 +55,10 @@ function Profile({ initialQuery }: PageProps) {
   const myPage = trainerId === user?.id;
   const [page, setPage] = useState(Number(initialQuery.page) || 1);
   const limit = 5;
-  const { data: reviews } = useQuery({
-    queryKey: ["reviews", trainerId, { page, limit }],
-    queryFn: () => getReviews(trainerId as string, { page, limit }),
-    cacheTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-    enabled: !!trainerId,
-  });
-  const {
-    data: trainerProfile,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["profile", trainerId],
-    queryFn: () => getProfile(trainerId as string),
-    cacheTime: 60 * 60 * 1000,
-    staleTime: 60 * 60 * 1000,
-    enabled: !!trainerId,
-  });
+  const { data: reviews } = useGetReviewList(trainerId as string, page, limit);
+  const { data: trainerProfile, isLoading, isError } = useGetTrainer(trainerId as string);
   const [avgRating, setAvgRating] = useState(0);
-  const { data: reviewStat } = useQuery({
-    queryKey: ["review-stat", trainerId],
-    queryFn: () => getReviewStat(trainerId as string),
-    cacheTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-    enabled: !!trainerId,
-  });
+  const { data: reviewStat } = useGetRatingStat(trainerId as string);
 
   useEffect(() => {
     router.push({
@@ -188,7 +166,7 @@ function Profile({ initialQuery }: PageProps) {
       <div className="text-xl font-semibold">리뷰 ({trainerProfile?.profile?.reviewCount})</div>
       <div className="tablet:flex tablet:flex-row tablet:justify-center tablet:gap-[50px] mx-auto max-w-full">
         <RatingAvgCard ratingAvg={avgRating} />
-        <RatingStatCard ratingStat={reviewStat} />
+        <RatingStatCard ratingStat={reviewStat!} />
       </div>
       <div className="flex flex-col gap-[24px]">
         {reviews?.reviews.map((review) => {
