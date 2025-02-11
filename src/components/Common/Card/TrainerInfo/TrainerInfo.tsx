@@ -19,12 +19,12 @@ const img_profile = clsx(
 
 interface TrainerInfoProps {
   name?: string | null;
-  rating?: number;
-  reviewCount?: number;
-  experience?: number;
-  lessonCount?: number;
-  isFavorited?: boolean;
-  favoriteCount?: number;
+  rating?: number | null;
+  reviewCount?: number | null;
+  experience?: number | null;
+  lessonCount?: number | null;
+  isFavorited?: boolean | null;
+  favoriteCount?: number | null;
 }
 
 export default function TrainerInfo({
