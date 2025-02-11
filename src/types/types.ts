@@ -138,29 +138,35 @@ export enum NotificationType {
 }
 
 export type Profile = {
-  id: string;
-  userId: string;
+  id?: string | null;
+  userId?: string | null;
   name: string;
-  phone?: string;
-  profileImage?: string | FileList;
-  profileImageCount?: number;
-  contentType?: string;
+  phone?: string | null;
+  profileImage?: string | FileList | null;
+  profileImageCount?: number | null;
+  contentType?: string | null;
   gender: Gender;
   lessonType: LessonType[];
-  locationType: LocationType[];
+  locationType?: LocationType[];
   region: Region[];
-  intro?: string;
-  description?: string;
-  experience?: number;
-  certification?: string | FileList;
-  certificationCount?: number;
-  certificationValidated?: boolean;
-  rating?: number;
-  lessonCount?: number;
-  reviewCount?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  intro?: string | null;
+  description?: string | null;
+  experience?: number | null;
+  certification?: string | FileList | null;
+  certificationCount?: number | null;
+  certificationValidated?: boolean | null;
+  rating?: number | null;
+  lessonCount?: number | null;
+  reviewCount?: number | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 };
+
+export interface ProfileData {
+  profile: Profile;
+  profileImagePresignedUrl?: string | null;
+  certificationPresignedUrl?: string | null;
+}
 
 export type ProfileEdittable = Pick<
   Profile,
@@ -186,10 +192,10 @@ export type User = {
   email: string;
   nickname: string;
   role: Role;
-  hasProfile?: boolean;
-  profile?: Profile;
-  profileImagePresignedUrl?: string;
-  certificationPresignedUrl?: string;
+  hasProfile?: boolean | null;
+  profile?: Profile | null;
+  profileImagePresignedUrl?: string | null;
+  certificationPresignedUrl?: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
