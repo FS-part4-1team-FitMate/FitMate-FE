@@ -204,9 +204,9 @@ function SignUpForm({ role }: Props) {
             {errorsVeriKey.emailVeriKey && (
               <p className="text-red-400 text-sm">{errorsVeriKey.emailVeriKey.message}</p>
             )}
-            {emailVerified && <p className="text-green-400 text-sm">이메일 인증 성공</p>}
           </>
         )}
+        {emailVerified && <p className="text-green-400 text-sm">이메일 인증 성공</p>}
         {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
         <InputPassword
           id="password"
