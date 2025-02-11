@@ -185,7 +185,7 @@ function SignUpForm({ role }: Props) {
               <input
                 id="emailVeriKey"
                 type="text"
-                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px]"
+                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px] h-[30px] border border-gray-300"
                 {...registerVeriKey("emailVeriKey", {
                   required: "인증번호를 입력해 주세요.",
                   validate: (value) => {
