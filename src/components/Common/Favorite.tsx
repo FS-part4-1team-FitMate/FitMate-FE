@@ -3,6 +3,7 @@ import { ic_like_active_sm, ic_like_inactive_sm } from "@/imageExports";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGetFavoriteInfo } from "@/lib/api/queries/trainer";
 import { getFavorite, toggleFavorite } from "@/lib/api/userService";
 
 interface Props {
@@ -15,12 +16,7 @@ function Favorite({ trainerId, noneCount = false }: Props) {
   const queryClient = useQueryClient();
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(false);
   const [favoriteTotalCount, setFavoriteTotalCount] = useState<number | undefined>(0);
-  const { data: favorite, isError } = useQuery({
-    queryKey: ["favorite", trainerId],
-    queryFn: () => getFavorite(trainerId),
-    staleTime: 5 * 60 * 1000,
-    enabled: !!trainerId,
-  });
+  const { data: favorite, isError } = useGetFavoriteInfo(trainerId);
   const toggleLikeMutation = useMutation({
     mutationFn: () => toggleFavorite(favorite?.isFavorite, trainerId),
     onSuccess: (data) => {

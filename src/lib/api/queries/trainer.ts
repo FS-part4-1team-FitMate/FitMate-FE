@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { FavoriteInfo, Profile, TrainerParams, TrainerResult } from "@/types/trainer";
+import { FavoriteInfo, TrainerParams, TrainerResult } from "@/types/trainer";
+import { ProfileData } from "@/types/types";
 import { getTrainerInfo, getTrainerList } from "../trainerService";
 import { getFavorite } from "../userService";
 
@@ -27,8 +28,10 @@ export const useGetTrainerList = ({ keyword, order, sort, lessonType, gender }: 
 
 // 트레이너 프로필 조회
 export const useGetTrainer = (trainerId: string) => {
-  return useQuery<Profile>(["trainer-info", trainerId], () => getTrainerInfo(trainerId), {
+  return useQuery<ProfileData>(["trainer-info", trainerId], () => getTrainerInfo(trainerId), {
     enabled: !!trainerId,
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -36,5 +39,7 @@ export const useGetTrainer = (trainerId: string) => {
 export const useGetFavoriteInfo = (trainerId: string) => {
   return useQuery<FavoriteInfo>(["favorite", trainerId], () => getFavorite(trainerId), {
     enabled: !!trainerId,
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 };

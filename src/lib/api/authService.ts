@@ -1,4 +1,4 @@
-import { Gender, LessonType, Profile, ProfileEdittable, Region, Role, User } from "@/types/types";
+import { User } from "@/types/types";
 import instance from "./instance";
 
 export async function postLogin(data: { email: string; password: string }): Promise<{
@@ -47,65 +47,6 @@ export async function postSignUpTrainer(data: {
   try {
     delete data.passwordConfirm;
     const res = await instance.post("/auth/signup?role=TRAINER", data);
-    return res.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-export async function getProfile(userId: string): Promise<{
-  profile: Profile;
-  profileImagePresignedUrl?: string;
-  certificationPresignedUrl?: string;
-}> {
-  try {
-    const res = await instance.get(`/profile/${userId}`);
-    return res.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// export async function getTrainerDetails(trainerId: string): Promise<Profile> {
-//   try {
-//     const res = await instance.get(`/trainers/${trainerId}`);
-//     return res.data;
-//   } catch (err) {
-//     throw err;
-//   }
-// }
-
-export async function postProfile(data: {
-  profileImage?: FileList;
-  name: string;
-  phone: string;
-  gender: Gender;
-  lessonType: LessonType[];
-  region: Region[];
-  experience?: number;
-  intro?: string;
-  description?: string;
-}): Promise<{
-  profile: Profile;
-  profileImagePresignedUrl?: string;
-  certificationPresignedUrl?: string;
-}> {
-  try {
-    const res = await instance.post("/profile", data);
-    return res.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-export async function patchProfile(
-  userId: string,
-  data: Partial<ProfileEdittable>,
-): Promise<{
-  user: User;
-}> {
-  try {
-    const res = await instance.patch(`/profile/${userId}`, data);
     return res.data;
   } catch (err) {
     throw err;

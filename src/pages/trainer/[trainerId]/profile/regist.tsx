@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-import { postProfile } from "@/lib/api/authService";
+import { postProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
@@ -73,21 +73,7 @@ function Regist() {
     }
   }, [user]);
 
-  const onSubmit = async (data: {
-    profileImage?: FileList;
-    profileImageCount: number;
-    contentType: string;
-    name: string;
-    phone: string;
-    gender: Gender;
-    lessonType: LessonType[];
-    certification?: FileList;
-    certificationCount: number;
-    region: Region[];
-    experience: number;
-    intro: string;
-    description: string;
-  }) => {
+  const onSubmit = async (data: Profile) => {
     // data.region = selectedRegion;
     data.experience = Number(Number(data.experience).toFixed(0));
     console.log(data); // TODO: remove this.

@@ -1,3 +1,4 @@
+import { NotificationContextType, useNotifications } from "@/contexts/NotificationProvider";
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
 import { ic_menu, ic_noti, ic_profile_default_sm, logo_xl } from "@/imageExports";
@@ -6,10 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getProfile } from "@/lib/api/authService";
+import InfiniteScroll from "react-infinite-scroller";
+import { useGetNotiList } from "@/lib/api/queries/notification";
+import { useGetUser } from "@/lib/api/queries/user";
 import { active_class } from "@/types/constants";
-import { Profile, Role, User } from "@/types/types";
+import { ProfileData, Role, User } from "@/types/types";
 
 function Logo() {
   return (
@@ -122,11 +124,7 @@ function Menus({ addClass, user, router }: MenusProps) {
 
 interface MyProfileMenusProps {
   user: User;
-  profileData?: {
-    profile: Profile;
-    profileImagePresignedUrl?: string;
-    certificationPresignedUrl?: string;
-  };
+  profileData?: ProfileData;
   setUser: Dispatch<SetStateAction<User | null>>;
   router: ReturnType<typeof useRouter>;
 }
@@ -209,12 +207,27 @@ function LogInButton() {
   );
 }
 
-function Notifications() {
+interface NotificationsProps {
+  notifications: NotificationContextType;
+  hasNextNotiPage?: boolean;
+  fetchNextNotiPage: () => void;
+}
+
+function Notifications({ notifications, hasNextNotiPage, fetchNextNotiPage }: NotificationsProps) {
   return (
     <div
       className={`absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10`}
     >
-      알림
+      <h3 className="text-lg m-0 p-0">알림</h3>
+      <InfiniteScroll hasMore={hasNextNotiPage} loadMore={fetchNextNotiPage}>
+        {notifications?.notifications?.map((noti) => {
+          return (
+            <div key={noti.id} className="text-md my-[10px]">
+              {noti.message}
+            </div>
+          );
+        })}
+      </InfiniteScroll>
     </div>
   );
 }
@@ -230,17 +243,15 @@ function GNB() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [notiIsOpen, setNotiIsOpen] = useState(false);
   const [myProfileIsOpen, setMyProfileIsOpen] = useState(false);
+  const { data: profileData, isLoading, isError } = useGetUser(user?.id!);
   const {
-    data: profileData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: () => getProfile(user?.id!),
-    cacheTime: 60 * 60 * 1000,
-    staleTime: 60 * 60 * 1000,
-    enabled: !!user?.id,
-  });
+    data: notiData,
+    fetchNextPage: fetchNextNotiPage,
+    hasNextPage: hasNextNotiPage,
+    isLoading: isNotiLoading,
+    isError: isNotiError,
+  } = useGetNotiList(user?.id!, { page: 1, limit: 10, order: "created_at", sort: "desc" });
+  const notifications = useNotifications();
 
   const handleOutsideClick = (e: MouseEvent) => {
     if (refMyProfile.current && !refMyProfile.current.contains(e.target as Node)) {
@@ -308,7 +319,13 @@ function GNB() {
                   height={24}
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
-                {notiIsOpen && <Notifications />}
+                {notiIsOpen && (
+                  <Notifications
+                    notifications={notifications}
+                    hasNextNotiPage={hasNextNotiPage}
+                    fetchNextNotiPage={fetchNextNotiPage}
+                  />
+                )}
               </div>
               <div ref={refMyProfile} className="relative">
                 <div
@@ -363,7 +380,13 @@ function GNB() {
                   height={24}
                   onClick={() => setNotiIsOpen((prev) => !prev)}
                 />
-                {notiIsOpen && <Notifications />}
+                {notiIsOpen && (
+                  <Notifications
+                    notifications={notifications}
+                    hasNextNotiPage={hasNextNotiPage}
+                    fetchNextNotiPage={fetchNextNotiPage}
+                  />
+                )}
               </div>
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image

@@ -1,4 +1,5 @@
 import { TrainerParams } from "@/types/trainer";
+import { ProfileData } from "@/types/types";
 import { get, post, remove } from "./method";
 
 // 강사 목록 조회
@@ -16,9 +17,13 @@ export async function getTrainerList({
 }
 
 // 강사 상세 정보
-export async function getTrainerInfo(trainerId: string) {
-  const res = await get(`/profile/${trainerId}`);
-  return res.data;
+export async function getTrainerInfo(trainerId: string): Promise<ProfileData> {
+  try {
+    const res = await get(`/profile/${trainerId}`);
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
 }
 
 // 찜한 강사 목록 조회

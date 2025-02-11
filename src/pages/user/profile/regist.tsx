@@ -4,9 +4,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-import { postProfile } from "@/lib/api/authService";
+import { postProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Region } from "@/types/types";
+import { Gender, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -59,17 +59,7 @@ function Regist() {
     }
   }, [user]);
 
-  const onSubmit = async (data: {
-    profileImage?: FileList;
-    profileImageCount: number;
-    contentType: string;
-    name: string;
-    phone: string;
-    gender: Gender;
-    lessonType: LessonType[];
-    region: Region[];
-    certificationCount: number;
-  }) => {
+  const onSubmit = async (data: Profile) => {
     let profileImageFileToUpload;
     if ("profileImage" in data) {
       const profileImage = data.profileImage;
@@ -89,7 +79,6 @@ function Regist() {
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
-        console.log(result); // TODO: remove this.
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
       userDataLS.user = { ...user, ...userData, hasProfile: true };

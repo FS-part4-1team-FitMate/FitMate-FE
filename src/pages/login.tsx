@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getProfile, postLogin } from "@/lib/api/authService";
+import { postLogin } from "@/lib/api/authService";
 import { EMAIL_REGEX } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
@@ -44,6 +44,7 @@ function LogIn() {
       password: "",
     },
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -66,8 +67,8 @@ function LogIn() {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
+      setIsSubmitting(true);
       const userData = await postLogin(data);
-      console.log(userData); // TODO: remove this.
       if ("user" in userData) {
         const { user } = userData;
         user.hasProfile = userData.hasProfile;
@@ -90,6 +91,7 @@ function LogIn() {
     } catch (err) {
       setError({ message: (err as Error).message });
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -150,7 +152,7 @@ function LogIn() {
         <button
           className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
           type="submit"
-          disabled={!!errors.email || !!errors.password}
+          disabled={!!errors.email || !!errors.password || isSubmitting}
         >
           로그인
         </button>
