@@ -6,13 +6,15 @@ import { Controller, useForm } from "react-hook-form";
 import { createLessonRequest } from "@/lib/api/requestService";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
+import { LessonType } from "@/types/types";
 
 type FormValues = {
-  lessonType: string;
+  lessonType: LessonType;
   subLessonType: string;
   startDate: Date;
   endDate: Date;
-  duration: number;
+  lessonCount: number;
+  lessonTime: number;
   locationType: string;
   address?: string;
 };
@@ -28,11 +30,12 @@ const createRequest = () => {
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
-      lessonType: "",
+      lessonType: LessonType.SPORTS,
       subLessonType: "",
       startDate: new Date(),
       endDate: new Date(),
-      duration: 0,
+      lessonCount: 0,
+      lessonTime: 0,
       locationType: "",
       address: "",
     },
@@ -43,7 +46,8 @@ const createRequest = () => {
     "subLessonType",
     "startDate",
     "endDate",
-    "duration",
+    "lessonCount",
+    "lessonTime",
     "locationType",
     "address",
   ];
@@ -75,17 +79,21 @@ const createRequest = () => {
     "주소를 입력해주세요.",
   ];
 
-  const getOptionsForSecondQuestion = (lessonType: string) => {
-    switch (lessonType) {
-      case "스포츠":
-        return ["구기 스포츠", "계절 스포츠", "격투 스포츠"];
-      case "피트니스":
-        return ["요가", "필라테스", "식단"];
-      case "재활운동":
-        return ["운동치료", "수치료"];
-      default:
-        return [];
-    }
+  const lessonSubTypeMap: Record<LessonType, string[]> = {
+    [LessonType.SPORTS]: [
+      "축구", "농구", "야구", "테니스", "배드민턴", "탁구",
+      "스키", "서핑", "복싱", "태권도", "주짓수"
+    ],
+    [LessonType.FITNESS]: [
+      "퍼스널 트레이닝", "요가", "필라테스", "다이어트 관리"
+    ],
+    [LessonType.REHAB]: [
+      "스트레칭", "재활 치료"
+    ],
+  };
+
+  const getOptionsForSecondQuestion = (lessonType: LessonType) => {
+    return lessonSubTypeMap[lessonType] || [];
   };
 
   const handleAnswer = () => {
@@ -184,7 +192,7 @@ const createRequest = () => {
         {step === 0 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
-              {["스포츠", "피트니스", "재활운동"].map((option) => (
+              {Object.values(LessonType).map((option) => (
                 <label
                   key={option}
                   className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
@@ -278,7 +286,7 @@ const createRequest = () => {
         {step === 3 && (
           <div className="space-y-4">
             <Controller
-              name="duration"
+              name="lessonCount"
               control={control}
               render={({ field }) => (
                 <input
@@ -303,6 +311,33 @@ const createRequest = () => {
         )}
 
         {step === 4 && (
+          <div className="space-y-4">
+            <Controller
+              name="lessonTime"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="number"
+                  className="w-full py-2 px-4 rounded-lg border-b-0 text-lg"
+                  placeholder="횟수를 입력하세요"
+                  value={currentAnswer}
+                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                />
+              )}
+            />
+            <button
+              type="button"
+              onClick={handleAnswer}
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              disabled={!currentAnswer}
+            >
+              입력 완료
+            </button>
+          </div>
+        )}
+
+        {step === 5 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
               {["온라인", "오프라인"].map((option) => (
@@ -335,7 +370,9 @@ const createRequest = () => {
           </div>
         )}
 
-        {step === 5 && (
+        
+
+        {step === 6 && (
           <div className="space-y-4">
             <Controller
               name="address"

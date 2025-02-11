@@ -30,7 +30,6 @@ export default function ReviewListPage() {
             key={review.id}
             createdAt={review.date}
             price={review.price}
-            // tags={review.tags}
             nickname={review?.user?.nickname}
             rating={review.rating}
             content={review.content}
