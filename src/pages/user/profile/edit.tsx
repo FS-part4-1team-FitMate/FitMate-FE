@@ -7,8 +7,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getProfile, patchProfile } from "@/lib/api/authService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useGetUser } from "@/lib/api/queries/user";
+import { patchProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
 import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
@@ -59,17 +60,7 @@ function ProfileEdit() {
       // passwordConfirm: "",
     } as FormType,
   });
-  const {
-    data: profileData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: () => getProfile(user?.id!),
-    cacheTime: 60 * 60 * 1000,
-    staleTime: 60 * 60 * 1000,
-    enabled: !!user?.id,
-  });
+  const { data: profileData, isLoading, isError } = useGetUser(user?.id!);
 
   useEffect(() => {
     if (user && profileData) {
