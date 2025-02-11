@@ -14,11 +14,13 @@ export const useGetRatingStat = (trainerId: string) => {
 // 리뷰 목록 조회
 export const useGetReviewList = (trainerId: string, currentPage: number, pageSize: number) => {
   return useQuery<ReviewResult>(
-    ["reviews", trainerId, currentPage],
+    ["reviews", trainerId, { page: currentPage, limit: pageSize }],
     () => getReviews(trainerId, { page: currentPage, limit: pageSize }),
     {
       enabled: !!trainerId,
       keepPreviousData: true,
+      cacheTime: 5 * 60 * 1000,
+      staleTime: 5 * 60 * 1000,
     },
   );
 };
