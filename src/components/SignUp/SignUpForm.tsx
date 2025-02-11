@@ -54,19 +54,23 @@ function SignUpForm({ role }: Props) {
       email: "",
       password: "",
       passwordConfirm: "",
+      emailVeriKey: "",
     },
   });
   const onSubmit = async (data: {
     nickname: string;
     email: string;
     password: string;
-    passwordConfirm: string;
+    passwordConfirm?: string;
+    emailVeriKey?: string;
   }) => {
     if (data.password !== data.passwordConfirm) {
       setError({ message: "비밀번호가 일치하지 않습니다." });
       return;
     }
     try {
+      delete data.passwordConfirm;
+      delete data.emailVeriKey;
       let userData;
       if (role === Role.USER) {
         userData = await postSignUpUser({ ...data });
@@ -84,26 +88,6 @@ function SignUpForm({ role }: Props) {
       }
     } catch (err) {
       setError({ message: (err as Error).message });
-    }
-  };
-
-  const {
-    register: registerVeriKey,
-    handleSubmit: handleSubmitVeriKey,
-    formState: { errors: errorsVeriKey },
-  } = useForm({
-    mode: "all",
-    defaultValues: {
-      emailVeriKey: "",
-    },
-  });
-  const onSubmitVeriKey = async (data: { emailVeriKey: string }) => {
-    const res = await checkEmailVeriKey({ email: watch("email"), code: data.emailVeriKey });
-    console.log(res);
-    setError({ message: res.message });
-    if (res.message === "이메일 인증 성공") {
-      setEmailVerified(true);
-      setEmailVeriKeyOpen(true);
     }
   };
 
@@ -175,10 +159,7 @@ function SignUpForm({ role }: Props) {
         </Button>
         {emailVeriKeyOpen && (
           <>
-            <form
-              onSubmit={handleSubmitVeriKey(onSubmitVeriKey)}
-              className="flex gap-[10px] justify-normal items-center"
-            >
+            <div className="flex gap-[10px] justify-normal items-center">
               <label htmlFor="emailVeriKey" className="inline-block text-md">
                 인증번호:
               </label>
@@ -186,7 +167,7 @@ function SignUpForm({ role }: Props) {
                 id="emailVeriKey"
                 type="text"
                 className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px] px-[10px] h-[30px] border border-gray-300"
-                {...registerVeriKey("emailVeriKey", {
+                {...register("emailVeriKey", {
                   required: "인증번호를 입력해 주세요.",
                   validate: (value) => {
                     if (value.length !== 6) {
@@ -197,12 +178,27 @@ function SignUpForm({ role }: Props) {
                 })}
                 placeholder="인증번호"
               />
-              <Button className="inline-block text-md bg-blue-700 text-white" type="submit">
+              <Button
+                className="inline-block text-md bg-blue-700 text-white"
+                type="button"
+                onClick={async () => {
+                  const res = await checkEmailVeriKey({
+                    email: watch("email"),
+                    code: watch("emailVeriKey"),
+                  });
+                  console.log(res);
+                  setError({ message: res.message });
+                  if (res.message === "이메일 인증 성공") {
+                    setEmailVerified(true);
+                    setEmailVeriKeyOpen(true);
+                  }
+                }}
+              >
                 확인
               </Button>
-            </form>
-            {errorsVeriKey.emailVeriKey && (
-              <p className="text-red-400 text-sm">{errorsVeriKey.emailVeriKey.message}</p>
+            </div>
+            {errors.emailVeriKey && (
+              <p className="text-red-400 text-sm">{errors.emailVeriKey.message}</p>
             )}
           </>
         )}
