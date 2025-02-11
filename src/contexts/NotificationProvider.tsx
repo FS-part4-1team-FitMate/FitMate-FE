@@ -1,17 +1,7 @@
 import "dotenv/config";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Notification } from "@/types/notis";
 import { useUser } from "./UserProvider";
-
-// 알림 데이터 타입 정의
-interface Notification {
-  id: number;
-  userId: string;
-  type: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export interface NotificationContextType {
   notifications: Notification[];
