@@ -29,7 +29,7 @@ interface Props {
 function SignUpForm({ role }: Props) {
   const router = useRouter();
   const setUser = useSetUser();
-  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState<boolean | null>(null);
   const [emailVeriKeyOpen, setEmailVeriKeyOpen] = useState(false);
   const [error, setError] = useState<
     | null
@@ -191,6 +191,9 @@ function SignUpForm({ role }: Props) {
                   if (res.message === "이메일 인증 성공") {
                     setEmailVerified(true);
                     setEmailVeriKeyOpen(true);
+                  } else {
+                    setEmailVerified(false);
+                    setEmailVeriKeyOpen(true);
                   }
                 }}
               >
@@ -202,7 +205,9 @@ function SignUpForm({ role }: Props) {
             )}
           </>
         )}
-        {emailVerified ? (
+        {emailVerified === null ? (
+          <></>
+        ) : emailVerified ? (
           <p className="text-green-400 text-sm">이메일 인증 성공</p>
         ) : (
           <p className="text-red-400 text-sm">이메일 인증 실패</p>
