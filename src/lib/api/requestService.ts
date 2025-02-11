@@ -3,7 +3,8 @@ import instance from "./instance";
 export async function createLessonRequest(data: {
     lessonType: string;
     subLessonType: string;
-    duration: number;
+    lessonTime: number;
+    lessonCount: number;
     startDate: Date;
     endDate: Date;
     locationType: string;

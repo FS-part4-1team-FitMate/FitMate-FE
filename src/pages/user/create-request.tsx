@@ -13,7 +13,8 @@ type FormValues = {
   subLessonType: string;
   startDate: Date;
   endDate: Date;
-  duration: number;
+  lessonCount: number;
+  lessonTime: number;
   locationType: string;
   address?: string;
 };
@@ -33,7 +34,8 @@ const createRequest = () => {
       subLessonType: "",
       startDate: new Date(),
       endDate: new Date(),
-      duration: 0,
+      lessonCount: 0,
+      lessonTime: 0,
       locationType: "",
       address: "",
     },
@@ -44,7 +46,8 @@ const createRequest = () => {
     "subLessonType",
     "startDate",
     "endDate",
-    "duration",
+    "lessonCount",
+    "lessonTime",
     "locationType",
     "address",
   ];
@@ -283,7 +286,7 @@ const createRequest = () => {
         {step === 3 && (
           <div className="space-y-4">
             <Controller
-              name="duration"
+              name="lessonCount"
               control={control}
               render={({ field }) => (
                 <input
@@ -308,6 +311,33 @@ const createRequest = () => {
         )}
 
         {step === 4 && (
+          <div className="space-y-4">
+            <Controller
+              name="lessonTime"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="number"
+                  className="w-full py-2 px-4 rounded-lg border-b-0 text-lg"
+                  placeholder="횟수를 입력하세요"
+                  value={currentAnswer}
+                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                />
+              )}
+            />
+            <button
+              type="button"
+              onClick={handleAnswer}
+              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              disabled={!currentAnswer}
+            >
+              입력 완료
+            </button>
+          </div>
+        )}
+
+        {step === 5 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
               {["온라인", "오프라인"].map((option) => (
@@ -340,7 +370,9 @@ const createRequest = () => {
           </div>
         )}
 
-        {step === 5 && (
+        
+
+        {step === 6 && (
           <div className="space-y-4">
             <Controller
               name="address"
