@@ -87,11 +87,17 @@ export default function FindTrainer() {
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[5rem]">
           <div className="flex flex-col gap-[2.4rem]">
             <div className="flex justify-between items-center w-full pt-[1.6rem] pc:justify-end pc:pt-0">
-              <div className="block pc:hidden">
+              <div className="flex items-center gap-8 pc:hidden">
                 <FilterTrainer
                   onFilterReset={handleFilterReset}
                   onFilterChange={handleFilterChange}
                 />
+                <p
+                  onClick={handleFilterReset}
+                  className="text-gray-300 text-sm font-medium cursor-pointer"
+                >
+                  초기화
+                </p>
               </div>
               <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
             </div>
