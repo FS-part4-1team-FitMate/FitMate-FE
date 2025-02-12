@@ -10,7 +10,11 @@ export interface NotificationContextType {
 }
 
 // 초기값 설정
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextType>({
+  notifications: [],
+  addNotification: (notification: Notification) => {},
+  clearNotifications: () => {},
+});
 
 interface Props {
   children: React.ReactNode;
