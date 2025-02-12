@@ -68,7 +68,7 @@ function Noti({ initialQuery }: PageProps) {
   }, [notiDataFlatted, notifications?.notifications]);
 
   return (
-    <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[600px] mx-auto p-[12px]">
+    <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[500px] mx-auto p-[12px]">
       <Head>
         <title>알림 페이지</title>
       </Head>
@@ -113,7 +113,7 @@ function Noti({ initialQuery }: PageProps) {
           {hasNoti_CHAT_MESSAGE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
         </div>
       </div>
-      <div className="text-2lg">
+      <div className="w-full text-2lg">
         {notifications?.notifications
           .filter((noti) => noti.type === currentTab)
           .map((noti) => {
