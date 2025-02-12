@@ -20,6 +20,8 @@ function Notifications({
   readNotiMutation,
 }: NotificationsProps) {
   const notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
+  console.log("notiDataFlatted", notiDataFlatted);
+  console.log("notifications.notifications", notifications.notifications);
 
   return (
     <div
@@ -30,7 +32,7 @@ function Notifications({
         return (
           <div
             key={noti.id}
-            className="text-md my-[10px]"
+            className={noti.isRead ? "text-slate-400 text-md my-[10px]" : "text-md my-[10px]"}
             onClick={() => {
               readNotiMutation.mutate(noti.id);
             }}
