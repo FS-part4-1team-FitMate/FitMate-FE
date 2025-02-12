@@ -1,236 +1,18 @@
-import { NotificationContextType, useNotifications } from "@/contexts/NotificationProvider";
+import { useNotifications } from "@/contexts/NotificationProvider";
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
 import { ic_menu, ic_noti, ic_profile_default_sm, logo_xl } from "@/imageExports";
 import "dotenv/config";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
-import { useGetNotiList } from "@/lib/api/queries/notification";
+import { useEffect, useRef, useState } from "react";
+import { useGetNotiList, useReadNotiMutation } from "@/lib/api/queries/notification";
 import { useGetUser } from "@/lib/api/queries/user";
-import { active_class } from "@/types/constants";
-import { ProfileData, Role, User } from "@/types/types";
-
-function Logo() {
-  return (
-    <Link className="shrink-0" href="/">
-      <Image className="h-auto" src={logo_xl} alt="Logo" width={96} height={32} />
-    </Link>
-  );
-}
-
-interface MenusProps {
-  addClass?: boolean;
-  user: User | null;
-  router: ReturnType<typeof useRouter>;
-}
-
-function Menus({ addClass, user, router }: MenusProps) {
-  if (user && user?.role === Role.USER) {
-    return (
-      <>
-        <li
-          className={
-            addClass ? "w-[140px] h-auto text-lg flex justify-center items-center py-[10px]" : ""
-          }
-        >
-          <Link
-            href="/user/create-request"
-            className={router.pathname === "/user/create-request" ? active_class : ""}
-          >
-            레슨 요청
-          </Link>
-        </li>
-        <li
-          className={
-            addClass
-              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
-              : ""
-          }
-        >
-          <Link
-            href="/user/find-trainer"
-            className={router.pathname === "/user/find-trainer" ? active_class : ""}
-          >
-            강사님 찾기
-          </Link>
-        </li>
-        <li
-          className={
-            addClass
-              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
-              : ""
-          }
-        >
-          <Link
-            href="/user/my-lesson/active-lesson"
-            className={router.pathname.startsWith("/user/my-lesson") ? active_class : ""}
-          >
-            내 레슨 관리
-          </Link>
-        </li>
-      </>
-    );
-  } else if (user && user?.role === Role.TRAINER) {
-    return (
-      <>
-        <li
-          className={
-            addClass ? "w-[140px] h-auto text-lg flex justify-center items-center py-[10px]" : ""
-          }
-        >
-          <Link
-            href="/trainer/received-request"
-            className={router.pathname === "/trainer/received-request" ? active_class : ""}
-          >
-            받은 요청
-          </Link>
-        </li>
-        <li
-          className={
-            addClass
-              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
-              : ""
-          }
-        >
-          <Link
-            href="/trainer/managing-request/sent-request"
-            className={router.pathname.startsWith("/trainer/managing-request") ? active_class : ""}
-          >
-            내 견적 관리
-          </Link>
-        </li>
-      </>
-    );
-  } else {
-    return (
-      <li
-        className={
-          addClass ? "w-[140px] h-auto text-lg flex justify-center items-center py-[10px]" : ""
-        }
-      >
-        <Link
-          href="/user/find-trainer"
-          className={router.pathname === "/user/find-trainer" ? active_class : ""}
-        >
-          강사님 찾기
-        </Link>
-      </li>
-    );
-  }
-}
-
-interface MyProfileMenusProps {
-  user: User;
-  profileData?: ProfileData;
-  setUser: Dispatch<SetStateAction<User | null>>;
-  router: ReturnType<typeof useRouter>;
-}
-
-function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusProps) {
-  return (
-    <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px] z-10">
-      <div className="w-[240px] h-auto text-lg flex justify-center items-center py-[10px]">
-        <Link
-          href={user?.role === Role.TRAINER ? `/trainer/${user?.id}/profile` : "/user/profile"}
-          className={
-            router.pathname.endsWith("profile")
-              ? `${active_class} flex justify-center items-center gap-[10px]`
-              : "flex justify-center items-center gap-[10px]"
-          }
-        >
-          <Image
-            className="object-cover rounded-full w-[24px] h-[24px]"
-            src={
-              profileData?.profileImagePresignedUrl
-                ? profileData.profileImagePresignedUrl
-                : ic_profile_default_sm
-            }
-            alt="Profile Image"
-            width={24}
-            height={24}
-          />
-          <span>{user?.nickname}&nbsp;프로필</span>
-        </Link>
-      </div>
-      <div
-        className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
-        onClick={() => {
-          if (user?.hasProfile) {
-            if (user.role === Role.USER) {
-              router.push("/user/profile/edit");
-            } else if (user.role === Role.TRAINER) {
-              router.push(`/trainer/${user.id}/profile/edit`);
-            }
-          } else {
-            if (user?.role === Role.USER) {
-              router.push("/user/profile/regist");
-            } else if (user?.role === Role.TRAINER) {
-              router.push(`/trainer/${user?.id}/profile/regist`);
-            }
-          }
-        }}
-      >
-        <div
-          className={
-            router.pathname.endsWith("profile/edit") || router.pathname.endsWith("profile/regist")
-              ? active_class
-              : ""
-          }
-        >
-          프로필&nbsp;{user?.hasProfile ? "수정" : "등록"}
-        </div>
-      </div>
-      <div
-        className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
-        onClick={() => {
-          localStorage.removeItem("userData");
-          setUser(null);
-          router.push("/login");
-        }}
-      >
-        로그아웃
-      </div>
-    </div>
-  );
-}
-
-function LogInButton() {
-  return (
-    <Link href="/login">
-      <button className="px-[16px] py-[4px] text-lg rounded-xl bg-blue-500 text-white">
-        로그인
-      </button>
-    </Link>
-  );
-}
-
-interface NotificationsProps {
-  notifications: NotificationContextType;
-  hasNextNotiPage?: boolean;
-  fetchNextNotiPage: () => void;
-}
-
-function Notifications({ notifications, hasNextNotiPage, fetchNextNotiPage }: NotificationsProps) {
-  return (
-    <div
-      className={`absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10`}
-    >
-      <h3 className="text-lg m-0 p-0">알림</h3>
-      <InfiniteScroll hasMore={hasNextNotiPage} loadMore={fetchNextNotiPage}>
-        {notifications?.notifications?.map((noti) => {
-          return (
-            <div key={noti.id} className="text-md my-[10px]">
-              {noti.message}
-            </div>
-          );
-        })}
-      </InfiniteScroll>
-    </div>
-  );
-}
+import LogInButton from "./LogInButton";
+import Logo from "./Logo";
+import Menus from "./Menus";
+import MyProfileMenus from "./MyProfileMenus";
+import Notifications from "./Notifications";
 
 function GNB() {
   const refNoti = useRef<HTMLDivElement>(null);
@@ -252,6 +34,7 @@ function GNB() {
     isError: isNotiError,
   } = useGetNotiList(user?.id!, { page: 1, limit: 10, order: "created_at", sort: "desc" });
   const notifications = useNotifications();
+  const readNotiMutation = useReadNotiMutation();
 
   const handleOutsideClick = (e: MouseEvent) => {
     if (refMyProfile.current && !refMyProfile.current.contains(e.target as Node)) {
@@ -281,23 +64,6 @@ function GNB() {
     }
   }, [profileData]);
 
-  // useEffect(() => {
-  //   const eventSource = new EventSource(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/sse?userId=${user?.id!}`,
-  //   ); // 서버의 SSE 엔드포인트
-  //   eventSource.onmessage = (event) => {
-  //     const data = JSON.parse(event.data);
-  //     // 받은 데이터 처리 (예: 알림 표시, 상태 업데이트)
-  //     console.log(data);
-  //   };
-  //   eventSource.onerror = (error) => {
-  //     console.error("Error:", error);
-  //   };
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, [user]);
-
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
       <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
@@ -321,9 +87,11 @@ function GNB() {
                 />
                 {notiIsOpen && (
                   <Notifications
+                    notiData={notiData}
                     notifications={notifications}
                     hasNextNotiPage={hasNextNotiPage}
                     fetchNextNotiPage={fetchNextNotiPage}
+                    readNotiMutation={readNotiMutation}
                   />
                 )}
               </div>
@@ -382,9 +150,11 @@ function GNB() {
                 />
                 {notiIsOpen && (
                   <Notifications
+                    notiData={notiData}
                     notifications={notifications}
                     hasNextNotiPage={hasNextNotiPage}
                     fetchNextNotiPage={fetchNextNotiPage}
+                    readNotiMutation={readNotiMutation}
                   />
                 )}
               </div>
