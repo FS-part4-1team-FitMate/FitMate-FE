@@ -57,7 +57,7 @@ function Notifications({
       <div className="flex justify-between items-center">
         <h3 className="inline-block text-lg m-0 p-0">알림</h3>
         <Button
-          className="bg-slate-400 text-black-500 text-md"
+          className="bg-slate-400 text-black-500 text-md px-[8px] py-[5px]"
           onClick={() => router.push(`/noti`)}
         >
           전체 보기
@@ -71,6 +71,7 @@ function Notifications({
                 ? "border-b border-slate-950"
                 : "text-slate-500"
             }
+            onClick={() => setCurrentTab(NotificationType.LESSON_QUOTE)}
           >
             {notificationType_trans[NotificationType.LESSON_QUOTE]}
           </div>
@@ -80,6 +81,7 @@ function Notifications({
                 ? "border-b border-slate-950"
                 : "text-slate-500"
             }
+            onClick={() => setCurrentTab(NotificationType.CHAT_MESSAGE)}
           >
             {notificationType_trans[NotificationType.CHAT_MESSAGE]}
           </div>
