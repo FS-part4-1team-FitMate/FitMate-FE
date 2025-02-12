@@ -1,4 +1,7 @@
+import clsx from "clsx";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { useDirectQuote, useGetMyLessons } from "@/lib/api/queries/lesson";
 import { Profile } from "@/types/types";
 import Button from "../Common/Button";
@@ -6,9 +9,12 @@ import Favorite from "../Common/Favorite";
 
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const router = useRouter();
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const { data: myLessonList } = useGetMyLessons({ status: "PENDING" });
 
+  const pendingLesson = myLessonList?.list[0];
+  const isDirectQuote = pendingLesson?.directQuoteRequest || [];
   const lessonId = myLessonList?.list[0]?.id;
   const trainerId = profile?.userId;
 
@@ -17,6 +23,8 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   const handleLessonRequest = () => {
     if (!lessonId || myLessonList.list.length === 0) {
       router.push("/user/create-request");
+    } else if (isDirectQuote.length !== 0) {
+      toast.error("이미 다른 트레이너에게 지정 견적을 요청하였습니다!");
     } else {
       handleSendDirectQuote();
     }
@@ -25,6 +33,7 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   const handleSendDirectQuote = async () => {
     if (lessonId && trainerId) {
       directQuote.mutate({ lessonId, trainerId: trainerId });
+      setDisabled(true);
     }
   };
 
@@ -42,9 +51,15 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
         </div>
         <Button
           onClick={handleLessonRequest}
-          className="hover:bg-blue-100 hover:border hover:border-blue-300 hover:text-blue-300 h-[5.4rem] p-4 rounded-[1.6rem] font-semibold w-full text-gray-50 bg-blue-300 shadow-card pc:w-[35.3rem] pc:text-xl"
+          className={clsx(
+            "h-[5.4rem] p-4 rounded-[1.6rem] font-semibold w-full shadow-card pc:w-[35.3rem] pc:text-xl",
+            disabled
+              ? "bg-gray-300 text-white"
+              : "hover:bg-blue-100 hover:border hover:border-blue-300 hover:text-blue-300 text-gray-50 bg-blue-300",
+          )}
+          disabled={disabled}
         >
-          지정 견적 요청하기
+          {disabled ? "견적 요청 완료" : "지정 견적 요청하기"}
         </Button>
       </div>
     </div>
