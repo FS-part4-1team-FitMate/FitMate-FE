@@ -102,7 +102,11 @@ function Notifications({
               </Noti>
             );
           })}
-        <InfiniteScroll hasMore={hasNextNotiPage} loadMore={fetchNextNotiPage}>
+        <InfiniteScroll
+          className="max-h-[300px] overflow-y-auto"
+          hasMore={hasNextNotiPage}
+          loadMore={() => fetchNextNotiPage()}
+        >
           {notiDataFlatted
             .filter((noti) => noti.type === currentTab)
             .filter((noti) => !noti.isRead)
