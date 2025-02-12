@@ -1,30 +1,34 @@
 import { NotificationContextType } from "@/contexts/NotificationProvider";
+import { ic_red_dot } from "@/imageExports";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { InfiniteData } from "@tanstack/react-query";
 import { useReadNotiMutation } from "@/lib/api/queries/notification";
+import formatDateTime from "@/lib/utils/formatDateTime";
 import { NotiResult, Notification, NotificationType, notificationType_trans } from "@/types/notis";
 import Button from "../Common/Button";
 
 interface NotiProps {
   noti: Notification;
-  onClick: () => void;
-  children: React.ReactNode;
+  readNotiMutation: ReturnType<typeof useReadNotiMutation>;
 }
 
-function Noti({ noti, onClick, children }: NotiProps) {
+export function Noti({ noti, readNotiMutation }: NotiProps) {
   const [isRead, setIsRead] = useState<boolean>(noti.isRead);
 
   return (
     <div
-      className={isRead ? "text-slate-400 text-md my-[10px]" : "text-md my-[10px]"}
+      className={`${isRead ? "text-slate-400 " : ""}text-md py-[10px] border-b border-slate-300`}
       onClick={() => {
         setIsRead((prev) => !prev);
-        onClick();
+        readNotiMutation.mutate(noti.id);
       }}
     >
-      {children}
+      {noti.message}
+      <br />
+      <div className="text-right text-slate-500">{formatDateTime(noti.updatedAt)}</div>
     </div>
   );
 }
@@ -46,9 +50,28 @@ function Notifications({
 }: NotificationsProps) {
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState<NotificationType>(NotificationType.LESSON_QUOTE);
+  const [hasNoti_LESSON_QUOTE, setHasNoti_LESSON_QUOTE] = useState<boolean>(true);
+  const [hasNoti_CHAT_MESSAGE, setHasNoti_CHAT_MESSAGE] = useState<boolean>(true);
   const notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
-  console.log("notiDataFlatted", notiDataFlatted);
-  console.log("notifications.notifications", notifications.notifications);
+
+  useEffect(() => {
+    setHasNoti_LESSON_QUOTE(
+      notiDataFlatted
+        .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
+        .filter((noti) => !noti.isRead).length > 0 ||
+        notifications?.notifications
+          .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
+          .filter((noti) => !noti.isRead).length > 0,
+    );
+    setHasNoti_CHAT_MESSAGE(
+      notiDataFlatted
+        .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
+        .filter((noti) => !noti.isRead).length > 0 ||
+        notifications?.notifications
+          .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
+          .filter((noti) => !noti.isRead).length > 0,
+    );
+  }, [notiDataFlatted, notifications?.notifications]);
 
   return (
     <div
@@ -65,65 +88,49 @@ function Notifications({
       </div>
       <div>
         <div className="flex gap-[20px] justify-normal items-center border-b-2 border-slate-400">
-          <div
-            className={
-              currentTab === NotificationType.LESSON_QUOTE
-                ? "border-b border-slate-950"
-                : "text-slate-500"
-            }
-            onClick={() => setCurrentTab(NotificationType.LESSON_QUOTE)}
-          >
-            {notificationType_trans[NotificationType.LESSON_QUOTE]}
+          <div className="flex justify-normal items-start">
+            <div
+              className={
+                currentTab === NotificationType.LESSON_QUOTE
+                  ? "border-b border-slate-950"
+                  : "text-slate-500"
+              }
+              onClick={() => setCurrentTab(NotificationType.LESSON_QUOTE)}
+            >
+              {notificationType_trans[NotificationType.LESSON_QUOTE]}
+            </div>
+            {hasNoti_LESSON_QUOTE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
           </div>
-          <div
-            className={
-              currentTab === NotificationType.CHAT_MESSAGE
-                ? "border-b border-slate-950"
-                : "text-slate-500"
-            }
-            onClick={() => setCurrentTab(NotificationType.CHAT_MESSAGE)}
-          >
-            {notificationType_trans[NotificationType.CHAT_MESSAGE]}
+          <div className="flex justify-normal items-start">
+            <div
+              className={
+                currentTab === NotificationType.CHAT_MESSAGE
+                  ? "border-b border-slate-950"
+                  : "text-slate-500"
+              }
+              onClick={() => setCurrentTab(NotificationType.CHAT_MESSAGE)}
+            >
+              {notificationType_trans[NotificationType.CHAT_MESSAGE]}
+            </div>
+            {hasNoti_CHAT_MESSAGE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
           </div>
         </div>
-        {notifications?.notifications
-          .filter((noti) => noti.type === currentTab)
-          .filter((noti) => !noti.isRead)
-          .map((noti) => {
-            return (
-              <Noti
-                key={noti.id}
-                noti={noti}
-                onClick={() => {
-                  readNotiMutation.mutate(noti.id);
-                }}
-              >
-                {noti.message}
-              </Noti>
-            );
-          })}
-        <InfiniteScroll
-          className="max-h-[300px] overflow-y-auto"
-          hasMore={hasNextNotiPage}
-          loadMore={() => fetchNextNotiPage()}
-        >
-          {notiDataFlatted
+        <div className="max-h-[300px] overflow-y-auto">
+          {notifications?.notifications
             .filter((noti) => noti.type === currentTab)
             .filter((noti) => !noti.isRead)
             .map((noti) => {
-              return (
-                <Noti
-                  key={noti.id}
-                  noti={noti}
-                  onClick={() => {
-                    readNotiMutation.mutate(noti.id);
-                  }}
-                >
-                  {noti.message}
-                </Noti>
-              );
+              return <Noti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
             })}
-        </InfiniteScroll>
+          <InfiniteScroll hasMore={hasNextNotiPage} loadMore={() => fetchNextNotiPage()}>
+            {notiDataFlatted
+              .filter((noti) => noti.type === currentTab)
+              .filter((noti) => !noti.isRead)
+              .map((noti) => {
+                return <Noti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
+              })}
+          </InfiniteScroll>
+        </div>
       </div>
     </div>
   );
