@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
 import { LessonType, lessonType_trans } from "@/types/types";
-import ActiveEmpty from "@/components/ActiveLesson/ActiveEmpty";
 import ActiveLessonSection from "@/components/ActiveLesson/ActiveLessonSection";
+import EmptyLesson from "@/components/Common/EmptyLesson";
 import Loading from "@/components/Common/Loading";
 
 export default function ActiveLesson() {
@@ -38,17 +38,19 @@ export default function ActiveLesson() {
   };
 
   return (
-    <div className="flex max-w-[192rem] m-auto py-16 px-8 bg-bg-100 pc:py-[6.4rem]">
+    <>
       {activeLesson.length > 0 ? (
-        activeLesson.map((lesson) => (
-          <ActiveLessonSection
-            title={lessonType_trans[lesson.lessonType].ko}
-            items={filteredService(lesson.lessonType) || []}
-          />
-        ))
+        <div className="flex max-w-[192rem] m-auto py-16 px-4 bg-bg-100 pc:py-[6.4rem] pc:px-8">
+          {activeLesson.map((lesson) => (
+            <ActiveLessonSection
+              title={lessonType_trans[lesson.lessonType].ko}
+              items={filteredService(lesson.lessonType) || []}
+            />
+          ))}
+        </div>
       ) : (
-        <ActiveEmpty />
+        <EmptyLesson message="진행 중인 레슨이 없습니다." />
       )}
-    </div>
+    </>
   );
 }

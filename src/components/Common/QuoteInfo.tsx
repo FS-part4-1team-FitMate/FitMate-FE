@@ -2,7 +2,7 @@ import clsx from "clsx";
 import formatDate from "@/lib/utils/formatDate";
 import formatDateTime from "@/lib/utils/formatDateTime";
 import { Lesson } from "@/types/lesson";
-import { LessonType, LocationType, lessonType_trans, locationType_trans } from "@/types/types";
+import { lessonSubType_trans, lessonType_trans, locationType_trans } from "@/types/types";
 
 const content_area = clsx(
   "flex flex-col gap-[1.6rem]",
@@ -10,43 +10,41 @@ const content_area = clsx(
   "pc:py-[3.2rem] tablet:py-[2.4rem] mobile:py-[1.6rem]",
   "pc:px-16 tablet:px-[3.2rem] mobile:px-8",
 );
-const content_wrap = "flex items-center gap-[3.2rem]";
-const label = "w-36 text-gray-300 text-md font-normal pc:text-2lg";
-const content = "text-md font-normal pc:text-2lg";
 
 export default function QuoteInfo({ lesson }: { lesson: Lesson }) {
   const getLocation = () => {
     if (lesson?.locationType === "OFFLINE") {
       return lesson.roadAddress;
     } else {
-      return locationType_trans[lesson?.locationType as LocationType];
+      return locationType_trans[lesson?.locationType];
     }
   };
+
+  const quoteInfo = [
+    { label: "견적 요청일", content: formatDate(lesson?.createdAt) },
+    {
+      label: "서비스",
+      content: `${lessonType_trans[lesson?.lessonType]?.ko} > ${lessonSubType_trans[lesson?.lessonSubType]}`,
+    },
+    { label: "레슨 시작일", content: formatDateTime(lesson?.startDate) },
+    { label: "레슨 종료일", content: formatDateTime(lesson?.endDate) },
+    { label: "레슨 횟수", content: lesson?.lessonCount },
+    { label: "레슨 시간", content: lesson?.lessonTime },
+    { label: "레슨 장소", content: getLocation() },
+  ];
 
   return (
     <div className="flex flex-col gap-[2.4rem] pc:gap-16">
       <p className="font-semibold text-lg pc:text-2xl">견적 정보</p>
       <div className={content_area}>
-        <div className={content_wrap}>
-          <p className={label}>견적 요청일</p>
-          <p className={content}>{formatDate(lesson?.createdAt)}</p>
-        </div>
-        <div className={content_wrap}>
-          <p className={label}>서비스 </p>
-          <p className={content}>{lessonType_trans[lesson?.lessonType as LessonType]?.ko}</p>
-        </div>
-        <div className={content_wrap}>
-          <p className={label}>레슨 시작일</p>
-          <p className={content}>{formatDateTime(lesson?.startDate)}</p>
-        </div>
-        <div className={content_wrap}>
-          <p className={label}>레슨 종료일</p>
-          <p className={content}>{formatDateTime(lesson?.endDate)}</p>
-        </div>
-        <div className={content_wrap}>
-          <p className={label}>레슨 장소 </p>
-          <p className={content}>{getLocation()}</p>
-        </div>
+        {quoteInfo.map((info) => (
+          <div className="flex items-start gap-[3.2rem]">
+            <p className="w-28 text-gray-300 text-md font-normal pc:w-36 pc:text-2lg">
+              {info.label}
+            </p>
+            <p className="text-md font-normal pc:text-2lg">{info.content}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

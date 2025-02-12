@@ -28,6 +28,51 @@ export const lessonType_trans = {
   [LessonType.REHAB]: { img: ic_health_sm, ko: "재활치료" },
 };
 
+export enum LessonSubType {
+  // SPORTS
+  SOCCER = "SOCCER",
+  BASKETBALL = "BASKETBALL",
+  BASEBALL = "BASEBALL",
+  TENNIS = "TENNIS",
+  BADMINTON = "BADMINTON",
+  TABLE_TENNIS = "TABLE_TENNIS",
+  SKI = "SKI",
+  SURFING = "SURFING",
+  BOXING = "BOXING",
+  TAEKWONDO = "TAEKWONDO",
+  JIUJITSU = "JIUJITSU",
+
+  // FITNESS
+  PERSONAL_TRAINING = "PERSONAL_TRAINING",
+  YOGA = "YOGA",
+  PILATES = "PILATES",
+  DIET_MANAGEMENT = "DIET_MANAGEMENT",
+
+  // REHAB
+  STRETCHING = "STRETCHING",
+  REHAB_TREATMENT = "REHAB_TREATMENT",
+}
+
+export const lessonSubType_trans = {
+  [LessonSubType.SOCCER]: "축구",
+  [LessonSubType.BASKETBALL]: "농구",
+  [LessonSubType.BASEBALL]: "야구",
+  [LessonSubType.TENNIS]: "테니스",
+  [LessonSubType.BADMINTON]: "배드민턴",
+  [LessonSubType.TABLE_TENNIS]: "탁구",
+  [LessonSubType.SKI]: "스키",
+  [LessonSubType.SURFING]: "서핑",
+  [LessonSubType.BOXING]: "복싱",
+  [LessonSubType.TAEKWONDO]: "태권도",
+  [LessonSubType.JIUJITSU]: "주짓수",
+  [LessonSubType.PERSONAL_TRAINING]: "PT",
+  [LessonSubType.YOGA]: "요가",
+  [LessonSubType.PILATES]: "필라테스",
+  [LessonSubType.DIET_MANAGEMENT]: "식단관리",
+  [LessonSubType.STRETCHING]: "스트레칭",
+  [LessonSubType.REHAB_TREATMENT]: "재활치료",
+};
+
 export enum Region {
   SEOUL = "SEOUL",
   GYEONGGI = "GYEONGGI",

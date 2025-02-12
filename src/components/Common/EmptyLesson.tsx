@@ -1,11 +1,11 @@
 import Link from "next/link";
-import Button from "../Common/Button";
-import { HorizontalLine } from "../Common/Line";
+import Button from "./Button";
+import { HorizontalLine } from "./Line";
 
-export default function ActiveEmpty() {
+export default function EmptyLesson({ message }: { message: string }) {
   return (
-    <div className="flex flex-col items-center gap-16 w-full h-screen m-auto pc:max-w-[80rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
-      <div className="flex flex-col gap-4 p-[8rem]">
+    <div className="flex flex-col items-center gap-16 w-full h-screen mx-auto px-4 pc:py-16 pc:px-8 pc:max-w-[80rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
+      <div className="flex flex-col items-center gap-4 pc:p-32 tablet:p-32">
         <svg
           width="200"
           height="200"
@@ -28,7 +28,7 @@ export default function ActiveEmpty() {
             strokeLinecap="round"
           />
         </svg>
-        <h1 className="text-gray-300 text-2xl font-bold text-nowrap">진행 중인 레슨이 없습니다.</h1>
+        <h1 className="text-gray-300 text-2xl font-bold text-nowrap">{message}</h1>
       </div>
       <HorizontalLine width="100%" />
       <div className="flex flex-col gap-8 w-full text-md font-regular pc:text-lg">
