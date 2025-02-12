@@ -16,7 +16,7 @@ type FormValues = {
   lessonCount: number;
   lessonTime: number;
   locationType: string;
-  address?: string;
+  roadAddress?: string;
 };
 
 const createRequest = () => {
@@ -37,7 +37,7 @@ const createRequest = () => {
       lessonCount: 0,
       lessonTime: 0,
       locationType: "",
-      address: "",
+      roadAddress: "",
     },
   });
 
@@ -49,7 +49,7 @@ const createRequest = () => {
     "lessonCount",
     "lessonTime",
     "locationType",
-    "address",
+    "roadAddress",
   ];
 
   useEffect(() => {
@@ -377,25 +377,25 @@ const createRequest = () => {
         {step === 6 && (
           <div className="space-y-4">
             <Controller
-              name="address"
+              name="roadAddress"
               control={control}
               render={({ field }) => (
                 <input
                   {...field}
-                  id="address"
+                  id="roadAddress"
                   type="button"
                   className="w-full py-2 px-4 rounded-lg text-lg border"
-                  value={watch("address") || ""}
+                  value={watch("roadAddress") || ""}
                   onClick={() =>
                     new window.daum.Postcode({
                       oncomplete: function (data: any) {
                         var addr = "";
                         if (data.userSelectedType === "R") {
-                          addr = data.roadAddress;
+                          addr = data.roadaddress;
                         } else {
-                          addr = data.jibunAddress;
+                          addr = data.jibunaddress;
                         }
-                        setValue("address", addr);
+                        setValue("roadAddress", addr);
                       },
                     }).open()
                   }
@@ -405,7 +405,7 @@ const createRequest = () => {
             <button
               type="submit"
               className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
-              disabled={!watch("address")}
+              disabled={!watch("roadAddress")}
             >
               견적 요청하기
             </button>
