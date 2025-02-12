@@ -102,7 +102,7 @@ function Noti({ initialQuery }: PageProps) {
                 : "text-slate-500"
             }
             onClick={() => {
-              router.push(`/noti?type=${NotificationType.LESSON_QUOTE}`, undefined, {
+              router.push(`/noti?type=${NotificationType.CHAT_MESSAGE}`, undefined, {
                 shallow: true,
               });
               setCurrentTab(NotificationType.CHAT_MESSAGE);
