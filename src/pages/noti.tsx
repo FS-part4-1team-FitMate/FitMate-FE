@@ -75,7 +75,7 @@ function Noti({ initialQuery }: PageProps) {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold m-0 p-0">알림</h1>
       </div>
-      <div className="flex gap-[20px] justify-normal items-center border-b-2 border-slate-400">
+      <div className="flex gap-[20px] justify-normal items-center border-b-2 border-slate-400 text-xl">
         <div className="flex justify-normal items-start">
           <div
             className={
@@ -113,20 +113,20 @@ function Noti({ initialQuery }: PageProps) {
           {hasNoti_CHAT_MESSAGE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
         </div>
       </div>
-      {notifications?.notifications
-        .filter((noti) => noti.type === currentTab)
-        .filter((noti) => !noti.isRead)
-        .map((noti) => {
-          return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
-        })}
-      <InfiniteScroll hasMore={hasNextNotiPage} loadMore={() => fetchNextNotiPage()}>
-        {notiDataFlatted
+      <div className="text-2lg">
+        {notifications?.notifications
           .filter((noti) => noti.type === currentTab)
-          .filter((noti) => !noti.isRead)
           .map((noti) => {
             return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
           })}
-      </InfiniteScroll>
+        <InfiniteScroll hasMore={hasNextNotiPage} loadMore={() => fetchNextNotiPage()}>
+          {notiDataFlatted
+            .filter((noti) => noti.type === currentTab)
+            .map((noti) => {
+              return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
+            })}
+        </InfiniteScroll>
+      </div>
     </main>
   );
 }
