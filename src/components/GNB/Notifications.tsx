@@ -20,7 +20,7 @@ export function SingleNoti({ noti, readNotiMutation }: NotiProps) {
 
   return (
     <div
-      className={`${isRead ? "text-slate-400 " : ""}text-md py-[10px] border-b border-slate-300`}
+      className={`${isRead ? "text-slate-400 " : ""}w-full text-md py-[10px] border-b border-slate-300`}
       onClick={() => {
         setIsRead((prev) => !prev);
         readNotiMutation.mutate(noti.id);
