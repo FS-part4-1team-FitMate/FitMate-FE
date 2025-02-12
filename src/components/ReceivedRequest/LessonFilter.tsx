@@ -22,7 +22,7 @@ export default function LessonFilter({ setParams, checked, setChecked }: LessonF
         newParams = { ...newParams, lesson_type: value };
       } else if (filterType === "gender") {
         newParams = { ...newParams, gender: value };
-      } else if (filterType === "direct") {
+      } else if (filterType === "isDirectQuote") {
         newParams = { ...newParams, has_direct_quote: value === "DIRECT" };
       } else if (filterType === "region") {
         newParams = { ...newParams, region: value };

@@ -51,10 +51,11 @@ export default function ModalContainer({
         <Button
           type="button"
           className={clsx(
-            "w-full h-[6.4rem] text-gray-50 text-xl font-semibold",
-            isButtonEnabled ? "bg-blue-300 hover:bg-blue-300" : "bg-gray-200 cursor-default",
+            "w-full h-[6.4rem] py-[16px] text-gray-50 text-xl font-semibold",
+            isButtonEnabled ? "bg-blue-300 hover:bg-blue-200" : "bg-gray-200 cursor-default",
           )}
           onClick={onButtonClick}
+          disabled={!isButtonEnabled}
         >
           {buttonText}
         </Button>
