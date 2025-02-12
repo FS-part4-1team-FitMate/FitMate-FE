@@ -1,9 +1,11 @@
 import toast from "react-hot-toast";
 import { useGetFavoriteInfo, useGetTrainer } from "@/lib/api/queries/trainer";
+import formatPrice from "@/lib/utils/formatPrice";
 import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
+import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import Loading from "../Common/Loading";
 
@@ -30,6 +32,7 @@ export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote:
         isFavorited={favorite?.isFavorite}
         favoriteCount={favorite?.favoriteTotalCount}
       />
+      <QuotePrice price={formatPrice(quote?.price)} />
     </CardContainer>
   );
 }
