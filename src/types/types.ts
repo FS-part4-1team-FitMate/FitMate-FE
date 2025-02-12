@@ -129,14 +129,6 @@ export enum QuoteStatus {
   CANCELED = "CANCELED",
 }
 
-export enum NotificationType {
-  CHAT_MESSAGE = "CHAT_MESSAGE",
-  LESSON_CONFIRMATION = "LESSON_CONFIRMATION",
-  LESSON_DATE_REMINDER = "LESSON_DATE_REMINDER",
-  NEW_REQUEST = "NEW_REQUEST",
-  NEW_DIRECT_LESSON = "NEW_DIRECT_LESSON",
-}
-
 export type Profile = {
   id?: string | null;
   userId?: string | null;
