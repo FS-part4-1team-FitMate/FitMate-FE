@@ -32,7 +32,7 @@ function GNB() {
     hasNextPage: hasNextNotiPage,
     isLoading: isNotiLoading,
     isError: isNotiError,
-  } = useGetNotiList(user?.id!, { page: 1, limit: 10, order: "created_at", sort: "desc" });
+  } = useGetNotiList(user?.id!, { page: 1, limit: 5, order: "created_at", sort: "desc" });
   const notifications = useNotifications();
   const readNotiMutation = useReadNotiMutation();
 
