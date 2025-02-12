@@ -21,3 +21,13 @@ export interface NotiResult {
   totalCount: number;
   hasMore: boolean;
 }
+
+export enum NotificationType {
+  CHAT_MESSAGE = "CHAT_MESSAGE",
+  LESSON_QUOTE = "LESSON_QUOTE",
+}
+
+export const notificationType_trans = {
+  [NotificationType.CHAT_MESSAGE]: "메시지",
+  [NotificationType.LESSON_QUOTE]: "견적",
+};
