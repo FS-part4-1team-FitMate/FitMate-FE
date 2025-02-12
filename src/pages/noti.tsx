@@ -68,7 +68,7 @@ function Noti({ initialQuery }: PageProps) {
   }, [notiDataFlatted, notifications?.notifications]);
 
   return (
-    <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[800px] mx-auto p-[12px]">
+    <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[600px] mx-auto p-[12px]">
       <Head>
         <title>알림 페이지</title>
       </Head>
