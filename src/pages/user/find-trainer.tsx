@@ -47,11 +47,17 @@ export default function FindTrainer() {
       value = "";
     }
 
-    if (filterType === "lessonType") {
-      setParams({ lessonType: value });
-    } else if (filterType === "gender") {
-      setParams({ gender: value });
-    }
+    setParams((prevState) => {
+      let newParams = { ...prevState };
+
+      if (filterType === "lessonType") {
+        newParams = { ...newParams, lessonType: value };
+      } else if (filterType === "gender") {
+        newParams = { ...newParams, gender: value };
+      }
+
+      return newParams;
+    });
   };
 
   const handleFilterReset = () => {
