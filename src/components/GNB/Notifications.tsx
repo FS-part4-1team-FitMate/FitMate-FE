@@ -15,7 +15,7 @@ interface NotiProps {
   readNotiMutation: ReturnType<typeof useReadNotiMutation>;
 }
 
-export function Noti({ noti, readNotiMutation }: NotiProps) {
+export function SingleNoti({ noti, readNotiMutation }: NotiProps) {
   const [isRead, setIsRead] = useState<boolean>(noti.isRead);
 
   return (
@@ -120,14 +120,14 @@ function Notifications({
             .filter((noti) => noti.type === currentTab)
             .filter((noti) => !noti.isRead)
             .map((noti) => {
-              return <Noti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
+              return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
             })}
           <InfiniteScroll hasMore={hasNextNotiPage} loadMore={() => fetchNextNotiPage()}>
             {notiDataFlatted
               .filter((noti) => noti.type === currentTab)
               .filter((noti) => !noti.isRead)
               .map((noti) => {
-                return <Noti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
+                return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
               })}
           </InfiniteScroll>
         </div>
