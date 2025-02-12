@@ -3,7 +3,10 @@ import { useGetFavoriteInfo, useGetTrainer } from "@/lib/api/queries/trainer";
 import formatPrice from "@/lib/utils/formatPrice";
 import { Lesson } from "@/types/lesson";
 import { Quote } from "@/types/quote";
+import { LessonRequestStatus, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
+import ChipRequest from "../Chip/ChipRequest";
+import ChipRequestStatus from "../Chip/ChipRequestStatus";
 import CardContainer from "../Common/Card/CardContainer";
 import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
@@ -21,7 +24,9 @@ export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote:
   return (
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
+        <ChipRequestStatus requestStatus={LessonRequestStatus.COMPLETED} />
         <ChipLessonType lessonType={item.lessonType} />
+        {item.isDirectQuote && <ChipRequest requestType={RequestType.SPECIFIC} />}
       </div>
       <TrainerInfo
         name={trainerInfo.name}
