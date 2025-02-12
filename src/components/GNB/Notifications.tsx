@@ -58,12 +58,12 @@ function Notifications({
         <h3 className="inline-block text-lg m-0 p-0">알림</h3>
         <Button
           className="bg-slate-400 text-black-500 text-md px-[8px] py-[5px]"
-          onClick={() => router.push(`/noti`)}
+          onClick={() => router.push(`/noti?type=${currentTab}`)}
         >
           전체 보기
         </Button>
       </div>
-      <div className="max-h-[300px] overflow-y-auto">
+      <div>
         <div className="flex gap-[20px] justify-normal items-center border-b-2 border-slate-400">
           <div
             className={
