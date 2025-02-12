@@ -1,10 +1,10 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { NotiParams, NotiResult } from "@/types/notis";
-import { getNotiList } from "../notiService";
+import { getNotiList, readNoti } from "../notiService";
 
 export const useGetNotiList = (userId: string, { page, limit, order, sort }: NotiParams) => {
   return useInfiniteQuery<NotiResult>(
-    ["trainer-list", userId],
+    ["notifications", userId],
     ({ pageParam = 1 }) =>
       getNotiList({
         page: pageParam,
@@ -21,4 +21,23 @@ export const useGetNotiList = (userId: string, { page, limit, order, sort }: Not
       staleTime: 5 * 60 * 1000,
     },
   );
+};
+
+let readNotiTimeout: NodeJS.Timeout;
+
+export const useReadNotiMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (notiId: number) => readNoti(notiId),
+    onSuccess: () => {
+      clearTimeout(readNotiTimeout);
+      readNotiTimeout = setTimeout(() => {
+        queryClient.invalidateQueries(["notifications"]);
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 };

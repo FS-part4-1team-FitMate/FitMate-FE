@@ -22,7 +22,7 @@ export const NotificationProvider: React.FC<Props> = ({ children }) => {
 
   // 새 알림 추가
   const addNotification = (notification: Notification) => {
-    setNotifications((prev) => [...prev, notification]);
+    setNotifications((prev) => [notification, ...prev]);
   };
 
   // 모든 알림 초기화
