@@ -72,10 +72,10 @@ function LogIn() {
     try {
       setIsSubmitting(true);
       const userData = await postLogin(data);
-      if ("message" in userData) {
+      if (userData && "message" in userData) {
         setError({ message: userData.message });
       }
-      if ("user" in userData) {
+      if (userData && "user" in userData) {
         const { user } = userData;
         user.hasProfile = userData.hasProfile;
         setUser(user);
