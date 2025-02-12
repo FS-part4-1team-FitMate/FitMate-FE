@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { createLessonRequest } from "@/lib/api/requestService";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
-import { LessonType } from "@/types/types";
+import { LessonType, lessonType_trans } from "@/types/types";
 
 type FormValues = {
   lessonType: LessonType;
@@ -16,7 +16,7 @@ type FormValues = {
   lessonCount: number;
   lessonTime: number;
   locationType: string;
-  address?: string;
+  roadAddress?: string;
 };
 
 const createRequest = () => {
@@ -37,7 +37,7 @@ const createRequest = () => {
       lessonCount: 0,
       lessonTime: 0,
       locationType: "",
-      address: "",
+      roadAddress: "",
     },
   });
 
@@ -49,7 +49,7 @@ const createRequest = () => {
     "lessonCount",
     "lessonTime",
     "locationType",
-    "address",
+    "roadAddress",
   ];
 
   useEffect(() => {
@@ -57,16 +57,17 @@ const createRequest = () => {
       setChatHistory([{ type: "question", content: "어떤 운동을 하고 싶으세요?" }]);
     }
 
-    let script: HTMLScriptElement;
+    let script: HTMLScriptElement | null = null;
     if (!window.daum) {
-      // 다음 주소 API 스크립트 동적 로드
       script = document.createElement("script");
       script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
       script.async = true;
       document.body.appendChild(script);
     }
     return () => {
-      document.body.removeChild(script); // 컴포넌트 언마운트 시 정리
+      if (script) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -75,6 +76,7 @@ const createRequest = () => {
     "어떤 활동을 원하세요?",
     "기간을 정해주세요.",
     "몇 번을 원하시나요?",
+    "시간을 정해주세요",
     "수업 장소 유형을 선택해주세요.",
     "주소를 입력해주세요.",
   ];
@@ -207,7 +209,7 @@ const createRequest = () => {
                     onChange={() => setCurrentAnswer(option)}
                     checked={currentAnswer === option}
                   />
-                  <span className="text-lg">{option}</span>
+                  <span className="text-lg">{lessonType_trans[option]?.ko}</span>
                 </label>
               ))}
             </div>
@@ -375,25 +377,25 @@ const createRequest = () => {
         {step === 6 && (
           <div className="space-y-4">
             <Controller
-              name="address"
+              name="roadAddress"
               control={control}
               render={({ field }) => (
                 <input
                   {...field}
-                  id="address"
+                  id="roadAddress"
                   type="button"
                   className="w-full py-2 px-4 rounded-lg text-lg border"
-                  value={watch("address") || ""}
+                  value={watch("roadAddress") || ""}
                   onClick={() =>
                     new window.daum.Postcode({
                       oncomplete: function (data: any) {
                         var addr = "";
                         if (data.userSelectedType === "R") {
-                          addr = data.roadAddress;
+                          addr = data.roadaddress;
                         } else {
-                          addr = data.jibunAddress;
+                          addr = data.jibunaddress;
                         }
-                        setValue("address", addr);
+                        setValue("roadAddress", addr);
                       },
                     }).open()
                   }
@@ -403,7 +405,7 @@ const createRequest = () => {
             <button
               type="submit"
               className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
-              disabled={!watch("address")}
+              disabled={!watch("roadAddress")}
             >
               견적 요청하기
             </button>
