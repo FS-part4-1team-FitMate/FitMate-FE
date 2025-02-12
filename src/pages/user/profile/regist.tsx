@@ -61,7 +61,7 @@ function Regist() {
 
   const onSubmit = async (data: Profile) => {
     let profileImageFileToUpload;
-    if ("profileImage" in data) {
+    if (data && "profileImage" in data) {
       const profileImage = data.profileImage;
       console.log(profileImage);
       if (profileImage instanceof FileList && data.profileImage?.length) {
@@ -74,7 +74,7 @@ function Regist() {
     try {
       data.certificationCount = 0;
       const userData = await postProfile(data);
-      if ("profileImagePresignedUrl" in userData) {
+      if (userData && "profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,

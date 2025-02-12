@@ -87,7 +87,7 @@ function ProfileEdit() {
       changedData.region = selectedRegion;
     }
     let profileImageFileToUpload;
-    if ("profileImage" in changedData && changedData?.profileImage?.length) {
+    if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
       const profileImage = changedData.profileImage;
       console.log(profileImage);
       if (profileImage instanceof FileList && profileImage[0]?.name) {
@@ -100,7 +100,7 @@ function ProfileEdit() {
     try {
       delete changedData.updatedAt;
       const userData = await patchProfile(user?.id!, changedData);
-      if ("profileImagePresignedUrl" in userData) {
+      if (userData && "profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
