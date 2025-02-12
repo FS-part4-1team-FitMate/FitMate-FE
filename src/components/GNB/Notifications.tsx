@@ -18,6 +18,10 @@ interface NotiProps {
 export function SingleNoti({ noti, readNotiMutation }: NotiProps) {
   const [isRead, setIsRead] = useState<boolean>(noti.isRead);
 
+  useEffect(() => {
+    setIsRead(noti.isRead);
+  }, [noti]);
+
   return (
     <div
       className={`${isRead ? "text-slate-400 " : ""}w-full text-md py-[10px] border-b border-slate-300`}
