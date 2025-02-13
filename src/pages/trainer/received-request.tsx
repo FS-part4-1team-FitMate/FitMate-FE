@@ -1,4 +1,6 @@
+import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
+import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
@@ -85,20 +87,17 @@ export default function ReceivedRequest() {
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             {receivedList.length > 0 ? (
               receivedList.map((item) => {
-                const itemStartDate = new Date(item.startDate);
-                const currentTime = new Date();
-
-                if (itemStartDate > currentTime) {
-                  return (
-                    <div className="flex flex-col gap-[4.8rem]" key={item.id}>
-                      <RequestLessonCard item={item} />
-                    </div>
-                  );
-                }
-                return null;
+                return (
+                  <div className="flex flex-col gap-[4.8rem]" key={item.id}>
+                    <RequestLessonCard item={item} />
+                  </div>
+                );
               })
             ) : (
-              <div>등록된 요청이 없습니다.</div>
+              <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+                <Image src={img_non_review_md} alt="non-request" />
+                <h1 className="text-gray-400 text-lg font-regular">등록된 요청이 없어요!</h1>
+              </div>
             )}
           </InfiniteScroll>
         </div>

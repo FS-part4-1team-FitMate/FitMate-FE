@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { LessonType, Profile, Region } from "@/types/types";
-import ChipLessonType from "../Chip/ChipLessonType";
+import ChipDefault from "../Chip/ChipDefault";
 import ChipRegion from "../Chip/ChipRegion";
 import { HorizontalLine } from "../Common/Line";
 
@@ -30,14 +30,14 @@ export default function TrainerInfo({ profile }: { profile: Profile }) {
       <TrainerContent label="제공 서비스">
         <div className="flex gap-4">
           {profile?.lessonType?.map((lessonType: LessonType, index: number) => (
-            <ChipLessonType key={index} lessonType={lessonType} size="lg" />
+            <ChipDefault key={index} lessonType={lessonType} />
           ))}
         </div>
       </TrainerContent>
       <TrainerContent label="서비스 제공 지역">
         <div className="text-black-400 text-md font-normal pc:text-2lg">
           {profile?.region?.map((region: Region, index: number) => (
-            <ChipRegion key={index} region={region} size="lg" />
+            <ChipRegion key={index} region={region} />
           ))}
         </div>
       </TrainerContent>

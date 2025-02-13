@@ -115,9 +115,9 @@ function Profile({ initialQuery }: PageProps) {
           <div className="flex gap-[8px] justify-normal items-center">
             <Rating rating={avgRating} reviewCount={trainerProfile?.profile?.reviewCount} />
             <VerticalLine height="16px" />
-            <Experience experience={trainerProfile?.profile?.experience} />
+            <Experience experience={trainerProfile?.profile?.experience || 0} />
             <VerticalLine height="16px" />
-            <LessonCount lessonCount={trainerProfile?.profile?.lessonCount} />
+            <LessonCount lessonCount={trainerProfile?.profile?.lessonCount || 0} />
             <VerticalLine height="16px" />
             <Favorite trainerId={trainerId as string} />
           </div>
@@ -125,7 +125,7 @@ function Profile({ initialQuery }: PageProps) {
             <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>
             <div className="text-lg flex justify-normal items-center gap-[5px]">
               {trainerProfile?.profile?.lessonType.map((lessonType) => {
-                return <ChipLessonType key={lessonType} lessonType={lessonType} size="lg" />;
+                return <ChipLessonType key={lessonType} lessonType={lessonType} />;
               })}
             </div>
           </div>

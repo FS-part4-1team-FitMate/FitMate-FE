@@ -4,11 +4,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Profile, lessonType_trans } from "@/types/types";
-
-const link_wrap = clsx(
-  "flex justify-center items-center w-16 h-16 p-[0.8rem] border border-line-200 rounded-[0.8rem]",
-  "pc:w-[6.4rem] pc:h-[6.4rem] pc:p-4 pc:rounded-[1.6rem]",
-);
+import Button from "./Button";
 
 export default function ShareSNS({ label, trainerInfo }: { label: string; trainerInfo?: Profile }) {
   useEffect(() => {
@@ -56,8 +52,13 @@ export default function ShareSNS({ label, trainerInfo }: { label: string; traine
     <div className="flex flex-col gap-[0.8rem] pc:gap-[2.2rem]">
       <p className="text-md font-semibold pc:text-xl">{label}</p>
       <div className="flex items-center gap-[1.6rem]">
-        <button onClick={handleCopyLink}>
-          <div className={link_wrap}>
+        <Button className="" onClick={handleCopyLink}>
+          <div
+            className={clsx(
+              "flex justify-center items-center w-16 h-16 p-[0.8rem] border border-line-200 rounded-[0.8rem]",
+              "pc:w-[6.4rem] pc:h-[6.4rem] pc:p-4 pc:rounded-[1.6rem]",
+            )}
+          >
             <Image
               className="w-[2.4rem] h-[2.4rem] pc:w-[3.6rem] pc:h-[3.6rem]"
               src={ic_clip_md}
@@ -66,9 +67,9 @@ export default function ShareSNS({ label, trainerInfo }: { label: string; traine
               alt="링크 공유"
             />
           </div>
-        </button>
+        </Button>
         <Image
-          className="w-16 h-16 pc:w-[6.4rem] pc:h-[6.4rem]"
+          className="w-16 h-16 cursor-pointer pc:w-[6.4rem] pc:h-[6.4rem]"
           src={share_ic_kakao_md}
           width={64}
           height={64}
@@ -76,7 +77,7 @@ export default function ShareSNS({ label, trainerInfo }: { label: string; traine
           alt="카카오톡 공유"
         />
         <Image
-          className="w-16 h-16 pc:w-[6.4rem] pc:h-[6.4rem]"
+          className="w-16 h-16 cursor-pointer pc:w-[6.4rem] pc:h-[6.4rem]"
           src={share_ic_facebook_md}
           width={64}
           height={64}

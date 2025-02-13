@@ -13,9 +13,10 @@ interface Props {
   pad?: number; // Padding between stars
   pad0?: number; // Padding left-end, right-end
   rating: number; // Rating (0 ~ 1)
+  background?: boolean;
 }
 
-function StarPoints({ r = 12, r0 = 7, pad = 1, pad0 = 1, rating = 0 }: Props) {
+function StarPoints({ r = 12, r0 = 7, pad = 1, pad0 = 1, rating = 0, background = true }: Props) {
   let str = `${pad0},0 `;
   let yc = pad + r;
   let xc = pad0 + pad + r;
@@ -51,7 +52,12 @@ function StarPoints({ r = 12, r0 = 7, pad = 1, pad0 = 1, rating = 0 }: Props) {
       ></div>
       <svg className="absolute left-0 top-0 w-full h-full">
         <polygon
-          style={{ fill: "white", stroke: "black", strokeWidth: 0, fillRule: "evenodd" }}
+          style={{
+            fill: background ? "white" : "#F7F7F7",
+            stroke: "black",
+            strokeWidth: 0,
+            fillRule: "evenodd",
+          }}
           points={str}
         />
       </svg>

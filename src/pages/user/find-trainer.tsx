@@ -47,11 +47,17 @@ export default function FindTrainer() {
       value = "";
     }
 
-    if (filterType === "lessonType") {
-      setParams({ lessonType: value });
-    } else if (filterType === "gender") {
-      setParams({ gender: value });
-    }
+    setParams((prevState) => {
+      let newParams = { ...prevState };
+
+      if (filterType === "lessonType") {
+        newParams = { ...newParams, lessonType: value };
+      } else if (filterType === "gender") {
+        newParams = { ...newParams, gender: value };
+      }
+
+      return newParams;
+    });
   };
 
   const handleFilterReset = () => {
@@ -76,33 +82,45 @@ export default function FindTrainer() {
             onFilterReset={handleFilterReset}
             onFilterChange={handleFilterChange}
           />
-          <FavoriteTrainer trainerList={trainerList} />
+          <FavoriteTrainer />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[5rem]">
           <div className="flex flex-col gap-[2.4rem]">
             <div className="flex justify-between items-center w-full pt-[1.6rem] pc:justify-end pc:pt-0">
-              <div className="block pc:hidden">
+              <div className="flex items-center gap-8 pc:hidden">
                 <FilterTrainer
                   onFilterReset={handleFilterReset}
                   onFilterChange={handleFilterChange}
                 />
+                <p
+                  onClick={handleFilterReset}
+                  className="text-gray-300 text-sm font-medium cursor-pointer"
+                >
+                  초기화
+                </p>
               </div>
               <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
             </div>
             <Search onSearch={handleSearch} />
           </div>
-          <div className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap[2.4rem]">
-            <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-              {trainerList.map(
-                (trainer) =>
-                  trainer.profile !== null && (
-                    <Link href={`/user/detail-trainer/${trainer.id}`} key={trainer.id}>
-                      <FindTrainerCard trainer={trainer} />
-                    </Link>
-                  ),
-              )}
-            </InfiniteScroll>
-          </div>
+          <InfiniteScroll
+            className="flex flex-col pc:gap-[4.8rem] tablet:gap-[3.2rem] mobile:gap-[2.4rem]"
+            hasMore={hasNextPage}
+            loadMore={() => fetchNextPage()}
+          >
+            {trainerList.map(
+              (trainer) =>
+                trainer.profile !== null && (
+                  <Link
+                    className="rounded-[1.6rem] hover:border-[0.15rem] hover:border-blue-300"
+                    href={`/user/detail-trainer/${trainer.id}`}
+                    key={trainer.id}
+                  >
+                    <FindTrainerCard trainer={trainer} />
+                  </Link>
+                ),
+            )}
+          </InfiniteScroll>
         </div>
       </div>
     </div>
