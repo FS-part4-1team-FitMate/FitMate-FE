@@ -51,7 +51,12 @@ function SNSLogIn({ initialQuery }: PageProps) {
   }
   const accessToken = initialQuery?.accessToken;
   const refreshToken = initialQuery?.refreshToken;
-  const user = JSON.parse(initialQuery?.user!);
+  let user;
+  try {
+    user = JSON.parse(initialQuery?.user!);
+  } catch (err) {
+    console.error(err);
+  }
   const hasProfileString = initialQuery?.hasProfile;
   let hasProfile = false;
   if (hasProfileString === "true") {
