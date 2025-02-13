@@ -12,7 +12,9 @@ export default function Experience({
       <p className={clsx("text-gray-300 text-sm font-medium", size === "lg" && "pc:text-lg")}>
         경력
       </p>
-      <p className={clsx("text-sm font-medium", size === "lg" && "pc:text-lg")}>{experience}년</p>
+      <p className={clsx("text-sm font-medium", size === "lg" && "pc:text-lg")}>
+        {experience || 0}년
+      </p>
     </div>
   );
 }

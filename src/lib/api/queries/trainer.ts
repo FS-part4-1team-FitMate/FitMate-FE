@@ -39,6 +39,8 @@ export const useGetTrainer = (trainerId: string) => {
 export const useGetFavoriteTrainer = (userId: string) => {
   return useQuery<Trainer[]>(["favorited-trainer", userId], () => getFavoriteTrainers(), {
     enabled: !!userId,
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 };
 

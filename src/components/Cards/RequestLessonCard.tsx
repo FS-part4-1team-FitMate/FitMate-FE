@@ -117,7 +117,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
       <div className="flex justify-between items-center">
         <div className="flex gap-[1.2rem]">
           <ChipLessonType lessonType={item.lessonType as LessonType} />
-          {item.isDirectQuote === true && <ChipRequest requestType={RequestType.SPECIFIC} />}
+          {item.isDirectQuote && <ChipRequest requestType={RequestType.SPECIFIC} />}
         </div>
         <p className="text-gray-500 text-xs font-normal pc:text-md">{formatTime(item.createdAt)}</p>
       </div>

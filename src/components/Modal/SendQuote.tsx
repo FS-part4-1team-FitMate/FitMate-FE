@@ -24,7 +24,7 @@ export default function SendQuote({ item, values, errors, onInputChange }: SendQ
       <div className="flex flex-col gap-[1.4rem] pc:gap-[2.4rem]">
         <div className="flex gap-[1.2rem]">
           <ChipLessonType lessonType={item.lessonType} />
-          {item.isDirectQuote === true && <ChipRequest requestType={RequestType.SPECIFIC} />}
+          {item.isDirectQuote && <ChipRequest requestType={RequestType.SPECIFIC} />}
         </div>
         <UserCard item={item} />
       </div>

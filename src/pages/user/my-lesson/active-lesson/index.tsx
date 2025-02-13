@@ -1,25 +1,23 @@
+import { useUser } from "@/contexts/UserProvider";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
-import { lessonSubType_trans, lessonType_trans } from "@/types/types";
+import { QuoteStatus, lessonSubType_trans } from "@/types/types";
 import ActiveLessonCard from "@/components/Cards/ActiveLessonCard";
 import EmptyLesson from "@/components/Common/EmptyLesson";
 import Loading from "@/components/Common/Loading";
 import QuoteInfo from "@/components/Common/QuoteInfo";
 
 export default function ActiveLesson() {
-  const [userId, setUserId] = useState<string>("");
+  const user = useUser();
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      const parsedData = JSON.parse(userData);
-      setUserId(parsedData?.user?.id);
-    }
-  }, []);
+    setUserId(user?.id ?? null);
+  }, [user]);
 
-  const { data, isLoading, isError } = useGetMyLessonList(userId, {
+  const { data, isLoading, isError } = useGetMyLessonList(userId || "", {
     limit: 1,
     status: "QUOTE_CONFIRMED",
   });
@@ -53,12 +51,11 @@ export default function ActiveLesson() {
                 </p>{" "}
               </div>
               <QuoteInfo lesson={lesson} />
-              {lesson.lessonQuotes.map(
-                (quote) =>
-                  quote.status === "ACCEPTED" && (
-                    <ActiveLessonCard key={quote.id} item={lesson} quote={quote} />
-                  ),
-              )}
+              {lesson.lessonQuotes
+                .filter((quote) => quote.status === QuoteStatus.ACCEPTED)
+                .map((quote) => (
+                  <ActiveLessonCard key={quote.id} item={lesson} quote={quote} />
+                ))}
             </div>
           ))}
         </div>

@@ -1,3 +1,4 @@
+import { useUser } from "@/contexts/UserProvider";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
@@ -9,7 +10,8 @@ import Loading from "@/components/Common/Loading";
 import QuoteInfo from "@/components/Common/QuoteInfo";
 
 export default function LessonHistory() {
-  const [userId, setUserId] = useState<string>("");
+  const user = useUser();
+  const [userId, setUserId] = useState<string | null>(null);
   const [status, setStatus] = useState<string>("PENDING");
   const [activeTab, setActiveTab] = useState<string>(status);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -19,22 +21,21 @@ export default function LessonHistory() {
   ];
 
   useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      const parsedData = JSON.parse(userData);
-      setUserId(parsedData?.user?.id);
-    }
-  }, []);
+    setUserId(user?.id ?? null);
+  }, [user]);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     setStatus(tab);
   };
 
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList(userId, {
-    limit: 3,
-    status,
-  });
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList(
+    userId || "",
+    {
+      limit: 3,
+      status,
+    },
+  );
 
   const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
 

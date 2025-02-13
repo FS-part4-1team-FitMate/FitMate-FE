@@ -1,3 +1,5 @@
+import search from "@/assets/ic/ic_search_blue.svg";
+import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
 import { HorizontalLine } from "./Line";
@@ -6,28 +8,7 @@ export default function EmptyLesson({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center gap-16 w-full h-screen mx-auto px-4 pc:py-16 pc:px-8 pc:max-w-[80rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
       <div className="flex flex-col items-center gap-4 pc:p-32 tablet:p-32">
-        <svg
-          width="200"
-          height="200"
-          viewBox="0 0 36 36"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle
-            cx="15.7279"
-            cy="16.9492"
-            r="8"
-            transform="rotate(-45 15.7279 16.9492)"
-            stroke="#4DA9FF"
-            strokeWidth="2"
-          />
-          <path
-            d="M22.4243 23.4238L26.1242 27.1238"
-            stroke="#4DA9FF"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
+        <Image src={search} width={200} height={200} alt="search icon" />
         <h1 className="text-gray-300 text-2xl font-bold text-nowrap">{message}</h1>
       </div>
       <HorizontalLine width="100%" />

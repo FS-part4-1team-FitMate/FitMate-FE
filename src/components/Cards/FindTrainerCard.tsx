@@ -54,7 +54,6 @@ export default function FindTrainerCard({
           {profile?.lessonType?.map((lessonType: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={lessonType} />
           ))}
-          {<ChipRequest requestType={RequestType.SPECIFIC} />}
         </div>
         <p className="text-md font-semibold pc:text-2xl">{profile?.intro}</p>
         <TrainerInfo

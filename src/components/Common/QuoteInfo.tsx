@@ -2,7 +2,12 @@ import clsx from "clsx";
 import formatDate from "@/lib/utils/formatDate";
 import formatDateTime from "@/lib/utils/formatDateTime";
 import { Lesson } from "@/types/lesson";
-import { lessonSubType_trans, lessonType_trans, locationType_trans } from "@/types/types";
+import {
+  LocationType,
+  lessonSubType_trans,
+  lessonType_trans,
+  locationType_trans,
+} from "@/types/types";
 
 const content_area = clsx(
   "flex flex-col gap-[1.6rem]",
@@ -13,7 +18,7 @@ const content_area = clsx(
 
 export default function QuoteInfo({ lesson }: { lesson: Lesson }) {
   const getLocation = () => {
-    if (lesson?.locationType === "OFFLINE") {
+    if (lesson?.locationType === LocationType.OFFLINE) {
       return lesson.roadAddress;
     } else {
       return locationType_trans[lesson?.locationType];

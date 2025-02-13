@@ -1,3 +1,4 @@
+import { useUser } from "@/contexts/UserProvider";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
@@ -8,20 +9,20 @@ import EmptyLesson from "@/components/Common/EmptyLesson";
 import Loading from "@/components/Common/Loading";
 
 export default function PendingRequest() {
-  const [userId, setUserId] = useState<string>("");
+  const user = useUser();
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      const parsedData = JSON.parse(userData);
-      setUserId(parsedData?.user?.id);
-    }
-  }, []);
+    setUserId(user?.id ?? null);
+  }, [user]);
 
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList(userId, {
-    limit: 4,
-    status: "PENDING",
-  });
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetMyLessonList(
+    userId || "",
+    {
+      limit: 4,
+      status: "PENDING",
+    },
+  );
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("대기중인 견적 목록을 불러오는 중 에러가 발생했어요! 😢");
