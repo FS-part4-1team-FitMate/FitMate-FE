@@ -1,12 +1,5 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
-import {
-  ic_google_sm,
-  ic_kakao_sm,
-  ic_naver_sm,
-  ic_visibility_off,
-  ic_visibility_on,
-  logo_xl,
-} from "@/imageExports";
+import { ic_google_sm, ic_kakao_sm, ic_naver_sm, logo_xl } from "@/imageExports";
 import "dotenv/config";
 import Head from "next/head";
 import Image from "next/image";
