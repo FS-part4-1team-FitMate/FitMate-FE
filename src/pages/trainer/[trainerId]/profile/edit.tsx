@@ -287,7 +287,7 @@ function ProfileEdit() {
           />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
-          <div className={`${profile_menu} py-4 border-y pc:border-t-0`}>
+          <div className={`${profile_menu} pc:mt-[5.2rem] py-4 border-y pc:border-t-0`}>
             <div className="flex items-center gap-4">
               <label className="text-lg font-semibold">서비스 가능 지역</label>
               <div
