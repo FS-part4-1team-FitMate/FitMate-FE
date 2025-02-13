@@ -1,13 +1,13 @@
 import Link from "next/link";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
+import formatTime from "@/lib/utils/formatTime";
 import { LessonType, LocationType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import LessonInfo from "../Common/Card/LessonInfo";
 import QuotePrice from "../Common/Card/QuotePrice";
 import { HorizontalLine } from "../Common/Line";
-import formatTime from "@/lib/utils/formatTime";
 
 /**
  *
@@ -18,7 +18,7 @@ export default function SentRequestCard({ item }: { item: any }) {
   return (
     <CardContainer width="100%" gap="1.6rem">
       <div className="flex justify-between">
-        <ChipLessonType lessonType={item.lessonType as LessonType} size="lg" />
+        <ChipLessonType lessonType={item.lessonType as LessonType} />
         <p className="text-gray-500 text-xs font-normal">{formatTime(item.createdAt)}</p>
       </div>
       <div className="flex flex-col gap-[1.8rem] py-[1.6rem] px-[1.8rem]">
