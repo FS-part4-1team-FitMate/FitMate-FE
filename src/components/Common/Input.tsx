@@ -17,7 +17,7 @@ function Input({ id, label, type, className, register, placeholder }: Props) {
         {label}
       </label>
       <input
-        className={`w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl ${className}`}
+        className={`focus:outline focus:outline-blue-300 w-full text-lg p-[8px] h-[40px] text-slate-700 border border-gray-300 rounded-2xl ${className}`}
         {...register}
         type={type}
         id={id}

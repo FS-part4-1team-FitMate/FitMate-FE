@@ -17,8 +17,10 @@ function Regions({ selectedRegion, setSelectedRegion, register }: Props) {
           <label
             key={region.value}
             className={clsx(
-              "text-lg border border-solid border-gray-300 p-[8px] rounded-2xl",
-              selectedRegion.includes(region.value) ? "bg-blue-500 text-white" : "",
+              "hover:border-blue-300 hover:bg-blue-100 text-lg border border-line-200 py-2 px-6 rounded-[2rem] shadow-card",
+              selectedRegion.includes(region.value)
+                ? " bg-blue-100 text-blue-300 border border-blue-300 font-semibold"
+                : "",
             )}
           >
             <input

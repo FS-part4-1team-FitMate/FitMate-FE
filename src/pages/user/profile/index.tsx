@@ -85,7 +85,7 @@ function Profile() {
           </div>
           <Button
             type="submit"
-            className="gap-4 w-full bg-blue-500 text-white"
+            className="hover:bg-blue-200 gap-4 w-full bg-blue-500 text-white"
             onClick={() => {
               router.push(`/user/profile/edit`);
             }}
