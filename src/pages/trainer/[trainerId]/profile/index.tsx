@@ -121,19 +121,25 @@ function Profile({ initialQuery }: PageProps) {
             <VerticalLine height="16px" />
             <Favorite trainerId={trainerId as string} />
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-[12px]">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-wrap items-center gap-[12px]">
               <div className="rounded-lg text-gray-400 text-md font-semibold bg-bg-200 inline-block py-[1px] px-4 shadow-inner">
                 제공 강의
               </div>
               <div className="text-md flex justify-normal items-center gap-[5px]">
                 {trainerProfile?.profile?.lessonType.map((lessonType) => {
-                  return <p>{lessonType_trans[lessonType].ko}</p>;
+                  return (
+                    <p className="py-[1px] px-4 border border-blue-300 rounded-full bg-blue-100 text-blue-300 text-sm">
+                      {lessonType_trans[lessonType].ko}
+                    </p>
+                  );
                 })}
               </div>
             </div>
-            <VerticalLine height="1.6rem" />
-            <div className="flex items-center gap-[12px]">
+            <div className="hidden pc:block tablet:block">
+              <VerticalLine height="1.6rem" />
+            </div>
+            <div className="flex flex-wrap items-center gap-[12px]">
               <div className="rounded-lg text-gray-400 text-md font-semibold bg-bg-200 inline-block py-[1px] px-4 shadow-inner">
                 지역
               </div>
