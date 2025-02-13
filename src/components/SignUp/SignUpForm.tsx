@@ -12,7 +12,7 @@ import {
   postSignUpUser,
   sendEmailVeriKey,
 } from "@/lib/api/authService";
-import { EMAIL_REGEX, PWD_REGEX } from "@/types/constants";
+import { EMAIL_REGEX, PWD_REGEX, error_class } from "@/types/constants";
 import { Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 import Button from "../Common/Button";
@@ -95,7 +95,7 @@ function SignUpForm({ role }: Props) {
   };
 
   return (
-    <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
+    <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto py-[4px] px-8 my-[64px]">
       <Head>
         <title>회원 가입 | 핏메이트</title>
         <meta name="description" content="핏메이트 회원 가입 페이지입니다." />
@@ -128,31 +128,36 @@ function SignUpForm({ role }: Props) {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[16px] items-stretch w-full"
       >
-        <Input
-          id="nickname"
-          label="닉네임"
-          type="text"
-          register={register("nickname", {
-            required: "닉네임을 입력해 주세요.",
-          })}
-          placeholder="닉네임을 입력해 주세요."
-        />
-        {errors.nickname && <p className="text-red-400 text-sm">{errors.nickname.message}</p>}
-        <Input
-          id="email"
-          label="이메일"
-          type="email"
-          register={register("email", {
-            required: "이메일을 입력해 주세요.",
-            pattern: {
-              value: EMAIL_REGEX,
-              message: "유효한 이메일을 입력해 주세요.",
-            },
-          })}
-          placeholder="이메일을 입력해 주세요."
-        />
+        <div>
+          <Input
+            id="nickname"
+            label="닉네임"
+            type="text"
+            register={register("nickname", {
+              required: "닉네임을 입력해 주세요.",
+            })}
+            placeholder="닉네임을 입력해 주세요."
+          />
+          {errors.nickname && <p className={error_class}>{errors.nickname.message}</p>}
+        </div>
+        <div>
+          <Input
+            id="email"
+            label="이메일"
+            type="email"
+            register={register("email", {
+              required: "이메일을 입력해 주세요.",
+              pattern: {
+                value: EMAIL_REGEX,
+                message: "유효한 이메일을 입력해 주세요.",
+              },
+            })}
+            placeholder="이메일을 입력해 주세요."
+          />
+          {errors.email && <p className={error_class}>{errors.email.message}</p>}
+        </div>
         <Button
-          className="inline-block text-md bg-blue-700 text-white w-max"
+          className="inline-block text-md bg-blue-300 text-white w-fit py-2 px-4 rounded-full"
           onClick={() => {
             const msg = sendEmailVeriKey(watch("email"));
             setEmailVeriKeyOpen(true);
@@ -162,50 +167,50 @@ function SignUpForm({ role }: Props) {
         </Button>
         {emailVeriKeyOpen && (
           <>
-            <div className="flex gap-[10px] justify-normal items-center">
-              <label htmlFor="emailVeriKey" className="inline-block text-md">
-                인증번호:
-              </label>
-              <input
-                id="emailVeriKey"
-                type="text"
-                className="inline-block text-md bg-white text-slate-700 rounded-md w-[100px] px-[10px] h-[30px] border border-gray-300"
-                {...register("emailVeriKey", {
-                  required: "인증번호를 입력해 주세요.",
-                  validate: (value) => {
-                    if (value.length !== 6) {
-                      return "6자리를 입력해주세요.";
+            <div className="flex flex-col">
+              <div className="flex gap-[10px] justify-normal items-center">
+                <label htmlFor="emailVeriKey" className="inline-block text-md">
+                  인증번호:
+                </label>
+                <input
+                  id="emailVeriKey"
+                  type="text"
+                  className="focus:outline focus:outline-blue-300 inline-block text-md bg-white text-slate-700 rounded-md w-[100px] px-[10px] h-[30px] border border-gray-300"
+                  {...register("emailVeriKey", {
+                    required: "인증번호를 입력해 주세요.",
+                    validate: (value) => {
+                      if (value.length !== 6) {
+                        return "6자리를 입력해주세요.";
+                      }
+                      return true;
+                    },
+                  })}
+                  placeholder="인증번호"
+                />
+                <Button
+                  className="inline-block text-md bg-blue-300 text-white py-1 px-4 rounded-full"
+                  type="button"
+                  onClick={async () => {
+                    const res = await checkEmailVeriKey({
+                      email: watch("email"),
+                      code: watch("emailVeriKey"),
+                    });
+                    console.log(res);
+                    setError({ message: res.message });
+                    if (res.message === "이메일 인증 성공") {
+                      setEmailVerified(true);
+                      setEmailVeriKeyOpen(true);
+                    } else {
+                      setEmailVerified(false);
+                      setEmailVeriKeyOpen(true);
                     }
-                    return true;
-                  },
-                })}
-                placeholder="인증번호"
-              />
-              <Button
-                className="inline-block text-md bg-blue-700 text-white"
-                type="button"
-                onClick={async () => {
-                  const res = await checkEmailVeriKey({
-                    email: watch("email"),
-                    code: watch("emailVeriKey"),
-                  });
-                  console.log(res);
-                  setError({ message: res.message });
-                  if (res.message === "이메일 인증 성공") {
-                    setEmailVerified(true);
-                    setEmailVeriKeyOpen(true);
-                  } else {
-                    setEmailVerified(false);
-                    setEmailVeriKeyOpen(true);
-                  }
-                }}
-              >
-                확인
-              </Button>
+                  }}
+                >
+                  확인
+                </Button>
+              </div>
+              {errors.emailVeriKey && <p className={error_class}>{errors.emailVeriKey.message}</p>}
             </div>
-            {errors.emailVeriKey && (
-              <p className="text-red-400 text-sm">{errors.emailVeriKey.message}</p>
-            )}
           </>
         )}
         {emailVerified === null ? (
@@ -215,42 +220,45 @@ function SignUpForm({ role }: Props) {
         ) : (
           <p className="text-red-400 text-sm">이메일 인증 실패</p>
         )}
-        {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
-        <InputPassword
-          id="password"
-          label="비밀번호"
-          register={register("password", {
-            required: "비밀번호를 입력해 주세요.",
-            pattern: {
-              value: PWD_REGEX,
-              message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
-            },
-          })}
-          placeholder="비밀번호를 입력해 주세요."
-          pwdIsVisible={pwdIsVisible}
-          setPwdIsVisible={setPwdIsVisible}
-        />
-        {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
-        <InputPassword
-          id="passwordConfirm"
-          label="비밀번호 확인"
-          register={register("passwordConfirm", {
-            required: "비밀번호를 다시 한번 입력해 주세요.",
-            validate: (value) => {
-              if (value !== watch("password")) {
-                return "비밀번호가 일치하지 않습니다.";
-              }
-            },
-          })}
-          placeholder="비밀번호를 다시 한번 입력해 주세요."
-          pwdIsVisible={pwdCfmIsVisible}
-          setPwdIsVisible={setPwdCfmIsVisible}
-        />
-        {errors.passwordConfirm && (
-          <p className="text-red-400 text-sm">{errors.passwordConfirm.message}</p>
-        )}
+        <div>
+          <InputPassword
+            id="password"
+            label="비밀번호"
+            register={register("password", {
+              required: "비밀번호를 입력해 주세요.",
+              pattern: {
+                value: PWD_REGEX,
+                message: "비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.",
+              },
+            })}
+            placeholder="비밀번호를 입력해 주세요."
+            pwdIsVisible={pwdIsVisible}
+            setPwdIsVisible={setPwdIsVisible}
+          />
+          {errors.password && <p className={error_class}>{errors.password.message}</p>}
+        </div>
+        <div>
+          <InputPassword
+            id="passwordConfirm"
+            label="비밀번호 확인"
+            register={register("passwordConfirm", {
+              required: "비밀번호를 다시 한번 입력해 주세요.",
+              validate: (value) => {
+                if (value !== watch("password")) {
+                  return "비밀번호가 일치하지 않습니다.";
+                }
+              },
+            })}
+            placeholder="비밀번호를 다시 한번 입력해 주세요."
+            pwdIsVisible={pwdCfmIsVisible}
+            setPwdIsVisible={setPwdCfmIsVisible}
+          />
+          {errors.passwordConfirm && (
+            <p className={error_class}>{errors.passwordConfirm.message}</p>
+          )}
+        </div>
         <Button
-          className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
+          className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-300 disabled:bg-slate-600"
           type="submit"
           disabled={
             !!errors.nickname ||
@@ -277,9 +285,12 @@ function SignUpForm({ role }: Props) {
           </Link>
         </div>
       </div>
-      <div className="text-lg">
+      <div className="flex items-center gap-4 text-lg">
         이미 핏메이트 회원이신가요?{" "}
-        <Link href="/login" className="text-blue-600">
+        <Link
+          href="/login"
+          className="hover:bg-red-200 hover:text-white py-2 px-4 border border-red-200 rounded-full bg-red-100 text-red-200 text-md"
+        >
           로그인
         </Link>
       </div>

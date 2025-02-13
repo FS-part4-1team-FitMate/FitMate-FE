@@ -8,5 +8,5 @@ export const PHONE_REGEX = /^\d{3}-?\d{3,4}-?\d{4}$/;
 export const profile_menu = "flex flex-col w-full items-start gap-[12px]";
 export const note_class = "text-sm text-slate-500";
 export const error_class =
-  "w-fit border border-red-300 rounded-full mt-4 py-1 px-4 text-red-400 text-sm bg-red-100";
+  "w-fit border border-red-300 rounded-full mt-4 py-1 px-4 text-red-400 text-xs bg-red-100";
 export const active_class = "font-semibold";
