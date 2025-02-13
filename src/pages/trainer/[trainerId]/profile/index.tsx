@@ -5,17 +5,14 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getReviewStat, getReviews } from "@/lib/api/ReviewService";
 import { useGetRatingStat, useGetReviewList } from "@/lib/api/queries/review";
 import { useGetTrainer } from "@/lib/api/queries/trainer";
 import { calcAvgRating } from "@/lib/utils/calcAvgRating";
 import formatDate from "@/lib/utils/formatDate";
-import { region_trans } from "@/types/types";
+import { lessonType_trans, region_trans } from "@/types/types";
 import RatingAvgCard from "@/components/Cards/RatingAvgCard";
 import RatingStatCard from "@/components/Cards/RatingStatCard";
 import ReviewCard from "@/components/Cards/ReviewCard";
-import ChipLessonType from "@/components/Chip/ChipLessonType";
 import Button from "@/components/Common/Button";
 import Experience from "@/components/Common/Card/TrainerInfo/Experience";
 import LessonCount from "@/components/Common/Card/TrainerInfo/LessonCount";
@@ -91,7 +88,10 @@ function Profile({ initialQuery }: PageProps) {
       </Head>
       <h1 className="text-xl font-semibold">{myPage ? "마이 페이지" : "강사님 페이지"}</h1>
       <HorizontalLine width="100%" />
-      <div className="flex flex-col justify-normal items-start p-[12px] bg-slate-100 w-full">
+      <div className="flex flex-col justify-normal items-start p-[12px] rounded-[2rem] bg-slate-100 w-full shadow-card">
+        <p className="w-fit mt-2 mb-4 px-4 border border-blue-300 rounded-full text-blue-300 text-lg font-bold bg-blue-100">
+          기본 정보
+        </p>
         <div className="flex gap-[16px] mb-[12px]">
           <Image
             src={
@@ -111,7 +111,7 @@ function Profile({ initialQuery }: PageProps) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-[10px] bg-white p-[10px] w-full">
+        <div className="flex flex-col gap-[10px] bg-white p-[10px] w-full rounded-[2rem]">
           <div className="flex gap-[8px] justify-normal items-center">
             <Rating rating={avgRating} reviewCount={trainerProfile?.profile?.reviewCount} />
             <VerticalLine height="16px" />
@@ -121,24 +121,33 @@ function Profile({ initialQuery }: PageProps) {
             <VerticalLine height="16px" />
             <Favorite trainerId={trainerId as string} />
           </div>
-          <div className="flex items-center gap-[12px]">
-            <div className="text-lg bg-slate-100 inline-block p-[2px]">제공 강의</div>
-            <div className="text-lg flex justify-normal items-center gap-[5px]">
-              {trainerProfile?.profile?.lessonType.map((lessonType) => {
-                return <ChipLessonType key={lessonType} lessonType={lessonType} />;
-              })}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-[12px]">
+              <div className="rounded-lg text-gray-400 text-md font-semibold bg-bg-200 inline-block py-[1px] px-4 shadow-inner">
+                제공 강의
+              </div>
+              <div className="text-md flex justify-normal items-center gap-[5px]">
+                {trainerProfile?.profile?.lessonType.map((lessonType) => {
+                  return <p>{lessonType_trans[lessonType].ko}</p>;
+                })}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-[12px]">
-            <div className="text-lg bg-slate-100 inline-block p-[2px]">지역</div>
-            <div className="text-lg">
-              {trainerProfile?.profile?.region.map((region) => region_trans[region]).join(", ")}
+            <VerticalLine height="1.6rem" />
+            <div className="flex items-center gap-[12px]">
+              <div className="rounded-lg text-gray-400 text-md font-semibold bg-bg-200 inline-block py-[1px] px-4 shadow-inner">
+                지역
+              </div>
+              <div className="text-md">
+                {trainerProfile?.profile?.region.map((region) => region_trans[region]).join(", ")}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-normal items-start p-[12px] bg-slate-100 w-full">
-        <div className="text-lg font-semibold">자격증</div>
+      <div className="flex flex-col justify-normal items-start p-[12px] rounded-[2rem] bg-slate-100 w-full shadow-card">
+        <div className="w-fit my-4 px-4 border border-blue-300 rounded-full text-blue-300 text-lg font-bold bg-blue-100">
+          자격증
+        </div>
         <Image
           src={
             trainerProfile?.certificationPresignedUrl
@@ -148,13 +157,13 @@ function Profile({ initialQuery }: PageProps) {
           alt="자격증"
           width={300}
           height={400}
-          className="object-contain my-[10px]"
+          className="object-contain my-[10px] rounded-[2rem]"
         />
       </div>
       {myPage && (
         <Button
           type="submit"
-          className="w-full bg-blue-500 text-white"
+          className="hover:bg-blue-200 gap-4 w-full bg-blue-500 text-white"
           onClick={() => {
             router.push(`/trainer/${user?.id}/profile/edit`);
           }}
@@ -164,7 +173,7 @@ function Profile({ initialQuery }: PageProps) {
       )}
       <HorizontalLine width="100%" />
       <div className="text-xl font-semibold">리뷰 ({trainerProfile?.profile?.reviewCount})</div>
-      <div className="tablet:flex tablet:flex-row tablet:justify-center tablet:gap-[50px] mx-auto max-w-full">
+      <div className="flex flex-col items-center justify-center gap-[4rem] mx-auto w-full p-8 rounded-[3rem] bg-[#F7F7F7] pc:flex-row">
         <RatingAvgCard ratingAvg={avgRating} />
         <RatingStatCard ratingStat={reviewStat!} />
       </div>
