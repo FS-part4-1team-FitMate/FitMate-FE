@@ -1,5 +1,5 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
-import { ic_designate_md, ic_edit_sm } from "@/imageExports";
+import { ic_edit_sm, img_default_md } from "@/imageExports";
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
@@ -282,7 +282,7 @@ function ProfileEdit() {
             defImage={
               profileData?.certificationPresignedUrl
                 ? profileData.certificationPresignedUrl
-                : ic_designate_md.src
+                : img_default_md.src
             }
           />
         </div>
@@ -302,7 +302,7 @@ function ProfileEdit() {
                     언제든지 수정 가능해요!
                   </div>
                 )}
-              </div>{" "}
+              </div>
             </div>
             <Regions
               selectedRegion={selectedRegion}
@@ -406,7 +406,7 @@ function ProfileEdit() {
           )} */}
           <Button
             type="submit"
-            className="hover:bg-blue-200 gap-4 w-full bg-blue-500 text-white disabled:bg-slate-600"
+            className="hover:bg-blue-200 gap-4 w-full bg-blue-500 text-white font-semibold disabled:bg-slate-600"
           >
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
           </Button>
