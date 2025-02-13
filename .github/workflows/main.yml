@@ -21,10 +21,6 @@ jobs: # 실행할 작업들을 정의하는 섹션
           # Docker Hub 로그인 (보안을 위해 secrets 사용)
           docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
           docker build --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} --build-arg NODE_ENV=${{ secrets.NODE_ENV }} --build-arg NEXT_PUBLIC_KAKAO_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }} -t kipid/fitmate-fe:v0.1 . # Dockerfile을 사용하여 이미지 빌드, 태그는 v0.1로 지정
-
-      - name: Push Docker image to Docker Hub # Docker Hub에 이미지 푸시 단계
-        run: |
-          sleep 3
           docker push kipid/fitmate-fe:v0.1  # 빌드된 이미지를 Docker Hub에 업로드
           # sleep 300
           # docker logout
