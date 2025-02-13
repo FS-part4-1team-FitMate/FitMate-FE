@@ -40,7 +40,7 @@ export default function QuoteInfo({ lesson }: { lesson: Lesson }) {
 
   return (
     <div className="flex flex-col gap-[2.4rem] pc:gap-16">
-      <p className="font-semibold text-lg pc:text-2xl">견적 정보</p>
+      <p className="font-semibold text-lg pc:text-2xl">레슨 정보</p>
       <div className={content_area}>
         {quoteInfo.map((info) => (
           <div className="flex items-start gap-[3.2rem]">
