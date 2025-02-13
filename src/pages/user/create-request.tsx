@@ -181,7 +181,7 @@ const createRequest = () => {
       className="flex flex-col space-y-6 bg-gray-100 min-h-screen"
     >
       <div className="bg-white p-10 w-full space-y-6 px-[20rem]">
-        <h1 className="text-xl">레슨슨 요청</h1>
+        <h1 className="text-xl">레슨 요청</h1>
         <ProgressBar progress={progress} />
       </div>
 
