@@ -11,7 +11,7 @@ export async function createLessonRequest(data: {
     address?: string;
   }): Promise<any> {
     try {
-      const response = await instance.post("/user/my-lesson/pending-request", data);
+      const response = await instance.post("/lessons", data);
       return response.data;
     } catch (err) {
       throw err;
