@@ -1,12 +1,5 @@
 import { useSetUser, useUser } from "@/contexts/UserProvider";
-import {
-  ic_google_sm,
-  ic_kakao_sm,
-  ic_naver_sm,
-  ic_visibility_off,
-  ic_visibility_on,
-  logo_xl,
-} from "@/imageExports";
+import { ic_google_sm, ic_kakao_sm, ic_naver_sm, logo_xl } from "@/imageExports";
 import "dotenv/config";
 import Head from "next/head";
 import Image from "next/image";
@@ -15,7 +8,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { postLogin } from "@/lib/api/authService";
-import { EMAIL_REGEX } from "@/types/constants";
+import { EMAIL_REGEX, error_class } from "@/types/constants";
 import { Role } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
@@ -101,7 +94,7 @@ function LogIn() {
   };
 
   return (
-    <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto p-[4px] my-[64px]">
+    <main className="flex flex-col justify-center items-center gap-[32px] w-[384px] max-w-full mx-auto py-[4px] px-8 my-[64px]">
       <Head>
         <title>로그인 | 핏메이트</title>
         <meta name="description" content="핏메이트 로그인 페이지입니다." />
@@ -111,43 +104,64 @@ function LogIn() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[16px] items-stretch w-full"
       >
-        <Input
-          id="email"
-          label="이메일"
-          type="email"
-          register={register("email", {
-            required: "이메일을 입력해 주세요.",
-            pattern: {
-              value: EMAIL_REGEX,
-              message: "유효한 이메일을 입력해 주세요.",
-            },
-          })}
-          placeholder="이메일"
-        />
-        {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
-        <InputPassword
-          id="password"
-          label="비밀번호"
-          register={register("password", {
-            required: "비밀번호를 입력해 주세요.",
-            minLength: {
-              value: 8,
-              message: "비밀번호는 최소 8글자 이상이어야 합니다.",
-            },
-          })}
-          placeholder="비밀번호"
-          pwdIsVisible={pwdIsVisible}
-          setPwdIsVisible={setPwdIsVisible}
-        />
-        {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
+        <div className="w-full">
+          <Input
+            id="email"
+            label="이메일"
+            type="email"
+            register={register("email", {
+              required: "이메일을 입력해 주세요.",
+              pattern: {
+                value: EMAIL_REGEX,
+                message: "유효한 이메일을 입력해 주세요.",
+              },
+            })}
+            placeholder="이메일"
+          />
+          {errors.email && <p className={error_class}>{errors.email.message}</p>}
+        </div>
+        <div className="w-full">
+          <InputPassword
+            id="password"
+            label="비밀번호"
+            register={register("password", {
+              required: "비밀번호를 입력해 주세요.",
+              minLength: {
+                value: 8,
+                message: "비밀번호는 최소 8글자 이상이어야 합니다.",
+              },
+            })}
+            placeholder="비밀번호"
+            pwdIsVisible={pwdIsVisible}
+            setPwdIsVisible={setPwdIsVisible}
+          />
+          {errors.password && <p className={error_class}>{errors.password.message}</p>}
+        </div>
         <Button
-          className="w-full h-[40px] text-lg rounded-2xl text-white bg-blue-600 disabled:bg-slate-600"
+          className="w-full h-[40px] text-lg rounded-3xl text-white font-semibold bg-blue-300 disabled:bg-slate-600"
           type="submit"
           disabled={!!errors.email || !!errors.password || isSubmitting}
         >
           로그인
         </Button>
       </form>
+      <div className="flex flex-col items-center gap-4 pb-12 border-b">
+        <p className="text-lg">아직 핏메이트 회원이 아니신가요?</p>
+        <div className="flex gap-4 text-blue-600">
+          <Link
+            href="/user/signup"
+            className="hover:bg-red-200 hover:text-white py-2 px-4 border border-red-200 rounded-full bg-red-100 text-red-200 text-md"
+          >
+            일반 회원가입
+          </Link>
+          <Link
+            href="/trainer/signup"
+            className="hover:bg-red-200 hover:text-white py-2 px-4 border border-red-200 rounded-full bg-red-100 text-red-200 text-md"
+          >
+            강사님 회원가입
+          </Link>
+        </div>
+      </div>
       <div className="flex flex-col text-lg justify-center items-center gap-[8px]">
         <div>SNS 계정으로 로그인</div>
         <div className="flex justify-center items-center gap-[8px]">
@@ -161,16 +175,6 @@ function LogIn() {
             <Image src={ic_naver_sm} alt="naver" width={40} height={40} />
           </Link>
         </div>
-      </div>
-      <div className="text-lg">
-        아직 핏메이트 회원이 아니신가요?{" "}
-        <Link href="/user/signup" className="text-blue-600">
-          일반 회원가입
-        </Link>
-        ,{" "}
-        <Link href="/trainer/signup" className="text-blue-600">
-          강사님 회원가입
-        </Link>
       </div>
       <PopUp error={error} setError={setError} />
     </main>
