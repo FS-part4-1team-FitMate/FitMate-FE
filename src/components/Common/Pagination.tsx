@@ -36,7 +36,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   return (
     <div className="flex justify-center items-center mt-6 space-x-2">
       <button
-        className={`px-3 py-2 rounded-md ${
+        className={`w-[4.8rem] h-[4.8rem] p-2 rounded-full text-2lg ${
           currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-black"
         }`}
         onClick={() => onPageChange(currentPage - 1)}
@@ -49,21 +49,23 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         typeof page === "number" ? (
           <button
             key={index}
-            className={`px-3 py-2 rounded-md ${
-              currentPage === page ? "bg-black-400 text-white" : "text-gray-500 hover:bg-gray-200"
+            className={`w-[4.8rem] h-[4.8rem] p-2 rounded-full text-2lg ${
+              currentPage === page
+                ? "bg-blue-300 text-white"
+                : "text-gray-500 hover:text-blue-300 hover:bg-blue-100 hover:border hover:border-blue-300"
             }`}
             onClick={() => onPageChange(page)}
           >
             {page}
           </button>
         ) : (
-          <span key={index} className="px-3 py-2 text-gray-500">
+          <span key={index} className="p-2 text-gray-500">
             {page}
           </span>
         ),
       )}
       <button
-        className={`px-3 py-2 rounded-md ${
+        className={`w-[4.8rem] h-[4.8rem] px-3 py-2 rounded-full text-2lg ${
           currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-black"
         }`}
         onClick={() => onPageChange(currentPage + 1)}

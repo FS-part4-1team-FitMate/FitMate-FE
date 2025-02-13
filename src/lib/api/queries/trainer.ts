@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { FavoriteInfo, TrainerParams, TrainerResult } from "@/types/trainer";
+import { FavoriteInfo, Trainer, TrainerParams, TrainerResult } from "@/types/trainer";
 import { ProfileData } from "@/types/types";
-import { getTrainerInfo, getTrainerList } from "../trainerService";
+import { getFavoriteTrainers, getTrainerInfo, getTrainerList } from "../trainerService";
 import { getFavorite } from "../userService";
 
 // 트레이너 목록 조회
@@ -30,6 +30,15 @@ export const useGetTrainerList = ({ keyword, order, sort, lessonType, gender }: 
 export const useGetTrainer = (trainerId: string) => {
   return useQuery<ProfileData>(["trainer-info", trainerId], () => getTrainerInfo(trainerId), {
     enabled: !!trainerId,
+    cacheTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+// 찜한 강사 목록 조회
+export const useGetFavoriteTrainer = (userId: string) => {
+  return useQuery<Trainer[]>(["favorited-trainer", userId], () => getFavoriteTrainers(), {
+    enabled: !!userId,
     cacheTime: 5 * 60 * 1000,
     staleTime: 5 * 60 * 1000,
   });

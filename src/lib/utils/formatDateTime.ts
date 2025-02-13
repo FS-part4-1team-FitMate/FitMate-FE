@@ -7,7 +7,7 @@ export default function formatDateTime(timestamp: string | Date) {
 
   const year = d.getFullYear();
   const month = months[d.getMonth()];
-  const day = d.getDate();
+  const day = d.getDate().toString().padStart(2, "0");
 
   const dayOfWeek = daysOfWeek[d.getDay()];
 
@@ -18,5 +18,5 @@ export default function formatDateTime(timestamp: string | Date) {
   hours = hours % 12;
   hours = hours ? hours : 12;
 
-  return `${year}. ${month}. ${day}(${dayOfWeek}) ${ampm} ${hours}:${minutes}`;
+  return `${year}. ${month}. ${day} (${dayOfWeek}) ${ampm} ${hours}:${minutes}`;
 }

@@ -1,3 +1,4 @@
+import { calcAvgRating } from "@/lib/utils/calcAvgRating";
 import formatDate from "@/lib/utils/formatDate";
 import { Review, ReviewStat } from "@/types/reviews";
 import RatingAvgCard from "../Cards/RatingAvgCard";
@@ -11,18 +12,11 @@ interface TrainerReviewProps {
 }
 
 export default function TrainerReview({ reviewList, reviewStat, totalCount }: TrainerReviewProps) {
-  const sum =
-    reviewStat?.reduce((sum, review) => {
-      return sum + review.rating * review.count;
-    }, 0) ?? 0;
-
   return (
     <div className="flex flex-col gap-16">
-      <div className="flex flex-col gap-[3.2rem]">
-        <div className="flex items-center gap-4 rounded-[3.2rem] pc:bg-bg-200 pc:flex-row pc:py-16 pc:px-[6.4rem] tablet:flex-row mobile:flex-col">
-          <RatingAvgCard ratingAvg={sum / totalCount} />
-          <RatingStatCard ratingStat={reviewStat} />
-        </div>
+      <div className="flex justify-center items-center gap-[5.6rem] rounded-[3.2rem] bg-bg-200 pc:flex-row pc:gap-[8.3rem] pc:py-16 pc:px-[6.4rem] tablet:flex-row tablet:py-0 mobile:flex-col mobile:py-8">
+        <RatingAvgCard ratingAvg={calcAvgRating(reviewStat)} />
+        <RatingStatCard ratingStat={reviewStat} />
       </div>
       {reviewList?.map((review: Review) => (
         <ReviewCard

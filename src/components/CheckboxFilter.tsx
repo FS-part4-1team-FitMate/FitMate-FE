@@ -19,7 +19,6 @@ export default function CheckboxFilter({
   options,
   filterType,
   onFilterChange,
-  count = {},
   isChecked,
   setIsChecked,
 }: CheckboxFilterProps) {

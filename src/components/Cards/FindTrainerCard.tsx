@@ -1,7 +1,8 @@
 import { FavoriteInfo, Trainer } from "@/types/trainer";
-import { LessonType, Profile, RequestType } from "@/types/types";
+import { LessonRequestStatus, LessonType, Profile, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
+import ChipRequestStatus from "../Chip/ChipRequestStatus";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
@@ -23,11 +24,11 @@ export default function FindTrainerCard({
   if (trainer) {
     return (
       <CardContainer width="100%" gap="1.6rem">
-        <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
+        <div className="flex gap-[0.8rem] h-8 pc:gap-[1.2rem]">
           {trainer?.profile?.lessonType?.map((lessonType: LessonType, index: number) => (
-            <ChipLessonType key={index} lessonType={lessonType} size="lg" />
+            <ChipLessonType key={index} lessonType={lessonType} />
           ))}
-          {request && <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />}
+          {request && <ChipRequest requestType={RequestType.SPECIFIC} />}
         </div>
         <p className="text-md font-semibold pc:text-2xl">{trainer?.profile?.intro}</p>
         <TrainerInfo
@@ -48,16 +49,11 @@ export default function FindTrainerCard({
       <CardContainer width="100%" gap="1.6rem">
         <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
           {status === "ACCEPTED" && (
-            <div
-              className={`inline-block text-lg rounded-lg bg-slate-100 text-blue-400 py-[6px] px-[4px]`}
-            >
-              확정 견적
-            </div>
+            <ChipRequestStatus requestStatus={LessonRequestStatus.COMPLETED} />
           )}
           {profile?.lessonType?.map((lessonType: LessonType, index: number) => (
-            <ChipLessonType key={index} lessonType={lessonType} size="lg" />
+            <ChipLessonType key={index} lessonType={lessonType} />
           ))}
-          {request && <ChipRequest requestType={RequestType.SPECIFIC} size="lg" />}
         </div>
         <p className="text-md font-semibold pc:text-2xl">{profile?.intro}</p>
         <TrainerInfo

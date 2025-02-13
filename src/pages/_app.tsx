@@ -42,6 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
     router.pathname === "/user/my-lesson/pending-request" ||
     router.pathname === "/user/my-lesson/active-lesson" ||
     router.pathname === "/user/my-lesson/past-lesson" ||
+    router.pathname === "/user/my-lesson/lesson-history" ||
     router.pathname === "/user/lesson-review/awaiting-review" ||
     router.pathname === "/user/lesson-review/written-review" ||
     router.pathname === "/trainer/managing-request/sent-request" ||

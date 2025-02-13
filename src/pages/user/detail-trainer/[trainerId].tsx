@@ -20,7 +20,7 @@ export default function DetailTrainer() {
   const { trainerId } = router.query;
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 3;
+  const pageSize = 5;
 
   const {
     data: trainer,

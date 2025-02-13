@@ -11,10 +11,10 @@ interface Props {
 function ReviewCard({ rating, createdAt, nickname, content }: Props) {
   return (
     <div className="flex flex-col gap-[12px]">
-      <div className="flex justify-start items-center">
+      <div className="flex justify-start items-center gap-3">
         <div className="text-md font-medium">{nickname?.substring(0, 3)}****</div>
-        <VerticalLine height="14px" />
-        <div className="text-md text-slate-500">{createdAt}</div>
+        <VerticalLine height="12px" />
+        <div className="text-md text-gray-300">{createdAt}</div>
       </div>
       <StarPoints rating={rating / 5.0} />
       <pre className="text-md text-wrap font-pretendard">{content}</pre>
