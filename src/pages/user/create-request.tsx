@@ -99,8 +99,10 @@ const createRequest = () => {
   };
 
   const handleAnswer = () => {
+    const currentStepField = fields[step];
+
     if (step < 3) {
-      setValue(fields[step], currentAnswer);
+      setValue(currentStepField, currentAnswer);
       setChatHistory((prev) => [
         ...prev,
         { type: "answer", content: currentAnswer },
@@ -111,6 +113,16 @@ const createRequest = () => {
       setCurrentAnswer("");
     } else {
       setValue(fields[step + 1], currentAnswer);
+
+      if (currentStepField === "locationType" && currentAnswer === "온라인") {
+        setChatHistory((prev) => [
+          ...prev,
+          { type: "answer", content: currentAnswer },
+        ]);
+        handleSubmit(onSubmit)();
+        return;
+      }
+
       setChatHistory((prev) => [
         ...prev,
         { type: "answer", content: currentAnswer },
@@ -176,13 +188,13 @@ const createRequest = () => {
       <div className="flex flex-col space-y-4 w-full px-[20rem]">
         {chatHistory.map((chat, index) => (
           <div key={index} className="flex flex-col">
-            <ChatBubble type={chat.type} content={chat.content} />
+            <ChatBubble type={chat.type} content={
+              chat.type === "answer" && Object.values(LessonType).includes(chat.content as LessonType)
+                ? lessonType_trans[chat.content as LessonType]?.ko
+                : chat.content
+            } />
             {chat.type === "answer" && index / 2 < step && (
-              <button
-                type="button"
-                onClick={() => handleEdit(Math.floor(index / 2))}
-                className="flex text-sm text-black-500 underline self-end mr-7"
-              >
+              <button type="button" onClick={() => handleEdit(Math.floor(index / 2))} className="text-sm text-black-500 underline self-end mr-7">
                 수정하기
               </button>
             )}
@@ -322,7 +334,7 @@ const createRequest = () => {
                   {...field}
                   type="number"
                   className="w-full py-2 px-4 rounded-lg border-b-0 text-lg"
-                  placeholder="횟수를 입력하세요"
+                  placeholder="시간을 입력하세요"
                   value={currentAnswer}
                   onChange={(e) => setCurrentAnswer(e.target.value)}
                 />
