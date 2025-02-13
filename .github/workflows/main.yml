@@ -18,13 +18,14 @@ jobs: # 워크플로우의 작업(job)들을 정의
           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env
           echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
           echo "NEXT_PUBLIC_KAKAO_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }}" >> .env
+          COPY .env /app/.env
 
       - name: Build Docker image # 단계 이름
         run: docker build -t kipid/fitmate-fe:v0.1 . # Docker 이미지를 빌드. -t는 이미지 이름(kipid/fitmate-fe:v0.1)을 지정, .은 Dockerfile이 있는 현재 디렉토리를 의미
 
       - name: Push Docker image to Docker Hub # 단계 이름
         run: | # 여러 줄의 명령어를 실행
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub에 로그인. secrets에 저장된 username과 password 사용
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin  # Docker Hub에 로그인. secrets에 저장된 username과 password 사용
           docker push kipid/fitmate-fe:v0.1  # Docker Hub에 빌드된 이미지를 push
 
       - name: Deploy to server # 단계 이름
@@ -36,5 +37,7 @@ jobs: # 워크플로우의 작업(job)들을 정의
             docker pull kipid/fitmate-fe:v0.1
             docker stop fitmate-fe-container || true
             docker rm fitmate-fe-container || true
-            docker run -d -p 3001:3001 --name fitmate-fe-container kipid/fitmate-fe:v0.1
+            docker run -d -p 3001:3001 --name fitmate-fe-container --env-file /app/.env kipid/fitmate-fe:v0.1
+            sleep 5  # 컨테이너 정상 실행 확인 시간 확보
+            docker system prune -a
           EOF
