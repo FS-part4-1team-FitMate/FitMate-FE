@@ -28,13 +28,13 @@ jobs: # 워크플로우의 작업(job)들을 정의
           docker push kipid/fitmate-fe:v0.1  # Docker Hub에 빌드된 이미지를 push
 
       - name: Deploy to server # 단계 이름
-        uses: appleboy/ghaction-ssh@v1.2.0 # SSH를 사용하여 원격 서버에 접속하는 GitHub Action 사용
-        with: # Action의 설정 값
-          host: ${{ secrets.SERVER_IP }} # 서버 IP 주소 (secrets에 저장)
-          username: ${{ secrets.SERVER_USERNAME }} # 서버 username (secrets에 저장)
-          key: ${{ secrets.SERVER_PRIVATE_KEY }} # 서버 개인키 (secrets에 저장)
-          script: | # 서버에서 실행할 명령어
-            docker pull kipid/fitmate-fe:v0.1  # Docker Hub에서 이미지를 pull (가져옴)
-            docker stop fitmate-fe-container || true  # 실행 중인 컨테이너를 중지. || true는 컨테이너가 없을 경우 에러를 무시
-            docker rm fitmate-fe-container || true  # 컨테이너를 삭제. || true는 컨테이너가 없을 경우 에러를 무시
-            docker run -d -p 3001:3001 --name fitmate-fe-container kipid/fitmate-fe:v0.1  # Docker 컨테이너를 실행. -d는 detached mode (백그라운드), -p는 포트 매핑, --name은 컨테이너 이름
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }}  << 'EOF'
+            docker pull kipid/fitmate-fe:v0.1
+            docker stop fitmate-fe-container || true
+            docker rm fitmate-fe-container || true
+            docker run -d -p 3001:3001 --name fitmate-fe-container kipid/fitmate-fe:v0.1
+          EOF
