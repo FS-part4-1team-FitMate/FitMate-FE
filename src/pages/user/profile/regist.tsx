@@ -16,6 +16,8 @@ import ImageUploader from "@/components/SignUp/ImageUploader";
 function Regist() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [isLessonVisible, setIsLessonVisible] = useState<boolean>(false);
+  const [isRegionVisible, setIsRegionVisible] = useState<boolean>(false);
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
   const setUser = useSetUser();
@@ -95,46 +97,48 @@ function Regist() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <main className="pc:flex justify-center items-start gap-[32px]">
+      <main className="pc:flex justify-center items-start gap-[32px] px-8">
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:mr-[16px] p-[4px] my-[24px]">
-          <div className={profile_menu}>
-            <h1 className="text-xl font-bold">프로필 등록</h1>
-            <p className="text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
+          <div className={`${profile_menu} pb-8 border-b`}>
+            <h1 className="py-2 px-8 border border-blue-300 rounded-full text-blue-300 text-2xl font-bold bg-blue-100">
+              프로필 등록
+            </h1>
+            <p className="px-4 text-md">추가 정보를 입력하여 회원가입을 완료해주세요.</p>
           </div>
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
           <ImageUploader
             id="profileImage"
             label="프로필 이미지"
             register={register("profileImage")}
           />
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <Input
-            id="name"
-            label="이름"
-            type="name"
-            register={register("name", {
-              required: "이름를 입력해 주세요.",
-            })}
-            placeholder="이름를 입력해 주세요."
-          />
-          {errors.name && <p className={error_class}>{errors.name.message}</p>}
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <Input
-            id="phone"
-            label="전화번호"
-            type="phone"
-            register={register("phone", {
-              required: "전화번호를 입력해 주세요.",
-              pattern: {
-                value: PHONE_REGEX,
-                message: "유효한 전화번호를 입력해 주세요.",
-              },
-            })}
-            placeholder="전화번호를 입력해 주세요."
-          />
-          {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
+          <div className="w-full py-8 border-y">
+            <Input
+              id="name"
+              label="이름"
+              type="name"
+              register={register("name", {
+                required: "이름를 입력해 주세요.",
+              })}
+              placeholder="이름를 입력해 주세요."
+            />
+            {errors.name && <p className={error_class}>{errors.name.message}</p>}
+          </div>
+          <div className="w-full py-8 border-b">
+            <Input
+              id="phone"
+              label="전화번호"
+              type="phone"
+              register={register("phone", {
+                required: "전화번호를 입력해 주세요.",
+                pattern: {
+                  value: PHONE_REGEX,
+                  message: "유효한 전화번호를 입력해 주세요.",
+                },
+              })}
+              placeholder="전화번호를 입력해 주세요."
+            />
+            {errors.phone && <p className={error_class}>{errors.phone.message}</p>}
+          </div>
+          <div className={`${profile_menu} pt-4`}>
             <label className="text-lg font-semibold">성별</label>
             <div className="flex gap-[16px]">
               <label className="text-lg inline-block">
@@ -147,70 +151,98 @@ function Regist() {
               </label>
             </div>
           </div>
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
-          <div className={profile_menu}>
-            <div className="flex flex-col gap-[8px]">
-              <label className="text-lg font-semibold">받고 싶은 레슨 유형</label>
-              <p className={note_class}>* 받고 싶은 레슨 유형은 언제든지 수정 가능해요!</p>
+          <div className="py-8 border-y pc:border-t-0 pc:mt-16">
+            <div className={profile_menu}>
+              <div className="flex items-center gap-4">
+                <label className="text-lg font-semibold">받고 싶은 레슨 유형</label>
+                <div
+                  className="relative flex justify-center items-center w-8 h-8 p-3 border border-red-200 rounded-full text-red-200 text-md font-semibold bg-red-100"
+                  onMouseEnter={() => setIsLessonVisible(true)}
+                  onMouseLeave={() => setIsLessonVisible(false)}
+                >
+                  !
+                  {isLessonVisible && (
+                    <div className="absolute bottom-full left-full w-fit px-3 border border-red-200 rounded-t-xl rounded-br-xl text-nowrap text-red-200 text-md font-regular bg-red-100">
+                      받고 싶은 레슨 유형은 <br className="block pc:hidden tablet:hidden" />
+                      언제든지 수정 가능해요!
+                    </div>
+                  )}
+                </div>{" "}
+              </div>
+              <label className="text-lg">
+                <input
+                  {...register("lessonType", {
+                    validate: (value) =>
+                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                  })}
+                  type="checkbox"
+                  name="lessonType"
+                  value={LessonType.SPORTS}
+                />
+                &nbsp;스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
+              </label>
+              <label className="text-lg">
+                <input
+                  {...register("lessonType", {
+                    validate: (value) =>
+                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                  })}
+                  type="checkbox"
+                  name="lessonType"
+                  value={LessonType.FITNESS}
+                />
+                &nbsp;피트니스 (PT, 요가, 필라테스, 식단 관리 등)
+              </label>
+              <label className="text-lg">
+                <input
+                  {...register("lessonType", {
+                    validate: (value) =>
+                      (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                  })}
+                  type="checkbox"
+                  name="lessonType"
+                  value={LessonType.REHAB}
+                />
+                &nbsp;재활치료
+              </label>
             </div>
-            <label className="text-lg">
-              <input
-                {...register("lessonType", {
-                  validate: (value) =>
-                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                })}
-                type="checkbox"
-                name="lessonType"
-                value={LessonType.SPORTS}
-              />
-              &nbsp;스포츠 (구기 스포츠, 계절 스포츠, 격투 스포츠 등)
-            </label>
-            <label className="text-lg">
-              <input
-                {...register("lessonType", {
-                  validate: (value) =>
-                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                })}
-                type="checkbox"
-                name="lessonType"
-                value={LessonType.FITNESS}
-              />
-              &nbsp;피트니스 (PT, 요가, 필라테스, 식단 관리 등)
-            </label>
-            <label className="text-lg">
-              <input
-                {...register("lessonType", {
-                  validate: (value) =>
-                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-                })}
-                type="checkbox"
-                name="lessonType"
-                value={LessonType.REHAB}
-              />
-              &nbsp;재활치료
-            </label>
+            {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
           </div>
-          {errors.lessonType && <p className={error_class}>{errors.lessonType.message}</p>}
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <div className={profile_menu}>
-            <div className="flex flex-col gap-[8px]">
-              <label className="text-lg font-semibold">내가 사는 지역</label>
-              <p className={note_class}>* 내가 사는 지역은 언제든지 수정 가능해요!</p>
+          <div className="py-4">
+            <div className={profile_menu}>
+              <div className="flex items-center gap-4">
+                <label className="text-lg font-semibold">내가 사는 지역</label>
+                <div
+                  className="relative flex justify-center items-center w-8 h-8 p-3 border border-red-200 rounded-full text-red-200 text-md font-semibold bg-red-100"
+                  onMouseEnter={() => setIsRegionVisible(true)}
+                  onMouseLeave={() => setIsRegionVisible(false)}
+                >
+                  !
+                  {isRegionVisible && (
+                    <div className="absolute bottom-full left-full w-fit px-3 border border-red-200 rounded-t-xl rounded-br-xl text-nowrap text-red-200 text-md font-regular bg-red-100">
+                      내가 사는 지역은 <br className="block pc:hidden tablet:hidden" />
+                      언제든지 수정 가능해요!
+                    </div>
+                  )}
+                </div>{" "}
+              </div>
+              <Regions
+                selectedRegion={selectedRegion}
+                setSelectedRegion={setSelectedRegion}
+                register={register("region", {
+                  validate: (value) =>
+                    (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
+                })}
+              />
             </div>
-            <Regions
-              selectedRegion={selectedRegion}
-              setSelectedRegion={setSelectedRegion}
-              register={register("region", {
-                validate: (value) =>
-                  (value && value.length > 0) || "반드시 하나 이상을 선택해야 합니다.",
-              })}
-            />
+            {errors.region && <p className={error_class}>{errors.region.message}</p>}
           </div>
-          {errors.region && <p className={error_class}>{errors.region.message}</p>}
-          <hr className="w-full border-[1px] border-solid border-gray-300" />
-          <Button type="submit" className="w-full bg-blue-500 text-white">
+          <Button
+            type="submit"
+            className="hover:bg-blue-200 w-full bg-blue-500 text-white font-semibold"
+          >
             시작하기
           </Button>
         </div>
