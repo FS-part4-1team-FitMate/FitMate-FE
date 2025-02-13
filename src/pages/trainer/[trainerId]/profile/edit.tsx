@@ -97,7 +97,7 @@ function ProfileEdit() {
       changedData.experience = Number(Number(changedData.experience).toFixed(0));
     }
     let profileImageFileToUpload;
-    if ("profileImage" in changedData && changedData?.profileImage?.length) {
+    if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
       const profileImage = changedData.profileImage;
       if (profileImage instanceof FileList && profileImage[0]?.name) {
         profileImageFileToUpload = profileImage[0];
@@ -107,7 +107,7 @@ function ProfileEdit() {
       }
     }
     let certificationFileToUpload;
-    if ("certification" in changedData && changedData?.certification?.length) {
+    if (changedData && "certification" in changedData && changedData?.certification?.length) {
       const certification = changedData.certification;
       if (certification instanceof FileList && certification[0]?.name) {
         certificationFileToUpload = certification[0];
@@ -119,13 +119,13 @@ function ProfileEdit() {
     try {
       delete changedData.updatedAt;
       const userData = await patchProfile(user?.id!, changedData);
-      if ("profileImagePresignedUrl" in userData) {
+      if (userData && "profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
       }
-      if ("certificationPresignedUrl" in userData) {
+      if (userData && "certificationPresignedUrl" in userData) {
         const result = await axios.put(
           userData.certificationPresignedUrl as string,
           certificationFileToUpload,

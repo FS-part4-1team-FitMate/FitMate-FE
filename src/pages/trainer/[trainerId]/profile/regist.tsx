@@ -99,14 +99,14 @@ function Regist() {
     }
     try {
       const userData = await postProfile(data);
-      if ("profileImagePresignedUrl" in userData) {
+      if (userData && "profileImagePresignedUrl" in userData) {
         const result = await axios.put(
           userData.profileImagePresignedUrl as string,
           profileImageFileToUpload,
         );
         console.log(result);
       }
-      if ("certificationPresignedUrl" in userData) {
+      if (userData && "certificationPresignedUrl" in userData) {
         const result = await axios.put(
           userData.certificationPresignedUrl as string,
           certificationFileToUpload,
