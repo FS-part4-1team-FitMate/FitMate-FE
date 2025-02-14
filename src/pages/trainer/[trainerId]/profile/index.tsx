@@ -114,7 +114,7 @@ function Profile({ initialQuery }: PageProps) {
             <div className="flex items-center gap-1">
               <p className="text-lg">{trainerProfile?.profile?.name}</p>
               <Image
-                src={trainerProfile?.profile?.gender ? ic_gender_male : ic_gender_female}
+                src={trainerProfile?.profile?.gender === "MALE" ? ic_gender_male : ic_gender_female}
                 width={15}
                 height={15}
                 alt="gender"
