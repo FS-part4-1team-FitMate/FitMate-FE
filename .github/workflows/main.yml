@@ -2,8 +2,7 @@ name: CI/CD Pipeline # 워크플로우의 이름을 'CI/CD Pipeline'으로 설�
 
 on: # 워크플로우 트리거 조건 설정
   push: # Git push 이벤트 발생 시 실행
-    branches:
-      - Feat-kipid # dev 브랜치에 push가 발생했을 때만 실행
+    branches: ["dev"] # dev 브랜치에 push가 발생했을 때만 실행
 
 jobs: # 실행할 작업들을 정의하는 섹션
   build-and-deploy: # 작업 이름을 'build-and-deploy'로 설정
@@ -19,53 +18,33 @@ jobs: # 실행할 작업들을 정의하는 섹션
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           # Docker Hub 로그인 (보안을 위해 secrets 사용)
-          echo $DOCKER_PASSWORD
-          docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-          for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
-          sudo apt-get autoremove -y
-          # Add Docker's official GPG key:
-          sudo apt-get update
-          sudo apt-get install ca-certificates curl
-          sudo install -m 0755 -d /etc/apt/keyrings
-          sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-          sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-          # Add the repository to Apt sources:
-          echo \
-            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-            $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
-          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-          sudo systemctl start docker
-          sudo systemctl enable docker
+          echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
           docker --version
           sleep 3
-          sudo usermod -aG docker $USER
           docker build --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} --build-arg NODE_ENV=${{ secrets.NODE_ENV }} --build-arg NEXT_PUBLIC_KAKAO_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }} -t kipid/fitmate-fe:v0.2 . # Dockerfile을 사용하여 이미지 빌드, 태그는 v0.2로 지정
           sleep 3
           docker push kipid/fitmate-fe:v0.2  # 빌드된 이미지를 Docker Hub에 업로드
-          # sleep 300
-          # docker logout
+          sleep 3
+          docker logout
 
       - name: Deploy to server # 서버 배포 단계
+        uses: appleboy/ssh-action@master
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          mkdir -p ~/.ssh  # SSH 디렉토리 생성
-          echo "${{ secrets.SERVER_PRIVATE_KEY }}" > ~/.ssh/deploy_key  # SSH 키 파일 생성
-          chmod 600 ~/.ssh/deploy_key  # SSH 키 파일 권한 설정
-
-          # SSH를 통해 서버에 접속하여 배포 명령어 실행
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }}  << 'EOF'
-            docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
             docker pull kipid/fitmate-fe:v0.2  # 최신 이미지 다운로드
             docker stop fitmate-fe-container || true  # 기존 컨테이너 중지 (실패해도 계속 진행)
             docker rm fitmate-fe-container || true  # 기존 컨테이너 제거 (실패해도 계속 진행)
             docker run -d -p 3001:3001 --name fitmate-fe-container --env-file /app/.env kipid/fitmate-fe:v0.2  # 새 컨테이너 실행
             sleep 5  # 컨테이너 실행 안정화 대기
-            docker system prune -a  # 사용하지 않는 Docker 리소스 정리
+            docker system prune -f  # 사용하지 않는 Docker 리소스 정리
             sleep 3
+            ps -ef | grep docker  # Check running processes
             docker logout
-          EOF
