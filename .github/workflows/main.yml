@@ -2,7 +2,7 @@ name: CI/CD Pipeline # 워크플로우의 이름을 'CI/CD Pipeline'으로 설�
 
 on: # 워크플로우 트리거 조건 설정
   push: # Git push 이벤트 발생 시 실행
-    branches: ["dev"] # dev 브랜치에 push가 발생했을 때만 실행
+    branches: ["Feat-kipid"] # Feat-kipid 브랜치에 push가 발생했을 때만 실행
 
 jobs: # 실행할 작업들을 정의하는 섹션
   build-and-deploy: # 작업 이름을 'build-and-deploy'로 설정
