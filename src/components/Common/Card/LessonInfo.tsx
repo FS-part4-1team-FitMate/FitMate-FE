@@ -3,7 +3,7 @@ import { VerticalLine } from "../Line";
 interface LessonInfoProps {
   startDate: string;
   endDate: string;
-  locationType: string;
+  locationType?: string;
   address?: string;
 }
 
