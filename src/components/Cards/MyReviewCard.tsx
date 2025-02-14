@@ -1,6 +1,7 @@
 import { MyReview } from "@/types/reviews";
 import CardContainer from "../Common/Card/CardContainer";
 import Image from "next/image";
+import { ic_profile_default_md } from "@/imageExports";
 import ChipLessonType from "../Chip/ChipLessonType";
 import { LessonType} from "@/types/types";
 import QuotePrice from "../Common/Card/QuotePrice";
@@ -28,7 +29,13 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
             layout="fixed"
           />
         ) : (
-          <div className="w-20 h-20 bg-gray-300 rounded-full" />
+          <Image
+            src={ic_profile_default_md}
+            objectFit="contain"
+            width={56}
+            height={56}
+            alt="프로필 사진"
+          />
         )}
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-semibold">{review.lessonQuote.trainer.nickname}</h2>
