@@ -19,6 +19,7 @@ jobs: # 실행할 작업들을 정의하는 섹션
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           # Docker Hub 로그인 (보안을 위해 secrets 사용)
+          echo $DOCKER_PASSWORD
           docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
           for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
           sudo apt-get autoremove -y
