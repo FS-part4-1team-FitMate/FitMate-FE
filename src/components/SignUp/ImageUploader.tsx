@@ -47,7 +47,7 @@ const ImageUploader: React.FC<Props> = ({
           alt="Profile Preview"
           width={width}
           height={height}
-          className="rounded-3xl border-2 border-gray-300 object-cover mb-[10px]"
+          className="rounded-full border-2 border-gray-300 object-cover mb-[10px]"
         />
         <br />
         <input

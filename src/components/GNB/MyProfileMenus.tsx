@@ -15,8 +15,22 @@ interface MyProfileMenusProps {
 
 function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusProps) {
   return (
-    <div className="absolute top-[30px] right-0 w-[260px] bg-white border border-gray-300 rounded-xl px-[10px] z-10">
-      <div className="w-[240px] h-auto text-lg flex justify-center items-center py-[10px]">
+    <div className="absolute top-[30px] right-0 w-[20rem] bg-white border border-gray-300 rounded-xl z-10 shadow-card">
+      <div className="flex items-center gap-4 w-full py-[10px] px-8">
+        <Image
+          className="object-cover rounded-full w-[24px] h-[24px]"
+          src={
+            profileData?.profileImagePresignedUrl
+              ? profileData.profileImagePresignedUrl
+              : ic_profile_default_sm
+          }
+          alt="Profile Image"
+          width={24}
+          height={24}
+        />
+        <h1 className="text-2lg font-semibold">{user?.nickname}</h1>
+      </div>
+      <div className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer">
         <Link
           href={user?.role === Role.TRAINER ? `/trainer/${user?.id}/profile` : "/user/profile"}
           className={
@@ -25,22 +39,11 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
               : "flex justify-center items-center gap-[10px]"
           }
         >
-          <Image
-            className="object-cover rounded-full w-[24px] h-[24px]"
-            src={
-              profileData?.profileImagePresignedUrl
-                ? profileData.profileImagePresignedUrl
-                : ic_profile_default_sm
-            }
-            alt="Profile Image"
-            width={24}
-            height={24}
-          />
-          <span>{user?.nickname}&nbsp;프로필</span>
+          <span>마이페이지</span>
         </Link>
       </div>
       <div
-        className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
+        className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer"
         onClick={() => {
           if (user?.hasProfile) {
             if (user.role === Role.USER) {
@@ -68,7 +71,7 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
         </div>
       </div>
       <div
-        className="w-[240px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px] cursor-pointer"
+        className="hover:bg-bg-200 hover:rounded-b-xl w-full h-auto border-t text-gray-500 text-lg font-semibold flex justify-center items-center py-[10px] px-8 cursor-pointer"
         onClick={() => {
           localStorage.removeItem("userData");
           setUser(null);

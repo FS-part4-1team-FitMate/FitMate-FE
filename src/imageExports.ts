@@ -28,6 +28,8 @@ import ic_filter_md from "@/assets/ic/ic_filter_md.svg";
 import ic_filter_sm from "@/assets/ic/ic_filter_sm.svg";
 import ic_fitness_md from "@/assets/ic/ic_fitness_md.svg";
 import ic_fitness_sm from "@/assets/ic/ic_fitness_sm.svg";
+import ic_gender_female from "@/assets/ic/ic_gender_female.svg";
+import ic_gender_male from "@/assets/ic/ic_gender_male.svg";
 import ic_google_md from "@/assets/ic/ic_google_md.svg";
 import ic_google_sm from "@/assets/ic/ic_google_sm.svg";
 import ic_health_md from "@/assets/ic/ic_health_md.svg";
@@ -170,6 +172,8 @@ export {
   ic_X_circle_sm,
   ic_X_md,
   ic_X_sm,
+  ic_gender_male,
+  ic_gender_female,
   img_default_md,
   img_default_sm,
   img_landing_01,
