@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getQuote } from "@/lib/api/quoteService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
@@ -5,7 +7,18 @@ import { HorizontalLine } from "@/components/Common/Line";
 import QuoteInfo from "@/components/Common/QuoteInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 
-export default function Detailrequest({ requestId }: { requestId: string | null }) {
+export default function DetailRequest() {
+  const router = useRouter();
+  const [requestId, setRequestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (router.query.requestId) {
+      setRequestId(router.query.requestId as string);
+    }
+  }, [router.query]);
+
+  console.log("✅ 현재 요청된 requestId:", requestId);
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["quote-info", requestId],
     queryFn: () => getQuote(requestId as string),
