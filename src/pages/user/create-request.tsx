@@ -6,16 +6,16 @@ import { Controller, useForm } from "react-hook-form";
 import { createLessonRequest } from "@/lib/api/requestService";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
-import { LessonType, lessonType_trans } from "@/types/types";
+import { LessonType, lessonType_trans, LessonSubType, lessonSubType_trans, LocationType, locationType_trans } from "@/types/types";
 
 type FormValues = {
   lessonType: LessonType;
-  subLessonType: string;
+  lessonSubType: string;
   startDate: Date;
   endDate: Date;
   lessonCount: number;
   lessonTime: number;
-  locationType: string;
+  locationType: LocationType;
   roadAddress?: string;
 };
 
@@ -31,19 +31,19 @@ const createRequest = () => {
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
       lessonType: LessonType.SPORTS,
-      subLessonType: "",
+      lessonSubType: "",
       startDate: new Date(),
       endDate: new Date(),
       lessonCount: 0,
       lessonTime: 0,
-      locationType: "",
+      locationType: LocationType.OFFLINE,
       roadAddress: "",
     },
   });
 
   const fields: (keyof FormValues)[] = [
     "lessonType",
-    "subLessonType",
+    "lessonSubType",
     "startDate",
     "endDate",
     "lessonCount",
@@ -81,25 +81,35 @@ const createRequest = () => {
     "주소를 입력해주세요.",
   ];
 
-  const lessonSubTypeMap: Record<LessonType, string[]> = {
+  const lessonSubTypeMap: Record<LessonType, LessonSubType[]> = {
     [LessonType.SPORTS]: [
-      "축구", "농구", "야구", "테니스", "배드민턴", "탁구",
-      "스키", "서핑", "복싱", "태권도", "주짓수"
+      LessonSubType.SOCCER, LessonSubType.BASKETBALL, LessonSubType.BASEBALL,
+      LessonSubType.TENNIS, LessonSubType.BADMINTON, LessonSubType.TABLE_TENNIS,
+      LessonSubType.SKI, LessonSubType.SURFING, LessonSubType.BOXING,
+      LessonSubType.TAEKWONDO, LessonSubType.JIUJITSU
     ],
     [LessonType.FITNESS]: [
-      "퍼스널 트레이닝", "요가", "필라테스", "다이어트 관리"
+      LessonSubType.PERSONAL_TRAINING, LessonSubType.YOGA,
+      LessonSubType.PILATES, LessonSubType.DIET_MANAGEMENT
     ],
     [LessonType.REHAB]: [
-      "스트레칭", "재활 치료"
+      LessonSubType.STRETCHING, LessonSubType.REHAB_TREATMENT
     ],
   };
 
-  const getOptionsForSecondQuestion = (lessonType: LessonType) => {
+  const getOptionsForSecondQuestion = (lessonType: LessonType): LessonSubType[] => {
     return lessonSubTypeMap[lessonType] || [];
   };
 
   const handleAnswer = () => {
     const currentStepField = fields[step];
+
+    if (currentStepField === "locationType" && currentAnswer === LocationType.ONLINE) {
+      setValue("roadAddress", "");
+      setChatHistory((prev) => [...prev, { type: "answer", content: currentAnswer }]);
+      handleSubmit(onSubmit)();
+      return;
+    }
 
     if (step < 3) {
       setValue(currentStepField, currentAnswer);
@@ -113,16 +123,6 @@ const createRequest = () => {
       setCurrentAnswer("");
     } else {
       setValue(fields[step + 1], currentAnswer);
-
-      if (currentStepField === "locationType" && currentAnswer === "온라인") {
-        setChatHistory((prev) => [
-          ...prev,
-          { type: "answer", content: currentAnswer },
-        ]);
-        handleSubmit(onSubmit)();
-        return;
-      }
-
       setChatHistory((prev) => [
         ...prev,
         { type: "answer", content: currentAnswer },
@@ -165,13 +165,17 @@ const createRequest = () => {
   };
 
   const onSubmit = async (data: FormValues) => {
-    console.log("제출 데이터:", data);
+    const formattedData = {
+      ...data,
+      startDate: data.startDate.toISOString(), 
+      endDate: data.endDate.toISOString(), 
+    };
     try {
-      await createLessonRequest(data);
+      await createLessonRequest(formattedData);
       alert("견적 요청이 성공적으로 제출되었습니다!");
     } catch (err) {
       alert("견적 요청 제출 중 오류가 발생했습니다.");
-      console.log("제출 데이터:", data);
+      console.error("🚨 제출 데이터:", formattedData);
     }
   };
 
@@ -188,11 +192,18 @@ const createRequest = () => {
       <div className="flex flex-col space-y-4 w-full px-[20rem]">
         {chatHistory.map((chat, index) => (
           <div key={index} className="flex flex-col">
-            <ChatBubble type={chat.type} content={
-              chat.type === "answer" && Object.values(LessonType).includes(chat.content as LessonType)
-                ? lessonType_trans[chat.content as LessonType]?.ko
-                : chat.content
-            } />
+            <ChatBubble
+              type={chat.type}
+              content={
+                chat.type === "answer"
+                  ? Object.values(LessonType).includes(chat.content as LessonType)
+                    ? lessonType_trans[chat.content as LessonType].ko
+                    : Object.values(LessonSubType).includes(chat.content as LessonSubType)
+                    ? lessonSubType_trans[chat.content as LessonSubType]
+                    : chat.content
+                  : chat.content
+              }
+            />
             {chat.type === "answer" && index / 2 < step && (
               <button type="button" onClick={() => handleEdit(Math.floor(index / 2))} className="text-sm text-black-500 underline self-end mr-7">
                 수정하기
@@ -239,22 +250,16 @@ const createRequest = () => {
         {step === 1 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
-              {getOptionsForSecondQuestion(watch("lessonType")).map((option) => (
-                <label
-                  key={option}
-                  className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
-                    currentAnswer === option ? "bg-blue-100 text-black" : "bg-white text-black"
-                  }`}
-                >
+              {getOptionsForSecondQuestion(watch("lessonType") as LessonType).map((option) => (
+                <label key={option} className="flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer">
                   <input
                     type="radio"
-                    name="subLessonType"
+                    name="lessonSubType"
                     value={option}
-                    className="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-blue-500 checked:border-transparent"
                     onChange={() => setCurrentAnswer(option)}
                     checked={currentAnswer === option}
                   />
-                  <span className="text-lg">{option}</span>
+                  <span className="text-lg">{lessonSubType_trans[option]}</span>
                 </label>
               ))}
             </div>
@@ -354,7 +359,7 @@ const createRequest = () => {
         {step === 5 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
-              {["온라인", "오프라인"].map((option) => (
+              {Object.values(LocationType).map((option) => (
                 <label
                   key={option}
                   className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
@@ -363,13 +368,13 @@ const createRequest = () => {
                 >
                   <input
                     type="radio"
-                    name="lessonType"
+                    name="locationType"
                     value={option}
                     className="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-blue-500 checked:border-transparent"
                     onChange={() => setCurrentAnswer(option)}
                     checked={currentAnswer === option}
                   />
-                  <span className="text-lg">{option}</span>
+                  <span className="text-lg">{locationType_trans[option]}</span>
                 </label>
               ))}
             </div>
@@ -403,9 +408,9 @@ const createRequest = () => {
                       oncomplete: function (data: any) {
                         var addr = "";
                         if (data.userSelectedType === "R") {
-                          addr = data.roadaddress;
+                          addr = data.roadAddress;
                         } else {
-                          addr = data.jibunaddress;
+                          addr = data.jibunAddress;
                         }
                         setValue("roadAddress", addr);
                       },

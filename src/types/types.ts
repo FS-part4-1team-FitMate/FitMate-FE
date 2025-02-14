@@ -28,6 +28,8 @@ export const lessonType_trans = {
   [LessonType.REHAB]: { img: ic_health_sm, ko: "재활치료" },
 };
 
+
+
 export enum LessonSubType {
   // SPORTS
   SOCCER = "SOCCER",
