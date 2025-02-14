@@ -65,13 +65,17 @@ export default function RejectedRequest() {
     <div className="p-10 bg-gray-50 min-h-screen">
       <Tab />
       <div className="grid grid-cols-2 gap-4">
-        {data?.pages.map((page, pageIndex) => (
-          <React.Fragment key={pageIndex}>
-            {page?.results?.map((quote: any) => (
-              <RejectedRequestCard key={quote.id} item={quote} />
+        {data?.pages.some((page) => page?.list?.length > 0) ? (
+          <div className="grid grid-cols-2 gap-4">
+            {data.pages.map((page, pageIndex) => (
+              <React.Fragment key={pageIndex}>
+                {page?.list?.map((quote: any) => <RejectedRequestCard key={quote.id} item={quote} />)}
+              </React.Fragment>
             ))}
-          </React.Fragment>
-        ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 mt-6">반려된 견적이 없습니다.</p>
+        )}
       </div>
       {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}
       <div ref={observerRef} className="h-10" />

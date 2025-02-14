@@ -200,6 +200,8 @@ const createRequest = () => {
                     ? lessonType_trans[chat.content as LessonType].ko
                     : Object.values(LessonSubType).includes(chat.content as LessonSubType)
                     ? lessonSubType_trans[chat.content as LessonSubType]
+                    : Object.values(LocationType).includes(chat.content as LocationType)
+                    ? locationType_trans[chat.content as LocationType]
                     : chat.content
                   : chat.content
               }

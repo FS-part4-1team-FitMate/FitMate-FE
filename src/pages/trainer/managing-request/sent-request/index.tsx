@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSentRequest } from "@/lib/api/requestService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
-import Tab from "@/components/Tab";
 
 type SentRequestQueryKey = [
   string,
@@ -66,7 +65,6 @@ export default function SentRequest() {
 
   return (
     <div className="p-10 bg-gray-50 min-h-screen">
-      <Tab />
       {data?.pages.some((page) => page?.list?.length > 0) ? (
         <div className="grid grid-cols-2 gap-4">
           {data.pages.map((page, pageIndex) => (

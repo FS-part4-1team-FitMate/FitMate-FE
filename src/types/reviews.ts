@@ -1,3 +1,5 @@
+import { Lesson } from "./lesson";
+
 export interface ReviewParams {
   id: number;
   rating: number;
@@ -14,13 +16,6 @@ export interface Review {
   };
 }
 
-export interface ReviewItem {
-  id: number;
-  name: string;
-  date: string;
-  price: string;
-}
-
 export interface FetchReviewsParams {
   page: number;
   limit: number;
@@ -34,4 +29,38 @@ export interface ReviewResult {
 export interface ReviewStat {
   rating: number;
   count: number;
+}
+
+export interface ReviewableList {
+  id: string;
+  trainerId: string;
+  lessonRequestId: string;
+  price: number;
+  message?: string;
+  status?: string;
+  createdAt: string;
+  lessonRequest: {
+    id: string;
+    startDate: string;
+    endDate: string;
+  };
+  Review: any[];
+}
+
+export interface MyReview {
+  content: string;
+  createdAt: string;
+  lessonQuote: {
+    price: number;
+    trainer: {
+      nickname: string;
+      profile: {
+        profileImage?: string;
+      };
+    };
+    lessonRequest: {
+      quoteEndDate: string;
+      lessonType: string;
+    };
+  };
 }
