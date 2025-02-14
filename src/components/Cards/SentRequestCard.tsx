@@ -1,7 +1,6 @@
 import Link from "next/link";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
-import formatTime from "@/lib/utils/formatTime";
 import { LessonType, LocationType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
@@ -15,7 +14,7 @@ import { Quote } from "@/types/quote";
  * @TODO replace any
  */
 
-export default function QuoteDetailCard({ item }: { item: Quote }) {
+export default function SentRequestCard({ item }: { item: Quote }) {
   const lessonRequest = item.lessonRequest;
   return (
     <CardContainer width="100%" gap="1.6rem">
