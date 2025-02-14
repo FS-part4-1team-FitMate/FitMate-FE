@@ -1,3 +1,6 @@
+import { Lesson } from "@/types/lesson";
+
+
 export interface QuoteData {
   lessonRequestId: string;
   price: number;
@@ -20,6 +23,7 @@ export interface Quote {
   id: string;
   trainerId: string;
   lessonRequestId: string;
+  lessonRequest: Lesson;
   price: number;
   message?: string;
   status: string;
