@@ -9,6 +9,7 @@ import { useReadNotiMutation } from "@/lib/api/queries/notification";
 import formatDateTime from "@/lib/utils/formatDateTime";
 import { NotiResult, Notification, NotificationType, notificationType_trans } from "@/types/notis";
 import Button from "../Common/Button";
+import EmptyNotification from "./EmptyNotification";
 
 interface NotiProps {
   noti: Notification;
@@ -120,6 +121,12 @@ function Notifications({
           </div>
         </div>
         <div className="max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+          {currentTab === NotificationType.CHAT_MESSAGE && !hasNoti_CHAT_MESSAGE && (
+            <EmptyNotification message="메시지" />
+          )}
+          {currentTab === NotificationType.LESSON_QUOTE && !hasNoti_LESSON_QUOTE && (
+            <EmptyNotification message="견적" />
+          )}
           {notifications?.notifications
             .filter((noti) => noti.type === currentTab)
             .filter((noti) => !noti.isRead)

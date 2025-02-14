@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useGetUser } from "@/lib/api/queries/user";
 import { profile_menu } from "@/types/constants";
+import { Gender } from "@/types/types";
 import ChipDefault from "@/components/Chip/ChipDefault";
 import ChipRegion from "@/components/Chip/ChipRegion";
 import Button from "@/components/Common/Button";
@@ -51,7 +52,9 @@ function Profile() {
                 <div className="flex items-center gap-2 text-lg">
                   <p>{profileData.profile.name}</p>
                   <Image
-                    src={profileData.profile.gender === "MALE" ? ic_gender_male : ic_gender_female}
+                    src={
+                      profileData.profile.gender === Gender.MALE ? ic_gender_male : ic_gender_female
+                    }
                     width={20}
                     height={20}
                     alt="gender"

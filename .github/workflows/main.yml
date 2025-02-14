@@ -2,8 +2,7 @@ name: CI/CD Pipeline # 워크플로우의 이름을 'CI/CD Pipeline'으로 설�
 
 on: # 워크플로우 트리거 조건 설정
   push: # Git push 이벤트 발생 시 실행
-    branches:
-      - Feat-kipid # dev 브랜치에 push가 발생했을 때만 실행
+    branches: ["Feat-kipid"] # Feat-kipid 브랜치에 push가 발생했을 때만 실행
 
 jobs: # 실행할 작업들을 정의하는 섹션
   build-and-deploy: # 작업 이름을 'build-and-deploy'로 설정
@@ -14,33 +13,56 @@ jobs: # 실행할 작업들을 정의하는 섹션
         uses: actions/checkout@v3 # GitHub 저장소 코드를 가져오는 공식 액션 사용
 
       - name: Build Docker image # Docker 이미지 빌드 단계
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           # Docker Hub 로그인 (보안을 위해 secrets 사용)
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker build --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} --build-arg NODE_ENV=${{ secrets.NODE_ENV }} --build-arg NEXT_PUBLIC_KAKAO_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }} -t kipid/fitmate-fe:v0.1 . # Dockerfile을 사용하여 이미지 빌드, 태그는 v0.1로 지정
-
-      - name: Push Docker image to Docker Hub # Docker Hub에 이미지 푸시 단계
-        run: |
+          echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+          docker --version
           sleep 3
-          docker push kipid/fitmate-fe:v0.1  # 빌드된 이미지를 Docker Hub에 업로드
+
+          # Dockerfile을 사용하여 이미지 빌드, 태그는 v0.2로 지정
+          docker build --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} --build-arg NODE_ENV=${{ secrets.NODE_ENV }} --build-arg NEXT_PUBLIC_KAKAO_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }} -t kipid/fitmate-fe:v0.2 .
+          sleep 3
+
+          # 빌드된 이미지를 Docker Hub에 업로드
+          docker push kipid/fitmate-fe:v0.2
           sleep 3
           docker logout
 
       - name: Deploy to server # 서버 배포 단계
-        run: |
-          mkdir -p ~/.ssh  # SSH 디렉토리 생성
-          echo "${{ secrets.SERVER_PRIVATE_KEY }}" > ~/.ssh/deploy_key  # SSH 키 파일 생성
-          chmod 600 ~/.ssh/deploy_key  # SSH 키 파일 권한 설정
+        uses: appleboy/ssh-action@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 
-          # SSH를 통해 서버에 접속하여 배포 명령어 실행
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }}  << 'EOF'
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            docker pull kipid/fitmate-fe:v0.1  # 최신 이미지 다운로드
-            docker stop fitmate-fe-container || true  # 기존 컨테이너 중지 (실패해도 계속 진행)
-            docker rm fitmate-fe-container || true  # 기존 컨테이너 제거 (실패해도 계속 진행)
-            docker run -d -p 3001:3001 --name fitmate-fe-container --env-file /app/.env kipid/fitmate-fe:v0.1  # 새 컨테이너 실행
-            sleep 5  # 컨테이너 실행 안정화 대기
-            docker system prune -a  # 사용하지 않는 Docker 리소스 정리
+            # 최신 이미지 다운로드
+            docker pull kipid/fitmate-fe:v0.2
+
+            # 기존 컨테이너 중지 (실패해도 계속 진행)
+            docker stop fitmate-fe-container || true
+
+            # 기존 컨테이너 제거 (실패해도 계속 진행)
+            docker rm fitmate-fe-container || true
+
+            # 새 컨테이너 실행
+            docker run -d -p 3001:3001 --name fitmate-fe-container --env-file /app/.env kipid/fitmate-fe:v0.2
+
+            # 컨테이너 실행 안정화 대기
+            sleep 5
+
+            # 사용하지 않는 Docker 리소스 정리
+            docker system prune -f
             sleep 3
+
+            # Check running processes
+            ps -ef | grep docker
             docker logout
-          EOF

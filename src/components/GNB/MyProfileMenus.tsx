@@ -70,6 +70,30 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
           프로필&nbsp;{user?.hasProfile ? "수정" : "등록"}
         </div>
       </div>
+      {user.role === Role.USER && (
+        <div
+          className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer"
+          onClick={() => {
+            router.push("/user/liked-trainer");
+          }}
+        >
+          <div className={router.pathname.endsWith("liked-trainer") ? active_class : ""}>
+            찜한 강사님
+          </div>
+        </div>
+      )}
+      {user.role === Role.USER && (
+        <div
+          className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer"
+          onClick={() => {
+            router.push("/user/lesson-review/awaiting-review");
+          }}
+        >
+          <div className={router.pathname.endsWith("awaiting-review") ? active_class : ""}>
+            레슨 리뷰
+          </div>
+        </div>
+      )}
       <div
         className="hover:bg-bg-200 hover:rounded-b-xl w-full h-auto border-t text-gray-500 text-lg font-semibold flex justify-center items-center py-[10px] px-8 cursor-pointer"
         onClick={() => {
