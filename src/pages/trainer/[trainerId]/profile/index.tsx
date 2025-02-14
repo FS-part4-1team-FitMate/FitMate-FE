@@ -1,5 +1,11 @@
 import { useUser } from "@/contexts/UserProvider";
-import { ic_edit_sm, ic_profile_default_md, img_default_md } from "@/imageExports";
+import {
+  ic_edit_sm,
+  ic_gender_female,
+  ic_gender_male,
+  ic_profile_default_md,
+  img_default_md,
+} from "@/imageExports";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -105,7 +111,15 @@ function Profile({ initialQuery }: PageProps) {
             className="object-cover rounded-full border-[2px] border-solid border-slate-800 w-[50px] h-[50px]"
           />
           <div className="flex flex-col justify-between items-start">
-            <div className="text-lg">{trainerProfile?.profile?.name}</div>
+            <div className="flex items-center gap-1">
+              <p className="text-lg">{trainerProfile?.profile?.name}</p>
+              <Image
+                src={trainerProfile?.profile?.gender ? ic_gender_male : ic_gender_female}
+                width={15}
+                height={15}
+                alt="gender"
+              />
+            </div>
             <div className="text-md text-slate-500 truncate whitespace-nowrap">
               {trainerProfile?.profile?.intro}
             </div>
