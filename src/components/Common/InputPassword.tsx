@@ -20,7 +20,7 @@ function InputPassword({ id, label, register, placeholder, pwdIsVisible, setPwdI
       </label>
       <div className={`relative w-full h-[40px] text-slate-700`}>
         <input
-          className="w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
+          className="focus:outline focus:outline-blue-300 w-full h-full text-lg p-[8px] border border-gray-300 rounded-2xl"
           {...register}
           type={pwdIsVisible ? "text" : "password"}
           id={id}
