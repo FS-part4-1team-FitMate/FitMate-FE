@@ -39,7 +39,7 @@ export const getFavoriteTrainers = async ({
   queryKey,
 }: QueryFunctionContext<[string, { userId: string }]>) => {
   const [, { userId }] = queryKey;
-  const { data } = await get(`/users/${userId}/favorites`, {
+  const { data } = await get(`/trainers/favorites`, {
     params: { page: pageParam },
   });
   return data;

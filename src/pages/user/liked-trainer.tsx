@@ -1,42 +1,18 @@
-import React, { useEffect, useRef} from "react";
+import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import FavoiriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
-import { getFavoriteTrainers } from "@/lib/api/userService";
-import { LessonType } from "@/types/types";
+import { getFavoriteTrainers } from "@/lib/api/trainerService";
+import FavoriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
 
-interface Trainer {
-  id: number;
-  name: string;
-  rating: number;
-  reviewCount: number;
-  experience: number;
-  lessonCount: number;
-  isFavorited: boolean;
-  favoriteCount: number;
-  lessonType: LessonType[];
-}
+export default function LikedTrainer() {
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-const LikedTrainerPage = ({ userId }: { userId: string}) => {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery(
-    ["favoriteTrainers", { userId }],
-    getFavoriteTrainers,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    ["favoriteTrainers"],
+    ({ pageParam = 1 }) => getFavoriteTrainers({ page: pageParam, limit: 10 }),
     {
-      getNextPageParam: (lastPage) => {
-        if (lastPage.hasMore) {
-          return lastPage.nextPage;
-        }
-        return undefined;
-      },
+      getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextPage : undefined),
     }
   );
-
-  const observerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -55,35 +31,23 @@ const LikedTrainerPage = ({ userId }: { userId: string}) => {
     };
   }, [fetchNextPage, hasNextPage]);
 
-  if (status === "loading") return <p>로딩 중...</p>;
-  if (status === "error") return <p>오류가 발생했습니다.</p>;
-
   return (
     <div className="p-10 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">찜한 강사님</h1>
-      <div className="grid grid-cols-2 gap-4">
-        {data?.pages.map((page, pageIndex) => (
+      {data?.pages.some((page) => page?.list?.length > 0) ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {data.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
-            {page.trainers.map((trainer: Trainer) => (
-              <FavoiriteTrainerCard
-                key={trainer.id}
-                name={trainer.name}
-                rating={trainer.rating}
-                reviewCount={trainer.reviewCount}
-                experience={trainer.experience}
-                lessonCount={trainer.lessonCount}
-                isFavorited={trainer.isFavorited}
-                favoriteCount={trainer.favoriteCount}
-                lessonType={trainer.lessonType}
-              />
-            ))}
+              {page?.list?.map((trainer: any) => (
+                <FavoriteTrainerCard key={trainer.id} {...trainer} />
+              ))}
             </React.Fragment>
-        ))}
+          ))}
         </div>
+      ) : (
+        <p className="text-center text-gray-500 mt-6">찜한 트레이너가 없습니다.</p>
+      )}
       {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}
       <div ref={observerRef} className="h-10" />
     </div>
   );
-};
-
-export default LikedTrainerPage;
+}

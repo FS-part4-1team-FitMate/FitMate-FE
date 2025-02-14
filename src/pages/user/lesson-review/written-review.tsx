@@ -1,45 +1,38 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getReview } from "@/lib/api/ReviewService";
+import { getMyReviews } from "@/lib/api/ReviewService";
 import MyReviewCard from "@/components/Cards/MyReviewCard";
 import Pagination from "@/components/Common/Pagination";
-import Tab from "@/components/Tab";
 
-export default function ReviewListPage() {
+export default function MyReviews() {
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 5;
 
-  const { data } = useQuery(
-    ["reviews", { page: currentPage, limit: ITEMS_PER_PAGE }],
-    () => getReview({ page: currentPage, limit: ITEMS_PER_PAGE }),
-    {
-      keepPreviousData: true,
-    },
-  );
+  const { data, isLoading } = useQuery(["myReviews"], getMyReviews);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  if (isLoading) return <p>로딩 중...</p>;
+
+  if (!data || !data.reviews || data.reviews.length === 0) {
+    return <p>작성한 리뷰가 없습니다.</p>;
+  }
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedReviews = data.reviews.slice(startIndex, endIndex);
 
   return (
-    <div className="p-6">
-      <Tab />
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {data?.reviews?.map((review: any) => (
-          <MyReviewCard
-            key={review.id}
-            createdAt={review.date}
-            price={review.price}
-            nickname={review?.user?.nickname}
-            rating={review.rating}
-            content={review.content}
-          />
+    <div className="p-10 bg-gray-50 min-h-screen">
+      <div className="grid grid-cols-2 gap-4">
+        {paginatedReviews.map((review) => (
+          <div key={review.createdAt} className="p-4 border rounded-lg shadow-sm">
+            <MyReviewCard review={review} />
+          </div>
         ))}
       </div>
       <Pagination
         currentPage={currentPage}
-        totalPages={Math.ceil(data?.totalCount! / ITEMS_PER_PAGE || 1)}
-        onPageChange={handlePageChange}
+        totalPages={Math.ceil((data.reviews.length || 1) / ITEMS_PER_PAGE)}
+        onPageChange={setCurrentPage}
       />
     </div>
   );

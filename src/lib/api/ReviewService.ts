@@ -1,4 +1,4 @@
-import { FetchReviewsParams, Review, ReviewParams } from "@/types/reviews";
+import { FetchReviewsParams, Review, ReviewableList, ReviewParams, MyReview } from "@/types/reviews";
 import { get, patch, post } from "./method";
 
 //리뷰 작성
@@ -42,4 +42,37 @@ export const getReviews = async (
 export const getReviewStat = async (trainerId: string) => {
   const response = await get(`/reviews/rating-stats/${trainerId}`);
   return response.data;
+};
+
+export const getReviewableQuotes = async ({
+  page,
+  limit,
+}: FetchReviewsParams): Promise<{
+  list: ReviewableList[];
+  totalCount: number;
+}> => {
+  const response = await get("/quotes/reviewable", {
+    params: { page, limit },
+  });
+
+  console.log(response.data)
+  return {
+    list: response.data.list,
+    totalCount: response.data.totalCount,
+  };
+};
+
+
+
+export const getMyReviews = async (): Promise<{
+  reviews: MyReview[];
+  totalCount: number;
+}> => {
+  try {
+    const response = await get("/reviews/me");
+    return response.data;
+  } catch (error) {
+    console.error("내 리뷰를 불러오는 중 오류 발생:", error);
+    throw new Error("내 리뷰를 불러오는 중 문제가 발생했습니다.");
+  }
 };
