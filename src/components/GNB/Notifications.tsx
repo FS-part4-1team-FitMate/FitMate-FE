@@ -24,7 +24,7 @@ export function SingleNoti({ noti, readNotiMutation }: NotiProps) {
 
   return (
     <div
-      className={`${isRead ? "text-slate-400 " : ""}w-full text-md py-[10px] border-b border-slate-300`}
+      className={`${isRead ? "text-slate-400 " : ""}hover:bg-bg-200 w-full text-md py-[10px] border-b border-slate-300`}
       onClick={() => {
         setIsRead((prev) => !prev);
         readNotiMutation.mutate(noti.id);
@@ -79,25 +79,25 @@ function Notifications({
 
   return (
     <div
-      className={`absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl p-[10px] text-lg z-10`}
+      className={`absolute top-[30px] right-[-30px] w-[280px] bg-white border border-gray-300 rounded-xl py-6 px-8 text-lg z-10`}
     >
-      <div className="flex justify-between items-center">
-        <h3 className="inline-block text-lg m-0 p-0">알림</h3>
+      <div className="flex justify-between items-center py-2">
+        <h3 className="inline-block text-2lg font-semibold m-0 p-0">알림</h3>
         <Button
-          className="bg-slate-400 text-black-500 text-md px-[8px] py-[5px]"
+          className="border border-yellow-100 bg-yellow-50 text-orange-400 text-md font-semibold px-[8px] py-[5px]"
           onClick={() => router.push(`/noti?type=${currentTab}`)}
         >
           전체 보기
         </Button>
       </div>
       <div>
-        <div className="flex gap-[20px] justify-normal items-center border-b-2 border-slate-400">
+        <div className="flex gap-[20px] justify-normal items-center border-b-2 border-yellow-400">
           <div className="flex justify-normal items-start">
             <div
               className={
                 currentTab === NotificationType.LESSON_QUOTE
-                  ? "border-b border-slate-950"
-                  : "text-slate-500"
+                  ? "border-b border-orange-400 font-semibold"
+                  : "text-gray-300"
               }
               onClick={() => setCurrentTab(NotificationType.LESSON_QUOTE)}
             >
@@ -109,8 +109,8 @@ function Notifications({
             <div
               className={
                 currentTab === NotificationType.CHAT_MESSAGE
-                  ? "border-b border-slate-950"
-                  : "text-slate-500"
+                  ? "border-b border-orange-400 font-semibold"
+                  : "text-gray-300"
               }
               onClick={() => setCurrentTab(NotificationType.CHAT_MESSAGE)}
             >
@@ -119,7 +119,7 @@ function Notifications({
             {hasNoti_CHAT_MESSAGE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
           </div>
         </div>
-        <div className="max-h-[300px] overflow-y-auto">
+        <div className="max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
           {notifications?.notifications
             .filter((noti) => noti.type === currentTab)
             .filter((noti) => !noti.isRead)

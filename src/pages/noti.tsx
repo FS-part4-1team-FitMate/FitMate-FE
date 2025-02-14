@@ -1,6 +1,6 @@
 import { useNotifications } from "@/contexts/NotificationProvider";
 import { useUser } from "@/contexts/UserProvider";
-import { ic_red_dot } from "@/imageExports";
+import { ic_noti_empty, ic_red_dot } from "@/imageExports";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useGetNotiList, useReadNotiMutation } from "@/lib/api/queries/notification";
 import { NotificationType, notificationType_trans } from "@/types/notis";
+import EmptyNotification from "@/components/GNB/EmptyNotification";
 import { SingleNoti } from "@/components/GNB/Notifications";
 
 interface QueryParams {
@@ -68,64 +69,68 @@ function Noti({ initialQuery }: PageProps) {
   }, [notiDataFlatted, notifications?.notifications]);
 
   return (
-    <main className="flex flex-col justify-normal items-start gap-[16px] w-full max-w-[500px] mx-auto p-[12px]">
+    <main className="flex flex-col w-full h-screen mx-auto p-8 bg-bg-200">
       <Head>
         <title>알림 페이지</title>
       </Head>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold m-0 p-0">알림</h1>
-      </div>
-      <div className="flex gap-[20px] justify-normal items-center border-b-2 border-slate-400 text-xl">
-        <div className="flex justify-normal items-start">
-          <div
-            className={
-              currentTab === NotificationType.LESSON_QUOTE
-                ? "border-b border-slate-950"
-                : "text-slate-500"
-            }
-            onClick={() => {
-              router.push(`/noti?type=${NotificationType.LESSON_QUOTE}`, undefined, {
-                shallow: true,
-              });
-              setCurrentTab(NotificationType.LESSON_QUOTE);
-            }}
-          >
-            {notificationType_trans[NotificationType.LESSON_QUOTE]}
-          </div>
-          {hasNoti_LESSON_QUOTE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
+      <div className="flex flex-col gap-6 max-w-[80rem] w-full mx-auto p-16 border border-line-200 rounded-[2rem] bg-white shadow-card">
+        <div className="flex justify-between items-center">
+          <h1 className="border border-yellow-100 rounded-full text-orange-400 text-2xl font-semibold bg-yellow-50 m-0 py-2 px-8">
+            알림
+          </h1>
         </div>
-        <div className="flex justify-normal items-start">
-          <div
-            className={
-              currentTab === NotificationType.CHAT_MESSAGE
-                ? "border-b border-slate-950"
-                : "text-slate-500"
-            }
-            onClick={() => {
-              router.push(`/noti?type=${NotificationType.CHAT_MESSAGE}`, undefined, {
-                shallow: true,
-              });
-              setCurrentTab(NotificationType.CHAT_MESSAGE);
-            }}
-          >
-            {notificationType_trans[NotificationType.CHAT_MESSAGE]}
+        <div className="flex gap-[20px] justify-normal items-center border-b-2 border-yellow-400 text-xl">
+          <div className="flex justify-normal items-start">
+            <div
+              className={`${
+                currentTab === NotificationType.LESSON_QUOTE
+                  ? "border-b border-orange-400 font-semibold"
+                  : "text-gray-300"
+              } cursor-pointer`}
+              onClick={() => {
+                router.push(`/noti?type=${NotificationType.LESSON_QUOTE}`, undefined, {
+                  shallow: true,
+                });
+                setCurrentTab(NotificationType.LESSON_QUOTE);
+              }}
+            >
+              {notificationType_trans[NotificationType.LESSON_QUOTE]}
+            </div>
+            {hasNoti_LESSON_QUOTE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
           </div>
-          {hasNoti_CHAT_MESSAGE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
+          <div className="flex justify-normal items-start">
+            <div
+              className={`${
+                currentTab === NotificationType.CHAT_MESSAGE
+                  ? "border-b border-orange-400 font-semibold"
+                  : "text-gray-300"
+              } cursor-pointer`}
+              onClick={() => {
+                router.push(`/noti?type=${NotificationType.CHAT_MESSAGE}`, undefined, {
+                  shallow: true,
+                });
+                setCurrentTab(NotificationType.CHAT_MESSAGE);
+              }}
+            >
+              {notificationType_trans[NotificationType.CHAT_MESSAGE]}
+            </div>
+            {hasNoti_CHAT_MESSAGE && <Image width={4} height={4} src={ic_red_dot} alt="red dot" />}
+          </div>
         </div>
-      </div>
-      <div className="w-full text-2lg">
-        {notifications?.notifications
-          .filter((noti) => noti.type === currentTab)
-          .map((noti) => {
-            return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
-          })}
-        <InfiniteScroll hasMore={hasNextNotiPage} loadMore={() => fetchNextNotiPage()}>
-          {notiDataFlatted
+        <div className="w-full text-2lg">
+          {notifications?.notifications
             .filter((noti) => noti.type === currentTab)
             .map((noti) => {
               return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
             })}
-        </InfiniteScroll>
+          <InfiniteScroll hasMore={hasNextNotiPage} loadMore={() => fetchNextNotiPage()}>
+            {notiDataFlatted
+              .filter((noti) => noti.type === currentTab)
+              .map((noti) => {
+                return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
+              })}
+          </InfiniteScroll>
+        </div>
       </div>
     </main>
   );
