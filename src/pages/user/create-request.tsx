@@ -27,15 +27,16 @@ const createRequest = () => {
   >([]);
   const [currentAnswer, setCurrentAnswer] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
       lessonType: LessonType.SPORTS,
-      lessonSubType: "",
+      lessonSubType: LessonSubType.SOCCER,
       startDate: new Date(),
       endDate: new Date(),
-      lessonCount: 0,
-      lessonTime: 0,
+      lessonCount: 1,
+      lessonTime: 60,
       locationType: LocationType.OFFLINE,
       roadAddress: "",
     },
@@ -104,11 +105,20 @@ const createRequest = () => {
   const handleAnswer = () => {
     const currentStepField = fields[step];
 
-    if (currentStepField === "locationType" && currentAnswer === LocationType.ONLINE) {
-      setValue("roadAddress", "");
-      setChatHistory((prev) => [...prev, { type: "answer", content: currentAnswer }]);
-      handleSubmit(onSubmit)();
-      return;
+    if (currentStepField === "locationType") {
+      const locationTypeValue = currentAnswer as LocationType;
+      setValue("locationType", locationTypeValue);
+  
+      if (locationTypeValue === LocationType.ONLINE) {
+        setValue("roadAddress", "");
+        setChatHistory((prev) => [
+          ...prev,
+          { type: "answer", content: locationTypeValue },
+        ]);
+        setStep(6);
+        setProgress(100);
+        return;
+      }
     }
 
     if (step < 3) {
@@ -167,15 +177,18 @@ const createRequest = () => {
   const onSubmit = async (data: FormValues) => {
     const formattedData = {
       ...data,
+      lessonCount: Number(data.lessonCount),
+      lessonTime: Number(data.lessonTime),
       startDate: data.startDate.toISOString(), 
       endDate: data.endDate.toISOString(), 
     };
     try {
       await createLessonRequest(formattedData);
+      setErrorMessage("");
       alert("견적 요청이 성공적으로 제출되었습니다!");
-    } catch (err) {
-      alert("견적 요청 제출 중 오류가 발생했습니다.");
-      console.error("🚨 제출 데이터:", formattedData);
+    } catch (err: any) {
+      setErrorMessage(err || "견적 요청 제출 중 오류가 발생했습니다.");
+      alert(`🚨 오류: ${err}`);
     }
   };
 
@@ -373,7 +386,7 @@ const createRequest = () => {
                     name="locationType"
                     value={option}
                     className="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-blue-500 checked:border-transparent"
-                    onChange={() => setCurrentAnswer(option)}
+                    onChange={() => setCurrentAnswer(option as LocationType)}
                     checked={currentAnswer === option}
                   />
                   <span className="text-lg">{locationType_trans[option]}</span>
@@ -393,7 +406,7 @@ const createRequest = () => {
 
         
 
-        {step === 6 && (
+        {step === 6 &&  watch("locationType") === LocationType.OFFLINE && (
           <div className="space-y-4">
             <Controller
               name="roadAddress"
@@ -421,14 +434,16 @@ const createRequest = () => {
                 />
               )}
             />
-            <button
-              type="submit"
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
-              disabled={!watch("roadAddress")}
-            >
-              견적 요청하기
-            </button>
           </div>
+        )}
+        {(step === 6 || watch("locationType") === LocationType.ONLINE) && (
+          <button
+            type="submit"
+            className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
+            disabled={watch("locationType") === LocationType.OFFLINE && !watch("roadAddress")}
+          >
+            견적 요청하기
+          </button>
         )}
       </div>
     </form>

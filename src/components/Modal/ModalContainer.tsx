@@ -6,7 +6,7 @@ import Button from "../Common/Button";
 
 const container = clsx(
   "absolute left-0 right-0",
-  "flex flex-col gap-[2.6rem] w-fit mx-auto pt-[3.2rem] pb-16 px-[2.4rem] bg-gray-50",
+  "flex flex-col gap-[1.5rem] w-fit mx-auto pt-[3.2rem] pb-16 px-[2.4rem] bg-gray-50",
   "pc:top-[10%] pc:bottom-auto tablet:top-[10%] tablet:bottom-auto mobile:bottom-0",
   "pc:gap-16 pc:rounded-[3.2rem] tablet:rounded-[3.2rem] mobile:rounded-b-none mobile:rounded-t-[3.2rem]",
 );
