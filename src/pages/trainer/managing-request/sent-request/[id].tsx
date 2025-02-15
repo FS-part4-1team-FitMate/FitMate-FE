@@ -2,6 +2,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDetailRequest } from "@/lib/api/requestService";
+import { HorizontalLine } from "@/components/Common/Line";
+import LessonInfo from "@/components/Common/LessonInfo";
+import ShareSNS from "@/components/Common/ShareSNS";
 import { LessonSubType, LessonType, LocationType } from "@/types/types";
 import QuoteSummaryCard from "@/components/Cards/QuoteSummary";
 import LessonInfo from "@/components/Common/LessonInfo";
@@ -13,13 +16,8 @@ export default function DetailRequest() {
   const [lessonRequestId, setLessonRequestId] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("Router Query:", router.query);
-    console.log("Router isReady:", router.isReady);
-
     if (router.isReady) {
-      console.log("Router Query Keys:", Object.keys(router.query));
       setLessonRequestId(router.query.id as string);
-      console.log("Updated lessonRequestId:", router.query.id);
     }
   }, [router.isReady, router.query]);
 

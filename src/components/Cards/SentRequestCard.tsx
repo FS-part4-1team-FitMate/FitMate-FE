@@ -14,7 +14,7 @@ import { HorizontalLine } from "../Common/Line";
  * @TODO replace any
  */
 
-export default function QuoteDetailCard({ item }: { item: Quote }) {
+export default function SentRequestCard({ item }: { item: Quote }) {
   const lessonRequest = item.lessonRequest;
   return (
     <CardContainer width="100%" gap="1.6rem">
