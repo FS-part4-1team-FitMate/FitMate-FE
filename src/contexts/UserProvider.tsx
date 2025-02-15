@@ -20,7 +20,13 @@ export function UserProvider({ children }: Props) {
   useEffect(() => {
     const storedUserData = localStorage.getItem("userData");
     if (storedUserData) {
-      setUser(JSON.parse(storedUserData).user);
+      try {
+        setUser(JSON.parse(storedUserData).user);
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("userData");
+        setUser(null);
+      }
     }
   }, []);
 

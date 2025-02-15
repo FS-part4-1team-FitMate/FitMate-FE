@@ -44,19 +44,24 @@ function LogIn() {
 
   useEffect(() => {
     if (user?.id) {
-      const userData = JSON.parse(localStorage.getItem("userData")!);
-      if (user.role === Role.USER) {
-        if (user.hasProfile) {
-          router.push("/user/my-lesson/active-lesson");
-        } else {
-          router.push("/user/profile/regist");
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData")!);
+        if (user.role === Role.USER) {
+          if (user.hasProfile) {
+            router.push("/user/my-lesson/active-lesson");
+          } else {
+            router.push("/user/profile/regist");
+          }
+        } else if (user.role === Role.TRAINER) {
+          if (user.hasProfile) {
+            router.push("/trainer/received-request");
+          } else {
+            router.push(`/trainer/${user.id}/profile/regist`);
+          }
         }
-      } else if (user.role === Role.TRAINER) {
-        if (user.hasProfile) {
-          router.push("/trainer/received-request");
-        } else {
-          router.push(`/trainer/${user.id}/profile/regist`);
-        }
+      } catch (err) {
+        console.error(err);
+        setError({ message: (err as Error).message });
       }
     }
   }, [user]);
