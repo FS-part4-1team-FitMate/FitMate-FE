@@ -24,6 +24,7 @@ export interface Quote {
   id: string;
   trainerId: string;
   lessonRequestId: string;
+  lessonRequest?: Lesson;
   price: number;
   message?: string;
   status: string;
