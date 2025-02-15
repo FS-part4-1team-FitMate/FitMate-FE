@@ -1,8 +1,7 @@
 import toast from "react-hot-toast";
 import { useGetFavoriteInfo, useGetTrainer } from "@/lib/api/queries/trainer";
 import formatPrice from "@/lib/utils/formatPrice";
-import { Lesson } from "@/types/lesson";
-import { Quote } from "@/types/quote";
+import { Lesson, MyLessonQuote } from "@/types/lesson";
 import { LessonRequestStatus, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import ChipRequest from "../Chip/ChipRequest";
@@ -12,7 +11,7 @@ import QuotePrice from "../Common/Card/QuotePrice";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import Loading from "../Common/Loading";
 
-export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote: Quote }) {
+export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote: MyLessonQuote }) {
   const { data: trainer, isLoading, isError } = useGetTrainer(quote?.trainerId);
   const { data: favorite } = useGetFavoriteInfo(quote?.trainerId);
 

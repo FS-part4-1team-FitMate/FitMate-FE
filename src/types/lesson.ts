@@ -97,3 +97,15 @@ export interface FilterCheck {
   isDirectQuote: { [key: string]: boolean };
   region: { [key: string]: boolean };
 }
+
+export interface MyLessonQuote {
+  id: string;
+  trainerId: string;
+  lessonRequestId: string;
+  price: number;
+  message?: string;
+  status: string;
+  rejectionReason?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
