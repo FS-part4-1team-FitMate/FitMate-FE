@@ -23,7 +23,7 @@ jobs: # 실행할 작업들을 정의하는 섹션
           sleep 3
 
           # Dockerfile을 사용하여 이미지 빌드, 태그는 v0.2로 지정
-          docker build --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} --build-arg NODE_ENV=${{ secrets.NODE_ENV }} --build-arg NEXT_PUBLIC_KAKAO_API_KEY=${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }} -t kipid/fitmate-fe:v0.2 . || exit 1
+          docker build --build-arg NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" --build-arg NODE_ENV="${{ secrets.NODE_ENV }}" --build-arg NEXT_PUBLIC_KAKAO_API_KEY="${{ secrets.NEXT_PUBLIC_KAKAO_API_KEY }}" -t kipid/fitmate-fe:v0.2 . || exit 1
           sleep 3
 
           # 빌드된 이미지를 Docker Hub에 업로드
@@ -55,7 +55,7 @@ jobs: # 실행할 작업들을 정의하는 섹션
             docker rm fitmate-fe-container || true
 
             # 새 컨테이너 실행
-            docker run -d -p 3001:3001 --name fitmate-fe-container --env-file /app/.env kipid/fitmate-fe:v0.2
+            docker run -d -p 3001:3001 --name fitmate-fe-container kipid/fitmate-fe:v0.2
 
             # 컨테이너 실행 안정화 대기
             sleep 5
