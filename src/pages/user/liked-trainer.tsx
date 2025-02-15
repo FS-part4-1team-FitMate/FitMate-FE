@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getFavoriteTrainers } from "@/lib/api/trainerService";
 import FavoriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
+import Link from "next/link";
 
 export default function LikedTrainer() {
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -32,13 +33,25 @@ export default function LikedTrainer() {
   }, [fetchNextPage, hasNextPage]);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen">
-      {data?.pages.some((page) => page?.list?.length > 0) ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
+      {data?.pages.some((page) => page?.trainers?.length > 0) ? (
+        <div className="grid grid-cols-2 gap-4">
           {data.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
-              {page?.list?.map((trainer: any) => (
-                <FavoriteTrainerCard key={trainer.id} {...trainer} />
+              {page?.trainers?.map((trainer: any) => (
+                <Link href={`/trainer/${trainer.id}/profile?page=1`}>
+                <FavoriteTrainerCard
+                key={trainer.id}
+                name={trainer.nickname}
+                rating={trainer.profile?.rating || 0}
+                reviewCount={trainer.profile?.reviewCount || 0}
+                experience={trainer.profile?.experience || 0}
+                lessonCount={trainer.profile?.lessonCount || 0}
+                isFavorited={true}
+                favoriteCount={trainer._count?.favoritedByUsers || 0}
+                lessonType={trainer.profile?.lessonType || []}
+              />
+              </Link>
               ))}
             </React.Fragment>
           ))}

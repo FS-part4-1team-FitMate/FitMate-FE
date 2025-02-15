@@ -28,9 +28,8 @@ export async function getTrainerInfo(trainerId: string): Promise<ProfileData> {
 
 // 찜한 강사 목록 조회
 export const getFavoriteTrainers = async ({ page, limit }: { page: number; limit: number }) => {
-  const response = await get("/trainers/favorite", {
-    params: { page, limit },
-  });
+  const response = await get(`/trainers/favorite?page=${page}&limit=${limit}`);
+  console.log(response.data)
   return response.data;
 };
 

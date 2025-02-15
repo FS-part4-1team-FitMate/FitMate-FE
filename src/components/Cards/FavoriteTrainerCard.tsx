@@ -15,7 +15,7 @@ interface FindTrainerCardProps {
   size?: "sm" | "lg";
 }
 
-export default function FavoiriteTrainerCard({
+export default function FavoriteTrainerCard({
   name,
   rating,
   reviewCount,
@@ -30,7 +30,7 @@ export default function FavoiriteTrainerCard({
     return (
       <CardContainer width="100%" gap="1.6rem">
         <div className="w-fit">
-          {lessonType.map((type: LessonType, index: number) => (
+          {(lessonType ?? []).map((type: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={type} />
           ))}
         </div>
