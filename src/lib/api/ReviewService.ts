@@ -4,7 +4,6 @@ import { get, patch, post } from "./method";
 //리뷰 작성
 export const postReview = async ({ id, rating, content }: ReviewParams) => {
   const response = await post(`/reviews`, { lessonQuoteId: id, rating, content });
-  
   return response.data;
 };
 
