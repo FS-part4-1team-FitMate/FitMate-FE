@@ -15,7 +15,7 @@ interface FindTrainerCardProps {
   size?: "sm" | "lg";
 }
 
-export default function FavoiriteTrainerCard({
+export default function FavoriteTrainerCard({
   name,
   rating,
   reviewCount,

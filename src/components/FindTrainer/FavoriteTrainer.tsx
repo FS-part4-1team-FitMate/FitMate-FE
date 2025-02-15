@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetFavoriteTrainer } from "@/lib/api/queries/trainer";
 import { Trainer } from "@/types/trainer";
-import FavoiriteTrainerCard from "../Cards/FavoriteTrainerCard";
+import FavoriteTrainerCard from "../Cards/FavoriteTrainerCard";
 import Loading from "../Common/Loading";
 
 export default function FavoriteTrainer() {
@@ -32,7 +32,7 @@ export default function FavoriteTrainer() {
         .map(
           (trainer: Trainer) =>
             trainer?.isFavorite === true && (
-              <FavoiriteTrainerCard
+              <FavoriteTrainerCard
                 key={trainer.id}
                 name={trainer.nickname}
                 rating={trainer.profile.rating}
