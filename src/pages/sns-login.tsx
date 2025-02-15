@@ -1,7 +1,6 @@
 import { useSetUser } from "@/contexts/UserProvider";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Role } from "@/types/types";
 import Loading from "@/components/Common/Loading";
@@ -47,7 +46,10 @@ function SNSLogIn({ initialQuery }: PageProps) {
 
   const message = initialQuery?.message;
   if (message) {
-    toast.error(message);
+    setTimeout(() => {
+      router.replace("/login");
+    }, 3000);
+    return toast.error(message);
   }
   const accessToken = initialQuery?.accessToken;
   const refreshToken = initialQuery?.refreshToken;
@@ -87,10 +89,6 @@ function SNSLogIn({ initialQuery }: PageProps) {
         router.replace(`/trainer/${user.id}/profile/regist`);
       }
     }
-  } else {
-    setTimeout(() => {
-      router.replace("/login");
-    }, 3000);
   }
 
   return <Loading />;
