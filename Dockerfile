@@ -47,6 +47,7 @@ COPY --from=builder /app/node_modules ./node_modules
 # USER appuser
 
 # 환경 변수 설정
+ENV NEXT_PUBLIC_API_URL=https://fitmate-be.asia
 ENV NODE_ENV=production
 ENV PORT=3001
 
