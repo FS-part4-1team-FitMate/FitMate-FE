@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { getDetailRequest } from "@/lib/api/requestService";
-import { HorizontalLine } from "@/components/Common/Line";
+\import { HorizontalLine } from "@/components/Common/Line";
 import LessonInfo from "@/components/Common/LessonInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
 import { LessonSubType, LessonType, LocationType } from "@/types/types";
