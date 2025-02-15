@@ -1,35 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, {useState, useRef, useEffect} from "react";
 
-function Chatting({ nickname, chatting, time, isMe }: any) {
-  const [chatNick, setChatNick] = useState("");
+function ChattingComponent({nickname, chatting, time, isMe}: any) {
+const [chatNick, setChatNick] = useState("");
 
-  useEffect(() => {
-    setChatNick(isMe ? "나" : nickname);
-  }, [isMe, nickname]);
+useEffect(() => {
+	setChatNick(isMe ? "나" : nickname);
+}, [isMe, nickname]);
 
-  return (
-    <>
-      {isMe ? (
-        <div className="flex justify-end my-5">
-          <div className="flex flex-col justify-end mr-3">
+return (
+	<>
+        {isMe ? (
+        <div id="me" className="flex justify-end my-5">
+          <div id="time" className="flex flex-col justify-end mr-3">
             <p className="text-xs text-black">{time}</p>
           </div>
-          <div className="mr-3 bg-yellow-400 text-black text-sm rounded-lg p-2 max-w-xs">
-            {chatting}
+          <div className="mr-3">
+            <div id="nickname" className="flex justify-end">
+              <p className="text-xs text-white">{chatNick}</p>
+            </div>
+            <div id="chatting" className="p-3 bg-white rounded-md mt-2">
+              <span className="text-xs text-black">
+                {chatting}
+              </span>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="flex my-5">
-          <div className="ml-3 bg-white text-black text-sm rounded-lg p-2 max-w-xs">
-            {chatting}
+        <div id="you" className="flex my-5">
+          <div className="ml-3">
+            <p id="nickname" className="text-xs text-white">
+              {chatNick}
+            </p>
+            <div id="chatting" className="p-3 bg-white rounded-md mt-2">
+              <span className="text-xs text-black">
+                {chatting}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col justify-end ml-3">
+          <div id="time" className="flex flex-col justify-end ml-3">
             <p className="text-xs text-black">{time}</p>
           </div>
         </div>
       )}
     </>
-  );
+);
 }
 
-export default Chatting;
+export default ChattingComponent;

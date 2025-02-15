@@ -64,7 +64,7 @@ export default function SentRequest() {
   }, [fetchNextPage, hasNextPage]);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
+    <div className="p-10 bg-gray-50 min-h-screen">
       {data?.pages.some((page) => page?.list?.length > 0) ? (
         <div className="grid grid-cols-2 gap-4">
           {data.pages.map((page, pageIndex) => (

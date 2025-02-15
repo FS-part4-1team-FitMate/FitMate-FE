@@ -36,12 +36,19 @@ export const useGetTrainer = (trainerId: string) => {
 };
 
 // 찜한 강사 목록 조회
-export const useGetFavoriteTrainer = (userId: string) => {
-  return useQuery<Trainer[]>(["favorited-trainer", userId], () => getFavoriteTrainers(), {
-    enabled: !!userId,
-    cacheTime: 5 * 60 * 1000,
-    staleTime: 5 * 60 * 1000,
-  });
+export const useGetFavoriteTrainer = (
+  userId: string,
+  { page, limit }: { page: number; limit: number },
+) => {
+  return useQuery<Trainer[]>(
+    ["favorited-trainer", userId],
+    () => getFavoriteTrainers({ page, limit }),
+    {
+      enabled: !!userId,
+      cacheTime: 5 * 60 * 1000,
+      staleTime: 5 * 60 * 1000,
+    },
+  );
 };
 
 // 트레이너 좋아요 정보 조회

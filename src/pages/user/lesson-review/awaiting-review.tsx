@@ -35,10 +35,8 @@ export default function AwaitingReview() {
     setIsModalOpen(true);
   };
 
-
-
   return (
-    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
+    <div className="p-10 bg-gray-50 min-h-screen">
       <div className="grid grid-cols-2 gap-4">
         {data?.list?.length > 0 ? (
           data?.list.map((item) => (

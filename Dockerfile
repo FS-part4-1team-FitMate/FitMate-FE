@@ -4,6 +4,12 @@ FROM node:lts AS builder
 # Set working directory
 WORKDIR /app
 
+ARG NEXT_PUBLIC_KAKAO_API_KEY
+
+ENV NEXT_PUBLIC_API_URL="https://fitmate-be.asia"
+ENV NODE_ENV="production"
+ENV NEXT_PUBLIC_KAKAO_API_KEY=${NEXT_PUBLIC_KAKAO_API_KEY}
+
 # Install dependencies (only production deps for runtime)
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -39,7 +45,8 @@ COPY --from=builder /app/node_modules ./node_modules
 # USER appuser
 
 # 환경 변수 설정
-ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL="https://fitmate-be.asia"
+ENV NODE_ENV="production"
 ENV PORT=3001
 
 # Expose application port

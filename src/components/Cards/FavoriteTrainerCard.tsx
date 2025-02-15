@@ -30,7 +30,7 @@ export default function FavoriteTrainerCard({
     return (
       <CardContainer width="100%" gap="1.6rem">
         <div className="w-fit">
-          {(lessonType ?? []).map((type: LessonType, index: number) => (
+          {lessonType.map((type: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={type} />
           ))}
         </div>

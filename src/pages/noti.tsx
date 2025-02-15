@@ -47,6 +47,8 @@ function Noti({ initialQuery }: PageProps) {
   const router = useRouter();
   const [hasNoti_LESSON_QUOTE, setHasNoti_LESSON_QUOTE] = useState<boolean>(true);
   const [hasNoti_CHAT_MESSAGE, setHasNoti_CHAT_MESSAGE] = useState<boolean>(true);
+  const [hasNoti_LESSON_QUOTE_FULL, setHasNoti_LESSON_QUOTE_FULL] = useState<boolean>(true);
+  const [hasNoti_CHAT_MESSAGE_FULL, setHasNoti_CHAT_MESSAGE_FULL] = useState<boolean>(true);
   const notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
 
   useEffect(() => {
@@ -58,6 +60,11 @@ function Noti({ initialQuery }: PageProps) {
           .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
           .filter((noti) => !noti.isRead).length > 0,
     );
+    setHasNoti_LESSON_QUOTE_FULL(
+      notiDataFlatted.filter((noti) => noti.type === NotificationType.LESSON_QUOTE).length > 0 ||
+        notifications?.notifications.filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
+          .length > 0,
+    );
     setHasNoti_CHAT_MESSAGE(
       notiDataFlatted
         .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
@@ -65,6 +72,11 @@ function Noti({ initialQuery }: PageProps) {
         notifications?.notifications
           .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
           .filter((noti) => !noti.isRead).length > 0,
+    );
+    setHasNoti_CHAT_MESSAGE_FULL(
+      notiDataFlatted.filter((noti) => noti.type === NotificationType.CHAT_MESSAGE).length > 0 ||
+        notifications?.notifications.filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
+          .length > 0,
     );
   }, [notiDataFlatted, notifications?.notifications]);
 
@@ -118,6 +130,12 @@ function Noti({ initialQuery }: PageProps) {
           </div>
         </div>
         <div className="w-full text-2lg">
+          {currentTab === NotificationType.CHAT_MESSAGE && !hasNoti_CHAT_MESSAGE_FULL && (
+            <EmptyNotification newNoti={false} message="메시지" />
+          )}
+          {currentTab === NotificationType.LESSON_QUOTE && !hasNoti_LESSON_QUOTE_FULL && (
+            <EmptyNotification newNoti={false} message="견적" />
+          )}
           {notifications?.notifications
             .filter((noti) => noti.type === currentTab)
             .map((noti) => {

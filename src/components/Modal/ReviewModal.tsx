@@ -1,15 +1,15 @@
 import { ic_star_active_md, ic_star_inactive_md } from "@/imageExports";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postReview } from "@/lib/api/ReviewService";
-import LessonSummaryCard from "@/components/Cards/LessonSummaryCard";
+import { patchReview, postReview } from "@/lib/api/ReviewService";
+import { ReviewItem } from "@/types/reviews";
+import WriteReviewCard from "@/components/Cards/writeReviewCard";
 import Textarea from "../Common/Textarea";
 import ModalContainer from "./ModalContainer";
-import { ReviewableList } from "@/types/reviews";
 
 interface ReviewModalProps {
-  review: ReviewableList;
+  review: ReviewItem;
   closeModal: () => void;
 }
 
@@ -17,14 +17,16 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
   const queryClient = useQueryClient();
-  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-
-  useEffect(() => {
-    setIsButtonEnabled(rating > 0 && content.trim().length >= 10);
-  }, [rating, content]);
 
   const postMutation = useMutation({
     mutationFn: postReview,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["reviews"]);
+      closeModal();
+    },
+  });
+  const patchMutation = useMutation({
+    mutationFn: patchReview,
     onSuccess: () => {
       queryClient.invalidateQueries(["reviews"]);
       closeModal();
@@ -50,21 +52,20 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
     );
   };
 
-  
-
   return (
     <ModalContainer
       title="리뷰 쓰기"
-      buttonText={postMutation.isLoading ? "등록 중..." : "리뷰 등록"}
+      buttonText={patchMutation.isLoading ? "등록 중..." : "리뷰 등록"}
       closeModal={closeModal}
       onButtonClick={handleSubmit}
-      isButtonEnabled={isButtonEnabled}
     >
-      <LessonSummaryCard
+      <WriteReviewCard
         item={review}
+        onClick={() => postMutation.mutate({ id: review.id, rating, content })}
       />
-      <p className="text-lg font-semibold">평점을 선택해 주세요</p>
-      <div className="flex gap-2">
+      <p className="mt-8 text-lg font-semibold">평점을 선택해 주세요</p>
+
+      <div className="flex gap-2 mb-4">
         {Array.from({ length: 5 }).map((_, index) => (
           <Image
             key={index}
@@ -77,6 +78,7 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
           />
         ))}
       </div>
+
       <Textarea
         id="review"
         label="상세 후기를 작성해 주세요"

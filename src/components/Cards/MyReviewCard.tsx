@@ -29,13 +29,7 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
             layout="fixed"
           />
         ) : (
-          <Image
-            src={ic_profile_default_md}
-            objectFit="contain"
-            width={56}
-            height={56}
-            alt="프로필 사진"
-          />
+          <div className="w-20 h-20 bg-gray-300 rounded-full" />
         )}
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">{review.lessonQuote.trainer.nickname}</h2>

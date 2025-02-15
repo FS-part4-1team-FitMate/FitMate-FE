@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetFavoriteTrainer } from "@/lib/api/queries/trainer";
 import { Trainer } from "@/types/trainer";
-import FavoiriteTrainerCard from "../Cards/FavoriteTrainerCard";
+import FavoriteTrainerCard from "../Cards/FavoriteTrainerCard";
 import Loading from "../Common/Loading";
 
 export default function FavoriteTrainer() {
@@ -15,7 +15,11 @@ export default function FavoriteTrainer() {
     setUserId(user?.id ?? null);
   }, [user]);
 
-  const { data: trainerList = [], isLoading, isError } = useGetFavoriteTrainer(userId || "");
+  const {
+    data: trainerList = [],
+    isLoading,
+    isError,
+  } = useGetFavoriteTrainer(userId || "", { page: 1, limit: 100 });
 
   if (isLoading && userId) return <Loading />;
   if (isError) return toast.error("찜한 강사님 목록을 불러오는 중 에러가 발생했어요! 😢");
@@ -28,7 +32,7 @@ export default function FavoriteTrainer() {
         .map(
           (trainer: Trainer) =>
             trainer?.isFavorite === true && (
-              <FavoiriteTrainerCard
+              <FavoriteTrainerCard
                 key={trainer.id}
                 name={trainer.nickname}
                 rating={trainer.profile.rating}

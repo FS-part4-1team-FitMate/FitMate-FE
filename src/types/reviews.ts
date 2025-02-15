@@ -1,7 +1,7 @@
-import { LocationType } from "./types";
+import { Lesson } from "./lesson";
 
 export interface ReviewParams {
-  id: string;
+  id: number;
   rating: number;
   content: string;
 }
@@ -43,8 +43,6 @@ export interface ReviewableList {
     id: string;
     startDate: string;
     endDate: string;
-    roadAddress: string;
-    locationType: LocationType;
   };
   Review: any[];
 }
