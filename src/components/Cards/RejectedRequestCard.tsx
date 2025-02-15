@@ -1,12 +1,10 @@
 
 import formatDate from "@/lib/utils/formatDate";
-
 import formatTime from "@/lib/utils/formatTime";
 import { LessonType, LocationType, locationType_trans } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import LessonInfo from "../Common/Card/LessonInfo";
-
 import { HorizontalLine } from "../Common/Line";
 import { Quote } from "@/types/quote";
 
@@ -27,8 +25,8 @@ export default function SentRequestCard({ item }: { item: Quote }) {
         <p className="text-xl font-semibold">{lessonRequest?.userId} 고객님</p>
         <HorizontalLine width="100%" />
           <LessonInfo
-            startDate={formatDate(lessonRequest?.startDate)}
-            endDate={formatDate(lessonRequest?.endDate)}
+            startDate={lessonRequest?.startDate ? formatDate(lessonRequest.startDate) : "날짜 없음"}
+            endDate={lessonRequest?.endDate ? formatDate(lessonRequest.endDate) : "날짜 없음"}
             locationType={locationType_trans[lessonRequest?.locationType as LocationType]}
             address={lessonRequest?.roadAddress || "주소 없음"}
           />
