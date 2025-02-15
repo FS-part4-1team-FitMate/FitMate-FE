@@ -48,7 +48,7 @@ function SNSLogIn({ initialQuery }: PageProps) {
   if (message) {
     setTimeout(() => {
       router.replace("/login");
-    }, 3000);
+    }, 7000);
     return toast.error(decodeURIComponent(message));
   }
   const accessToken = initialQuery?.accessToken;
