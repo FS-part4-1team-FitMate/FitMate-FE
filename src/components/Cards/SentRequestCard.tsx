@@ -15,7 +15,7 @@ import { Quote } from "@/types/quote";
  * @TODO replace any
  */
 
-export default function SentRequestCard({ item }: { item: Quote }) {
+export default function QuoteDetailCard({ item }: { item: Quote }) {
   const lessonRequest = item.lessonRequest;
   return (
     <CardContainer width="100%" gap="1.6rem">
