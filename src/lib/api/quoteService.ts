@@ -57,5 +57,3 @@ export async function getRejectedQuote({ page, limit, status }: QuoteParams) {
   const res = await get("/quotes", { page, limit, status });
   return res.data;
 }
-
-
