@@ -75,6 +75,20 @@ export interface Lesson {
   isDirectQuote: boolean;
 }
 
+export interface LessonSummary {
+  id: string;
+  userId: string;
+  lessonType: LessonType;
+  lessonSubType: LessonSubType;
+  startDate: string;
+  endDate: string;
+  lessonCount: number;
+  lessonTime: number;
+  locationType: LocationType;
+  roadAddress: string | undefined;
+  createdAt: string;
+}
+
 export interface LessonResult {
   list: Lesson[];
   totalCount: number;
