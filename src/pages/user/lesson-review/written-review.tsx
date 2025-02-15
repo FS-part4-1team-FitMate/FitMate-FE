@@ -21,10 +21,10 @@ export default function MyReviews() {
   const paginatedReviews = data.reviews.slice(startIndex, endIndex);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen">
+    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
       <div className="grid grid-cols-2 gap-4">
         {paginatedReviews.map((review) => (
-          <div key={review.createdAt} className="p-4 border rounded-lg shadow-sm">
+          <div key={review.createdAt} className="p-4 rounded-lg shadow-sm">
             <MyReviewCard review={review} />
           </div>
         ))}

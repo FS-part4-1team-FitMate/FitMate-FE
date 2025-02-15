@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getRejectedRequest } from "@/lib/api/requestService";
 import RejectedRequestCard from "@/components/Cards/RejectedRequestCard";
-import Tab from "@/components/Tab";
 
 type rejectedRequestQueryKey = [
   string,
@@ -18,6 +17,8 @@ export default function RejectedRequest() {
 
   const user = useUser();
   const trainerId = user?.id;
+
+  console.log("trainerId:", trainerId)
   const queryKey: rejectedRequestQueryKey = [
     "rejectedRequest",
     {
@@ -62,8 +63,7 @@ export default function RejectedRequest() {
   }, [fetchNextPage, hasNextPage]);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen">
-      <Tab />
+    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
       <div className="grid grid-cols-2 gap-4">
         {data?.pages.some((page) => page?.list?.length > 0) ? (
           <div className="grid grid-cols-2 gap-4">
