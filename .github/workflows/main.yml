@@ -29,7 +29,7 @@ jobs: # 실행할 작업들을 정의하는 섹션
           # 빌드된 이미지를 Docker Hub에 업로드
           docker push kipid/fitmate-fe:v0.2
           sleep 3
-          docker logout
+          # docker logout
         continue-on-error: false
 
       - name: Deploy to server # 서버 배포 단계
@@ -66,4 +66,4 @@ jobs: # 실행할 작업들을 정의하는 섹션
 
             # Check running processes
             ps -ef | grep docker
-            docker logout
+            # docker logout
