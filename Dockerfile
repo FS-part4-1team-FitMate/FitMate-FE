@@ -4,6 +4,14 @@ FROM node:lts AS builder
 # Set working directory
 WORKDIR /app
 
+ARG NEXT_PUBLIC_API_URL
+ARG NODE_ENV
+ARG NEXT_PUBLIC_KAKAO_API_KEY
+
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NODE_ENV=$NODE_ENV
+ENV NEXT_PUBLIC_KAKAO_API_KEY=$NEXT_PUBLIC_KAKAO_API_KEY
+
 # Install dependencies (only production deps for runtime)
 COPY package.json package-lock.json ./
 RUN npm ci
