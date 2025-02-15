@@ -34,8 +34,12 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
   const getUserId = () => {
     const userData = localStorage.getItem("userData");
     if (userData) {
-      const parsedData = JSON.parse(userData);
-      return parsedData?.user?.id;
+      try {
+        const parsedData = JSON.parse(userData);
+        return parsedData?.user?.id;
+      } catch (err) {
+        console.error(err);
+      }
     }
     return null;
   };

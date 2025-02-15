@@ -133,14 +133,21 @@ function ProfileEdit() {
           certificationFileToUpload,
         );
       }
-      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...user, ...userData };
-      setUser((prev) => userDataLS.user);
-      localStorage.setItem("userData", JSON.stringify(userDataLS));
-      queryClient.invalidateQueries({
-        queryKey: ["profile", user?.id],
-      });
-      router.push(`/trainer/${user?.id}/profile`);
+      try {
+        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = { ...user, ...userData };
+        setUser((prev) => userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS));
+        queryClient.invalidateQueries({
+          queryKey: ["profile", user?.id],
+        });
+        router.push(`/trainer/${user?.id}/profile`);
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("userData");
+        setUser(null);
+        router.push(`/login`);
+      }
     } catch (err) {
       setError({ message: (err as Error).message });
     }

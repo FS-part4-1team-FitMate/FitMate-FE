@@ -9,8 +9,12 @@ const instance = axios.create({
 instance.interceptors.request.use(function (config) {
   const userData = localStorage.getItem("userData");
   if (userData) {
-    const accessToken = JSON.parse(userData).accessToken;
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    try {
+      const accessToken = JSON.parse(userData).accessToken;
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    } catch (err) {
+      console.error(err);
+    }
   }
   return config;
 });
@@ -30,22 +34,27 @@ instance.interceptors.response.use(
     const response = error.response; // 가로챈 리스폰스
     const userData = localStorage.getItem("userData");
     if (userData && (response?.status === 401 || response?.status === 403)) {
-      const userDataJSON = JSON.parse(userData);
-      if (!originalRequest._retry) {
-        const res = await instance.post(
-          "/auth/token/refresh",
-          { refreshToken: userDataJSON.refreshToken },
-          retryConfig,
-        );
-        userDataJSON.accessToken = res.data.accessToken;
-        userDataJSON.refreshToken = res.data.refreshToken;
-        localStorage.setItem("userData", JSON.stringify(userDataJSON));
-        originalRequest._retry = true;
-        return instance(originalRequest);
-      } else {
-        localStorage.removeItem("userData");
-        const router = useRouter();
-        router.push("/login");
+      try {
+        const userDataJSON = JSON.parse(userData);
+        if (!originalRequest._retry) {
+          const res = await instance.post(
+            "/auth/token/refresh",
+            { refreshToken: userDataJSON.refreshToken },
+            retryConfig,
+          );
+          userDataJSON.accessToken = res.data.accessToken;
+          userDataJSON.refreshToken = res.data.refreshToken;
+          localStorage.setItem("userData", JSON.stringify(userDataJSON));
+          originalRequest._retry = true;
+          return instance(originalRequest);
+        } else {
+          localStorage.removeItem("userData");
+          const router = useRouter();
+          router.push("/login");
+        }
+      } catch (err) {
+        console.error(err);
+        return Promise.reject(err);
       }
     }
     return Promise.reject(error);
