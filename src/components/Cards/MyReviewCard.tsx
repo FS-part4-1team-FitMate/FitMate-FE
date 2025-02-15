@@ -1,7 +1,7 @@
 import { MyReview } from "@/types/reviews";
 import CardContainer from "../Common/Card/CardContainer";
 import Image from "next/image";
-import { ic_profile_default_md } from "@/imageExports";
+import { ic_profile_default_md, ic_star_active_md, ic_star_inactive_md } from "@/imageExports";
 import ChipLessonType from "../Chip/ChipLessonType";
 import { LessonType} from "@/types/types";
 import QuotePrice from "../Common/Card/QuotePrice";
@@ -37,12 +37,23 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
             alt="프로필 사진"
           />
         )}
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">{review.lessonQuote.trainer.nickname}</h2>
           <div className="text-md font-medium pc:text-2lg flex justify-between gap-6 items-center">
             <span>견적 만료일 {new Date(review.lessonQuote.lessonRequest.quoteEndDate).toLocaleDateString()}</span>
             <QuotePrice price={formatPrice(review.lessonQuote.price)} />
           </div>
+          <div className="flex gap-1">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Image
+                  key={index}
+                  src={index < review.rating ? ic_star_active_md : ic_star_inactive_md}
+                  width={20}
+                  height={20}
+                  alt={`별점 ${index + 1}`}
+                />
+              ))}
+            </div>
         </div>
       </div>
       <p className="text-sm text-gray-600">{review.content}</p>
