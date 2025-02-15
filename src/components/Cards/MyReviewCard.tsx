@@ -19,24 +19,15 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
         <p className="text-sm text-gray-500">작성일: {new Date(review.createdAt).toLocaleDateString()}</p>
       </div>
       <div className="flex items-center gap-4 border border-gray-100 rounded-lg p-4">
-        {review.lessonQuote.trainer.profile.profileImage ? (
-          <Image
-            src={review.lessonQuote.trainer.profile.profileImage}
-            alt="트레이너 프로필"
-            width={80}
-            height={80}
-            className="rounded-full"
-            layout="fixed"
-          />
-        ) : (
-          <Image
-            src={ic_profile_default_md}
-            objectFit="contain"
-            width={56}
-            height={56}
-            alt="프로필 사진"
-          />
-        )}
+        <Image
+          src={review.lessonQuote.trainer.profile.profileImage? 
+                  review.lessonQuote.trainer.profile.profileImage : ic_profile_default_md}
+          alt="트레이너 프로필"
+          width={80}
+          height={80}
+          className="rounded-full"
+          layout="fixed"
+        />
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold">{review.lessonQuote.trainer.nickname}</h2>
           <div className="text-md font-medium pc:text-2lg flex justify-between gap-6 items-center">
