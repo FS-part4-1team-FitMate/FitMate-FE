@@ -36,11 +36,17 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
       alert("별점과 최소 10자 이상의 텍스트를 입력하세요.");
       return;
     }
-
-    const requestData = { lessonQuoteId: review.id, rating, content };
-    console.log("서버에 보낼 데이터:", requestData);
-
-    postMutation.mutate({ id: review.id, rating, content });
+    postMutation.mutate(
+      { id: review.id, rating, content },
+      {
+        onError: (error: any) => {
+          console.error("리뷰 등록 실패:", error);
+          if (error.response?.data?.message) {
+            alert(`🚨 오류: ${error.response.data.message}`);
+          }
+        },
+      }
+    );
   };
 
   

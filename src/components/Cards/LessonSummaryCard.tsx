@@ -1,6 +1,5 @@
 import { ReviewableList } from "@/types/reviews";
 import CardContainer from "../Common/Card/CardContainer";
-import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 import LessonInfo from "../Common/Card/LessonInfo";
 import formatDate from "@/lib/utils/formatDate";
 import { locationType_trans } from "@/types/types";

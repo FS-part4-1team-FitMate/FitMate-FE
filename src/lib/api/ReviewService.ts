@@ -3,9 +3,16 @@ import { get, patch, post } from "./method";
 
 //리뷰 작성
 export const postReview = async ({ id, rating, content }: ReviewParams) => {
-  const response = await post(`/reviews`, { lessonQuoteId: id, rating, content });
-  
-  return response.data;
+  try {
+    const response = await post(`/reviews`, { 
+      lessonQuoteId: id, 
+      rating, 
+      content 
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error;
+  }
 };
 
 //리뷰 수정
@@ -55,8 +62,6 @@ export const getReviewableQuotes = async ({
   const response = await get("/quotes/reviewable", {
     params: { page, limit },
   });
-
-  console.log(response.data)
   return {
     list: response.data.list,
     totalCount: response.data.totalCount,

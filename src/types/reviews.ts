@@ -50,6 +50,7 @@ export interface ReviewableList {
 }
 
 export interface MyReview {
+  rating: number;
   content: string;
   createdAt: string;
   lessonQuote: {
