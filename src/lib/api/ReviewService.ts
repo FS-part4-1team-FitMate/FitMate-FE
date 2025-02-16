@@ -9,7 +9,6 @@ export const postReview = async ({ id, rating, content }: ReviewParams) => {
       rating, 
       content 
     });
-    console.log("✅ 리뷰 등록 성공:", response.data);
     return response.data;
   } catch (error: any) {
     throw error;
@@ -77,7 +76,6 @@ export const getMyReviews = async (): Promise<{
 }> => {
   try {
     const response = await get("/reviews/me");
-    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error("내 리뷰를 불러오는 중 오류 발생:", error);

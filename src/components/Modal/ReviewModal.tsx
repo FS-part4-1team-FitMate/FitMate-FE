@@ -36,7 +36,6 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
       alert("별점과 최소 10자 이상의 텍스트를 입력하세요.");
       return;
     }
-  
     postMutation.mutate(
       { id: review.id, rating, content },
       {

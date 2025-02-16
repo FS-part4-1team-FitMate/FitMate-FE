@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { getDetailRequest } from "@/lib/api/requestService";
+import SentRequestCard from "@/components/Cards/SentRequestCard";
 import { HorizontalLine } from "@/components/Common/Line";
 import LessonInfo from "@/components/Common/LessonInfo";
 import ShareSNS from "@/components/Common/ShareSNS";
@@ -13,11 +14,11 @@ export default function DetailRequest() {
   const [lessonRequestId, setLessonRequestId] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("Router Query:", router.query);
-    console.log("Router isReady:", router.isReady);
+    console.log("Router Query:", router.query); // router.query가 어떤 값을 가지고 있는지 확인
+    console.log("Router isReady:", router.isReady); // router.isReady가 언제 true가 되는지 확인
   
     if (router.isReady) {
-      console.log("Router Query Keys:", Object.keys(router.query));
+      console.log("Router Query Keys:", Object.keys(router.query)); // query에 어떤 키들이 있는지 확인
       setLessonRequestId(router.query.id as string);
       console.log("Updated lessonRequestId:", router.query.id);
     }
@@ -29,7 +30,7 @@ export default function DetailRequest() {
       console.log("API 요청 실행됨:", lessonRequestId);
       return getDetailRequest(lessonRequestId as string);
     },
-    enabled: !!lessonRequestId,
+    enabled: !!lessonRequestId, // lessonRequestId가 있을 때만 실행
   });
 
 
