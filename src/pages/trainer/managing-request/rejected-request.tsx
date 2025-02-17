@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getRejectedRequest } from "@/lib/api/requestService";
 import RejectedRequestCard from "@/components/Cards/RejectedRequestCard";
+import Image from "next/image";
+import { img_non_review_md } from "@/imageExports";
 
 type rejectedRequestQueryKey = [
   string,
@@ -74,7 +76,10 @@ export default function RejectedRequest() {
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500 mt-6">반려된 견적이 없습니다.</p>
+          <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+            <Image src={img_non_review_md} alt="non-request" />
+            <h1 className="text-gray-400 text-lg font-regular">반려된 견적이 없어요!</h1>
+          </div>
         )}
       </div>
       {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}

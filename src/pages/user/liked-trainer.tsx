@@ -3,6 +3,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getFavoriteTrainers } from "@/lib/api/trainerService";
 import FavoriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
 import Link from "next/link";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 
 export default function LikedTrainer() {
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -57,7 +59,10 @@ export default function LikedTrainer() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-6">찜한 트레이너가 없습니다.</p>
+        <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+          <Image src={img_non_review_md} alt="non-request" />
+          <h1 className="text-gray-400 text-lg font-regular">찜한 강사님이 없어요!</h1>
+        </div>
       )}
       {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}
       <div ref={observerRef} className="h-10" />

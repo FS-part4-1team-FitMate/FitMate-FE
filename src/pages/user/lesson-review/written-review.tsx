@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyReviews } from "@/lib/api/ReviewService";
 import MyReviewCard from "@/components/Cards/MyReviewCard";
 import Pagination from "@/components/Common/Pagination";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 
 export default function MyReviews() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,7 +15,12 @@ export default function MyReviews() {
   if (isLoading) return <p>로딩 중...</p>;
 
   if (!data || !data.reviews || data.reviews.length === 0) {
-    return <p>작성한 리뷰가 없습니다.</p>;
+    return (
+      <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+        <Image src={img_non_review_md} alt="non-request" />
+        <h1 className="text-gray-400 text-lg font-regular">작성한 리뷰가 없어요!</h1>
+      </div>
+    );
   }
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
