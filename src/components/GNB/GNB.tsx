@@ -74,7 +74,7 @@ function GNB() {
 
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
-      <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
+      <header className="bg-white text-slate-950 flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
         <div className="flex justify-start items-center gap-[16px]">
           <Logo />
           <ul className="flex justify-start items-center gap-[16px] text-lg">
@@ -140,7 +140,7 @@ function GNB() {
   }
 
   return (
-    <header className="flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100">
+    <header className="bg-white text-slate-950 flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100">
       <div className="flex justify-start items-center">
         <Logo />
       </div>
