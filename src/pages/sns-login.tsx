@@ -1,9 +1,11 @@
 import { useSetUser } from "@/contexts/UserProvider";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { Role } from "@/types/types";
 import Loading from "@/components/Common/Loading";
+import PopUp, { CustomError } from "@/components/Common/PopUp";
 
 interface QueryParams {
   accessToken?: string;
@@ -43,13 +45,21 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (context)
 function SNSLogIn({ initialQuery }: PageProps) {
   const router = useRouter();
   const setUser = useSetUser();
+  const [error, setError] = useState<CustomError>(null);
 
   const message = initialQuery?.message;
   if (message) {
+    setError({ message: decodeURIComponent(message) });
+    toast.error(decodeURIComponent(message));
     setTimeout(() => {
       router.replace("/login");
     }, 7000);
-    return toast.error(decodeURIComponent(message));
+    return (
+      <>
+        <Loading />
+        <PopUp error={error} setError={setError} onlyCancel={true} />
+      </>
+    );
   }
   const accessToken = initialQuery?.accessToken;
   const refreshToken = initialQuery?.refreshToken;
@@ -91,7 +101,12 @@ function SNSLogIn({ initialQuery }: PageProps) {
     }
   }
 
-  return <Loading />;
+  return (
+    <>
+      <Loading />
+      <PopUp error={error} setError={setError} onlyCancel={true} />
+    </>
+  );
 }
 
 export default SNSLogIn;
