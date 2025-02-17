@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSentRequest } from "@/lib/api/requestService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 
 type SentRequestQueryKey = [
   string,
@@ -74,7 +76,10 @@ export default function SentRequest() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-6">보낸 견적이 없습니다.</p>
+        <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+          <Image src={img_non_review_md} alt="non-request" />
+          <h1 className="text-gray-400 text-lg font-regular">보낸 견적이 없어요!</h1>
+        </div>
       )}
       {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}
       <div ref={observerRef} className="h-10" />
