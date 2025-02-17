@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { io, Socket } from "socket.io-client";
+import socket from "@/utils/socket";
 import InputField from "@/components/Chat/InputField";
 import MessageContainer from "@/components/Chat/MessageContainer";
 
@@ -12,46 +12,49 @@ interface Message {
   _id: string;
   chat: string;
   user: User;
+  time?: string;
 }
 
-export default function Chat() {
+export default function ChatRoom() {
   const router = useRouter();
   const { roomId } = router.query;
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState<Message[]>([]);
-  const [socket, setSocket] = useState<Socket | null>(null);
 
   const user: User = { name: "User1" };
 
   useEffect(() => {
     if (!roomId) return;
 
-    const newSocket = io("http://localhost:3001");
-    setSocket(newSocket);
+    // 방 입장
+    socket.emit("joinRoom", roomId);
 
-    newSocket.emit("joinRoom", roomId);
-
-    newSocket.on("receiveMessage", (msg: Message) => {
+    // 🔍 `receiveMessage` 이벤트 발생 시 로그 확인
+    socket.on("receiveMessage", (msg: Message) => {
+      console.log("📩 메시지 수신:", msg);
       setMessageList((prev) => [...prev, msg]);
     });
 
     return () => {
-      newSocket.emit("leaveRoom", roomId);
-      newSocket.disconnect();
+      socket.emit("leaveRoom", roomId);
+      socket.off("receiveMessage");
     };
   }, [roomId]);
 
   const sendMessage = (event: React.FormEvent) => {
     event.preventDefault();
-    if (message.trim() === "" || !socket) return;
+    if (message.trim() === "") return;
 
-    const newMessage: Message = {
+    const newMessage = {
       _id: `${Date.now()}`,
       chat: message,
       user,
+      time: new Date().toLocaleTimeString(),
+      roomId,
     };
 
-    socket.emit("sendMessage", { ...newMessage, roomId });
+    console.log("📤 메시지 전송:", newMessage);
+    socket.emit("sendMessage", newMessage);
     setMessage("");
   };
 

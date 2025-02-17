@@ -1,11 +1,5 @@
 import { useRouter } from "next/router";
 
-const chatRooms = [
-  { id: "1", name: "일반 채팅" },
-  { id: "2", name: "스터디 그룹" },
-  { id: "3", name: "친구들과 채팅" },
-];
-
 export default function ChatRooms() {
   const router = useRouter();
 

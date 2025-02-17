@@ -63,6 +63,7 @@ export const getReviewableQuotes = async ({
   const response = await get("/quotes/reviewable", {
     params: { page, limit },
   });
+  console.log(response.data)
   return {
     list: response.data.list,
     totalCount: response.data.totalCount,
