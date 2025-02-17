@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import PopUp, { CustomError } from "@/components/Common/PopUp";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import GNB from "@/components/GNB/GNB";
 import Tab from "@/components/Tab";
@@ -22,6 +23,7 @@ const pretendard = localFont({
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [error, setError] = useState<CustomError>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -65,7 +67,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <ErrorBoundary client={queryClient}>
+        <ErrorBoundary client={queryClient} error={error} setError={setError}>
           <UserProvider>
             <NotificationProvider>
               <ViewportProvider>
@@ -85,6 +87,7 @@ export default function App({ Component, pageProps }: AppProps) {
                   <GNB />
                   {isActiveTab && <Tab />}
                   <Component {...pageProps} />
+                  <PopUp error={error} setError={setError} onlyCancel={true} />
                 </div>
               </ViewportProvider>
             </NotificationProvider>
