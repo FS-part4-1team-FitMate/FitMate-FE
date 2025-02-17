@@ -1,12 +1,15 @@
 import { UserProvider } from "@/contexts/UserProvider";
 import ViewportProvider from "@/contexts/ViewportProvider";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import PopUp, { CustomError } from "./Common/PopUp";
 import GNB from "./GNB/GNB";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
   client: QueryClient;
+  error: CustomError;
+  setError: Dispatch<SetStateAction<CustomError>>;
 }
 
 interface ErrorBoundaryState {
@@ -39,6 +42,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               <ViewportProvider>
                 <GNB />
                 <h1 className="text-xl text-center">Something went wrong.</h1>
+                <PopUp error={this.props.error} setError={this.props.setError} onlyCancel={true} />
               </ViewportProvider>
             </UserProvider>
           </QueryClientProvider>
