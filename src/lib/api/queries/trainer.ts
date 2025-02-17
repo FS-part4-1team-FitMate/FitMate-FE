@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { FavoriteInfo, Trainer, TrainerParams, TrainerResult } from "@/types/trainer";
+import { FavoriteInfo, TrainerParams, TrainerResult } from "@/types/trainer";
 import { ProfileData } from "@/types/types";
 import { getFavoriteTrainers, getTrainerInfo, getTrainerList } from "../trainerService";
 import { getFavorite } from "../userService";
@@ -40,7 +40,7 @@ export const useGetFavoriteTrainer = (
   userId: string,
   { page, limit }: { page: number; limit: number },
 ) => {
-  return useQuery<Trainer[]>(
+  return useQuery<TrainerResult>(
     ["favorited-trainer", userId],
     () => getFavoriteTrainers({ page, limit }),
     {
