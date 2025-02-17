@@ -23,7 +23,7 @@ export default function SentRequestCard({ item }: { item: Quote }) {
           <ChipLessonType lessonType={lessonRequest?.lessonType as LessonType} />
         </div>
         <div className="flex flex-col gap-[1.8rem] py-[1.6rem] px-[1.8rem]">
-          <p className="text-xl font-semibold">{lessonRequest?.userId} 고객님</p>
+          <p className="text-xl font-semibold">{lessonRequest?.user?.nickname} 고객님</p>
           <HorizontalLine width="100%" />
           <LessonInfo
             startDate={lessonRequest?.startDate ? formatDate(lessonRequest.startDate) : "날짜 없음"}

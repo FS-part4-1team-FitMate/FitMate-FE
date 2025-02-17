@@ -5,6 +5,8 @@ import WriteReviewCard from "@/components/Cards/writeReviewCard";
 import Pagination from "@/components/Common/Pagination";
 import ReviewModal from "@/components/Modal/ReviewModal";
 import { ReviewableList } from "@/types/reviews";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 
 export default function AwaitingReview() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +25,12 @@ export default function AwaitingReview() {
   if (isLoading) return <p>로딩 중...</p>;
 
   if (!data || !data.list || data.list.length === 0) {
-    return <p>작성 가능한 리뷰가 없습니다.</p>;
+    return (
+      <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+        <Image src={img_non_review_md} alt="non-request" />
+        <h1 className="text-gray-400 text-lg font-regular">작성 가능한 리뷰가 없어요!</h1>
+      </div>
+    );
   }
 
   const handlePageChange = (page: number) => {
@@ -50,7 +57,10 @@ export default function AwaitingReview() {
             </div>
           ))
         ) : (
-          <p className="text-center col-span-full text-gray-500">작성 가능한 리뷰가 없습니다.</p>
+          <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+            <Image src={img_non_review_md} alt="non-request" />
+            <h1 className="text-gray-400 text-lg font-regular">작성 가능한 리뷰가 없어요!</h1>
+          </div>
         )}
       </div>
 

@@ -23,6 +23,7 @@ export default function PendingRequest() {
       status: "PENDING",
     },
   );
+  console.log(data)
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("대기중인 견적 목록을 불러오는 중 에러가 발생했어요! 😢");
