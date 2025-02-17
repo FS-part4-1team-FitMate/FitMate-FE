@@ -1,3 +1,6 @@
+import clsx from "clsx";
+import { Dispatch, SetStateAction } from "react";
+
 export type CustomError =
   | {
       message: string;
@@ -9,17 +12,17 @@ export type CustomError =
 
 interface Props {
   error: CustomError;
-  setError: (error: CustomError) => void;
+  setError: Dispatch<SetStateAction<CustomError>>;
   onlyCancel?: boolean;
 }
 
 function PopUp({ error, setError, onlyCancel = false }: Props) {
   return (
     <div
-      className={[
+      className={clsx(
         "fixed inset-0 bg-black-300/50 flex justify-center items-center z-50",
         !error ? "hidden" : "",
-      ].join(" ")}
+      )}
     >
       <div className="relative bg-white text-slate-900 w-[384px] max-w-full p-[16px] rounded-2xl shadow-lg">
         <div className="text-lg font-medium">{error?.message}</div>
