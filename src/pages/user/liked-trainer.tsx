@@ -41,10 +41,10 @@ export default function LikedTrainer() {
           {data.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
               {page?.trainers?.map((trainer: any) => (
-                <Link href={`/trainer/${trainer.id}/profile?page=1`}>
+                <Link href={`/user/detail-trainer/${trainer.id}`}>
                 <FavoriteTrainerCard
                 key={trainer.id}
-                name={trainer.nickname}
+                name={trainer.profile.name}
                 rating={trainer.profile?.rating || 0}
                 reviewCount={trainer.profile?.reviewCount || 0}
                 experience={trainer.profile?.experience || 0}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import socket from "@/utils/socket";
+import socket from "@/lib/utils/socket";
 import InputField from "@/components/Chat/InputField";
 import MessageContainer from "@/components/Chat/MessageContainer";
 

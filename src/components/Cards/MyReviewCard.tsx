@@ -29,7 +29,7 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
           layout="fixed"
         />
         <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-semibold">{review.lessonQuote.trainer.nickname}</h2>
+          <h2 className="text-lg font-semibold">{review.lessonQuote.trainer.profile.name} 강사님님</h2>
           <div className="text-md font-medium pc:text-2lg flex justify-between gap-6 items-center">
             <span>견적 만료일 {new Date(review.lessonQuote.lessonRequest.quoteEndDate).toLocaleDateString()}</span>
             <QuotePrice price={formatPrice(review.lessonQuote.price)} />
