@@ -30,7 +30,6 @@ a {
   align-items: center;
   justify-content: space-between;
   border-radius: 1.6rem;
-  padding: 2rem;
 }
 
 .card {
@@ -69,9 +68,36 @@ a {
 
 .back {
   transform: rotateY(180deg);
-  background-color: #E0DED7;
-  background-image: repeating-linear-gradient(0deg, #3B3A38, #3B3A38 33.3%, #ffffff00 0px, #ffffff00 67%);
+  background-color: white;
+  background-image: repeating-linear-gradient(0deg, #E9F4FF, #E9F4FF 33.3%, #ffffff00 0px, #ffffff00 67%);
   background-size: 100%;
+}
+
+.login,
+.signup {
+  --a: initial;
+}
+
+.login::after,
+.signup::after {
+  content: "";
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  width: var(--diameter);
+  height: var(--diameter);
+  transform: scale(0);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: var(--a);
+}
+
+.login::after {
+  background-color: #E9F4FF;
+}
+
+.signup::after {
+  background-color: #1B92FF;
 }
 
 @media screen and (orientation:portrait) {
@@ -92,7 +118,13 @@ a {
 
   .front {
     flex-direction: row;
-    gap: 2rem;
+  }
+}
+
+@keyframes ripple-effect {
+  100% {
+    transform: scale(1);
+    opacity: 0;
   }
 }
 

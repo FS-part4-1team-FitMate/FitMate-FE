@@ -1,6 +1,14 @@
-import { ic_fitness, ic_rehab, ic_sports } from "@/imageExports";
+import {
+  ic_fitness,
+  ic_rehab,
+  ic_sports,
+  img_landing_02,
+  img_landing_03,
+  logo_lg,
+} from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 const card_title = clsx(
@@ -98,24 +106,53 @@ export default function Home() {
     };
   }, []);
 
+  const handlebuttonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = e.currentTarget;
+    const { x, y, width, height } = btn.getBoundingClientRect();
+    const radius = Math.sqrt(width * width + height * height);
+    btn.style.setProperty("--diameter", `${radius * 2}px`);
+
+    const { clientX, clientY } = e;
+    const left = `${((clientX - x - radius) / width) * 100}%`;
+    const top = `${((clientY - y - radius) / height) * 100}%`;
+
+    btn.style.setProperty("--left", left);
+    btn.style.setProperty("--top", top);
+    btn.style.setProperty("--a", "");
+
+    setTimeout(() => {
+      btn.style.setProperty("--a", "ripple-effect 500ms linear");
+    }, 5);
+  };
+
   return (
     <>
       <div className="w-full h-[500vh]" ref={mainContentRef}>
         <div
-          className="sticky top-0 flex justify-center items-center h-screen overflow-hidden"
+          className="sticky top-0 z-10 flex flex-col justify-center items-center h-screen overflow-hidden"
           ref={stickyRef}
         >
-          <div className="flex flex-col justify-center items-center gap-8 py-[5rem] pc:py-[10rem] text-center pc:text-6xl">
-            <h1 className="animate-fade py-4 px-8 pc:py-8 pc:px-16 border border-blue-300 rounded-full bg-blue-100  text-blue-300 text-2lg font-semibold pc:text-3xl">
+          <Image
+            className="absolute top-4 pc:top-16 left-16 w-[15rem] h-[10rem] pc:w-[20rem] pc:h-[10rem]"
+            src={logo_lg}
+            width={200}
+            height={100}
+            alt="logo"
+            priority
+          />
+          <div className="flex flex-col justify-center items-center gap-8 py-[5rem] pc:py-[10rem] text-center">
+            <h1 className="animate-fade py-4 px-16 pc:py-8 pc:px-20 border border-blue-300 rounded-full bg-blue-100  text-blue-300 text-xl font-semibold pc:text-3xl">
               원하는 운동 유형을 확인하고
               <br />
-              레슨을 받아보세요
+              레슨을 받아보세요!
             </h1>
-            <h1 className="animate-bounce text-blue-300 text-2lg pc:text-3xl">▼</h1>
+            <h1 className="absolute bottom-0 animate-bounce text-blue-300 text-2lg pc:text-3xl">
+              ▼
+            </h1>
           </div>
           <div className="card-frame">
             <div className="card shadow-card">
-              <div className="front gap-4 p-4 pc:gap-8 pc:p-12">
+              <div className="front p-4 pc:gap-8 tablet:gap-20 mobile:gap-8 pc:p-12">
                 <div className="flex flex-col gap-3">
                   <h1 className={card_title}>재활운동</h1>
                   <p className={card_description}>스트레칭, 재활치료</p>
@@ -131,7 +168,7 @@ export default function Home() {
               <div className="back"></div>
             </div>
             <div className="card shadow-card">
-              <div className="front gap-4 p-4 pc:gap-8 pc:p-12">
+              <div className="front p-4 pc:gap-8 tablet:gap-20 mobile:gap-8 pc:p-12">
                 <div className="flex flex-col gap-3">
                   <h1 className={card_title}>스포츠</h1>
                   <p className={card_description}>
@@ -150,7 +187,7 @@ export default function Home() {
               <div className="back"></div>
             </div>
             <div className="card shadow-card">
-              <div className="front gap-4 p-4 pc:gap-8 pc:p-12">
+              <div className="front p-4 pc:gap-8 tablet:gap-20 mobile:gap-8 pc:p-12">
                 <div className="flex flex-col gap-3">
                   <h1 className={card_title}>피트니스</h1>
                   <p className={card_description}>
@@ -171,14 +208,38 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="bg-bg-200 flex flex-col justify-center items-center w-full h-screen text-center text-5xl">
+      <div className="bg-bg-200 relative flex flex-col justify-center items-center gap-20 w-full h-screen text-center text-5xl">
         <h1 className="animate-bounce">
           맞춤형 트레이닝 서비스,
           <br />
           지금 바로 시작해보세요!
         </h1>
-        <button>로그인</button>
-        <button>회원가입</button>
+        <div className="flex flex-col items-center gap-8 w-[30rem] pc:flex-row">
+          <button
+            onClick={handlebuttonClick}
+            className="hover:bg-blue-600 login relative flex-1 w-full p-4 rounded-[1.6rem] text-2lg text-white font-semibold shadow-card bg-blue-300 overflow-hidden"
+          >
+            <Link href="/login">로그인</Link>
+          </button>
+          <button
+            onClick={handlebuttonClick}
+            className="hover:bg-blue-200 hover:text-white signup relative flex-1 w-full p-4 border rounded-[1.6rem] border-blue-300 text-blue-300 text-2lg font-semibold shadow-card bg-blue-100 overflow-hidden"
+          >
+            <Link href="/user/signup">회원가입</Link>
+          </button>
+        </div>
+        <div className="bg-white w-full px-12">
+          <Image src={img_landing_02} width={300} height={200} alt="랜딩 이미지" />
+        </div>
+        <div className="flex flex-col items-center gap-8 pc:flex-row">
+          <p className="text-2lg font-semibold">비회원으로 둘러보고 싶다면?</p>
+          <Link
+            href="/user/find-trainer"
+            className=" hover:bg-red-200 hover:text-red-100 py-4 px-8 border border-red-200 rounded-[1.6rem] text-red-200 text-2lg font-semibold bg-red-100"
+          >
+            강사님 찾기
+          </Link>
+        </div>
       </div>
     </>
   );
