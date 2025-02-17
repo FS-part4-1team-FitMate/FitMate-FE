@@ -49,7 +49,12 @@ function SNSLogIn({ initialQuery }: PageProps) {
 
   const message = initialQuery?.message;
   if (message) {
-    setError({ message: decodeURIComponent(message) });
+    setError({
+      message: decodeURIComponent(message),
+      onCancel: () => {
+        router.push(`/login`);
+      },
+    });
     toast.error(decodeURIComponent(message));
     setTimeout(() => {
       router.replace("/login");
