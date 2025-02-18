@@ -74,12 +74,14 @@ a {
 }
 
 .login,
-.signup {
+.signup,
+.red-button {
   --a: initial;
 }
 
 .login::after,
-.signup::after {
+.signup::after,
+.red-button::after {
   content: "";
   position: absolute;
   top: var(--top);
@@ -98,6 +100,10 @@ a {
 
 .signup::after {
   background-color: #1B92FF;
+}
+
+.red-button::after {
+  background-color: #FF4F64;
 }
 
 @media screen and (orientation:portrait) {
