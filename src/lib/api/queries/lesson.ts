@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lesson, LessonParams, LessonResult } from "@/types/lesson";
 import {
+  cancelLessonRequest,
   createDirectQuote,
   getLessonInfo,
   getMyLessonRequest,
@@ -89,6 +90,23 @@ export const useDirectQuote = () => {
     onError: (error: any) => {
       console.error("견적 요청에 실패하였습니다.", error.message);
       toast.error("견적 요청에 실패하였습니다.");
+    },
+  });
+};
+
+// 레슨 요청 취소
+export const useCancelLesson = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (lessonId: string) => cancelLessonRequest(lessonId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["my-lesson"]);
+      toast.success("레슨 요청을 취소하였습니다.");
+    },
+    onError: (error: any) => {
+      console.error("레슨 취소 중 문제가 발생했습니다.", error.message);
+      toast.error("레슨 취소 중 문제가 발생했습니다.");
     },
   });
 };

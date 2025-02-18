@@ -2,7 +2,7 @@ import { useUser } from "@/contexts/UserProvider";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
-import { useGetMyLessonList } from "@/lib/api/queries/lesson";
+import { useCancelLesson, useGetMyLessonList } from "@/lib/api/queries/lesson";
 import { Lesson } from "@/types/lesson";
 import Button from "@/components/Common/Button";
 import EmptyLesson from "@/components/Common/EmptyLesson";
@@ -37,6 +37,13 @@ export default function LessonHistory() {
     },
   );
 
+  const cancelLesson = useCancelLesson();
+  const handleCancel = (lessonId: string) => {
+    if (lessonId) {
+      cancelLesson.mutate(lessonId);
+    }
+  };
+
   const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
 
   if (isLoading) return <Loading />;
@@ -50,9 +57,17 @@ export default function LessonHistory() {
             {myLessonList.map((lesson: Lesson) => (
               <div
                 key={lesson.id}
-                className="p-8 pc:p-16 border border-line-200 rounded-[1.6rem] bg-white shadow-card"
+                className="flex flex-col p-8 pc:p-16 border border-line-200 rounded-[1.6rem] bg-white shadow-card"
               >
                 <QuoteInfo lesson={lesson} />
+                {status === "PENDING" && (
+                  <Button
+                    onClick={() => handleCancel(lesson.id)}
+                    className="hover:bg-red-200 hover:text-red-100 my-8 mx-16 px-8 border border-red-200 bg-red-100 text-red-200 font-semibold pc:mx-[30rem] tablet:mx-[20rem]"
+                  >
+                    레슨 요청 취소
+                  </Button>
+                )}
               </div>
             ))}
           </div>
@@ -85,7 +100,7 @@ export default function LessonHistory() {
           !
           {isVisible && (
             <div className="absolute top-full left-full w-fit py-2 px-4 border border-red-200 rounded-tr-xl rounded-b-xl text-nowrap text-red-200 font-regular bg-red-100 pc:text-lg tablet:text-md mobile:text-xs">
-              레슨 시작일 전날까지 견적을 확정하지 않으면 요청이 만료되니,{" "}
+              레슨 시작일 전날까지 견적을 확정하지 않으면 요청이 만료되니,
               <br className="block pc:hidden tablet:hidden" />이 점 유의하시기 바랍니다!
             </div>
           )}
