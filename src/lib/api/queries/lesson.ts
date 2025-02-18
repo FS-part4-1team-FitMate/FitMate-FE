@@ -84,7 +84,7 @@ export const useDirectQuote = () => {
     mutationFn: ({ lessonId, trainerId }: { lessonId: string; trainerId: string }) =>
       createDirectQuote(lessonId, trainerId),
     onSuccess: () => {
-      queryClient.invalidateQueries(["received-request"]);
+      queryClient.invalidateQueries(["received-request", "my-lesson"]);
       toast.success("지정 견적을 요청하였습니다.");
     },
     onError: (error: any) => {

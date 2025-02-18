@@ -79,17 +79,23 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     }
 
     const lessonId = item.id;
-    const directQuoteRequestId = item.directQuoteRequest?.[0]?.directQuoteRequestId;
+    const directQuoteRequestId = item.directQuoteRequests?.find(
+      (quote) => quote.trainerId === loggedInUserId,
+    )?.id;
 
     if (item.isDirectQuote && directQuoteRequestId) {
-      rejectionLesson.mutate({
-        lessonId,
-        directQuoteRequestId,
-        rejectionReason,
-      });
-      setIsRejectedModalOpen(true);
-    } else {
-      toast.error("본인의 지정 견적이 아닙니다.");
+      rejectionLesson.mutate(
+        {
+          lessonId,
+          directQuoteRequestId,
+          rejectionReason,
+        },
+        {
+          onSuccess: () => {
+            setIsRejectedModalOpen(false);
+          },
+        },
+      );
     }
   };
 
