@@ -89,11 +89,11 @@ export default function FindTrainer() {
             <div className="flex flex-col justify-start gap-4 pt-[1.6rem] pc:justify-end pc:pt-0">
               <p
                 onClick={handleFilterReset}
-                className="px-4 text-gray-300 text-sm font-medium cursor-pointer"
+                className="block pc:hidden px-4 text-gray-300 text-sm font-medium cursor-pointer"
               >
                 초기화
               </p>
-              <div className="flex justify-between items-center w-full">
+              <div className="flex justify-between items-center w-full pc:justify-end">
                 <div className="flex items-center gap-8 pc:hidden">
                   <FilterTrainer
                     onFilterReset={handleFilterReset}

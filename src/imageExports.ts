@@ -75,6 +75,7 @@ import ic_star_inactive_sm from "@/assets/ic/ic_star-inactive_sm.svg";
 import ic_star_inactive_xl from "@/assets/ic/ic_star-inactive_xl.svg";
 import ic_visibility_off from "@/assets/ic/ic_visibility_off.svg";
 import ic_visibility_on from "@/assets/ic/ic_visibility_on.svg";
+import img_404 from "@/assets/img/img_404.svg";
 import img_default_md from "@/assets/img/img_default_md.svg";
 import img_default_sm from "@/assets/img/img_default_sm.svg";
 import img_landing_01 from "@/assets/img/img_landing_01.svg";
@@ -103,6 +104,7 @@ import share_ic_kakao_sm from "@/assets/share/ic_kakao_sm.svg";
 import share_ic_kakao_xs from "@/assets/share/ic_kakao_xs.svg";
 
 export {
+  img_404,
   ic_fitness,
   ic_sports,
   ic_rehab,
