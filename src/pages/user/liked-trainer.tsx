@@ -43,10 +43,10 @@ export default function LikedTrainer() {
             {data.pages.map((page, pageIndex) => (
               <React.Fragment key={pageIndex}>
                 {page?.trainers?.map((trainer: any) => (
-                  <Link href={`/trainer/${trainer.id}/profile?page=1`}>
+                  <Link href={`/user/detail-trainer/${trainer.id}`}>
                     <FavoriteTrainerCard
                       key={trainer.id}
-                      name={trainer.nickname}
+                      name={trainer.profile.name}
                       rating={trainer.profile?.rating || 0}
                       reviewCount={trainer.profile?.reviewCount || 0}
                       experience={trainer.profile?.experience || 0}
@@ -62,7 +62,7 @@ export default function LikedTrainer() {
           </div>
         ) : (
           <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
-            <Image src={img_non_review_md} alt="non-request" />
+            <Image src={img_non_review_md} alt="non-request" width={160} height={160} />
             <h1 className="text-gray-400 text-lg font-regular">찜한 강사님이 없어요!</h1>
           </div>
         )}

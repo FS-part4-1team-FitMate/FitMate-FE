@@ -6,6 +6,7 @@ import { useDirectQuote, useGetMyLessons } from "@/lib/api/queries/lesson";
 import { Profile } from "@/types/types";
 import Button from "../Common/Button";
 import Favorite from "../Common/Favorite";
+import { createOrGetChatRoom } from "@/lib/api/chatService";
 
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const router = useRouter();
@@ -40,6 +41,26 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
     }
   };
 
+  const handleChatRoom = async () => {
+    if (!profile?.userId) {
+      toast.error("강사 정보가 없습니다.");
+      return;
+    }
+    
+    try {
+      const roomId = await createOrGetChatRoom(profile.userId);
+      
+      if (roomId) {
+        router.push("/chat");
+      } else {
+        toast.error("채팅방을 생성할 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("🚨 채팅방 생성 실패:", error);
+      toast.error("채팅방 생성 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className="relative flex flex-col gap-4 pc:gap-[3.2rem]">
       <h1 className="hidden text-xl font-semibold pc:block">
@@ -52,6 +73,11 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
         <div className="hover:bg-red-100 hover:border hover:border-red-200 hover:text-red-200 flex justify-center items-center w-[5.4rem] h-[5.4rem] p-4 border border-line-200 rounded-[1.6rem] bg-white pc:hidden">
           <Favorite trainerId={trainerId as string} noneCount={true} />
         </div>
+        <Button
+          onClick={handleChatRoom}
+          className="hover:bg-red-100 hover:border hover:border-red-200 hover:text-red-200 h-[5.4rem] p-4 rounded-[1.6rem] font-semibold pc:w-[35.3rem] pc:text-xl hidden gap-4 border border-line-200 bg-gray-50 shadow-card pc:flex">
+          문의하기
+        </Button>
         <Button
           onClick={handleLessonRequest}
           className={clsx(

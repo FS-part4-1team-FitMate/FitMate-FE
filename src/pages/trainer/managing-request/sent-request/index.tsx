@@ -77,7 +77,7 @@ export default function SentRequest() {
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center gap-[2.4rem] mx-auto py-[24rem] px-[8rem]">
-          <Image src={img_non_review_md} alt="non-request" />
+          <Image src={img_non_review_md} alt="non-request" width={160} height={160} />
           <h1 className="text-gray-400 text-lg font-regular">보낸 견적이 없어요!</h1>
         </div>
       )}

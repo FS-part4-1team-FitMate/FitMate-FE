@@ -34,7 +34,7 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
         />
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-semibold pc:text-xl">
-            {review.lessonQuote.trainer.nickname}
+            {review.lessonQuote.trainer.profile.name} 강사님
           </h2>
           <div className="flex flex-col items-start gap-2 pc:flex-row pc:items-center pc:gap-4">
             <div className="text-md font-medium pc:text-2lg flex justify-between gap-4 items-center">

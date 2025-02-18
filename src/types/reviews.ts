@@ -46,6 +46,12 @@ export interface ReviewableList {
     roadAddress: string;
     locationType: LocationType;
   };
+  trainer: {
+    profile: {
+      name: string;
+      profileImage?: string;
+    }
+  }
   Review: any[];
 }
 
@@ -58,6 +64,7 @@ export interface MyReview {
     trainer: {
       nickname: string;
       profile: {
+        name: string;
         profileImage?: string;
       };
     };
