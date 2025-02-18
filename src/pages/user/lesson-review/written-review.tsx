@@ -1,10 +1,10 @@
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMyReviews } from "@/lib/api/ReviewService";
 import MyReviewCard from "@/components/Cards/MyReviewCard";
 import Pagination from "@/components/Common/Pagination";
-import { img_non_review_md } from "@/imageExports";
-import Image from "next/image";
 
 export default function MyReviews() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,12 +28,10 @@ export default function MyReviews() {
   const paginatedReviews = data.reviews.slice(startIndex, endIndex);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
-      <div className="grid grid-cols-2 gap-4">
+    <div className="flex flex-col gap-8 p-10 bg-bg-100 min-h-screen w-full">
+      <div className="pc:max-w-[140rem] tablet:max-w-[72rem] w-full grid grid-cols-1 gap-4 mx-auto pc:grid-cols-2">
         {paginatedReviews.map((review) => (
-          <div key={review.createdAt} className="p-4 rounded-lg shadow-sm">
-            <MyReviewCard review={review} />
-          </div>
+          <MyReviewCard key={review.createdAt} review={review} />
         ))}
       </div>
       <Pagination

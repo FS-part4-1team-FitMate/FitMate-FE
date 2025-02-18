@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDirectQuote, useGetMyLessons } from "@/lib/api/queries/lesson";
 import { Profile } from "@/types/types";
@@ -15,17 +15,20 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
   const { data: myLessonList } = useGetMyLessons({ status: "PENDING" });
 
   const pendingLesson = myLessonList?.list[0];
-  const isDirectQuote = pendingLesson?.directQuoteRequest || [];
+  const isDirectQuote = pendingLesson?.directQuoteRequests ?? [];
   const lessonId = myLessonList?.list[0]?.id;
   const trainerId = profile?.userId;
 
-  const directQuote = useDirectQuote();
+  useEffect(() => {
+    if (isDirectQuote.length >= 3) {
+      setDisabled(true);
+    }
+  }, [isDirectQuote]);
 
+  const directQuote = useDirectQuote();
   const handleLessonRequest = () => {
     if (!lessonId || myLessonList.list.length === 0) {
       router.push("/user/create-request");
-    } else if (isDirectQuote.length !== 0) {
-      toast.error("이미 다른 트레이너에게 지정 견적을 요청하였습니다!");
     } else {
       handleSendDirectQuote();
     }

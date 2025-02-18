@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +8,6 @@ import QuoteSummaryCard from "@/components/Cards/QuoteSummary";
 import LessonInfo from "@/components/Common/LessonInfo";
 import { HorizontalLine } from "@/components/Common/Line";
 import ShareSNS from "@/components/Common/ShareSNS";
-import clsx from "clsx";
 
 export default function DetailRequest() {
   const router = useRouter();
@@ -35,11 +35,13 @@ export default function DetailRequest() {
   }
 
   return (
-    <div className={clsx(
-            "relative flex flex-col justify-between gap-16 m-auto mt-[2.4rem] mb-16 px-8",
-            "pc:flex-row pc:gap-0 pc:mt-[5.6rem] pc:max-w-[144rem]",
-            "tablet:max-w-[74.4rem] mobile:max-w-auto",
-    )}>
+    <div
+      className={clsx(
+        "relative flex flex-col justify-between gap-16 m-auto mt-[2.4rem] mb-16 px-8",
+        "pc:flex-row pc:gap-0 pc:mt-[5.6rem] pc:max-w-[144rem]",
+        "tablet:max-w-[74.4rem] mobile:max-w-auto",
+      )}
+    >
       <div className={"flex flex-col gap-[2.4rem] w-full pc:gap-16 pc:pr-[10rem]"}>
         <div className="flex flex-col gap-[3.2rem]">
           <h1 className="text-2xl font-bold">견적 상세</h1>
@@ -52,6 +54,10 @@ export default function DetailRequest() {
         <div className="flex flex-col gap-[3.2rem]">
           <h1 className="text-2xl font-bold">견적가</h1>
           <p className="text-2lg font-normal">{data.list[0].price.toLocaleString()} 원</p>
+        </div>
+        <div className="flex flex-col gap-4 pc:hidden">
+          <HorizontalLine width="100%" />
+          <ShareSNS label="견적서 공유하기" />
         </div>
         <HorizontalLine width="100%" />
         <div>
@@ -76,7 +82,7 @@ export default function DetailRequest() {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-16 w-1/4">
+      <div className="hidden pc:flex flex-col gap-16 w-1/4">
         <ShareSNS label="견적서 공유하기" />
       </div>
     </div>

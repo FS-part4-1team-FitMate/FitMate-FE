@@ -38,9 +38,9 @@ export interface Lesson {
   status: LessonRequestStatus;
   createdAt: string;
   updatedAt: string;
-  directQuoteRequest: [
+  directQuoteRequests: [
     {
-      directQuoteRequestId: string | undefined;
+      id: string | undefined;
       lessonRequestId: string | undefined;
       trainerId: string | undefined;
       status: string | undefined;

@@ -20,14 +20,14 @@ export default function UserCard({ item }: { item: Lesson }) {
   return (
     <div className={user_card}>
       <p className="text-md font-semibold pc:text-2lg">{item.user.profile.name} 고객님</p>
-      <div className="flex flex-col gap-[0.8rem] pc:gap-[1.4rem]">
+      <div className="flex flex-col gap-[1.6rem] pc:gap-[1.4rem]">
         <div className="flex items-center gap-[0.8rem] pc:gap-[1.6rem]">
           <div className="w-fit py-[0.2rem] px-[0.6rem] rounded-[0.4rem] bg-bg-400 pc:py-[0.4rem]">
             <p className="text-gray-500 text-md font-medium pc:text-2lg">레슨 장소</p>
           </div>
           <p className="text-black-300 text-md font-medium pc:text-2lg">{getLocation()}</p>
         </div>
-        <div className="flex items-center gap-[1.4rem] pc:gap-[1.6rem]">
+        <div className="flex flex-col items-start gap-[1.4rem] pc:flex-row pc:items-center pc:gap-[1.6rem]">
           <div className="flex items-center gap-[0.8rem] pc:gap-[1.6rem]">
             <div className="w-fit py-[0.4rem] px-[0.6rem] rounded-[0.4rem] bg-bg-400 pc:py-[0.4rem]">
               <p className="text-gray-500 text-md font-medium pc:text-2lg">레슨 시작일</p>
@@ -36,7 +36,9 @@ export default function UserCard({ item }: { item: Lesson }) {
               {formatDate(item.startDate)}
             </p>
           </div>
-          <VerticalLine height="1.5rem" />
+          <div className="hidden pc:block">
+            <VerticalLine height="1.5rem" />
+          </div>
           <div className="flex items-center gap-[0.8rem] pc:gap-[1.6rem]">
             <div className="w-fit py-[0.4rem] px-[0.6rem] rounded-[0.4rem] bg-bg-400 pc:py-[0.4rem]">
               <p className="text-gray-500 text-md font-medium pc:text-2lg">레슨 종료일</p>

@@ -1,12 +1,20 @@
 import { ko } from "date-fns/locale";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
 import { createLessonRequest } from "@/lib/api/requestService";
+import {
+  LessonSubType,
+  LessonType,
+  LocationType,
+  lessonSubType_trans,
+  lessonType_trans,
+  locationType_trans,
+} from "@/types/types";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
-import { LessonType, lessonType_trans, LessonSubType, lessonSubType_trans, LocationType, locationType_trans } from "@/types/types";
 
 type FormValues = {
   lessonType: LessonType;
@@ -20,6 +28,7 @@ type FormValues = {
 };
 
 const createRequest = () => {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [chatHistory, setChatHistory] = useState<
@@ -84,18 +93,25 @@ const createRequest = () => {
 
   const lessonSubTypeMap: Record<LessonType, LessonSubType[]> = {
     [LessonType.SPORTS]: [
-      LessonSubType.SOCCER, LessonSubType.BASKETBALL, LessonSubType.BASEBALL,
-      LessonSubType.TENNIS, LessonSubType.BADMINTON, LessonSubType.TABLE_TENNIS,
-      LessonSubType.SKI, LessonSubType.SURFING, LessonSubType.BOXING,
-      LessonSubType.TAEKWONDO, LessonSubType.JIUJITSU
+      LessonSubType.SOCCER,
+      LessonSubType.BASKETBALL,
+      LessonSubType.BASEBALL,
+      LessonSubType.TENNIS,
+      LessonSubType.BADMINTON,
+      LessonSubType.TABLE_TENNIS,
+      LessonSubType.SKI,
+      LessonSubType.SURFING,
+      LessonSubType.BOXING,
+      LessonSubType.TAEKWONDO,
+      LessonSubType.JIUJITSU,
     ],
     [LessonType.FITNESS]: [
-      LessonSubType.PERSONAL_TRAINING, LessonSubType.YOGA,
-      LessonSubType.PILATES, LessonSubType.DIET_MANAGEMENT
+      LessonSubType.PERSONAL_TRAINING,
+      LessonSubType.YOGA,
+      LessonSubType.PILATES,
+      LessonSubType.DIET_MANAGEMENT,
     ],
-    [LessonType.REHAB]: [
-      LessonSubType.STRETCHING, LessonSubType.REHAB_TREATMENT
-    ],
+    [LessonType.REHAB]: [LessonSubType.STRETCHING, LessonSubType.REHAB_TREATMENT],
   };
 
   const getOptionsForSecondQuestion = (lessonType: LessonType): LessonSubType[] => {
@@ -108,13 +124,10 @@ const createRequest = () => {
     if (currentStepField === "locationType") {
       const locationTypeValue = currentAnswer as LocationType;
       setValue("locationType", locationTypeValue);
-  
+
       if (locationTypeValue === LocationType.ONLINE) {
         setValue("roadAddress", "");
-        setChatHistory((prev) => [
-          ...prev,
-          { type: "answer", content: locationTypeValue },
-        ]);
+        setChatHistory((prev) => [...prev, { type: "answer", content: locationTypeValue }]);
         setStep(6);
         setProgress(100);
         return;
@@ -179,13 +192,14 @@ const createRequest = () => {
       ...data,
       lessonCount: Number(data.lessonCount),
       lessonTime: Number(data.lessonTime),
-      startDate: data.startDate.toISOString(), 
-      endDate: data.endDate.toISOString(), 
+      startDate: data.startDate.toISOString(),
+      endDate: data.endDate.toISOString(),
     };
     try {
       await createLessonRequest(formattedData);
       setErrorMessage("");
       alert("견적 요청이 성공적으로 제출되었습니다!");
+      router.push("/user/my-lesson/lesson-history");
     } catch (err: any) {
       setErrorMessage(err || "견적 요청 제출 중 오류가 발생했습니다.");
       alert(`🚨 오류: ${err}`);
@@ -195,14 +209,14 @@ const createRequest = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col space-y-6 bg-gray-100 min-h-screen"
+      className="flex flex-col space-y-6 bg-gray-100 min-h-screen pb-16"
     >
-      <div className="bg-white p-10 w-full space-y-6 px-[20rem]">
+      <div className="bg-white p-10 w-full space-y-6 px-8 pc:px-[20rem]">
         <h1 className="text-xl">레슨 요청</h1>
         <ProgressBar progress={progress} />
       </div>
 
-      <div className="flex flex-col space-y-4 w-full px-[20rem]">
+      <div className="flex flex-col space-y-4 w-full px-8 pc:px-[20rem]">
         {chatHistory.map((chat, index) => (
           <div key={index} className="flex flex-col">
             <ChatBubble
@@ -212,15 +226,19 @@ const createRequest = () => {
                   ? Object.values(LessonType).includes(chat.content as LessonType)
                     ? lessonType_trans[chat.content as LessonType].ko
                     : Object.values(LessonSubType).includes(chat.content as LessonSubType)
-                    ? lessonSubType_trans[chat.content as LessonSubType]
-                    : Object.values(LocationType).includes(chat.content as LocationType)
-                    ? locationType_trans[chat.content as LocationType]
-                    : chat.content
+                      ? lessonSubType_trans[chat.content as LessonSubType]
+                      : Object.values(LocationType).includes(chat.content as LocationType)
+                        ? locationType_trans[chat.content as LocationType]
+                        : chat.content
                   : chat.content
               }
             />
             {chat.type === "answer" && index / 2 < step && (
-              <button type="button" onClick={() => handleEdit(Math.floor(index / 2))} className="text-sm text-black-500 underline self-end mr-7">
+              <button
+                type="button"
+                onClick={() => handleEdit(Math.floor(index / 2))}
+                className="text-sm text-black-500 underline self-end mr-7"
+              >
                 수정하기
               </button>
             )}
@@ -228,15 +246,17 @@ const createRequest = () => {
         ))}
       </div>
 
-      <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-lg rounded-tl-lg rounded-none self-end mr-[22rem]">
+      <div className="w-full max-w-md pc:max-w-xl tablet:max-w-lg bg-white shadow-md p-6 rounded-b-[1.6rem] rounded-tl-[1.6rem] rounded-none self-end mr-8 pc:mr-[22rem]">
         {step === 0 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
               {Object.values(LessonType).map((option) => (
                 <label
                   key={option}
-                  className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
-                    currentAnswer === option ? "bg-blue-100 text-black" : "bg-white text-black"
+                  className={`hover:bg-blue-100 hover:border hover:border-blue-300 hover:text-blue-300 flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
+                    currentAnswer === option
+                      ? "bg-blue-100 border-blue-300 text-blue-300"
+                      : "bg-white text-black"
                   }`}
                 >
                   <input
@@ -254,7 +274,7 @@ const createRequest = () => {
             <button
               type="button"
               onClick={handleAnswer}
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
               disabled={!currentAnswer}
             >
               입력 완료
@@ -266,7 +286,14 @@ const createRequest = () => {
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
               {getOptionsForSecondQuestion(watch("lessonType") as LessonType).map((option) => (
-                <label key={option} className="flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer">
+                <label
+                  key={option}
+                  className={`hover:bg-blue-100 hover:border hover:border-blue-300 hover:text-blue-300 flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
+                    currentAnswer === option
+                      ? "bg-blue-100 border-blue-300 text-blue-300"
+                      : "bg-white text-black"
+                  }`}
+                >
                   <input
                     type="radio"
                     name="lessonSubType"
@@ -281,7 +308,7 @@ const createRequest = () => {
             <button
               type="button"
               onClick={handleAnswer}
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
               disabled={!currentAnswer}
             >
               입력 완료
@@ -290,7 +317,7 @@ const createRequest = () => {
         )}
 
         {step === 2 && (
-          <div>
+          <>
             <DatePicker
               selected={dateRange[0]}
               onChange={(dates) => {
@@ -308,13 +335,13 @@ const createRequest = () => {
             />
             <button
               type="button"
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
               onClick={handleDateSubmit}
               disabled={!dateRange[0] || !dateRange[1]}
             >
               선택 완료
             </button>
-          </div>
+          </>
         )}
 
         {step === 3 && (
@@ -326,7 +353,7 @@ const createRequest = () => {
                 <input
                   {...field}
                   type="number"
-                  className="w-full py-2 px-4 rounded-lg border-b-0 text-lg"
+                  className="focus:outline focus:outline-blue-300 w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="횟수를 입력하세요"
                   value={currentAnswer}
                   onChange={(e) => setCurrentAnswer(e.target.value)}
@@ -336,7 +363,7 @@ const createRequest = () => {
             <button
               type="button"
               onClick={handleAnswer}
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
               disabled={!currentAnswer}
             >
               입력 완료
@@ -353,7 +380,7 @@ const createRequest = () => {
                 <input
                   {...field}
                   type="number"
-                  className="w-full py-2 px-4 rounded-lg border-b-0 text-lg"
+                  className="focus:outline focus:outline-blue-300 w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="시간을 입력하세요"
                   value={currentAnswer}
                   onChange={(e) => setCurrentAnswer(e.target.value)}
@@ -363,7 +390,7 @@ const createRequest = () => {
             <button
               type="button"
               onClick={handleAnswer}
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
               disabled={!currentAnswer}
             >
               입력 완료
@@ -377,8 +404,10 @@ const createRequest = () => {
               {Object.values(LocationType).map((option) => (
                 <label
                   key={option}
-                  className={`flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
-                    currentAnswer === option ? "bg-blue-100 text-black" : "bg-white text-black"
+                  className={`hover:bg-blue-100 hover:border hover:border-blue-300 hover:text-blue-300 flex items-center space-x-4 py-2 px-4 rounded-lg border cursor-pointer ${
+                    currentAnswer === option
+                      ? "bg-blue-100 border-blue-300 text-black"
+                      : "bg-white text-black"
                   }`}
                 >
                   <input
@@ -396,7 +425,7 @@ const createRequest = () => {
             <button
               type="button"
               onClick={handleAnswer}
-              className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-600"
+              className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
               disabled={!currentAnswer}
             >
               입력 완료
@@ -404,9 +433,7 @@ const createRequest = () => {
           </div>
         )}
 
-        
-
-        {step === 6 &&  watch("locationType") === LocationType.OFFLINE && (
+        {step === 6 && watch("locationType") === LocationType.OFFLINE && (
           <div className="space-y-4">
             <Controller
               name="roadAddress"
@@ -439,7 +466,7 @@ const createRequest = () => {
         {(step === 6 || watch("locationType") === LocationType.ONLINE) && (
           <button
             type="submit"
-            className="w-full mt-4 bg-blue-300 text-white py-3 rounded-lg hover:bg-green-600"
+            className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-green-600"
             disabled={watch("locationType") === LocationType.OFFLINE && !watch("roadAddress")}
           >
             견적 요청하기

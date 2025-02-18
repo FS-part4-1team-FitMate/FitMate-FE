@@ -19,7 +19,13 @@ import ModalContainer from "../Modal/ModalContainer";
 import RejectedRequest from "../Modal/RejectedRequest";
 import SendQuote from "../Modal/SendQuote";
 
-export default function RequestLessonCard({ item }: { item: Lesson }) {
+export default function RequestLessonCard({
+  item,
+  userId,
+}: {
+  item: Lesson;
+  userId: string | null;
+}) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
   const [isSendQuote, setIsSendQuote] = useState<boolean>(false);
@@ -31,25 +37,10 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     });
   const [rejectionReason, setRejectionReason] = useState<string>("");
 
-  const getUserId = () => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        return parsedData?.user?.id;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    return null;
-  };
-
-  const loggedInUserId = getUserId();
-
   useEffect(() => {
-    const sendQuote = item.lessonQuotes.some((quote) => quote.trainerId === loggedInUserId);
+    const sendQuote = item.lessonQuotes.some((quote) => quote.trainerId === userId);
     setIsSendQuote(sendQuote);
-  }, [item.lessonQuotes, loggedInUserId]);
+  }, [item.lessonQuotes, userId]);
 
   const uploadQuote = useSendQuote();
   const handleSendQuote = async () => {
@@ -79,17 +70,23 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     }
 
     const lessonId = item.id;
-    const directQuoteRequestId = item.directQuoteRequest?.[0]?.directQuoteRequestId;
+    const directQuoteRequestId = item.directQuoteRequests?.find(
+      (quote) => quote.trainerId === userId,
+    )?.id;
 
     if (item.isDirectQuote && directQuoteRequestId) {
-      rejectionLesson.mutate({
-        lessonId,
-        directQuoteRequestId,
-        rejectionReason,
-      });
-      setIsRejectedModalOpen(true);
-    } else {
-      toast.error("본인의 지정 견적이 아닙니다.");
+      rejectionLesson.mutate(
+        {
+          lessonId,
+          directQuoteRequestId,
+          rejectionReason,
+        },
+        {
+          onSuccess: () => {
+            setIsRejectedModalOpen(false);
+          },
+        },
+      );
     }
   };
 
@@ -144,7 +141,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
         <Button
           onClick={handleSendQuoteClick}
           className={clsx(
-            "hover:bg-blue-200 flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50",
+            "flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50",
             isSendQuote ? "bg-gray-300 cursor-default" : "bg-blue-300",
           )}
         >
@@ -154,7 +151,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
         {item.isDirectQuote === true && (
           <Button
             onClick={() => setIsRejectedModalOpen(true)}
-            className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem]] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
+            className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
           >
             반려
           </Button>
