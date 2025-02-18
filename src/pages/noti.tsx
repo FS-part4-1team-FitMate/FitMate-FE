@@ -42,7 +42,7 @@ function Noti({ initialQuery }: PageProps) {
     isLoading: isNotiLoading,
     isError: isNotiError,
   } = useGetNotiList(user?.id!, { page: 1, limit: 5, order: "created_at", sort: "desc" });
-  const notifications = useNotifications();
+  const notiContext = useNotifications();
   const readNotiMutation = useReadNotiMutation();
   const router = useRouter();
   const [hasNoti_LESSON_QUOTE, setHasNoti_LESSON_QUOTE] = useState<boolean>(true);
@@ -52,33 +52,34 @@ function Noti({ initialQuery }: PageProps) {
   const notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
 
   useEffect(() => {
+    const notiSet = new Set<string>();
     setHasNoti_LESSON_QUOTE(
       notiDataFlatted
         .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
         .filter((noti) => !noti.isRead).length > 0 ||
-        notifications?.notifications
+        notiContext?.notifications
           .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
           .filter((noti) => !noti.isRead).length > 0,
     );
     setHasNoti_LESSON_QUOTE_FULL(
       notiDataFlatted.filter((noti) => noti.type === NotificationType.LESSON_QUOTE).length > 0 ||
-        notifications?.notifications.filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
+        notiContext?.notifications.filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
           .length > 0,
     );
     setHasNoti_CHAT_MESSAGE(
       notiDataFlatted
         .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
         .filter((noti) => !noti.isRead).length > 0 ||
-        notifications?.notifications
+        notiContext?.notifications
           .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
           .filter((noti) => !noti.isRead).length > 0,
     );
     setHasNoti_CHAT_MESSAGE_FULL(
       notiDataFlatted.filter((noti) => noti.type === NotificationType.CHAT_MESSAGE).length > 0 ||
-        notifications?.notifications.filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
+        notiContext?.notifications.filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
           .length > 0,
     );
-  }, [notiDataFlatted, notifications?.notifications]);
+  }, [notiDataFlatted, notiContext?.notifications]);
 
   return (
     <main className="flex flex-col w-full h-screen mx-auto p-8 bg-bg-200">
@@ -136,7 +137,7 @@ function Noti({ initialQuery }: PageProps) {
           {currentTab === NotificationType.LESSON_QUOTE && !hasNoti_LESSON_QUOTE_FULL && (
             <EmptyNotification newNoti={false} message="견적" />
           )}
-          {notifications?.notifications
+          {notiContext?.notifications
             .filter((noti) => noti.type === currentTab)
             .map((noti) => {
               return <SingleNoti key={noti.id} noti={noti} readNotiMutation={readNotiMutation} />;
