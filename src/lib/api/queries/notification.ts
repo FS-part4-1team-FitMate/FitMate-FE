@@ -1,3 +1,4 @@
+import { NotificationContextType } from "@/contexts/NotificationProvider";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { NotiParams, NotiResult } from "@/types/notis";
 import { getNotiList, readNoti } from "../notiService";
@@ -25,7 +26,7 @@ export const useGetNotiList = (userId: string, { page, limit, order, sort }: Not
 
 let readNotiTimeout: NodeJS.Timeout;
 
-export const useReadNotiMutation = () => {
+export const useReadNotiMutation = (notiContext: NotificationContextType) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -33,6 +34,7 @@ export const useReadNotiMutation = () => {
     onSuccess: () => {
       clearTimeout(readNotiTimeout);
       readNotiTimeout = setTimeout(() => {
+        notiContext.clearNotifications();
         queryClient.invalidateQueries(["notifications"]);
       }, 2000);
     },

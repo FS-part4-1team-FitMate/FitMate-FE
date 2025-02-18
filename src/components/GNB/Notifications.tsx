@@ -40,7 +40,7 @@ export function SingleNoti({ noti, readNotiMutation }: NotiProps) {
 
 interface NotificationsProps {
   notiData?: InfiniteData<NotiResult>;
-  notifications: NotificationContextType;
+  notiContext: NotificationContextType;
   hasNextNotiPage?: boolean;
   fetchNextNotiPage: () => void;
   readNotiMutation: ReturnType<typeof useReadNotiMutation>;
@@ -48,7 +48,7 @@ interface NotificationsProps {
 
 function Notifications({
   notiData,
-  notifications,
+  notiContext,
   hasNextNotiPage,
   fetchNextNotiPage,
   readNotiMutation,
@@ -64,7 +64,7 @@ function Notifications({
       notiDataFlatted
         .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
         .filter((noti) => !noti.isRead).length > 0 ||
-        notifications?.notifications
+        notiContext?.notifications
           .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
           .filter((noti) => !noti.isRead).length > 0,
     );
@@ -72,11 +72,11 @@ function Notifications({
       notiDataFlatted
         .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
         .filter((noti) => !noti.isRead).length > 0 ||
-        notifications?.notifications
+        notiContext?.notifications
           .filter((noti) => noti.type === NotificationType.CHAT_MESSAGE)
           .filter((noti) => !noti.isRead).length > 0,
     );
-  }, [notiDataFlatted, notifications?.notifications]);
+  }, [notiDataFlatted, notiContext?.notifications]);
 
   return (
     <div
@@ -127,7 +127,7 @@ function Notifications({
           {currentTab === NotificationType.LESSON_QUOTE && !hasNoti_LESSON_QUOTE && (
             <EmptyNotification message="견적" />
           )}
-          {notifications?.notifications
+          {notiContext?.notifications
             .filter((noti) => noti.type === currentTab)
             .filter((noti) => !noti.isRead)
             .map((noti) => {

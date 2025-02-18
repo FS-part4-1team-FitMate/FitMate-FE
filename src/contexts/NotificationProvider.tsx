@@ -1,10 +1,12 @@
 import "dotenv/config";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { Notification } from "@/types/notis";
 import { useUser } from "./UserProvider";
 
 export interface NotificationContextType {
   notifications: Notification[];
+  setNotifications: (newNotis: Notification[]) => void;
   addNotification: (notification: Notification) => void;
   clearNotifications: () => void;
 }
@@ -12,6 +14,7 @@ export interface NotificationContextType {
 // 초기값 설정
 const NotificationContext = createContext<NotificationContextType>({
   notifications: [],
+  setNotifications: (newNotis: Notification[]) => {},
   addNotification: (notification: Notification) => {},
   clearNotifications: () => {},
 });
@@ -27,6 +30,7 @@ export const NotificationProvider: React.FC<Props> = ({ children }) => {
   // 새 알림 추가
   const addNotification = (notification: Notification) => {
     setNotifications((prev) => [notification, ...prev]);
+    toast.success("새로운 알람이 도착했습니다.");
   };
 
   // 모든 알림 초기화
@@ -91,7 +95,9 @@ export const NotificationProvider: React.FC<Props> = ({ children }) => {
   }, [user]);
 
   return (
-    <NotificationContext.Provider value={{ notifications, addNotification, clearNotifications }}>
+    <NotificationContext.Provider
+      value={{ notifications, setNotifications, addNotification, clearNotifications }}
+    >
       {children}
     </NotificationContext.Provider>
   );
