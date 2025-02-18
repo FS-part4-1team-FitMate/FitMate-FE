@@ -1,10 +1,14 @@
+import { useUser } from "@/contexts/UserProvider";
 import React, { useEffect, useState } from "react";
 
 function Chatting({ nickname, chatting, time, isMe }: any) {
   const [chatNick, setChatNick] = useState("");
 
+  const user = useUser();
+  
+
   useEffect(() => {
-    setChatNick(isMe ? "나" : nickname);
+    setChatNick(isMe === user?.id ? "나" : nickname);
   }, [isMe, nickname]);
 
   return (

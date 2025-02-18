@@ -21,7 +21,7 @@ export default function QuoteSummaryCard({ item }: { item: QuoteSummary }) {
           <ChipLessonType lessonType={item?.lessonType as LessonType} />
       </div>
       <div className="flex flex-col gap-[1.8rem] py-[1.6rem] px-[1.8rem]">
-        <p className="text-xl font-semibold">{item?.userId} 고객님</p>
+        <p className="text-xl font-semibold">{item?.user.nickname} 고객님</p>
         <HorizontalLine width="100%" />
           <LessonInfo
             startDate={item?.startDate ? formatDate(item.startDate) : "날짜 없음"}

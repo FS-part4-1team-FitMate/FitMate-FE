@@ -7,6 +7,7 @@ import QuoteSummaryCard from "@/components/Cards/QuoteSummary";
 import LessonInfo from "@/components/Common/LessonInfo";
 import { HorizontalLine } from "@/components/Common/Line";
 import ShareSNS from "@/components/Common/ShareSNS";
+import clsx from "clsx";
 
 export default function DetailRequest() {
   const router = useRouter();
@@ -34,8 +35,12 @@ export default function DetailRequest() {
   }
 
   return (
-    <div className="flex justify-between max-w-[144rem] m-auto mt-[5.6rem] px-6">
-      <div className="flex flex-col gap-16 w-3/4">
+    <div className={clsx(
+            "relative flex flex-col justify-between gap-16 m-auto mt-[2.4rem] mb-16 px-8",
+            "pc:flex-row pc:gap-0 pc:mt-[5.6rem] pc:max-w-[144rem]",
+            "tablet:max-w-[74.4rem] mobile:max-w-auto",
+    )}>
+      <div className={"flex flex-col gap-[2.4rem] w-full pc:gap-16 pc:pr-[10rem]"}>
         <div className="flex flex-col gap-[3.2rem]">
           <h1 className="text-2xl font-bold">견적 상세</h1>
           {data ? (
@@ -44,7 +49,6 @@ export default function DetailRequest() {
             <p>견적 정보를 찾을 수 없습니다.</p>
           )}
         </div>
-
         <div className="flex flex-col gap-[3.2rem]">
           <h1 className="text-2xl font-bold">견적가</h1>
           <p className="text-2lg font-normal">{data.list[0].price.toLocaleString()} 원</p>
