@@ -70,7 +70,7 @@ export default function FindTrainer() {
   const trainerList = data?.pages.flatMap((page) => page.trainers) ?? [];
 
   return (
-    <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
+    <div className="flex flex-col m-auto pb-16 pc:max-w-[140rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
       <div className="hidden pc:block">
         <Title title="강사님 찾기" />
       </div>
