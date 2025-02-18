@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getChatRooms, getChatMessages, sendMessage } from "@/lib/api/chatService";
+import { getChatRooms, getChatMessages, sendMessage, leaveChatRoom } from "@/lib/api/chatService";
 import ChatList from "@/components/Chat/ChatList";
 import ChatRoom from "@/components/Chat/ChatRoom";
 import socket from "@/lib/utils/socket";
@@ -13,16 +13,31 @@ export default function Chat() {
   const user = useUser();
 
   useEffect(() => {
+    if (!user?.id) return;
+  
     async function fetchRooms() {
       try {
         const rooms = await getChatRooms();
-        setChatRooms(rooms);
+        console.log("rooms", rooms);
+  
+        const formattedRooms = rooms.map((room: ChatRoomType) => {
+          const isMe = user?.id === room.participant1;
+          return {
+            ...room,
+            participant: isMe ? room.participant2 : room.participant1,
+            myId: isMe ? room.participant1 : room.participant2,
+            isMe,
+          };
+        });
+
+        setChatRooms(formattedRooms);
+        console.log("formatted", formattedRooms)
       } catch (error) {
-        console.error("채팅방 목록 불러오기 실패:", error);
+        console.error("🚨 채팅방 목록 불러오기 실패:", error);
       }
     }
     fetchRooms();
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     if (!selectedRoom) return;
@@ -32,27 +47,19 @@ export default function Chat() {
         if (!selectedRoom?.roomId) return;
 
         const messages = await getChatMessages(selectedRoom.roomId, 1, 50);
-        const formattedMessages = messages.map((msg: any) => ({
-          ...msg,
-          createdAt: new Date(msg.createdAt).toLocaleTimeString(),
-        }));
-
-        setMessageList(formattedMessages);
+        setMessageList(messages);
       } catch (error) {
-        console.error("메시지 불러오기 실패:", error);
+        console.error("🚨 메시지 불러오기 실패:", error);
       }
     }
 
     fetchMessages();
 
     socket.emit("joinRoom", selectedRoom.roomId);
-
-    socket.on("receiveMessage", (msg: Message) => {
-      console.log("받은 메시지:", msg);
-      setMessageList((prev) => [
-        ...prev,
-        { ...msg, createdAt: new Date(msg.createdAt).toLocaleTimeString() },
-      ]);
+    socket.on("receiveMessage", async (msg: Message) => {
+      console.log("📩 새로운 메시지 도착:", msg);
+      const updatedMessages = await getChatMessages(selectedRoom.roomId, 1, 50);
+      setMessageList(updatedMessages);
     });
 
     return () => {
@@ -61,31 +68,44 @@ export default function Chat() {
     };
   }, [selectedRoom]);
 
+  
+
   const handleSendMessage = async (message: string) => {
     if (!selectedRoom || !user) return;
 
     const newMessage: Message = {
-      roomId: selectedRoom.roomId,
       senderId: user.id,
-      receiverId: selectedRoom.participant2,
       message,
       createdAt: new Date().toISOString(),
     };
 
-    setMessageList((prev) => [...prev, { ...newMessage, createdAt: new Date().toLocaleTimeString() }]);
+    setMessageList((prev) => [...prev, { ...newMessage, createdAt: new Date().toISOString() }]);
 
     socket.emit("sendMessage", newMessage);
+
     try {
-      await sendMessage(selectedRoom.roomId, selectedRoom.participant2, message);
+      await sendMessage(selectedRoom.participant, message);
     } catch (error) {
-      console.error("메시지 전송 실패:", error);
+      console.error(error);
+    }
+  };
+
+  const handleLeaveRoom = async () => {
+    if (!selectedRoom) return;
+
+    try {
+      await leaveChatRoom(selectedRoom.roomId);
+      setChatRooms((prevRooms) => prevRooms.filter((room) => room.roomId !== selectedRoom.roomId));
+      setSelectedRoom(null);
+    } catch (error) {
+      console.error("나가기 실패:", error);
     }
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-[94.6vh]">
       <ChatList chatRooms={chatRooms} selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
-      <ChatRoom selectedRoom={selectedRoom} messageList={messageList} onSendMessage={handleSendMessage} />
+      <ChatRoom selectedRoom={selectedRoom} messageList={messageList} onSendMessage={handleSendMessage} onLeaveRoom={handleLeaveRoom} />
     </div>
   );
 }

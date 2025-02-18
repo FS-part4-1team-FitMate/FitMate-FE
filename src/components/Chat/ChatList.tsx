@@ -1,10 +1,11 @@
-import { img_non_review_md } from "@/imageExports";
+import { ic_profile_default_md, img_non_review_md } from "@/imageExports";
+import { ChatRoomType } from "@/types/chat";
 import Image from "next/image";
 
 interface ChatListProps {
-    chatRooms: { roomId: string; participant1: string; participant2: string }[];
-    selectedRoom: { roomId: string } | null;
-    onSelectRoom: (room: { roomId: string; participant1: string; participant2: string }) => void;
+    chatRooms: ChatRoomType[];
+    selectedRoom: { roomId?: string } | null;
+    onSelectRoom: (room: ChatRoomType) => void;
   }
   
   export default function ChatList({ chatRooms, selectedRoom, onSelectRoom }: ChatListProps) {
@@ -21,11 +22,18 @@ interface ChatListProps {
             <button
               key={room.roomId}
               onClick={() => onSelectRoom(room)}
-              className={`w-full p-3 text-left ${
+              className={`flex items-center w-full p-8 gap-5 text-md ${
                 selectedRoom?.roomId === room.roomId ? "bg-gray-200" : "hover:bg-gray-100"
               }`}
             >
-              {room.participant2}
+              <Image
+                src={ic_profile_default_md}
+                alt="트레이너 프로필"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              {room.participant}
             </button>
           ))
         )}
