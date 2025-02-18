@@ -35,6 +35,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (context)
 function Noti({ initialQuery }: PageProps) {
   const user = useUser();
   const [currentTab, setCurrentTab] = useState<NotificationType>(initialQuery.type!);
+  const notiContext = useNotifications();
   const {
     data: notiData,
     fetchNextPage: fetchNextNotiPage,
@@ -42,17 +43,28 @@ function Noti({ initialQuery }: PageProps) {
     isLoading: isNotiLoading,
     isError: isNotiError,
   } = useGetNotiList(user?.id!, { page: 1, limit: 5, order: "created_at", sort: "desc" });
-  const notiContext = useNotifications();
-  const readNotiMutation = useReadNotiMutation();
+  const readNotiMutation = useReadNotiMutation(notiContext);
   const router = useRouter();
   const [hasNoti_LESSON_QUOTE, setHasNoti_LESSON_QUOTE] = useState<boolean>(true);
   const [hasNoti_CHAT_MESSAGE, setHasNoti_CHAT_MESSAGE] = useState<boolean>(true);
   const [hasNoti_LESSON_QUOTE_FULL, setHasNoti_LESSON_QUOTE_FULL] = useState<boolean>(true);
   const [hasNoti_CHAT_MESSAGE_FULL, setHasNoti_CHAT_MESSAGE_FULL] = useState<boolean>(true);
-  const notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
+  let notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
 
   useEffect(() => {
-    const notiSet = new Set<string>();
+    const notiSet = new Set<number>();
+    notiDataFlatted = notiDataFlatted.filter((noti) => {
+      const alreadyHasNoti = notiSet.has(noti.id);
+      notiSet.add(noti.id);
+      return !alreadyHasNoti;
+    });
+    notiContext.setNotifications(
+      notiContext.notifications.filter((noti) => {
+        const alreadyHasNoti = notiSet.has(noti.id);
+        notiSet.add(noti.id);
+        return !alreadyHasNoti;
+      }),
+    );
     setHasNoti_LESSON_QUOTE(
       notiDataFlatted
         .filter((noti) => noti.type === NotificationType.LESSON_QUOTE)
