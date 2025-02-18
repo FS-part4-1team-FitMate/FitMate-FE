@@ -1,11 +1,4 @@
-import {
-  ic_fitness,
-  ic_rehab,
-  ic_sports,
-  img_landing_02,
-  img_landing_03,
-  logo_lg,
-} from "@/imageExports";
+import { ic_fitness, ic_rehab, ic_sports, img_landing_02, logo_lg } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
