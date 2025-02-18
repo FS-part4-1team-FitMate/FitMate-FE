@@ -1,34 +1,38 @@
 import React from "react";
 import Chatting from "@/components/Chat/Chatting";
-
-interface User {
-  name: string;
-}
+import { useUser } from "@/contexts/UserProvider";
 
 interface Message {
-  _id: string;
-  chat: string;
-  user: User;
-  time?: string;
+  senderId: string;
+  senderNickname: string;
+  senderProfileImage: string | null;
+  message: string;
+  createdAt: string;
 }
 
 interface MessageContainerProps {
   messageList: Message[];
-  user: User;
 }
 
-const MessageContainer: React.FC<MessageContainerProps> = ({ messageList, user }) => {
+const MessageContainer: React.FC<MessageContainerProps> = ({ messageList }) => {
+  const user = useUser();
+
   return (
     <div className="space-y-2">
-      {messageList.map((message) => (
-        <Chatting
-          key={message._id}
-          nickname={message.user.name}
-          chatting={message.chat}
-          time={message.time || new Date().toLocaleTimeString()}
-          isMe={message.user.name === user.name}
-        />
-      ))}
+      {messageList.map((message, index) => {
+        const formattedTime = message.createdAt
+          ? new Date(message.createdAt).toLocaleTimeString()
+          : "알 수 없음";
+        return (
+          <Chatting
+            key={index}
+            nickname={message.senderNickname || "알 수 없음"}
+            chatting={message.message}
+            time={formattedTime}
+            isMe={message.senderId === user?.id}
+          />
+        );
+      })}
     </div>
   );
 };

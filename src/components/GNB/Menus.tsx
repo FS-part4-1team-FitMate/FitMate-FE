@@ -53,6 +53,20 @@ function Menus({ addClass, user, router }: MenusProps) {
             내 레슨 관리
           </Link>
         </li>
+        <li
+          className={
+            addClass
+              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
+              : ""
+          }
+        >
+          <Link
+            href="/chat"
+            className={router.pathname.startsWith("/chat") ? active_class : ""}
+          >
+            FitChat
+          </Link>
+        </li>
       </>
     );
   } else if (user && user?.role === Role.TRAINER) {
@@ -82,6 +96,20 @@ function Menus({ addClass, user, router }: MenusProps) {
             className={router.pathname.startsWith("/trainer/managing-request") ? active_class : ""}
           >
             내 견적 관리
+          </Link>
+        </li>
+        <li
+          className={
+            addClass
+              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
+              : ""
+          }
+        >
+          <Link
+            href="/chat"
+            className={router.pathname.startsWith("/chat") ? active_class : ""}
+          >
+            FitChat
           </Link>
         </li>
       </>
