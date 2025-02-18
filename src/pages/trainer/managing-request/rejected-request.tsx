@@ -1,10 +1,10 @@
 import { useUser } from "@/contexts/UserProvider";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getRejectedRequest } from "@/lib/api/requestService";
 import RejectedRequestCard from "@/components/Cards/RejectedRequestCard";
-import Image from "next/image";
-import { img_non_review_md } from "@/imageExports";
 
 type rejectedRequestQueryKey = [
   string,
@@ -20,7 +20,7 @@ export default function RejectedRequest() {
   const user = useUser();
   const trainerId = user?.id;
 
-  console.log("trainerId:", trainerId)
+  console.log("trainerId:", trainerId);
   const queryKey: rejectedRequestQueryKey = [
     "rejectedRequest",
     {
@@ -66,22 +66,20 @@ export default function RejectedRequest() {
 
   return (
     <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
-      <div className="grid grid-cols-2 gap-4">
-        {data?.pages.some((page) => page?.list?.length > 0) ? (
-          <div className="grid grid-cols-2 gap-4">
-            {data.pages.map((page, pageIndex) => (
-              <React.Fragment key={pageIndex}>
-                {page?.list?.map((quote: any) => <RejectedRequestCard key={quote.id} item={quote} />)}
-              </React.Fragment>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
-            <Image src={img_non_review_md} alt="non-request" />
-            <h1 className="text-gray-400 text-lg font-regular">반려된 견적이 없어요!</h1>
-          </div>
-        )}
-      </div>
+      {data?.pages.some((page) => page?.list?.length > 0) ? (
+        <div className="grid grid-cols-2 gap-4">
+          {data.pages.map((page, pageIndex) => (
+            <React.Fragment key={pageIndex}>
+              {page?.list?.map((quote: any) => <RejectedRequestCard key={quote.id} item={quote} />)}
+            </React.Fragment>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col justify-center items-center gap-[2.4rem] w-full mx-auto py-[24rem] px-8">
+          <Image src={img_non_review_md} alt="non-request" />
+          <h1 className="text-gray-400 text-lg font-regular">반려된 견적이 없어요!</h1>
+        </div>
+      )}
       {isFetchingNextPage && <p className="text-center mt-6">로딩 중...</p>}
       <div ref={observerRef} className="h-10" />
     </div>

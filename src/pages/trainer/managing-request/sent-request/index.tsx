@@ -1,10 +1,10 @@
 import { useUser } from "@/contexts/UserProvider";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSentRequest } from "@/lib/api/requestService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
-import { img_non_review_md } from "@/imageExports";
-import Image from "next/image";
 
 type SentRequestQueryKey = [
   string,
@@ -55,7 +55,7 @@ export default function SentRequest() {
           fetchNextPage();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     if (observerRef.current) observer.observe(observerRef.current);
@@ -66,9 +66,9 @@ export default function SentRequest() {
   }, [fetchNextPage, hasNextPage]);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
+    <div className="p-10 bg-gray-50 min-h-screen w-full">
       {data?.pages.some((page) => page?.list?.length > 0) ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="pc:max-w-[140rem] tablet:max-w-[72rem] mx-auto grid grid-cols-1 gap-4 pc:grid-cols-2">
           {data.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
               {page?.list?.map((quote: any) => <SentRequestCard key={quote.id} item={quote} />)}
@@ -76,7 +76,7 @@ export default function SentRequest() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+        <div className="flex flex-col justify-center items-center gap-[2.4rem] mx-auto py-[24rem] px-[8rem]">
           <Image src={img_non_review_md} alt="non-request" />
           <h1 className="text-gray-400 text-lg font-regular">보낸 견적이 없어요!</h1>
         </div>
