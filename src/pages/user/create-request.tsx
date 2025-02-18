@@ -211,12 +211,12 @@ const createRequest = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col space-y-6 bg-gray-100 min-h-screen pb-16"
     >
-      <div className="bg-white p-10 w-full space-y-6 px-[20rem]">
+      <div className="bg-white p-10 w-full space-y-6 px-8 pc:px-[20rem]">
         <h1 className="text-xl">레슨 요청</h1>
         <ProgressBar progress={progress} />
       </div>
 
-      <div className="flex flex-col space-y-4 w-full px-[20rem]">
+      <div className="flex flex-col space-y-4 w-full px-8 pc:px-[20rem]">
         {chatHistory.map((chat, index) => (
           <div key={index} className="flex flex-col">
             <ChatBubble
@@ -246,7 +246,7 @@ const createRequest = () => {
         ))}
       </div>
 
-      <div className="w-full max-w-xl bg-white shadow-md p-6 rounded-b-[1.6rem] rounded-tl-[1.6rem] rounded-none self-end mr-[22rem]">
+      <div className="w-full max-w-md pc:max-w-xl tablet:max-w-lg bg-white shadow-md p-6 rounded-b-[1.6rem] rounded-tl-[1.6rem] rounded-none self-end mr-8 pc:mr-[22rem]">
         {step === 0 && (
           <div className="space-y-4">
             <div className="flex flex-col space-y-2">
@@ -317,7 +317,7 @@ const createRequest = () => {
         )}
 
         {step === 2 && (
-          <div>
+          <>
             <DatePicker
               selected={dateRange[0]}
               onChange={(dates) => {
@@ -341,7 +341,7 @@ const createRequest = () => {
             >
               선택 완료
             </button>
-          </div>
+          </>
         )}
 
         {step === 3 && (
