@@ -26,6 +26,7 @@ import ic_filter_active_sm from "@/assets/ic/ic_filter-active_sm.svg";
 import ic_filter_inactive_sm from "@/assets/ic/ic_filter-inactive_sm.svg";
 import ic_filter_md from "@/assets/ic/ic_filter_md.svg";
 import ic_filter_sm from "@/assets/ic/ic_filter_sm.svg";
+import ic_fitness from "@/assets/ic/ic_fitness.png";
 import ic_fitness_md from "@/assets/ic/ic_fitness_md.svg";
 import ic_fitness_sm from "@/assets/ic/ic_fitness_sm.svg";
 import ic_gender_female from "@/assets/ic/ic_gender_female.svg";
@@ -52,12 +53,14 @@ import ic_noti_empty from "@/assets/ic/ic_noti_empty.svg";
 import ic_profile_default_sm from "@/assets/ic/ic_profile-default-sm.svg";
 import ic_profile_default_md from "@/assets/ic/ic_profile-default_md.svg";
 import ic_red_dot from "@/assets/ic/ic_red_dot.svg";
+import ic_rehab from "@/assets/ic/ic_rehab.png";
 import ic_round_check_active_md from "@/assets/ic/ic_round-check-active_md.svg";
 import ic_round_check_active_sm from "@/assets/ic/ic_round-check-active_sm.svg";
 import ic_round_check_inactive_md from "@/assets/ic/ic_round-check-inactive_md.svg";
 import ic_round_check_inactive_sm from "@/assets/ic/ic_round-check-inactive_sm.svg";
 import ic_search_md from "@/assets/ic/ic_search_md.svg";
 import ic_search_sm from "@/assets/ic/ic_search_sm.svg";
+import ic_sports from "@/assets/ic/ic_sports.png";
 import ic_sports_md from "@/assets/ic/ic_sports_md.svg";
 import ic_sports_sm from "@/assets/ic/ic_sports_sm.svg";
 import ic_square_check_active_md from "@/assets/ic/ic_square-check-active_md.svg";
@@ -100,6 +103,9 @@ import share_ic_kakao_sm from "@/assets/share/ic_kakao_sm.svg";
 import share_ic_kakao_xs from "@/assets/share/ic_kakao_xs.svg";
 
 export {
+  ic_fitness,
+  ic_sports,
+  ic_rehab,
   ic_alarm_md,
   ic_alarm_sm,
   ic_arrow_down_md_36x36,

@@ -69,10 +69,25 @@ module.exports = {
         pc: "1200px",
       },
       boxShadow: {
-        card: "2px 2px 10px 0px rgba(220, 220, 220, 0.14), -2px -2px 10px 0px rgba(220, 220, 220, 0.14)",
+        card: "2px 2px 10px 0px rgba(220, 220, 220, 0.4), -2px -2px 10px 0px rgba(220, 220, 220, 0.14)",
         border: "4px 4px 16px 0px rgba(233, 233, 233, 0.1)",
         bar: "0px 2px 10px 0px rgba(248, 248, 248, 0.1)",
         chip: "4px 4px 10px 0px rgba(230, 230, 230, 0.25)",
+      },
+      animation: {
+        bounce: "bounce 0.5s ease-out alternate-reverse infinite",
+        fade: "fadeIn 1s ease-in-out",
+      },
+      keyframes: {
+        bounce: {
+          "100%": {
+            transform: "translateY(-20%)",
+          },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
     },
   },
