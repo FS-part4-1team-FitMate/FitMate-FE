@@ -72,10 +72,10 @@ export default function FindTrainer() {
   return (
     <div className="flex flex-col m-auto pb-16 pc:max-w-[192rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
       <div className="hidden pc:block">
-        <Title title="기사님 찾기" />
+        <Title title="강사님 찾기" />
       </div>
       <div className="flex flex-col justify-between max-w-[140rem] w-full mx-auto px-8 pc:flex-row">
-        <div className="hidden flex-col gap-[4.6rem] w-fit pc:flex">
+        <div className="hidden flex-col gap-[4.6rem] w-[32.7rem] pc:flex">
           <FilterTrainer
             gender={params.gender}
             lessonType={params.lessonType}
@@ -86,20 +86,22 @@ export default function FindTrainer() {
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full pc:pl-[5rem]">
           <div className="flex flex-col gap-[2.4rem]">
-            <div className="flex justify-between items-center w-full pt-[1.6rem] pc:justify-end pc:pt-0">
-              <div className="flex items-center gap-8 pc:hidden">
-                <FilterTrainer
-                  onFilterReset={handleFilterReset}
-                  onFilterChange={handleFilterChange}
-                />
-                <p
-                  onClick={handleFilterReset}
-                  className="text-gray-300 text-sm font-medium cursor-pointer"
-                >
-                  초기화
-                </p>
+            <div className="flex flex-col justify-start gap-4 pt-[1.6rem] pc:justify-end pc:pt-0">
+              <p
+                onClick={handleFilterReset}
+                className="px-4 text-gray-300 text-sm font-medium cursor-pointer"
+              >
+                초기화
+              </p>
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-8 pc:hidden">
+                  <FilterTrainer
+                    onFilterReset={handleFilterReset}
+                    onFilterChange={handleFilterChange}
+                  />
+                </div>
+                <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
               </div>
-              <Dropdown setSortOrder={handleSortChange} options={trainerSort} type="sort" />
             </div>
             <Search onSearch={handleSearch} />
           </div>

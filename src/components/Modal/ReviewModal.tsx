@@ -3,10 +3,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postReview } from "@/lib/api/ReviewService";
+import { ReviewableList } from "@/types/reviews";
 import LessonSummaryCard from "@/components/Cards/LessonSummaryCard";
 import Textarea from "../Common/Textarea";
 import ModalContainer from "./ModalContainer";
-import { ReviewableList } from "@/types/reviews";
 
 interface ReviewModalProps {
   review: ReviewableList;
@@ -36,7 +36,6 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
       alert("별점과 최소 10자 이상의 텍스트를 입력하세요.");
       return;
     }
-  
     postMutation.mutate(
       { id: review.id, rating, content },
       {
@@ -46,11 +45,9 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
             alert(`🚨 오류: ${error.response.data.message}`);
           }
         },
-      }
+      },
     );
   };
-
-  
 
   return (
     <ModalContainer
@@ -60,9 +57,7 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
       onButtonClick={handleSubmit}
       isButtonEnabled={isButtonEnabled}
     >
-      <LessonSummaryCard
-        item={review}
-      />
+      <LessonSummaryCard item={review} />
       <p className="text-lg font-semibold">평점을 선택해 주세요</p>
       <div className="flex gap-2">
         {Array.from({ length: 5 }).map((_, index) => (

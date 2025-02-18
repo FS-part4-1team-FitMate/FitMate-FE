@@ -84,7 +84,7 @@ export default function App({ Component, pageProps }: AppProps) {
                       }}
                     />
                   )}
-                  <GNB />
+                  {router.pathname !== "/" && <GNB />}
                   {isActiveTab && <Tab />}
                   <Component {...pageProps} />
                   <PopUp error={error} setError={setError} onlyCancel={true} />
