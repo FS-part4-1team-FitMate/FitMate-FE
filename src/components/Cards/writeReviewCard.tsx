@@ -24,7 +24,7 @@ export default function WriteReviewCard({ item, onClick }: Props) {
                 height={56}
                 alt="프로필 사진"
             />
-            <h2 className="text-md font-medium pc:text-2lg">{item.trainerId} 강사님</h2>
+            <h2 className="text-md font-medium pc:text-2lg">{item.trainer.profile.name} 강사님</h2>
         </div>  
       <LessonInfo
         startDate={formatDate(lessonRequest?.startDate)}
