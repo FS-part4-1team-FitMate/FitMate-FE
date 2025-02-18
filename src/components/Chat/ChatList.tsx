@@ -32,7 +32,6 @@ interface ChatListProps {
                 width={40}
                 height={40}
                 className="rounded-full"
-                layout="fixed"
               />
               {room.participant}
             </button>
