@@ -33,8 +33,8 @@ function GNB() {
     isLoading: isNotiLoading,
     isError: isNotiError,
   } = useGetNotiList(user?.id!, { page: 1, limit: 5, order: "created_at", sort: "desc" });
-  const notifications = useNotifications();
-  const readNotiMutation = useReadNotiMutation();
+  const notiContext = useNotifications();
+  const readNotiMutation = useReadNotiMutation(notiContext);
   const [hasNoti, setHasNoti] = useState<boolean>(true);
 
   const handleOutsideClick = (e: MouseEvent) => {
@@ -68,9 +68,9 @@ function GNB() {
   useEffect(() => {
     setHasNoti(
       notiData?.pages.flatMap((page) => page.list)?.filter((noti) => !noti.isRead).length! > 0 ||
-        notifications?.notifications?.filter((noti) => !noti.isRead).length > 0,
+        notiContext?.notifications?.filter((noti) => !noti.isRead).length > 0,
     );
-  }, [notiData, notifications]);
+  }, [notiData, notiContext.notifications]);
 
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
@@ -96,7 +96,7 @@ function GNB() {
                 {notiIsOpen && (
                   <Notifications
                     notiData={notiData}
-                    notifications={notifications}
+                    notiContext={notiContext}
                     hasNextNotiPage={hasNextNotiPage}
                     fetchNextNotiPage={fetchNextNotiPage}
                     readNotiMutation={readNotiMutation}
@@ -159,7 +159,7 @@ function GNB() {
                 {notiIsOpen && (
                   <Notifications
                     notiData={notiData}
-                    notifications={notifications}
+                    notiContext={notiContext}
                     hasNextNotiPage={hasNextNotiPage}
                     fetchNextNotiPage={fetchNextNotiPage}
                     readNotiMutation={readNotiMutation}
