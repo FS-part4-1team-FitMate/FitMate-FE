@@ -10,19 +10,14 @@ import {
 } from "../lessonService";
 
 // 레슨 요청 목록 조회
-export const useGetReceivedLesson = ({
-  keyword,
-  order,
-  sort,
-  status,
-  lesson_type,
-  gender,
-  region,
-  has_direct_quote,
-}: LessonParams) => {
+export const useGetReceivedLesson = (
+  userId: string,
+  { keyword, order, sort, status, lesson_type, gender, region, has_direct_quote }: LessonParams,
+) => {
   return useInfiniteQuery<LessonResult>(
     [
       "received-request",
+      userId,
       { keyword, order, sort, status, lesson_type, gender, region, has_direct_quote },
     ],
     ({ pageParam = 1 }) =>

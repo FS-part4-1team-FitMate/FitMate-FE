@@ -19,7 +19,13 @@ import ModalContainer from "../Modal/ModalContainer";
 import RejectedRequest from "../Modal/RejectedRequest";
 import SendQuote from "../Modal/SendQuote";
 
-export default function RequestLessonCard({ item }: { item: Lesson }) {
+export default function RequestLessonCard({
+  item,
+  userId,
+}: {
+  item: Lesson;
+  userId: string | null;
+}) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState<boolean>(false);
   const [isSendQuote, setIsSendQuote] = useState<boolean>(false);
@@ -31,25 +37,10 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
     });
   const [rejectionReason, setRejectionReason] = useState<string>("");
 
-  const getUserId = () => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        return parsedData?.user?.id;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    return null;
-  };
-
-  const loggedInUserId = getUserId();
-
   useEffect(() => {
-    const sendQuote = item.lessonQuotes.some((quote) => quote.trainerId === loggedInUserId);
+    const sendQuote = item.lessonQuotes.some((quote) => quote.trainerId === userId);
     setIsSendQuote(sendQuote);
-  }, [item.lessonQuotes, loggedInUserId]);
+  }, [item.lessonQuotes, userId]);
 
   const uploadQuote = useSendQuote();
   const handleSendQuote = async () => {
@@ -80,7 +71,7 @@ export default function RequestLessonCard({ item }: { item: Lesson }) {
 
     const lessonId = item.id;
     const directQuoteRequestId = item.directQuoteRequests?.find(
-      (quote) => quote.trainerId === loggedInUserId,
+      (quote) => quote.trainerId === userId,
     )?.id;
 
     if (item.isDirectQuote && directQuoteRequestId) {

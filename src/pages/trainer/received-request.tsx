@@ -1,7 +1,9 @@
+import { useUser } from "@/contexts/UserProvider";
 import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
+import { reverse } from "dns";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
 import { useGetReceivedLesson } from "@/lib/api/queries/lesson";
@@ -49,22 +51,40 @@ export default function ReceivedRequest() {
     region: Object.fromEntries(regions.map((region) => [region, true])),
   });
 
-  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetReceivedLesson({
-    keyword: params.keyword,
-    order: params.order,
-    sort: params.sort,
-    status: "PENDING",
-    lesson_type: params.lesson_type || undefined,
-    gender: params.gender || undefined,
-    region: params.region || undefined,
-    has_direct_quote: params.has_direct_quote || undefined,
-  });
+  const user = useUser();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUserId(user?.id ?? null);
+  }, [user]);
+
+  const { data, isLoading, isError, hasNextPage, fetchNextPage } = useGetReceivedLesson(
+    userId || "",
+    {
+      keyword: params.keyword,
+      order: params.order,
+      sort: params.sort,
+      status: "PENDING",
+      lesson_type: params.lesson_type || undefined,
+      gender: params.gender || undefined,
+      region: params.region || undefined,
+      has_direct_quote: params.has_direct_quote || undefined,
+    },
+  );
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("레슨 요청 목록을 불러오는 중 에러가 발생했어요! 😢");
 
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
+  const filteredList = receivedList?.filter((lesson) => {
+    if (lesson.isDirectQuote) {
+      lesson.directQuoteRequests?.filter((request) => {
+        return request.status !== "REJECTED";
+      });
+    } else return true;
+  });
+
+  console.log(receivedList);
 
   return (
     <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
@@ -80,16 +100,16 @@ export default function ReceivedRequest() {
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
           <ListHeader
-            totalCount={totalCount}
+            totalCount={filteredList.length ?? 0}
             setIsModalOpen={setIsModalOpen}
             setParams={setParams}
           />
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             {receivedList.length > 0 ? (
-              receivedList.map((item) => {
+              filteredList.map((item) => {
                 return (
                   <div className="flex flex-col gap-[4.8rem]" key={item.id}>
-                    <RequestLessonCard item={item} />
+                    <RequestLessonCard item={item} userId={userId} />
                   </div>
                 );
               })

@@ -35,7 +35,7 @@ export async function rejectedLesson(
   directQuoteRequestId: string,
   rejectionReason: string,
 ) {
-  const res = await patch(`/lessons/${lessonId}/direct-quote/${directQuoteRequestId}/reject`, {
+  const res = await patch(`/lessons/${lessonId}/direct_quote/${directQuoteRequestId}/reject`, {
     rejectionReason,
   });
   return res.data;
