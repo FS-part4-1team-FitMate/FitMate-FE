@@ -47,7 +47,7 @@ const createRequest = () => {
   useEffect(() => {
     const fetchLessonRequests = async () => {
       try {
-        const response = await getMyLessonRequest({ page: 1, limit: 10 });
+        const response = await getMyLessonRequest({ page: 1, limit: 10, status: "PENDING" });
         if (response.list.length) {
           console.log(response)
           setIsOngoingLesson(true);
@@ -214,8 +214,8 @@ const createRequest = () => {
       ...data,
       lessonCount: Number(data.lessonCount),
       lessonTime: Number(data.lessonTime),
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
+      startDate: new Date(data.startDate.setHours(0, 0, 0, 0)).toISOString(),
+      endDate: new Date(data.endDate.setHours(23, 59, 59, 999)).toISOString(),
     };
     try {
       await createLessonRequest(formattedData);
@@ -391,7 +391,10 @@ const createRequest = () => {
                   className="focus:outline focus:outline-blue-300 w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="횟수를 입력하세요"
                   value={currentAnswer}
-                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                  onChange={(e) => {
+                    const value = Math.max(1, Number(e.target.value));
+                    setCurrentAnswer(value.toString());
+                  }}
                 />
               )}
             />
@@ -418,7 +421,10 @@ const createRequest = () => {
                   className="focus:outline focus:outline-blue-300 w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="시간을 입력하세요"
                   value={currentAnswer}
-                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                  onChange={(e) => {
+                    const value = Math.max(1, Number(e.target.value));
+                    setCurrentAnswer(value.toString());
+                  }}
                 />
               )}
             />
