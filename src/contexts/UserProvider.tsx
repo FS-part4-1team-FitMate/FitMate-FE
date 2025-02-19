@@ -50,7 +50,7 @@ export function UserProvider({ children }: Props) {
         }
       }
     }
-  }, [router]);
+  }, []);
 
   return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 }
