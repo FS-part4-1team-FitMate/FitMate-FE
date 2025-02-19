@@ -159,6 +159,8 @@ function SignUpForm({ role }: Props) {
         </div>
         <Button
           className="inline-block text-md bg-blue-300 text-white w-fit py-2 px-4 rounded-full"
+          type="button"
+          disabled={!!emailVerified}
           onClick={() => {
             const msg = sendEmailVeriKey(watch("email"));
             setEmailVeriKeyOpen(true);
