@@ -364,6 +364,7 @@ const createRequest = () => {
               locale={ko}
               showPopperArrow={false}
               calendarClassName="custom-datepicker"
+              minDate={new Date(new Date().setDate(new Date().getDate() + 3))}
             />
             <button
               type="button"
