@@ -21,7 +21,7 @@ interface PageProps {
 }
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
-  const { type = "" } = context.query;
+  const { type = NotificationType.LESSON_QUOTE } = context.query;
 
   return {
     props: {
