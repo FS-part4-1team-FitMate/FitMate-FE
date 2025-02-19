@@ -83,6 +83,12 @@ function QueryParamsTest({ initialQuery }: PageProps) {
       >
         Filter
       </button>
+      <button
+        className="text-lg inline-block bg-blue-700 text-white m-4 p-4"
+        onClick={() => router.push("/query-params-test?page=9&limit=15&search=keyword&filter=user")}
+      >
+        /query-params-test?page=9&limit=15&search=keyword&filter=user
+      </button>
     </div>
   );
 }

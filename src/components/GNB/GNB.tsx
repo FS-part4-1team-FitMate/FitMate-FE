@@ -84,25 +84,27 @@ function GNB() {
         <div>
           {user && user?.id ? (
             <div className="flex justify-end items-center gap-[16px]">
-              <div ref={refNoti} className="relative">
-                <Image
-                  className="cursor-pointer"
-                  src={hasNoti ? ic_noti : ic_noti_empty}
-                  alt="noti"
-                  width={24}
-                  height={24}
-                  onClick={() => setNotiIsOpen((prev) => !prev)}
-                />
-                {notiIsOpen && (
-                  <Notifications
-                    notiData={notiData}
-                    notiContext={notiContext}
-                    hasNextNotiPage={hasNextNotiPage}
-                    fetchNextNotiPage={fetchNextNotiPage}
-                    readNotiMutation={readNotiMutation}
+              {user?.hasProfile && (
+                <div ref={refNoti} className="relative">
+                  <Image
+                    className="cursor-pointer"
+                    src={hasNoti ? ic_noti : ic_noti_empty}
+                    alt="noti"
+                    width={24}
+                    height={24}
+                    onClick={() => setNotiIsOpen((prev) => !prev)}
                   />
-                )}
-              </div>
+                  {notiIsOpen && (
+                    <Notifications
+                      notiData={notiData}
+                      notiContext={notiContext}
+                      hasNextNotiPage={hasNextNotiPage}
+                      fetchNextNotiPage={fetchNextNotiPage}
+                      readNotiMutation={readNotiMutation}
+                    />
+                  )}
+                </div>
+              )}
               <div ref={refMyProfile} className="relative">
                 <div
                   className="cursor-pointer flex justify-end items-center gap-[8px]"
@@ -148,24 +150,26 @@ function GNB() {
         <div className="flex justify-end items-center gap-[16px]">
           {user && user?.id ? (
             <>
-              <div ref={refNoti} className="relative cursor-pointer">
-                <Image
-                  src={hasNoti ? ic_noti : ic_noti_empty}
-                  alt="noti"
-                  width={24}
-                  height={24}
-                  onClick={() => setNotiIsOpen((prev) => !prev)}
-                />
-                {notiIsOpen && (
-                  <Notifications
-                    notiData={notiData}
-                    notiContext={notiContext}
-                    hasNextNotiPage={hasNextNotiPage}
-                    fetchNextNotiPage={fetchNextNotiPage}
-                    readNotiMutation={readNotiMutation}
+              {user?.hasProfile && (
+                <div ref={refNoti} className="relative cursor-pointer">
+                  <Image
+                    src={hasNoti ? ic_noti : ic_noti_empty}
+                    alt="noti"
+                    width={24}
+                    height={24}
+                    onClick={() => setNotiIsOpen((prev) => !prev)}
                   />
-                )}
-              </div>
+                  {notiIsOpen && (
+                    <Notifications
+                      notiData={notiData}
+                      notiContext={notiContext}
+                      hasNextNotiPage={hasNextNotiPage}
+                      fetchNextNotiPage={fetchNextNotiPage}
+                      readNotiMutation={readNotiMutation}
+                    />
+                  )}
+                </div>
+              )}
               <div ref={refMyProfile} className="relative cursor-pointer">
                 <Image
                   className="object-cover rounded-full w-[24px] h-[24px]"
