@@ -60,7 +60,7 @@ function Noti({ initialQuery }: PageProps) {
       });
     } else {
       router.push({
-        pathname: router.pathname,
+        pathname: window.location.pathname + window.location.search + window.location.hash,
       });
     }
   }, [currentTab, window.location.pathname]);
