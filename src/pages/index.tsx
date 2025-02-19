@@ -4,8 +4,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import Button from "@/components/Common/Button";
+import { useEffect, useRef } from "react";
 
 const card_title = clsx(
   "p-1 border border-blue-300 rounded-full",
