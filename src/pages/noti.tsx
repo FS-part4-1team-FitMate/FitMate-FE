@@ -54,19 +54,16 @@ function Noti({ initialQuery }: PageProps) {
 
   useEffect(() => {
     if (window.location.pathname === "/noti") {
-      router.push({
-        pathname: router.pathname,
-        query: { type: currentTab },
-      });
+      router.push(`/noti?type=${currentTab}`);
     } else {
-      router.push({
-        pathname: window.location.pathname + window.location.search + window.location.hash,
-      });
+      router.push(window.location.pathname + window.location.search + window.location.hash);
     }
-  }, [currentTab, window.location.pathname]);
+  }, [currentTab, window.location.pathname, window.location.search]);
 
   useEffect(() => {
-    setCurrentTab(query.type as NotificationType);
+    if (window.location.pathname === "/noti") {
+      setCurrentTab(query.type as NotificationType);
+    }
   }, [query, query.type]);
 
   useEffect(() => {
