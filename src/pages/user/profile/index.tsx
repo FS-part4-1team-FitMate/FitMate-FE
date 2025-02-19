@@ -73,22 +73,22 @@ function Profile() {
           <div className={`${profile_menu} pb-12 border-b`}>
             <div className="text-lg font-semibold">받고 싶은 레슨 유형</div>
             <div className="flex gap-4 text-lg">
-              {profileData.profile.lessonType.map((lessonType) => (
-                <ChipDefault lessonType={lessonType} />
+              {profileData.profile.lessonType.map((lessonType, idx) => (
+                <ChipDefault key={idx} lessonType={lessonType} />
               ))}
             </div>
           </div>
           <div className={profile_menu}>
             <div className="text-lg font-semibold">내가 사는 지역</div>
             <div className="text-lg">
-              {profileData.profile.region.map((region) => (
-                <ChipRegion region={region} />
+              {profileData.profile.region.map((region, idx) => (
+                <ChipRegion key={idx} region={region} />
               ))}
             </div>
           </div>
           <Button
             type="submit"
-            className="hover:bg-blue-200 gap-4 w-full bg-blue-500 text-white"
+            className="hover:bg-blue-200 gap-4 max-w-[72rem] w-full h-[5.4rem] mx-auto bg-blue-500 text-white"
             onClick={() => {
               router.push(`/user/profile/edit`);
             }}
