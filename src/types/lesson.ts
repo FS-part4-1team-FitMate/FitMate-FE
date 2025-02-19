@@ -123,3 +123,14 @@ export interface MyLessonQuote {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface FormValues {
+  lessonType: LessonType;
+  lessonSubType: string;
+  startDate: Date;
+  endDate: Date;
+  lessonCount: number;
+  lessonTime: number;
+  locationType: LocationType;
+  roadAddress?: string;
+};
