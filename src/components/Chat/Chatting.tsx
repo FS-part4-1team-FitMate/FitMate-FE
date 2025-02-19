@@ -1,34 +1,28 @@
-import { useUser } from "@/contexts/UserProvider";
-import React, { useEffect, useState } from "react";
 
-function Chatting({ nickname, chatting, time, isMe }: any) {
-  const [chatNick, setChatNick] = useState("");
+import formatDateTime from "@/lib/utils/formatDateTime";
+import React from "react";
 
-  const user = useUser();
-  
+function Chatting({ chatting, time, isMe}: any) {
 
-  useEffect(() => {
-    setChatNick(isMe === user?.id ? "나" : nickname);
-  }, [isMe, nickname]);
 
   return (
     <>
       {isMe ? (
         <div className="flex justify-end my-5">
           <div className="flex flex-col justify-end mr-3">
-            <p className="text-xs text-black">{time}</p>
+            <p className="text-xs text-black">{formatDateTime(time).split(" ").slice(-2).join(" ")}</p>
           </div>
-          <div className="mr-3 bg-yellow-400 text-black text-sm rounded-lg p-2 max-w-xs">
+          <div className="mr-3 bg-blue-300 text-white text-sm rounded-lg p-4 max-w-xs">
             {chatting}
           </div>
         </div>
       ) : (
         <div className="flex my-5">
-          <div className="ml-3 bg-white text-black text-sm rounded-lg p-2 max-w-xs">
+          <div className="ml-3 bg-gray-100 text-black text-sm rounded-lg p-4 max-w-xs">
             {chatting}
           </div>
           <div className="flex flex-col justify-end ml-3">
-            <p className="text-xs text-black">{time}</p>
+            <p className="text-xs text-black">{formatDateTime(time).split(" ").slice(-2).join(" ")}</p>
           </div>
         </div>
       )}
