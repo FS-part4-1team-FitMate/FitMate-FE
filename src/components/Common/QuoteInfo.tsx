@@ -33,8 +33,8 @@ export default function QuoteInfo({ lesson }: { lesson: Lesson }) {
     },
     { label: "레슨 시작일", content: formatDateTime(lesson?.startDate) },
     { label: "레슨 종료일", content: formatDateTime(lesson?.endDate) },
-    { label: "레슨 횟수", content: lesson?.lessonCount },
-    { label: "레슨 시간", content: lesson?.lessonTime },
+    { label: "레슨 횟수", content: `${lesson?.lessonCount}회` },
+    { label: "레슨 시간", content: `${lesson?.lessonTime}시간` },
     { label: "레슨 장소", content: getLocation() },
   ];
 
