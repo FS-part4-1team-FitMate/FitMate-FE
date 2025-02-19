@@ -56,7 +56,8 @@ function Noti({ initialQuery }: PageProps) {
     if (window.location.pathname === "/noti") {
       router.push(`/noti?type=${currentTab}`);
     } else {
-      router.push(window.location.pathname + window.location.search + window.location.hash);
+      window.location.href =
+        window.location.pathname + window.location.search + window.location.hash;
     }
   }, [currentTab, window.location.pathname, window.location.search]);
 
