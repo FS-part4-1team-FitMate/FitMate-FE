@@ -73,7 +73,7 @@ export default function PendingLessonCard({ item, quote }: { item: Lesson; quote
         <Button
           onClick={handleAccept}
           className={
-            "flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50 bg-blue-300"
+            "hover:bg-blue-600 flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50 bg-blue-300"
           }
         >
           {quoteAccept.isLoading ? "견적 확정 중 ..." : "견적 확정하기"}
@@ -81,7 +81,7 @@ export default function PendingLessonCard({ item, quote }: { item: Lesson; quote
         <Button
           onClick={handleReject}
           className={
-            "flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50"
+            "hover:bg-blue-200 hover:text-blue-100 flex-1 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50"
           }
         >
           반려하기

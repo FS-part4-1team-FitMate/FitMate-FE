@@ -1,12 +1,14 @@
+import { ic_chat } from "@/imageExports";
 import clsx from "clsx";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { createOrGetChatRoom } from "@/lib/api/chatService";
 import { useDirectQuote, useGetMyLessons } from "@/lib/api/queries/lesson";
 import { Profile } from "@/types/types";
 import Button from "../Common/Button";
 import Favorite from "../Common/Favorite";
-import { createOrGetChatRoom } from "@/lib/api/chatService";
 
 export default function TrainerControl({ profile }: { profile: Profile }) {
   const router = useRouter();
@@ -46,10 +48,10 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
       toast.error("강사 정보가 없습니다.");
       return;
     }
-    
+
     try {
       const roomId = await createOrGetChatRoom(profile.userId);
-      
+
       if (roomId) {
         router.push("/chat");
       } else {
@@ -75,13 +77,22 @@ export default function TrainerControl({ profile }: { profile: Profile }) {
         </div>
         <Button
           onClick={handleChatRoom}
-          className="hover:bg-red-100 hover:border hover:border-red-200 hover:text-red-200 h-[5.4rem] p-4 rounded-[1.6rem] font-semibold pc:w-[35.3rem] pc:text-xl hidden gap-4 border border-line-200 bg-gray-50 shadow-card pc:flex">
+          className="hover:bg-red-100 hover:border hover:border-red-200 hover:text-red-200 h-[5.4rem] p-4 rounded-[1.6rem] font-semibold pc:w-[35.3rem] pc:text-xl hidden gap-4 border border-line-200 bg-gray-50 shadow-card pc:flex"
+        >
           문의하기
         </Button>
+        <Image
+          className="cursor-pointer border border-blue-300 rounded-[1.6rem] shadow-card block pc:hidden"
+          onClick={handleChatRoom}
+          src={ic_chat}
+          width={54}
+          height={54}
+          alt="chat icon"
+        />
         <Button
           onClick={handleLessonRequest}
           className={clsx(
-            "h-[5.4rem] p-4 rounded-[1.6rem] font-semibold w-full shadow-card pc:w-[35.3rem] pc:text-xl",
+            "h-[5.4rem] p-4 rounded-[1.6rem] font-semibold max-w-[50rem] w-full shadow-card pc:w-[35.3rem] pc:text-xl",
             disabled
               ? "bg-gray-300 text-white"
               : "hover:bg-blue-100 hover:border hover:border-blue-300 hover:text-blue-300 text-gray-50 bg-blue-300",
