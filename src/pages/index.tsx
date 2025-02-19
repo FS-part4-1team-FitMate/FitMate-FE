@@ -1,8 +1,10 @@
+import { useUser } from "@/contexts/UserProvider";
 import { ic_fitness, ic_rehab, ic_sports, img_landing_02, logo_lg } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
 const card_title = clsx(
   "p-1 border border-blue-300 rounded-full",
@@ -14,8 +16,21 @@ const card_img =
   "border border-blue-300 rounded-[1.6rem] p-4 w-[10rem] h-[10rem] pc:w-[25rem] pc:h-[25rem] tablet:w-[20rem] tablet:h-[20rem]";
 
 export default function Home() {
+  const router = useRouter();
+  const user = useUser();
+
   const stickyRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "USER") {
+        router.push("/user/my-lesson/lesson-history");
+      } else if (user.role === "TRAINER") {
+        router.push("/trainer/received-request");
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     class CardFlipOnScroll {
