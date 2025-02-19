@@ -61,7 +61,7 @@ function Noti({ initialQuery }: PageProps) {
 
   useEffect(() => {
     setCurrentTab(query.type as NotificationType);
-  }, [query]);
+  }, [query.type]);
 
   useEffect(() => {
     const notiSet = new Set<number>();
