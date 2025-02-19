@@ -1,6 +1,7 @@
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
 import { useEffect } from "react";
-import { User } from "@/types/types";
+import { Role, User } from "@/types/types";
 
 const UserContext = createContext<{
   user: null | User;
@@ -15,20 +16,37 @@ interface Props {
 }
 
 export function UserProvider({ children }: Props) {
+  const router = useRouter();
   const [user, setUser] = useState<null | User>(null);
 
   useEffect(() => {
     const storedUserData = localStorage.getItem("userData");
     if (storedUserData) {
       try {
-        setUser(JSON.parse(storedUserData).user);
+        const userData = JSON.parse(storedUserData);
+        setUser(userData.user);
+        if (!userData.hasProfile) {
+          if (userData.user.role === Role.USER) {
+            router.push("/user/profile/regist");
+          } else if (userData.user.role === Role.TRAINER) {
+            router.push(`/trainer/${userData.user.id}/profile/regist`);
+          }
+        }
       } catch (err) {
         console.error(err);
         localStorage.removeItem("userData");
         setUser(null);
+        if (
+          router.pathname !== "/" &&
+          router.pathname !== "/user/find-trainer" &&
+          router.pathname !== "/user/signup" &&
+          router.pathname !== "/trainer/signup"
+        ) {
+          router.push(`/login`);
+        }
       }
     }
-  }, []);
+  }, [router]);
 
   return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 }
