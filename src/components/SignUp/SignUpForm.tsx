@@ -193,6 +193,7 @@ function SignUpForm({ role }: Props) {
                 <Button
                   className="inline-block text-md bg-blue-300 text-white py-1 px-4 rounded-full"
                   type="button"
+                  disabled={!!emailVerified}
                   onClick={async () => {
                     const res = await checkEmailVeriKey({
                       email: watch("email"),
