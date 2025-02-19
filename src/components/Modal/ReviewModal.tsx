@@ -58,19 +58,21 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
       isButtonEnabled={isButtonEnabled}
     >
       <LessonSummaryCard item={review} />
-      <p className="text-lg font-semibold">평점을 선택해 주세요</p>
-      <div className="flex gap-2">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <Image
-            key={index}
-            src={index < rating ? ic_star_active_md : ic_star_inactive_md}
-            width={36}
-            height={36}
-            onClick={() => setRating(index + 1)}
-            alt={`별점 ${index + 1}`}
-            className="cursor-pointer"
-          />
-        ))}
+      <div className="flex flex-col gap-4">
+        <p className="text-lg font-semibold">평점을 선택해 주세요</p>
+        <div className="flex gap-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Image
+              key={index}
+              src={index < rating ? ic_star_active_md : ic_star_inactive_md}
+              width={36}
+              height={36}
+              onClick={() => setRating(index + 1)}
+              alt={`별점 ${index + 1}`}
+              className="cursor-pointer"
+            />
+          ))}
+        </div>
       </div>
       <Textarea
         id="review"

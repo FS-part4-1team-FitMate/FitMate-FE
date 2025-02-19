@@ -1,12 +1,12 @@
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewableQuotes } from "@/lib/api/ReviewService";
+import { ReviewableList } from "@/types/reviews";
 import WriteReviewCard from "@/components/Cards/writeReviewCard";
 import Pagination from "@/components/Common/Pagination";
 import ReviewModal from "@/components/Modal/ReviewModal";
-import { ReviewableList } from "@/types/reviews";
-import { img_non_review_md } from "@/imageExports";
-import Image from "next/image";
 
 export default function AwaitingReview() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,12 +15,13 @@ export default function AwaitingReview() {
 
   const ITEMS_PER_PAGE = 6;
 
-  const { data, isLoading } = useQuery([
-    "reviews",
-    { page: currentPage, limit: ITEMS_PER_PAGE },
-  ], () => getReviewableQuotes({ page: currentPage, limit: ITEMS_PER_PAGE }), {
-    keepPreviousData: true,
-  });
+  const { data, isLoading } = useQuery(
+    ["reviews", { page: currentPage, limit: ITEMS_PER_PAGE }],
+    () => getReviewableQuotes({ page: currentPage, limit: ITEMS_PER_PAGE }),
+    {
+      keepPreviousData: true,
+    },
+  );
 
   if (isLoading) return <p>로딩 중...</p>;
 
@@ -42,19 +43,12 @@ export default function AwaitingReview() {
     setIsModalOpen(true);
   };
 
-
-
   return (
-    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
-      <div className="grid grid-cols-2 gap-4">
+    <div className="flex flex-col gap-8 p-10 bg-gray-50 min-h-screen w-full">
+      <div className="pc:max-w-[140rem] tablet:max-w-[72rem] w-full mx-auto grid grid-cols-1 gap-4 pc:grid-cols-2">
         {data?.list?.length > 0 ? (
           data?.list.map((item) => (
-            <div key={item.id} className="p-4 border rounded-lg shadow-sm">
-              <WriteReviewCard
-                item={item}
-                onClick={() => handleWriteReview(item)}
-              />
-            </div>
+            <WriteReviewCard key={item.id} item={item} onClick={() => handleWriteReview(item)} />
           ))
         ) : (
           <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
