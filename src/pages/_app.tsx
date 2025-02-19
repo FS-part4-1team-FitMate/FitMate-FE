@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PopUp, { CustomError } from "@/components/Common/PopUp";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import GNB from "@/components/GNB/GNB";
+import RoleGuard from "@/components/RoleGuard";
 import Tab from "@/components/Tab";
 import "@/styles/globals.css";
 
@@ -86,6 +87,7 @@ export default function App({ Component, pageProps }: AppProps) {
                   )}
                   {router.pathname !== "/" && <GNB />}
                   {isActiveTab && <Tab />}
+                  <RoleGuard />
                   <Component {...pageProps} />
                   <PopUp error={error} setError={setError} onlyCancel={true} />
                 </div>
