@@ -25,7 +25,11 @@ export function UserProvider({ children }: Props) {
       try {
         const userData = JSON.parse(storedUserData);
         setUser(userData.user);
-        if (!userData.hasProfile) {
+        if (
+          !userData.hasProfile &&
+          router.pathname !== "/user/profile/regist" &&
+          router.pathname !== `/trainer/${userData.user.id}/profile/regist`
+        ) {
           if (userData.user.role === Role.USER) {
             router.push("/user/profile/regist");
           } else if (userData.user.role === Role.TRAINER) {
