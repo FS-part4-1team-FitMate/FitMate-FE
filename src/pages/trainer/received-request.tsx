@@ -85,12 +85,12 @@ export default function ReceivedRequest() {
   });
 
   return (
-    <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto pb-40">
+    <div className="flex flex-col gap-[2.4rem] m-auto pb-40 pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]">
       <Title title="받은 요청" />
       <div
         className={clsx(
           "flex flex-col w-full mx-auto py-[2.4rem] px-8",
-          "pc:flex-row pc:gap-[10rem] pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
+          "pc:flex-row pc:gap-[10rem]",
         )}
       >
         <div className="flex flex-col gap-[4.6rem]">
