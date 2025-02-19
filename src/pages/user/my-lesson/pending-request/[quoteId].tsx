@@ -95,6 +95,11 @@ export default function DetailPendingRequest() {
             <p className="text-xl font-bold pc:text-3xl">{formatPrice(quoteInfo?.price)}원</p>
           </div>
           <HorizontalLine width="100%" />
+          <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
+            <p className="text-lg font-semibold pc:text-2xl">견적 메시지</p>
+            <p className="text-lg pc:text-xl">{quoteInfo.message}</p>
+          </div>
+          <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">
             <QuoteInfo lesson={lessonData} />
           </div>
