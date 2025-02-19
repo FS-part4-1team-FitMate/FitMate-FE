@@ -65,9 +65,9 @@ export default function RejectedRequest() {
   }, [fetchNextPage, hasNextPage]);
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen w-[75%] mx-auto">
+    <div className="p-10 bg-gray-50 min-h-screen w-full">
       {data?.pages.some((page) => page?.list?.length > 0) ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="pc:max-w-[140rem] tablet:max-w-[72rem] mx-auto grid grid-cols-1 gap-4 pc:grid-cols-2">
           {data.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
               {page?.list?.map((quote: any) => <RejectedRequestCard key={quote.id} item={quote} />)}
