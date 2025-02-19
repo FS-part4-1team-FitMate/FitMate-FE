@@ -8,5 +8,6 @@ export const useGetUser = (userId: string) => {
     enabled: !!userId,
     cacheTime: 5 * 60 * 1000,
     staleTime: 5 * 60 * 1000,
+    retry: 3,
   });
 };

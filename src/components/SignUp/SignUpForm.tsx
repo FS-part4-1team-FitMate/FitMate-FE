@@ -81,7 +81,7 @@ function SignUpForm({ role }: Props) {
         setError({ message: userData.message });
       }
       if (userData && "user" in userData) {
-        setUser(userData.user);
+        setUser({ ...userData.user, hasProfile: false });
         localStorage.setItem("userData", JSON.stringify(userData));
         if (userData.user.role === Role.USER) {
           router.push(`/user/profile/regist`);

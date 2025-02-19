@@ -100,23 +100,15 @@ function Regist() {
       delete data.certification;
     }
     try {
-      const userData = await postProfile(data);
-      if (userData && "profileImagePresignedUrl" in userData) {
-        const result = await axios.put(
-          userData.profileImagePresignedUrl as string,
-          profileImageFileToUpload,
-        );
-        console.log(result);
+      const userProfile = await postProfile(data);
+      if (userProfile && "profileImagePresignedUrl" in userProfile) {
+        await axios.put(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
-      if (userData && "certificationPresignedUrl" in userData) {
-        const result = await axios.put(
-          userData.certificationPresignedUrl as string,
-          certificationFileToUpload,
-        );
-        console.log(result);
+      if (userProfile && "certificationPresignedUrl" in userProfile) {
+        await axios.put(userProfile.certificationPresignedUrl as string, certificationFileToUpload);
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...user, ...userData, hasProfile: true };
+      userDataLS.user = { ...userDataLS.user, ...userProfile, hasProfile: !!userProfile };
       setUser(userDataLS.user);
       localStorage.setItem("userData", JSON.stringify(userDataLS));
       queryClient.invalidateQueries({
