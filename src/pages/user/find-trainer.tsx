@@ -114,7 +114,7 @@ export default function FindTrainer() {
               (trainer) =>
                 trainer.profile !== null && (
                   <Link
-                    className="rounded-[1.6rem] hover:border-[0.15rem] hover:border-blue-300"
+                    className="border-[0.15rem] border-transparent rounded-[1.6rem] hover:border-[0.15rem] hover:border-blue-300"
                     href={`/user/detail-trainer/${trainer.id}`}
                     key={trainer.id}
                   >

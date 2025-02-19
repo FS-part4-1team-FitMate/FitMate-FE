@@ -1,9 +1,8 @@
 import clsx from "clsx";
 
 const title_wrap = clsx(
-  "flex items-center w-full h-[5.4rem] mx-12 py-8",
-  "pc:max-w-[192rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
-  "pc:h-full",
+  "flex items-center w-full h-[5.4rem] mx-auto p-8",
+  "max-w-[192rem] pc:h-full",
 );
 
 export default function Title({ title }: { title: string }) {

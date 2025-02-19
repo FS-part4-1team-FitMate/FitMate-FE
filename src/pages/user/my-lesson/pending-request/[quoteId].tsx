@@ -76,7 +76,7 @@ export default function DetailPendingRequest() {
   };
 
   return (
-    <div className="flex flex-col gap-[1.6rem] pb-40 pc:gap-[2.4rem] pc:max-w-[140rem]">
+    <div className="flex flex-col gap-[1.6rem] mx-auto pb-40 pc:gap-[2.4rem] pc:max-w-[140rem]">
       <Title title="견적 상세" />
       <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:justify-between">
         <div className="flex flex-col gap-[2.4rem] w-full pc:pr-16 pc:gap-16">
@@ -96,7 +96,7 @@ export default function DetailPendingRequest() {
           </div>
         </div>
         <div className="flex flex-col gap-16">
-          <div className="fixed left-1/2 transform -translate-x-1/2 bottom-4 flex flex-row gap-[0.8rem] max-w-[74.4rem] w-full px-8 pc:relative pc:flex-col pc:gap-[3.2rem] pc:px-0">
+          <div className="fixed left-1/2 transform -translate-x-1/2 bottom-4 flex flex-row gap-[0.8rem] max-w-[74.4rem] w-full px-8 pc:relative pc:bottom-auto pc:flex-col pc:gap-8 pc:px-0">
             <Button
               onClick={handleAccept}
               className={
