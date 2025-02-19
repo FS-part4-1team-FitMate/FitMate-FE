@@ -34,7 +34,7 @@ const RoleGuard = () => {
     if (isLoading) return;
 
     if (!user) {
-      if (!commonAccess && !isLoggedOut) {
+      if (!commonAccess && isLoggedOut) {
         router.push("/login");
         toast.error("로그인이 필요합니다!");
       }
@@ -46,8 +46,8 @@ const RoleGuard = () => {
         router.pathname !== "/chat" &&
         router.pathname !== "/noti"
       ) {
+        router.push("/no-access");
         toast.error("접근할 수 없는 페이지입니다!");
-        router.push("/404");
       } else if (
         user.role === "TRAINER" &&
         !commonAccess &&
@@ -55,8 +55,8 @@ const RoleGuard = () => {
         router.pathname !== "/chat" &&
         router.pathname !== "/noti"
       ) {
+        router.push("/access");
         toast.error("접근할 수 없는 페이지입니다!");
-        router.push("/404");
       }
     }
   }, [user, router.pathname, isLoading, isLoggedOut]);
