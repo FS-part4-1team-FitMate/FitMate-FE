@@ -53,7 +53,7 @@ function Noti({ initialQuery }: PageProps) {
   let notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
 
   useEffect(() => {
-    if (router.pathname === "/noti") {
+    if (window.location.pathname === "/noti") {
       router.push({
         pathname: router.pathname,
         query: { type: currentTab },
@@ -63,7 +63,7 @@ function Noti({ initialQuery }: PageProps) {
         pathname: router.pathname,
       });
     }
-  }, [currentTab, router.pathname]);
+  }, [currentTab, window.location.pathname]);
 
   useEffect(() => {
     setCurrentTab(query.type as NotificationType);
