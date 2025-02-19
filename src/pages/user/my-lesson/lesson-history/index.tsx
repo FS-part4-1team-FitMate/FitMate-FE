@@ -19,6 +19,7 @@ export default function LessonHistory() {
   const tabs = [
     { label: "대기중인 레슨", value: "PENDING" },
     { label: "만료된 레슨", value: "EXPIRED" },
+    { label: "취소된 레슨", value: "CANCELED" },
   ];
 
   useEffect(() => {
@@ -46,7 +47,7 @@ export default function LessonHistory() {
   };
 
   const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
-
+  console.log(myLessonList);
   if (isLoading) return <Loading />;
   if (isError) return toast.error("레슨 내역을 불러오는 중 에러가 발생했어요! 😢");
 
