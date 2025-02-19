@@ -1,4 +1,5 @@
 import { img_404 } from "@/imageExports";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -27,6 +28,9 @@ export default function NotFound() {
   };
   return (
     <div className="bg-bg-200 flex justify-center items-center w-full h-screen">
+      <Head>
+        <title>404 Not Found | 핏메이트</title>
+      </Head>
       <div className="bg-red-100  flex flex-col justify-center items-center gap-12 p-12 rounded-[1.6rem] pc:rounded-full tablet:rounded-full pc:gap-16 pc:p-48 tablet:p-40">
         <Image src={img_404} width={400} height={350} alt="404 아이콘" priority />
         <h1 className="bg-white animate-bounce py-4 px-8 rounded-[3rem] text-2lg font-bold shadow-card pc:text-2xl tablet:text-xl">

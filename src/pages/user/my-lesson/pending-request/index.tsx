@@ -1,4 +1,5 @@
 import { useUser } from "@/contexts/UserProvider";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
@@ -32,6 +33,9 @@ export default function PendingRequest() {
 
   return (
     <>
+      <Head>
+        <title>대기 중인 견적 | 핏메이트</title>
+      </Head>
       {pendingList?.length > 0 ? (
         pendingList.map((item: Lesson) =>
           item.lessonQuotes?.length > 0 ? (
