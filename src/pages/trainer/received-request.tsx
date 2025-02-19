@@ -84,10 +84,8 @@ export default function ReceivedRequest() {
     } else return true;
   });
 
-  console.log(receivedList);
-
   return (
-    <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto">
+    <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto pb-40">
       <Title title="받은 요청" />
       <div
         className={clsx(

@@ -47,9 +47,9 @@ export default function DetailPastRequest() {
   const lessonData = lesson ?? {};
 
   return (
-    <div className="flex flex-col gap-[1.6rem] pb-16 pc:gap-[2.4rem]">
+    <div className="flex flex-col gap-[1.6rem] mx-auto pb-16 pc:gap-[2.4rem] pc:max-w-[140rem]">
       <Title title="견적 상세" />
-      <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:justify-between pc:max-w-[140rem]">
+      <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:justify-between">
         <div className="flex flex-col gap-[2.4rem] w-full pc:pr-16 pc:gap-16">
           <FindTrainerCard profile={trainerInfo} status={quoteInfo.status} />
           <div className="flex flex-col gap-4 pc:hidden">

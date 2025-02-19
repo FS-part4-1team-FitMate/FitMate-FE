@@ -315,13 +315,13 @@ function ProfileEdit() {
           )} */}
           <Button
             type="submit"
-            className="hover:bg-blue-200 gap-4 w-full bg-blue-300 text-white font-semibold"
+            className="hover:bg-blue-200 gap-4 w-full h-[5.4rem] bg-blue-300 text-white font-semibold"
           >
             수정하기 <Image src={ic_edit_sm} width={24} height={24} alt="Edit" />
           </Button>
           <Button
             type="button"
-            className="hover:bg-blue-100 w-full border border-blue-300 bg-white text-blue-300 font-bold"
+            className="hover:bg-blue-100 w-full h-[5.4rem] border border-blue-300 bg-white text-blue-300 font-bold"
             onClick={() => {
               router.push(`/user/profile`);
             }}
