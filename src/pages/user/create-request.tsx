@@ -15,6 +15,11 @@ import {
 } from "@/types/types";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
+import { getMyLessonRequest } from "@/lib/api/lessonService";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
+import Button from "@/components/Common/Button";
+import Link from "next/link";
 
 type FormValues = {
   lessonType: LessonType;
@@ -37,6 +42,23 @@ const createRequest = () => {
   const [currentAnswer, setCurrentAnswer] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Date, Date]>([new Date(), new Date()]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isOngoingLesson, setIsOngoingLesson] = useState(false);
+
+  useEffect(() => {
+    const fetchLessonRequests = async () => {
+      try {
+        const response = await getMyLessonRequest({ page: 1, limit: 10, status: "PENDING" });
+        if (response.list.length) {
+          console.log(response)
+          setIsOngoingLesson(true);
+        }
+      } catch (error) {
+        console.error("레슨 요청 데이터를 불러오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchLessonRequests();
+  }, []);
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
@@ -192,8 +214,8 @@ const createRequest = () => {
       ...data,
       lessonCount: Number(data.lessonCount),
       lessonTime: Number(data.lessonTime),
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
+      startDate: new Date(data.startDate.setHours(0, 0, 0, 0)).toISOString(),
+      endDate: new Date(data.endDate.setHours(23, 59, 59, 999)).toISOString(),
     };
     try {
       await createLessonRequest(formattedData);
@@ -206,7 +228,20 @@ const createRequest = () => {
     }
   };
 
+  
+
   return (
+    isOngoingLesson ? (
+      <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+        <Image src={img_non_review_md} alt="non-request" width={160} height={160} />
+        <h1 className="text-gray-400 text-lg font-regular">현재 진행 중인 레슨 요청이 있어요!</h1>
+        <Link href={"/user/my-lesson/active-lesson"}>
+          <Button className={"bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700"}>
+            내 레슨 관리
+          </Button>
+        </Link>
+      </div>
+    ) : (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col space-y-6 bg-gray-100 min-h-screen pb-16"
@@ -356,7 +391,10 @@ const createRequest = () => {
                   className="focus:outline focus:outline-blue-300 w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="횟수를 입력하세요"
                   value={currentAnswer}
-                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                  onChange={(e) => {
+                    const value = Math.max(1, Number(e.target.value));
+                    setCurrentAnswer(value.toString());
+                  }}
                 />
               )}
             />
@@ -383,7 +421,10 @@ const createRequest = () => {
                   className="focus:outline focus:outline-blue-300 w-full py-2 px-4 rounded-lg border-b-0 text-lg"
                   placeholder="시간을 입력하세요"
                   value={currentAnswer}
-                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                  onChange={(e) => {
+                    const value = Math.max(1, Number(e.target.value));
+                    setCurrentAnswer(value.toString());
+                  }}
                 />
               )}
             />
@@ -474,6 +515,7 @@ const createRequest = () => {
         )}
       </div>
     </form>
+    )
   );
 };
 
