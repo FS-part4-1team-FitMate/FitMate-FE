@@ -153,6 +153,7 @@ function SignUpForm({ role }: Props) {
               },
             })}
             placeholder="이메일을 입력해 주세요."
+            disabled={!!emailVerified}
           />
           {errors.email && <p className={error_class}>{errors.email.message}</p>}
         </div>
