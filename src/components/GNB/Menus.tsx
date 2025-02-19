@@ -47,7 +47,7 @@ function Menus({ addClass, user, router }: MenusProps) {
           }
         >
           <Link
-            href="/user/my-lesson/active-lesson"
+            href="/user/my-lesson/lesson-history"
             className={router.pathname.startsWith("/user/my-lesson") ? active_class : ""}
           >
             내 레슨 관리
@@ -60,10 +60,7 @@ function Menus({ addClass, user, router }: MenusProps) {
               : ""
           }
         >
-          <Link
-            href="/chat"
-            className={router.pathname.startsWith("/chat") ? active_class : ""}
-          >
+          <Link href="/chat" className={router.pathname.startsWith("/chat") ? active_class : ""}>
             FitChat
           </Link>
         </li>
@@ -105,10 +102,7 @@ function Menus({ addClass, user, router }: MenusProps) {
               : ""
           }
         >
-          <Link
-            href="/chat"
-            className={router.pathname.startsWith("/chat") ? active_class : ""}
-          >
+          <Link href="/chat" className={router.pathname.startsWith("/chat") ? active_class : ""}>
             FitChat
           </Link>
         </li>
