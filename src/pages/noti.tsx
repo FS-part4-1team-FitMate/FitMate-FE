@@ -53,15 +53,21 @@ function Noti({ initialQuery }: PageProps) {
   let notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
 
   useEffect(() => {
-    router.push({
-      pathname: router.pathname,
-      query: { type: currentTab },
-    });
-  }, [currentTab]);
+    if (router.pathname === "/noti") {
+      router.push({
+        pathname: router.pathname,
+        query: { type: currentTab },
+      });
+    } else {
+      router.push({
+        pathname: router.pathname,
+      });
+    }
+  }, [currentTab, router.pathname]);
 
   useEffect(() => {
     setCurrentTab(query.type as NotificationType);
-  }, [query.type]);
+  }, [query, query.type]);
 
   useEffect(() => {
     const notiSet = new Set<number>();
