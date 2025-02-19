@@ -18,7 +18,12 @@ export default function useQuoteValidate(initialValues: InitialValuesProps) {
     let isValid = true;
     let newError: Errors = {};
 
-    if (!values.price || values.price.length < 1 || isNaN(parseInt(values.price))) {
+    if (
+      !values.price ||
+      values.price.length < 1 ||
+      isNaN(parseInt(values.price)) ||
+      /[^0-9]/.test(values.price)
+    ) {
       isValid = false;
       newError.price = "숫자로 입력해주세요";
     }

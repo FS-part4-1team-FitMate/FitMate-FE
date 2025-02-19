@@ -16,6 +16,7 @@ import ic_arrow_right_sm_24x24 from "@/assets/ic/ic_arrow-right_sm-24x24.svg";
 import ic_arrow_up_md_36x36 from "@/assets/ic/ic_arrow-up_md-36x36.svg";
 import ic_arrow_up_sm_24x24 from "@/assets/ic/ic_arrow-up_sm-24x24.svg";
 import ic_arrow_up_xs_20x20 from "@/assets/ic/ic_arrow-up_xs-20x20.svg";
+import ic_chat from "@/assets/ic/ic_chat.svg";
 import ic_clip_md from "@/assets/ic/ic_clip_md.svg";
 import ic_clip_sm from "@/assets/ic/ic_clip_sm.svg";
 import ic_designate_md from "@/assets/ic/ic_designate_md.svg";
@@ -105,6 +106,7 @@ import share_ic_kakao_xs from "@/assets/share/ic_kakao_xs.svg";
 
 export {
   img_404,
+  ic_chat,
   ic_fitness,
   ic_sports,
   ic_rehab,

@@ -23,7 +23,7 @@ export default function PendingRequest() {
       status: "PENDING",
     },
   );
-  console.log(data)
+  console.log(data);
 
   if (isLoading) return <Loading />;
   if (isError) return toast.error("대기중인 견적 목록을 불러오는 중 에러가 발생했어요! 😢");
@@ -36,7 +36,7 @@ export default function PendingRequest() {
         pendingList.map((item: Lesson) =>
           item.lessonQuotes?.length > 0 ? (
             <InfiniteScroll key={item.id} hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
-              <div className="flex flex-col gap-[2.4rem] mx-auto mt-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]">
+              <div className="flex flex-col gap-[2.4rem] mx-auto my-16 px-8 pc:grid pc:grid-cols-2 pc:gap-x-[2.4rem] pc:gap-y-[4.8rem] pc:max-w-[140rem] tablet:max-w-[64rem] mobile:max-w-[36.7rem]">
                 {item.lessonQuotes.map(
                   (quote) =>
                     quote.status === "PENDING" && (

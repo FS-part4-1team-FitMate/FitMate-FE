@@ -1,9 +1,13 @@
+import { img_non_review_md } from "@/imageExports";
 import { ko } from "date-fns/locale";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
+import { getMyLessonRequest } from "@/lib/api/lessonService";
 import { createLessonRequest } from "@/lib/api/requestService";
 import {
   LessonSubType,
@@ -13,13 +17,9 @@ import {
   lessonType_trans,
   locationType_trans,
 } from "@/types/types";
+import Button from "@/components/Common/Button";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
-import { getMyLessonRequest } from "@/lib/api/lessonService";
-import { img_non_review_md } from "@/imageExports";
-import Image from "next/image";
-import Button from "@/components/Common/Button";
-import Link from "next/link";
 
 type FormValues = {
   lessonType: LessonType;
@@ -49,7 +49,7 @@ const createRequest = () => {
       try {
         const response = await getMyLessonRequest({ page: 1, limit: 10, status: "PENDING" });
         if (response.list.length) {
-          console.log(response)
+          console.log(response);
           setIsOngoingLesson(true);
         }
       } catch (error) {
@@ -228,20 +228,17 @@ const createRequest = () => {
     }
   };
 
-  
-
-  return (
-    isOngoingLesson ? (
-      <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
-        <Image src={img_non_review_md} alt="non-request" width={160} height={160} />
-        <h1 className="text-gray-400 text-lg font-regular">현재 진행 중인 레슨 요청이 있어요!</h1>
-        <Link href={"/user/my-lesson/active-lesson"}>
-          <Button className={"bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700"}>
-            내 레슨 관리
-          </Button>
-        </Link>
-      </div>
-    ) : (
+  return isOngoingLesson ? (
+    <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+      <Image src={img_non_review_md} alt="non-request" width={160} height={160} />
+      <h1 className="text-gray-400 text-lg font-regular">현재 진행 중인 레슨 요청이 있어요!</h1>
+      <Link href={"/user/my-lesson/lesson-history"}>
+        <Button className={"bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700"}>
+          내 레슨 관리
+        </Button>
+      </Link>
+    </div>
+  ) : (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col space-y-6 bg-gray-100 min-h-screen pb-16"
@@ -515,7 +512,6 @@ const createRequest = () => {
         )}
       </div>
     </form>
-    )
   );
 };
 
