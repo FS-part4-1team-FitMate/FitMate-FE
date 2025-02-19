@@ -45,11 +45,23 @@ function Noti({ initialQuery }: PageProps) {
   } = useGetNotiList(user?.id!, { page: 1, limit: 5, order: "created_at", sort: "desc" });
   const readNotiMutation = useReadNotiMutation(notiContext);
   const router = useRouter();
+  const { query } = router;
   const [hasNoti_LESSON_QUOTE, setHasNoti_LESSON_QUOTE] = useState<boolean>(true);
   const [hasNoti_CHAT_MESSAGE, setHasNoti_CHAT_MESSAGE] = useState<boolean>(true);
   const [hasNoti_LESSON_QUOTE_FULL, setHasNoti_LESSON_QUOTE_FULL] = useState<boolean>(true);
   const [hasNoti_CHAT_MESSAGE_FULL, setHasNoti_CHAT_MESSAGE_FULL] = useState<boolean>(true);
   let notiDataFlatted = notiData?.pages.flatMap((page) => page.list) ?? [];
+
+  useEffect(() => {
+    router.push({
+      pathname: router.pathname,
+      query: { type: currentTab },
+    });
+  }, [currentTab]);
+
+  useEffect(() => {
+    setCurrentTab(query.type as NotificationType);
+  }, [query]);
 
   useEffect(() => {
     const notiSet = new Set<number>();
@@ -113,9 +125,9 @@ function Noti({ initialQuery }: PageProps) {
                   : "text-gray-300"
               } cursor-pointer`}
               onClick={() => {
-                router.push(`/noti?type=${NotificationType.LESSON_QUOTE}`, undefined, {
-                  shallow: true,
-                });
+                // router.push(`/noti?type=${NotificationType.LESSON_QUOTE}`, undefined, {
+                //   shallow: true,
+                // });
                 setCurrentTab(NotificationType.LESSON_QUOTE);
               }}
             >
@@ -131,9 +143,9 @@ function Noti({ initialQuery }: PageProps) {
                   : "text-gray-300"
               } cursor-pointer`}
               onClick={() => {
-                router.push(`/noti?type=${NotificationType.CHAT_MESSAGE}`, undefined, {
-                  shallow: true,
-                });
+                // router.push(`/noti?type=${NotificationType.CHAT_MESSAGE}`, undefined, {
+                //   shallow: true,
+                // });
                 setCurrentTab(NotificationType.CHAT_MESSAGE);
               }}
             >
