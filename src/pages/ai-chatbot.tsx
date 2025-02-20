@@ -77,7 +77,7 @@ function ChatBot() {
             <Button
               type="submit"
               className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
-              disabled={!!input || isSubmitting}
+              disabled={!input || isSubmitting}
             >
               입력 완료
             </Button>
