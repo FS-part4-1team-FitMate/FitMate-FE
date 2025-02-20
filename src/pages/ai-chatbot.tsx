@@ -73,7 +73,9 @@ function ChatBot() {
               placeholder="질문을 입력해 주세요."
               onChange={(e) => setInput(e.target.value)}
               className="bg-blue-300 text-lg text-white placeholder:text-white"
-            ></Textarea>
+            >
+              {input}
+            </Textarea>
             <Button
               type="submit"
               className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"
