@@ -2,6 +2,7 @@ import { useUser } from "@/contexts/UserProvider";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { LSUserData } from "@/types/types";
 
 const RoleGuard = () => {
   const user = useUser();
@@ -11,10 +12,16 @@ const RoleGuard = () => {
   const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setIsLoading(false);
-    } else {
+    try {
+      const storedUserData: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+      if (storedUserData) {
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        setIsLoggedOut(true);
+      }
+    } catch (err) {
+      console.error(err);
       setIsLoading(false);
       setIsLoggedOut(true);
     }
