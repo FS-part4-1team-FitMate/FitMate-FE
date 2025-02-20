@@ -20,17 +20,10 @@ import {
 import Button from "@/components/Common/Button";
 import ChatBubble from "@/components/CreateRequest/ChatBubble";
 import ProgressBar from "@/components/CreateRequest/ProgressBar";
+import { FormValues } from "@/types/lesson";
+import toast from "react-hot-toast";
 
-type FormValues = {
-  lessonType: LessonType;
-  lessonSubType: string;
-  startDate: Date;
-  endDate: Date;
-  lessonCount: number;
-  lessonTime: number;
-  locationType: LocationType;
-  roadAddress?: string;
-};
+
 
 const createRequest = () => {
   const router = useRouter();
@@ -47,18 +40,19 @@ const createRequest = () => {
   useEffect(() => {
     const fetchLessonRequests = async () => {
       try {
-        const response = await getMyLessonRequest({ page: 1, limit: 10, status: "PENDING" });
-        if (response.list.length) {
-          console.log(response);
+        const pendingResponse = await getMyLessonRequest({ page: 1, limit: 10, status: "PENDING" });
+        const confirmedResponse = await getMyLessonRequest({ page: 1, limit: 10, status: "QUOTE_CONFIRMED" });
+
+        if (pendingResponse.list.length || confirmedResponse.list.length) {
           setIsOngoingLesson(true);
         }
       } catch (error) {
-        console.error("레슨 요청 데이터를 불러오는 중 오류 발생:", error);
+        console.error("오류 발생:", error);
       }
     };
-
     fetchLessonRequests();
   }, []);
+  
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
@@ -182,20 +176,25 @@ const createRequest = () => {
   const handleEdit = (editStep: number) => {
     setStep(editStep);
     const fieldToEdit = fields[editStep];
-    const currentValue = watch(fieldToEdit)?.toString() || "";
-    setCurrentAnswer(currentValue);
+  
+    if (fieldToEdit === "startDate" || fieldToEdit === "endDate") {
+      const start = watch("startDate");
+      const end = watch("endDate");
+      setDateRange([start, end]); // ✅ dateRange 업데이트
+    } else {
+      setCurrentAnswer(watch(fieldToEdit)?.toString() || "");
+    }
+  
     setChatHistory((prev) => prev.slice(0, editStep * 2 + 1));
     setProgress((editStep / questions.length) * 100);
   };
+  
 
   const handleDateSubmit = () => {
     if (dateRange[0] && dateRange[1]) {
       setValue("startDate", dateRange[0]);
       setValue("endDate", dateRange[1]);
-      setTimeout(() => {
-        console.log("startDate:", watch("startDate"));
-        console.log("endDate:", watch("endDate"));
-      }, 100);
+  
       setChatHistory((prev) => [
         ...prev,
         {
@@ -204,6 +203,7 @@ const createRequest = () => {
         },
         { type: "question", content: questions[step + 1] },
       ]);
+  
       setStep(step + 1);
       setProgress(((step + 1) / questions.length) * 100);
     }
@@ -220,11 +220,11 @@ const createRequest = () => {
     try {
       await createLessonRequest(formattedData);
       setErrorMessage("");
-      alert("견적 요청이 성공적으로 제출되었습니다!");
+      toast.success("레슨 요청이 성공적으로 제출되었습니다!");
       router.push("/user/my-lesson/lesson-history");
     } catch (err: any) {
-      setErrorMessage(err || "견적 요청 제출 중 오류가 발생했습니다.");
-      alert(`🚨 오류: ${err}`);
+      setErrorMessage(err || "레슨 요청 제출 중 오류가 발생했습니다.");
+      toast.error(`🚨 오류: ${err}`);
     }
   };
 
@@ -364,6 +364,7 @@ const createRequest = () => {
               locale={ko}
               showPopperArrow={false}
               calendarClassName="custom-datepicker"
+              minDate={new Date(new Date().setDate(new Date().getDate() + 2))}
             />
             <button
               type="button"
@@ -507,7 +508,7 @@ const createRequest = () => {
             className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-green-600"
             disabled={watch("locationType") === LocationType.OFFLINE && !watch("roadAddress")}
           >
-            견적 요청하기
+            레슨 요청하기
           </button>
         )}
       </div>

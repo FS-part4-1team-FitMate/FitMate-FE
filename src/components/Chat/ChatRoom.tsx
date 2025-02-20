@@ -47,7 +47,7 @@ export default function ChatRoom({ selectedRoom, messageList, onSendMessage, onL
   return (
     <div className="w-3/4 flex flex-col overflow-hidden">
       <div className="p-4 border-b border-gray-300 flex justify-between items-center">
-        <h2 className="text-xl font-bold">{selectedRoom.participant}</h2>
+        <h2 className="text-xl font-bold">{selectedRoom.participantName}</h2>
         <button onClick={handleLeaveRoom} className="px-4 py-2 bg-red-500 text-white rounded-lg">
           채팅방 나가기
         </button>

@@ -49,7 +49,14 @@ export default function PendingLessonCard({ item, quote }: { item: Lesson; quote
         <ChipRequestStatus requestStatus={item.status} />
         <ChipLessonType lessonType={item.lessonType} />
       </div>
-      <Link href={`/user/my-lesson/pending-request/${quote.id}`}>
+      <Link className="flex flex-col gap-8" href={`/user/my-lesson/pending-request/${quote.id}`}>
+        <div
+          className="relative py-6 px-12 bg-blue-100 rounded-full
+          after:content-[''] after:absolute after:left-44 after:bottom-[-8px] after:transform after:-translate-x-1/2 
+          after:border-l-[2rem] after:border-r-[1rem] after:border-t-[1.2rem] after:border-transparent after:border-t-blue-100"
+        >
+          <p className="text-md font-semibold pc:text-2lg">{quote.message}</p>
+        </div>
         <div className="flex flex-col gap-8">
           <TrainerInfo
             name={trainerInfo?.name}

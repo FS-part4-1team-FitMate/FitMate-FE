@@ -1,7 +1,9 @@
+import { useUser } from "@/contexts/UserProvider";
 import { ic_fitness, ic_rehab, ic_sports, img_landing_02, logo_lg } from "@/imageExports";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 
 const card_title = clsx(
@@ -14,8 +16,22 @@ const card_img =
   "border border-blue-300 rounded-[1.6rem] p-4 w-[10rem] h-[10rem] pc:w-[25rem] pc:h-[25rem] tablet:w-[20rem] tablet:h-[20rem]";
 
 export default function Home() {
+  const router = useRouter();
+  const user = useUser();
+
   const stickyRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLDivElement>(null);
+  const loginContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "USER") {
+        router.push("/user/my-lesson/lesson-history");
+      } else if (user.role === "TRAINER") {
+        router.push("/trainer/received-request");
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     class CardFlipOnScroll {
@@ -118,6 +134,15 @@ export default function Home() {
     }, 5);
   };
 
+  const handleLoginButtonClick = () => {
+    if (loginContentRef.current) {
+      loginContentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <>
       <div className="w-full h-[500vh]" ref={mainContentRef}>
@@ -139,9 +164,18 @@ export default function Home() {
               <br />
               레슨을 받아보세요!
             </h1>
-            <h1 className="absolute bottom-0 animate-bounce text-blue-300 text-2lg pc:text-3xl">
-              ▼
-            </h1>
+            <div className="absolute bottom-0 ">
+              <button
+                onClick={(e) => {
+                  handlebuttonClick(e);
+                  handleLoginButtonClick();
+                }}
+                className="overflow-hidden hover:bg-red-200 hover:text-red-100 relative login m-8 py-4 px-8 border border-red-200 rounded-[1.6rem] bg-red-100 text-red-200 text-xl font-semibold"
+              >
+                이미 회원이신가요?
+              </button>
+              <h1 className="animate-bounce text-red-200 text-2lg pc:text-3xl">▼</h1>
+            </div>
           </div>
           <div className="card-frame">
             <div className="card shadow-card">
@@ -201,25 +235,32 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="bg-bg-200 relative flex flex-col justify-center items-center gap-20 w-full h-screen text-center text-5xl">
+      <div
+        ref={loginContentRef}
+        className="bg-bg-200 relative flex flex-col justify-center items-center gap-20 w-full h-screen text-center text-5xl"
+      >
         <h1 className="animate-bounce">
           맞춤형 트레이닝 서비스,
           <br />
           지금 바로 시작해보세요!
         </h1>
         <div className="flex flex-col items-center gap-8 w-[30rem] pc:flex-row">
-          <button
-            onClick={handlebuttonClick}
-            className="hover:bg-blue-600 login relative flex-1 w-full p-4 rounded-[1.6rem] text-2lg text-white font-semibold shadow-card bg-blue-300 overflow-hidden"
-          >
-            <Link href="/login">로그인</Link>
-          </button>
-          <button
-            onClick={handlebuttonClick}
-            className="hover:bg-blue-200 hover:text-white signup relative flex-1 w-full p-4 border rounded-[1.6rem] border-blue-300 text-blue-300 text-2lg font-semibold shadow-card bg-blue-100 overflow-hidden"
-          >
-            <Link href="/user/signup">회원가입</Link>
-          </button>
+          <Link className="flex-1" href="/login">
+            <button
+              onClick={handlebuttonClick}
+              className="hover:bg-blue-600 login relative flex-1 w-full p-4 rounded-[1.6rem] text-2lg text-white font-semibold shadow-card bg-blue-300 overflow-hidden"
+            >
+              로그인
+            </button>
+          </Link>
+          <Link className="flex-1" href="/user/signup">
+            <button
+              onClick={handlebuttonClick}
+              className="hover:bg-blue-200 hover:text-white signup relative w-full p-4 border rounded-[1.6rem] border-blue-300 text-blue-300 text-2lg font-semibold shadow-card bg-blue-100 overflow-hidden"
+            >
+              회원가입
+            </button>
+          </Link>
         </div>
         <div className="bg-white w-full px-12">
           <Image src={img_landing_02} width={300} height={200} alt="랜딩 이미지" />

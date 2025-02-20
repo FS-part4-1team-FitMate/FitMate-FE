@@ -25,6 +25,8 @@ export default function Chat() {
           return {
             ...room,
             participant: isMe ? room.participant2 : room.participant1,
+            participantName: isMe ? room.participant2Profile?.name : room.participant1Profile?.name,
+            MyName: isMe ? room.participant1Profile?.name : room.participant2Profile?.name,
             myId: isMe ? room.participant1 : room.participant2,
             isMe,
           };

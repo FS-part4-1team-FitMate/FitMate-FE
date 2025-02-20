@@ -145,9 +145,12 @@ function Profile({ initialQuery }: PageProps) {
                 제공 강의
               </div>
               <div className="text-md flex justify-normal items-center gap-[5px]">
-                {trainerProfile?.profile?.lessonType.map((lessonType) => {
+                {trainerProfile?.profile?.lessonType.map((lessonType, idx) => {
                   return (
-                    <p className="py-[1px] px-4 border border-blue-300 rounded-full bg-blue-100 text-blue-300 text-sm">
+                    <p
+                      key={idx}
+                      className="py-[1px] px-4 border border-blue-300 rounded-full bg-blue-100 text-blue-300 text-sm"
+                    >
                       {lessonType_trans[lessonType].ko}
                     </p>
                   );

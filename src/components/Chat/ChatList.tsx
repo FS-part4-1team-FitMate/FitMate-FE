@@ -22,7 +22,7 @@ interface ChatListProps {
             <button
               key={room.roomId}
               onClick={() => onSelectRoom(room)}
-              className={`flex items-center w-full p-8 gap-5 text-md ${
+              className={`flex items-center w-full p-8 gap-5 text-lg ${
                 selectedRoom?.roomId === room.roomId ? "bg-gray-200" : "hover:bg-gray-100"
               }`}
             >
@@ -33,7 +33,7 @@ interface ChatListProps {
                 height={40}
                 className="rounded-full"
               />
-              {room.participant}
+              <h1>{room.participantName}</h1>
             </button>
           ))
         )}

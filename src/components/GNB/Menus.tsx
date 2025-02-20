@@ -47,7 +47,7 @@ function Menus({ addClass, user, router }: MenusProps) {
           }
         >
           <Link
-            href="/user/my-lesson/active-lesson"
+            href="/user/my-lesson/lesson-history"
             className={router.pathname.startsWith("/user/my-lesson") ? active_class : ""}
           >
             내 레슨 관리

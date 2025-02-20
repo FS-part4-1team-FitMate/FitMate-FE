@@ -28,7 +28,7 @@ export default function FavoriteTrainer() {
       {trainerList.map((trainer: Trainer) => (
         <FavoriteTrainerCard
           key={trainer.id}
-          name={trainer.nickname}
+          name={trainer?.profile.name || ""}
           rating={trainer.profile.rating}
           reviewCount={trainer.profile.reviewCount}
           experience={trainer.profile.experience}

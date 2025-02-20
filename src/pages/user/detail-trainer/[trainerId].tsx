@@ -1,5 +1,6 @@
 import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -60,6 +61,9 @@ export default function DetailTrainer() {
         "tablet:max-w-[74.4rem] mobile:max-w-auto",
       )}
     >
+      <Head>
+        <title>강사님 상세 정보 | 핏메이트</title>
+      </Head>
       <div className={"flex flex-col gap-[2.4rem] w-full pc:gap-16 pc:pr-[10rem]"}>
         <FindTrainerCard profile={trainerInfo} favoriteInfo={favoriteInfo} />
         <div className="flex flex-col gap-4 pc:hidden">

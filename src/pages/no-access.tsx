@@ -1,9 +1,9 @@
-import { img_404 } from "@/imageExports";
+import { ic_no_access } from "@/imageExports";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-export default function NotFound() {
+export default function NoAccess() {
   const router = useRouter();
 
   const handlebuttonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -27,14 +27,24 @@ export default function NotFound() {
     router.back();
   };
   return (
-    <div className="bg-bg-200 flex justify-center items-center w-full h-screen">
+    <div className="bg-bg-200 flex flex-col justify-center items-center w-full h-screen">
       <Head>
-        <title>404 Not Found | 핏메이트</title>
+        <title>접근 제한 | 핏메이트</title>
       </Head>
-      <div className="bg-red-100  flex flex-col justify-center items-center gap-12 p-12 rounded-[1.6rem] pc:rounded-full tablet:rounded-full pc:gap-16 pc:p-48 tablet:p-40">
-        <Image src={img_404} width={400} height={350} alt="404 아이콘" priority />
+      <Image src={ic_no_access} width={200} height={300} alt="no access" />
+      <div className="flex items-center bg-gray-500 w-full h-60">
+        <div
+          className="w-full h-5 bg-white"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(90deg, transparent, transparent 60px, gray 60px, gray 80px)",
+            backgroundSize: "100px 100%",
+          }}
+        ></div>
+      </div>
+      <div className="flex flex-col items-center gap-12 py-20">
         <h1 className="bg-white animate-bounce py-4 px-8 rounded-[3rem] text-2lg font-bold shadow-card pc:text-2xl tablet:text-xl">
-          요청하신 페이지를 찾을 수 없어요! 🔍
+          헉! 접근 불가능한 페이지에요! 🚫
         </h1>
         <button
           onClick={handlebuttonClick}
