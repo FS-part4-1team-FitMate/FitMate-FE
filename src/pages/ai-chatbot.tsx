@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function ChatBot() {
-  const [messages, setMessages] = useState<{ string }[]>([]);
+  const [messages, setMessages] = useState<{ id: string; message: string }[]>([]);
   const [input, setInput] = useState<string>("");
 
   return (
