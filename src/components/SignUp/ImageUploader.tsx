@@ -1,5 +1,4 @@
 import { ic_profile_default_sm } from "@/imageExports";
-import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { profile_menu } from "@/types/constants";
@@ -11,6 +10,7 @@ interface Props {
   defImage?: string;
   width?: number;
   height?: number;
+  className?: string;
 }
 
 const ImageUploader: React.FC<Props> = ({
@@ -20,6 +20,7 @@ const ImageUploader: React.FC<Props> = ({
   defImage = ic_profile_default_sm.src,
   width = 150,
   height = 150,
+  className,
 }: Props) => {
   const [imageSrc, setImageSrc] = useState<string>(defImage);
 
@@ -42,12 +43,12 @@ const ImageUploader: React.FC<Props> = ({
         {label}
       </label>
       <div>
-        <Image
+        <img
           src={imageSrc}
           alt="Profile Preview"
           width={width}
           height={height}
-          className="rounded-full border-2 border-gray-300 object-cover mb-[10px]"
+          className={`${className ? className + " " : ""}rounded-full border-2 border-gray-300 object-cover mb-[10px]`}
         />
         <br />
         <input

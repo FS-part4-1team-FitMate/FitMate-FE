@@ -245,6 +245,7 @@ function Regist() {
             width={300}
             height={300}
             defImage={img_default_md.src}
+            className="rounded-xl"
           />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
