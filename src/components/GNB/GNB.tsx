@@ -1,7 +1,7 @@
 import { useNotifications } from "@/contexts/NotificationProvider";
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
-import { ic_menu, ic_noti, ic_noti_empty, ic_profile_default_sm, logo_xl } from "@/imageExports";
+import { ic_menu, ic_noti, ic_noti_empty, ic_profile_default_sm } from "@/imageExports";
 import "dotenv/config";
 import Image from "next/image";
 import { useRouter } from "next/router";
