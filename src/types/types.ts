@@ -28,8 +28,6 @@ export const lessonType_trans = {
   [LessonType.REHAB]: { img: ic_health_sm, ko: "재활치료" },
 };
 
-
-
 export enum LessonSubType {
   // SPORTS
   SOCCER = "SOCCER",
@@ -237,4 +235,11 @@ export type User = {
   certificationPresignedUrl?: string | null;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type LSUserData = {
+  user: User;
+  hasProfile: boolean;
+  accessToken: string;
+  refreshToken: string;
 };

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { postLogin } from "@/lib/api/authService";
 import { EMAIL_REGEX, error_class } from "@/types/constants";
-import { Role } from "@/types/types";
+import { LSUserData, Role } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import InputPassword from "@/components/Common/InputPassword";
@@ -90,7 +90,7 @@ function LogIn() {
           }
         }
       }
-      localStorage.setItem("userData", JSON.stringify(userData));
+      localStorage.setItem("userData", JSON.stringify(userData as LSUserData));
     } catch (err) {
       setError({ message: (err as Error).message });
     }

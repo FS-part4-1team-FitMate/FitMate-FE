@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Role, User } from "@/types/types";
+import { LSUserData, Role, User } from "@/types/types";
 import Loading from "@/components/Common/Loading";
 import PopUp, { CustomError } from "@/components/Common/PopUp";
 
@@ -82,7 +82,7 @@ function SNSLogIn({ initialQuery }: PageProps) {
       user.hasProfile = hasProfile;
       localStorage.setItem(
         "userData",
-        JSON.stringify({ accessToken, refreshToken, user, hasProfile }),
+        JSON.stringify({ accessToken, refreshToken, user, hasProfile } as LSUserData),
       );
 
       // 사용자 정보 업데이트

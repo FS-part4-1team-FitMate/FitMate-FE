@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { postProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Profile, Region } from "@/types/types";
+import { Gender, LSUserData, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -79,10 +79,10 @@ function Regist() {
       if (userData && "profileImagePresignedUrl" in userData) {
         await axios.put(userData.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
-      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...user, ...userData, hasProfile: true };
-      setUser((prev) => userDataLS.user);
-      localStorage.setItem("userData", JSON.stringify(userDataLS));
+      const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...userDataLS.user, ...userData, hasProfile: !!userData };
+      setUser(() => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       queryClient.invalidateQueries({
         queryKey: ["user-info", user?.id],
       });

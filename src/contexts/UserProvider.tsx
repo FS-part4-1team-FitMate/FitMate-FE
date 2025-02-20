@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
 import { useEffect } from "react";
-import { Role, User } from "@/types/types";
+import { LSUserData, Role, User } from "@/types/types";
 
 const UserContext = createContext<{
   user: null | User;
@@ -23,8 +23,12 @@ export function UserProvider({ children }: Props) {
     const storedUserData = localStorage.getItem("userData");
     if (storedUserData) {
       try {
-        const userData = JSON.parse(storedUserData);
-        setUser((prev) => ({ hasProfile: userData.hasProfile, ...userData.user }));
+        const userDataLS: LSUserData = JSON.parse(storedUserData);
+        userDataLS.user = {
+          ...userDataLS.user,
+          hasProfile: userDataLS.hasProfile,
+        };
+        setUser(() => userDataLS.user);
         if (
           !user?.hasProfile &&
           router.pathname !== "/user/profile/regist" &&
@@ -38,6 +42,7 @@ export function UserProvider({ children }: Props) {
             router.push(`/trainer/${user?.id}/profile/regist`);
           }
         }
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       } catch (err) {
         console.error(err);
         localStorage.removeItem("userData");
