@@ -1,4 +1,5 @@
 import { ic_profile_default_md, img_non_review_md } from "@/imageExports";
+import { createOrGetChatRoom } from "@/lib/api/chatService";
 import { ChatRoomType } from "@/types/chat";
 import Image from "next/image";
 
@@ -9,6 +10,19 @@ interface ChatListProps {
   }
   
   export default function ChatList({ chatRooms, selectedRoom, onSelectRoom }: ChatListProps) {
+
+    const handleSelectRoom = async (room: ChatRoomType) => {
+      try {
+        const chatRoom = await createOrGetChatRoom(room.participant);
+        
+        console.log("🔄 채팅방 응답:", chatRoom);
+        onSelectRoom(chatRoom);
+      } catch (error) {
+        console.error("🚨 채팅방 불러오기 실패:", error);
+      }
+    };
+    
+
     return (
       <div className="w-1/4 border-r border-gray-300 overflow-y-auto">
         <h2 className="text-xl font-bold p-4">채팅 목록</h2>
@@ -21,7 +35,7 @@ interface ChatListProps {
           chatRooms.map((room) => (
             <button
               key={room.roomId}
-              onClick={() => onSelectRoom(room)}
+              onClick={() => handleSelectRoom(room)}
               className={`flex items-center w-full p-8 gap-5 text-lg ${
                 selectedRoom?.roomId === room.roomId ? "bg-gray-200" : "hover:bg-gray-100"
               }`}
