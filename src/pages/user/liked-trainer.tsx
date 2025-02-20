@@ -5,12 +5,15 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getFavoriteTrainers } from "@/lib/api/trainerService";
 import FavoriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
+import { useUser } from "@/contexts/UserProvider";
 
 export default function LikedTrainer() {
   const observerRef = useRef<HTMLDivElement | null>(null);
+    const user = useUser();
+    const userId = user?.id;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-    ["favoriteTrainers"],
+    ["favoriteTrainers", userId],
     ({ pageParam = 1 }) => getFavoriteTrainers({ page: pageParam, limit: 10 }),
     {
       getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextPage : undefined),
