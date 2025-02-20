@@ -30,8 +30,8 @@ function ChatBot() {
     setMessages((prev) => [...prev, { id: "user", message: data.message }]);
     const response = await postChatBotMsg(data.message);
     setMessages((prev) => [...prev, { id: "bot", message: response.response }]);
-    setInput("");
     setIsSubmitting(false);
+    setInput("");
   };
 
   return (
