@@ -24,16 +24,18 @@ export function UserProvider({ children }: Props) {
     if (storedUserData) {
       try {
         const userData = JSON.parse(storedUserData);
-        setUser({ hasProfile: userData.hasProfile, ...userData.user });
+        setUser((prev) => ({ hasProfile: userData.hasProfile, ...userData.user }));
         if (
-          !userData.hasProfile &&
+          !user?.hasProfile &&
           router.pathname !== "/user/profile/regist" &&
-          router.pathname !== `/trainer/${userData.user.id}/profile/regist`
+          router.pathname !== "/user/profile/edit" &&
+          router.pathname !== `/trainer/${user?.id}/profile/regist` &&
+          router.pathname !== `/trainer/${user?.id}/profile/edit`
         ) {
-          if (userData.user.role === Role.USER) {
+          if (user?.role === Role.USER) {
             router.push("/user/profile/regist");
-          } else if (userData.user.role === Role.TRAINER) {
-            router.push(`/trainer/${userData.user.id}/profile/regist`);
+          } else if (user?.role === Role.TRAINER) {
+            router.push(`/trainer/${user?.id}/profile/regist`);
           }
         }
       } catch (err) {
@@ -44,7 +46,8 @@ export function UserProvider({ children }: Props) {
           router.pathname !== "/" &&
           router.pathname !== "/user/find-trainer" &&
           router.pathname !== "/user/signup" &&
-          router.pathname !== "/trainer/signup"
+          router.pathname !== "/trainer/signup" &&
+          router.pathname !== "/sns-login"
         ) {
           router.push(`/login`);
         }
