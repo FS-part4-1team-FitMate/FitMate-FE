@@ -45,7 +45,6 @@ function LogIn() {
   useEffect(() => {
     if (user?.id) {
       try {
-        const userData = JSON.parse(localStorage.getItem("userData")!);
         if (user.role === Role.USER) {
           if (user.hasProfile) {
             router.push("/user/my-lesson/active-lesson");

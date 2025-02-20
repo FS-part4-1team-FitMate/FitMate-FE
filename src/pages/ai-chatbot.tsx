@@ -1,4 +1,9 @@
+import { useState } from "react";
+
 function ChatBot() {
+  const [messages, setMessages] = useState<{ string }[]>([]);
+  const [input, setInput] = useState<string>("");
+
   return (
     <main className="flex flex-col space-y-6 bg-gray-100 min-h-screen pb-16">
       <div className="bg-white p-10 w-full space-y-6 px-8 pc:px-[20rem]">

@@ -79,6 +79,7 @@ function SNSLogIn({ initialQuery }: PageProps) {
     }
 
     if (accessToken && refreshToken && user) {
+      user.hasProfile = hasProfile;
       localStorage.setItem(
         "userData",
         JSON.stringify({ accessToken, refreshToken, user, hasProfile }),
