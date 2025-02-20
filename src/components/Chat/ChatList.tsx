@@ -14,9 +14,13 @@ interface ChatListProps {
     const handleSelectRoom = async (room: ChatRoomType) => {
       try {
         const chatRoom = await createOrGetChatRoom(room.participant);
-        
-        console.log("🔄 채팅방 응답:", chatRoom);
-        onSelectRoom(chatRoom);
+        onSelectRoom({
+          ...chatRoom,
+          participant: room.participant,
+          participantName: room.participantName,
+          myId: room.myId,
+          isMe: room.isMe,
+        });
       } catch (error) {
         console.error("🚨 채팅방 불러오기 실패:", error);
       }

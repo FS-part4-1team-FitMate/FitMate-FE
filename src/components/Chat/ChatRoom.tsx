@@ -1,10 +1,10 @@
 import InputField from "@/components/Chat/InputField";
 import MessageContainer from "@/components/Chat/MessageContainer";
-import { remove } from "@/lib/api/method";
 import { img_non_review_md } from "@/imageExports";
 import Image from "next/image";
 import { useState } from "react";
 import { ChatRoomType } from "@/types/chat";
+
 
 interface ChatRoomProps {
   selectedRoom: ChatRoomType | null;
@@ -22,19 +22,6 @@ interface ChatRoomProps {
 export default function ChatRoom({ selectedRoom, messageList, onSendMessage, onLeaveRoom }: ChatRoomProps) {
   const [message, setMessage] = useState("");
 
-  console.log("selectedRoom", selectedRoom)
-
-  const handleLeaveRoom = async () => {
-    if (!selectedRoom) return;
-
-    try {
-      await remove(`/chat/leave/${selectedRoom.roomId}`);
-      onLeaveRoom();
-    } catch (error) {
-      console.error("🚨 채팅방 나가기 실패:", error);
-    }
-  };
-
   if (!selectedRoom) {
     return (
       <div className="w-3/4 flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
@@ -48,7 +35,7 @@ export default function ChatRoom({ selectedRoom, messageList, onSendMessage, onL
     <div className="w-3/4 flex flex-col overflow-hidden">
       <div className="p-4 border-b border-gray-300 flex justify-between items-center">
         <h2 className="text-xl font-bold">{selectedRoom.participantName}</h2>
-        <button onClick={handleLeaveRoom} className="px-4 py-2 bg-red-500 text-white rounded-lg">
+        <button onClick={onLeaveRoom} className="px-4 py-2 bg-red-500 text-white rounded-lg">
           채팅방 나가기
         </button>
       </div>
