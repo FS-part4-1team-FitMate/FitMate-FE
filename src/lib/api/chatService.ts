@@ -21,7 +21,7 @@ export async function getChatMessages(roomId: string, page = 1, limit = 20) {
 }
 
 // 🔹 채팅방 생성 (또는 기존 채팅방 반환)
-export async function createOrGetChatRoom(participantId: string) {
+export async function createOrGetChatRoom(participantId: string | undefined) {
   const res = await post("/chat/room", { participantId });
   return res.data;
 }

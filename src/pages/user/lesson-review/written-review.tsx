@@ -5,12 +5,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyReviews } from "@/lib/api/ReviewService";
 import MyReviewCard from "@/components/Cards/MyReviewCard";
 import Pagination from "@/components/Common/Pagination";
+import { useUser } from "@/contexts/UserProvider";
 
 export default function MyReviews() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
+  const user = useUser();
+  const userId = user?.id;
 
-  const { data, isLoading } = useQuery(["myReviews"], getMyReviews);
+  const { data, isLoading } = useQuery(["myReviews", userId], getMyReviews);
 
   if (isLoading) return <p>로딩 중...</p>;
 
