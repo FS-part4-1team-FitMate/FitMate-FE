@@ -123,13 +123,10 @@ function ProfileEdit() {
       delete changedData.updatedAt;
       const userProfile = await patchProfile(user?.id!, changedData);
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
-        await axios.patch(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
+        await axios.put(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
       if (userProfile && "certificationPresignedUrl" in userProfile) {
-        await axios.patch(
-          userProfile.certificationPresignedUrl as string,
-          certificationFileToUpload,
-        );
+        await axios.put(userProfile.certificationPresignedUrl as string, certificationFileToUpload);
       }
       try {
         const userDataLS = JSON.parse(localStorage.getItem("userData")!);
