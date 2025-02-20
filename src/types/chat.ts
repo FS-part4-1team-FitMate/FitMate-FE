@@ -9,8 +9,16 @@ export interface ChatRoomType {
     participant1?: string;
     participant2?: string;
     participant?: string;
+    participant1Profile?: {
+      name: string;
+    }
+    participant2Profile?: {
+      name: string;
+    }
     MyId?: string;
     isMe?: boolean;
+    participantName?: string;
+    MyName?: string;
   }
 
 export interface Message {
