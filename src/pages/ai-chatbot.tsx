@@ -55,7 +55,7 @@ function ChatBot() {
           return (
             <div className="w-full max-w-md pc:max-w-xl tablet:max-w-lg bg-white shadow-md p-6 rounded-b-[1.6rem] rounded-tl-[1.6rem] rounded-none self-end mr-8 pc:mr-[22rem]">
               <div className="space-y-4">
-                <div className="flex flex-col space-y-2">{msg.message}</div>
+                <div className="flex flex-col space-y-2 text-lg">{msg.message}</div>
               </div>
             </div>
           );
@@ -72,7 +72,7 @@ function ChatBot() {
               id="question"
               placeholder="질문을 입력해 주세요."
               onChange={(e) => setInput(e.target.value)}
-              className="bg-blue-300 text-lg text-white"
+              className="bg-blue-300 text-lg text-white placeholder:text-white"
             ></Textarea>
             <Button
               type="submit"
