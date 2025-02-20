@@ -45,6 +45,7 @@ const RoleGuard = () => {
         !commonAccess &&
         !router.pathname.startsWith("/user") &&
         router.pathname !== "/chat" &&
+        router.pathname !== "/ai-chatbot" &&
         router.pathname !== "/noti"
       ) {
         router.push("/no-access");
@@ -54,6 +55,7 @@ const RoleGuard = () => {
         !commonAccess &&
         !router.pathname.startsWith("/trainer") &&
         router.pathname !== "/chat" &&
+        router.pathname !== "/ai-chatbot" &&
         router.pathname !== "/noti"
       ) {
         router.push("/access");
