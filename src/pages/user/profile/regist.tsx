@@ -77,10 +77,7 @@ function Regist() {
       data.certificationCount = 0;
       const userData = await postProfile(data);
       if (userData && "profileImagePresignedUrl" in userData) {
-        const result = await axios.put(
-          userData.profileImagePresignedUrl as string,
-          profileImageFileToUpload,
-        );
+        await axios.put(userData.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
       userDataLS.user = { ...user, ...userData, hasProfile: true };
