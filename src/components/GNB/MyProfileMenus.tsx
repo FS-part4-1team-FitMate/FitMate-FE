@@ -19,7 +19,7 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
       {user && user?.id && user?.hasProfile && (
         <>
           <div className="flex items-center gap-4 w-full py-[10px] px-8">
-            <Image
+            <img
               className="object-cover rounded-full w-[24px] h-[24px]"
               src={
                 profileData?.profileImagePresignedUrl

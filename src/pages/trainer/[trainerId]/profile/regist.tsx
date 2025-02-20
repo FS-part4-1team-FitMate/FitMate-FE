@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { postProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Profile, Region } from "@/types/types";
+import { Gender, LSUserData, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -107,12 +107,20 @@ function Regist() {
       if (userProfile && "certificationPresignedUrl" in userProfile) {
         await axios.put(userProfile.certificationPresignedUrl as string, certificationFileToUpload);
       }
-      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...userDataLS.user, ...userProfile, hasProfile: !!userProfile };
-      setUser(userDataLS.user);
-      localStorage.setItem("userData", JSON.stringify(userDataLS));
+      const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = {
+        ...userDataLS.user,
+        ...userProfile,
+        hasProfile: !!userProfile?.profile.id,
+      };
+      userDataLS.hasProfile = !!userProfile?.profile.id;
+      setUser(() => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       queryClient.invalidateQueries({
-        queryKey: ["profile", user?.id],
+        queryKey: ["user-info", user?.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["trainer-info", user?.id],
       });
       router.push(`/trainer/${user?.id}/profile`);
     } catch (err) {
@@ -242,6 +250,7 @@ function Regist() {
             width={300}
             height={300}
             defImage={img_default_md.src}
+            className="rounded-xl"
           />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">

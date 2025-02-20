@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { postProfile } from "@/lib/api/userService";
 import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, Profile, Region } from "@/types/types";
+import { Gender, LSUserData, LessonType, Profile, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import PopUp from "@/components/Common/PopUp";
@@ -77,17 +77,18 @@ function Regist() {
       data.certificationCount = 0;
       const userData = await postProfile(data);
       if (userData && "profileImagePresignedUrl" in userData) {
-        const result = await axios.put(
-          userData.profileImagePresignedUrl as string,
-          profileImageFileToUpload,
-        );
+        await axios.put(userData.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
-      const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...user, ...userData, hasProfile: true };
-      setUser((prev) => userDataLS.user);
-      localStorage.setItem("userData", JSON.stringify(userDataLS));
+      const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+      userDataLS.user = { ...userDataLS.user, ...userData, hasProfile: !!userData?.profile?.id };
+      userDataLS.hasProfile = !!userData?.profile?.id;
+      setUser(() => userDataLS.user);
+      localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       queryClient.invalidateQueries({
-        queryKey: ["profile", user?.id],
+        queryKey: ["user-info", user?.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["trainer-info", user?.id],
       });
       router.push("/user/profile");
     } catch (err) {

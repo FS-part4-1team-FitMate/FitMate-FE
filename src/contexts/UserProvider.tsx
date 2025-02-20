@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
 import { useEffect } from "react";
-import { Role, User } from "@/types/types";
+import { LSUserData, Role, User } from "@/types/types";
 
 const UserContext = createContext<{
   user: null | User;
@@ -23,19 +23,26 @@ export function UserProvider({ children }: Props) {
     const storedUserData = localStorage.getItem("userData");
     if (storedUserData) {
       try {
-        const userData = JSON.parse(storedUserData);
-        setUser({ hasProfile: userData.hasProfile, ...userData.user });
+        const userDataLS: LSUserData = JSON.parse(storedUserData);
+        userDataLS.user = {
+          ...userDataLS.user,
+          hasProfile: !!userDataLS.user.profile?.id,
+        };
+        userDataLS.hasProfile = !!userDataLS.user.profile?.id;
+        setUser(() => userDataLS.user);
         if (
-          !userData.hasProfile &&
+          !user?.hasProfile &&
+          user?.role === Role.USER &&
           router.pathname !== "/user/profile/regist" &&
-          router.pathname !== `/trainer/${userData.user.id}/profile/regist`
+          router.pathname !== `/trainer/${user?.id}/profile/regist`
         ) {
-          if (userData.user.role === Role.USER) {
+          if (user?.role === Role.USER) {
             router.push("/user/profile/regist");
-          } else if (userData.user.role === Role.TRAINER) {
-            router.push(`/trainer/${userData.user.id}/profile/regist`);
+          } else if (user?.role === Role.TRAINER) {
+            router.push(`/trainer/${user?.id}/profile/regist`);
           }
         }
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       } catch (err) {
         console.error(err);
         localStorage.removeItem("userData");
@@ -44,7 +51,8 @@ export function UserProvider({ children }: Props) {
           router.pathname !== "/" &&
           router.pathname !== "/user/find-trainer" &&
           router.pathname !== "/user/signup" &&
-          router.pathname !== "/trainer/signup"
+          router.pathname !== "/trainer/signup" &&
+          router.pathname !== "/sns-login"
         ) {
           router.push(`/login`);
         }

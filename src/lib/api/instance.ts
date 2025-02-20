@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import "dotenv/config";
 import { useRouter } from "next/router";
+import { LSUserData } from "@/types/types";
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -10,7 +11,7 @@ instance.interceptors.request.use(function (config) {
   const userData = localStorage.getItem("userData");
   if (userData) {
     try {
-      const accessToken = JSON.parse(userData).accessToken;
+      const accessToken = (JSON.parse(userData) as LSUserData).accessToken;
       config.headers.Authorization = `Bearer ${accessToken}`;
     } catch (err) {
       console.error(err);
@@ -35,7 +36,7 @@ instance.interceptors.response.use(
     const userData = localStorage.getItem("userData");
     if (userData && (response?.status === 401 || response?.status === 403)) {
       try {
-        const userDataJSON = JSON.parse(userData);
+        const userDataJSON: LSUserData = JSON.parse(userData);
         if (!originalRequest._retry) {
           const res = await instance.post(
             "/auth/token/refresh",
@@ -44,7 +45,7 @@ instance.interceptors.response.use(
           );
           userDataJSON.accessToken = res.data.accessToken;
           userDataJSON.refreshToken = res.data.refreshToken;
-          localStorage.setItem("userData", JSON.stringify(userDataJSON));
+          localStorage.setItem("userData", JSON.stringify(userDataJSON as LSUserData));
           originalRequest._retry = true;
           return instance(originalRequest);
         } else {

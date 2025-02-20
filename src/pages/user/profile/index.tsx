@@ -35,12 +35,11 @@ function Profile() {
         <div className="flex flex-col justify-normal items-start gap-[16px] w-full mx-auto">
           <h1 className="text-2xl font-bold">나의 프로필</h1>
           <div className="flex flex-col items-center gap-12 w-full py-12 border-b border-t pc:flex-row tablet:flex-row">
-            <Image
+            <img
               src={(profileData.profileImagePresignedUrl as string) || ic_profile_default_md}
               alt="Profile Preview"
               width={150}
               height={150}
-              priority
               className="border-2 border-blue-300 rounded-full object-cover"
             />
             <div className="flex flex-col gap-4 w-full border-t pc:border-t-0 tablet:border-t-0">

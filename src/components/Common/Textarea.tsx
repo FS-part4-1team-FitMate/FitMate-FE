@@ -17,7 +17,7 @@ function Textarea({ id, label, className, register, placeholder, onChange }: Pro
         {label}
       </label>
       <textarea
-        className={`focus:outline focus:outline-blue-300 text-md font-regular w-full rounded-xl p-[5px] border-[1px] border-solid border-gray-300 h-[160px] overflow-y-auto ${className}`}
+        className={`${className} focus:outline focus:outline-blue-300 text-md font-regular w-full rounded-xl p-[5px] border-[1px] border-solid border-gray-300 h-[160px] overflow-y-auto`}
         {...register}
         id={id}
         placeholder={placeholder}

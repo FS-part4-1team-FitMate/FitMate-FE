@@ -9,8 +9,8 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetUser } from "@/lib/api/queries/user";
 import { patchProfile } from "@/lib/api/userService";
-import { PHONE_REGEX, error_class, note_class, profile_menu } from "@/types/constants";
-import { Gender, LessonType, ProfileEdittable, Region } from "@/types/types";
+import { PHONE_REGEX, error_class, profile_menu } from "@/types/constants";
+import { Gender, LSUserData, LessonType, ProfileEdittable, Region } from "@/types/types";
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import Loading from "@/components/Common/Loading";
@@ -71,14 +71,23 @@ function ProfileEdit() {
   const { data: profileData, isLoading, isError } = useGetUser(user?.id!);
 
   useEffect(() => {
-    if (user && profileData) {
-      setUser({
-        ...user,
-        ...profileData,
-        hasProfile: !!profileData,
-      });
-      reset(profileData.profile);
-      setSelectedRegion(profileData.profile.region);
+    try {
+      const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+      if (user && profileData) {
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...profileData,
+          hasProfile: !!profileData?.profile.id,
+        };
+        userDataLS.hasProfile = !!profileData?.profile.id;
+        setUser(() => userDataLS.user);
+        reset(profileData.profile);
+        setSelectedRegion(profileData.profile.region);
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
+      }
+    } catch (err) {
+      console.error(err);
+      setError({ message: (err as Error).message });
     }
   }, [profileData]);
 
@@ -129,12 +138,20 @@ function ProfileEdit() {
         await axios.put(userProfile.certificationPresignedUrl as string, certificationFileToUpload);
       }
       try {
-        const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...userDataLS.user, ...userProfile, hasProfile: !!userProfile };
-        setUser((prev) => ({ hasProfile: userDataLS.hasProfile, ...userDataLS.user }));
-        localStorage.setItem("userData", JSON.stringify(userDataLS));
+        const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...userProfile,
+          hasProfile: !!userProfile?.user?.profile?.id,
+        };
+        userDataLS.hasProfile = !!userProfile?.user?.profile?.id;
+        setUser(() => userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
         queryClient.invalidateQueries({
-          queryKey: ["profile", user?.id],
+          queryKey: ["user-info", user?.id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["trainer-info", user?.id],
         });
         router.push(`/trainer/${user?.id}/profile`);
       } catch (err) {
@@ -286,6 +303,7 @@ function ProfileEdit() {
                 ? profileData.certificationPresignedUrl
                 : img_default_md.src
             }
+            className="rounded-xl"
           />
         </div>
         <div className="flex flex-col justify-normal items-start gap-[16px] w-[384px] max-w-full mx-auto pc:ml-[16px] p-[4px] my-[24px]">
