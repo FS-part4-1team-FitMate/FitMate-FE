@@ -110,7 +110,7 @@ function GNB() {
                   className="cursor-pointer flex justify-end items-center gap-[8px]"
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 >
-                  <Image
+                  <img
                     className="object-cover rounded-full w-[24px] h-[24px]"
                     src={
                       profileData?.profileImagePresignedUrl
@@ -171,7 +171,7 @@ function GNB() {
                 </div>
               )}
               <div ref={refMyProfile} className="relative cursor-pointer">
-                <Image
+                <img
                   className="object-cover rounded-full w-[24px] h-[24px]"
                   src={
                     profileData?.profileImagePresignedUrl
