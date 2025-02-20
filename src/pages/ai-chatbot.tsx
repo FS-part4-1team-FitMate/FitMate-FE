@@ -64,18 +64,15 @@ function ChatBot() {
       <div className="w-full max-w-md pc:max-w-xl tablet:max-w-lg bg-white shadow-md p-6 rounded-b-[1.6rem] rounded-tl-[1.6rem] rounded-none self-end mr-8 pc:mr-[22rem]">
         <div className="space-y-4">
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-2">
-            <Textarea
-              label=""
-              register={register("message", {
+            <textarea
+              {...register("message", {
                 required: "질문을 입력해 주세요.",
               })}
-              id="question"
               placeholder="질문을 입력해 주세요."
               onChange={(e) => setInput(e.target.value)}
+              value={input}
               className="bg-blue-300 text-lg text-white placeholder:text-white"
-            >
-              {input}
-            </Textarea>
+            ></textarea>
             <Button
               type="submit"
               className="w-full mt-4 bg-blue-300 text-lg text-white py-3 rounded-lg hover:bg-blue-600"

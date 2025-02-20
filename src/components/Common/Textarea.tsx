@@ -8,10 +8,9 @@ interface Props {
   register?: UseFormRegisterReturn;
   placeholder: string;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
-  children: React.ReactNode;
 }
 
-function Textarea({ id, label, className, register, placeholder, onChange, children }: Props) {
+function Textarea({ id, label, className, register, placeholder, onChange }: Props) {
   return (
     <div className={`flex flex-col w-full gap-[12px]`}>
       <label className="w-full text-lg font-semibold" htmlFor={id}>
@@ -23,9 +22,7 @@ function Textarea({ id, label, className, register, placeholder, onChange, child
         id={id}
         placeholder={placeholder}
         onChange={onChange}
-      >
-        {children}
-      </textarea>
+      ></textarea>
     </div>
   );
 }

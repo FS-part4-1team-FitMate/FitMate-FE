@@ -79,7 +79,7 @@ export default function ReviewModal({ review, closeModal }: ReviewModalProps) {
         label="상세 후기를 작성해 주세요"
         placeholder="최소 10자 이상 입력해 주세요"
         onChange={(e) => setContent(e.target.value)}
-      />
+      ></Textarea>
     </ModalContainer>
   );
 }
