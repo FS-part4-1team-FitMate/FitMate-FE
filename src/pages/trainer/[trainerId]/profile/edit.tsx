@@ -74,7 +74,12 @@ function ProfileEdit() {
     try {
       const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
       if (user && profileData) {
-        userDataLS.user = { ...userDataLS.user, ...profileData, hasProfile: !!profileData };
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...profileData,
+          hasProfile: !!profileData?.profile.id,
+        };
+        userDataLS.hasProfile = !!profileData?.profile.id;
         setUser(() => userDataLS.user);
         reset(profileData.profile);
         setSelectedRegion(profileData.profile.region);
@@ -134,7 +139,12 @@ function ProfileEdit() {
       }
       try {
         const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
-        userDataLS.user = { ...userDataLS.user, ...userProfile, hasProfile: !!userProfile };
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...userProfile,
+          hasProfile: !!userProfile?.user?.profile?.id,
+        };
+        userDataLS.hasProfile = !!userProfile?.user?.profile?.id;
         setUser(() => userDataLS.user);
         localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
         queryClient.invalidateQueries({

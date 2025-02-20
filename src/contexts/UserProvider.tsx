@@ -26,15 +26,15 @@ export function UserProvider({ children }: Props) {
         const userDataLS: LSUserData = JSON.parse(storedUserData);
         userDataLS.user = {
           ...userDataLS.user,
-          hasProfile: userDataLS.hasProfile,
+          hasProfile: !!userDataLS.user.profile?.id,
         };
+        userDataLS.hasProfile = !!userDataLS.user.profile?.id;
         setUser(() => userDataLS.user);
         if (
           !user?.hasProfile &&
+          user?.role === Role.USER &&
           router.pathname !== "/user/profile/regist" &&
-          router.pathname !== "/user/profile/edit" &&
-          router.pathname !== `/trainer/${user?.id}/profile/regist` &&
-          router.pathname !== `/trainer/${user?.id}/profile/edit`
+          router.pathname !== `/trainer/${user?.id}/profile/regist`
         ) {
           if (user?.role === Role.USER) {
             router.push("/user/profile/regist");

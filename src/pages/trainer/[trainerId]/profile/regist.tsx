@@ -108,7 +108,12 @@ function Regist() {
         await axios.put(userProfile.certificationPresignedUrl as string, certificationFileToUpload);
       }
       const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...userDataLS.user, ...userProfile, hasProfile: !!userProfile };
+      userDataLS.user = {
+        ...userDataLS.user,
+        ...userProfile,
+        hasProfile: !!userProfile?.profile.id,
+      };
+      userDataLS.hasProfile = !!userProfile?.profile.id;
       setUser(() => userDataLS.user);
       localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       queryClient.invalidateQueries({

@@ -80,7 +80,8 @@ function Regist() {
         await axios.put(userData.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
       const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...userDataLS.user, ...userData, hasProfile: !!userData };
+      userDataLS.user = { ...userDataLS.user, ...userData, hasProfile: !!userData?.profile?.id };
+      userDataLS.hasProfile = !!userData?.profile?.id;
       setUser(() => userDataLS.user);
       localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       queryClient.invalidateQueries({
