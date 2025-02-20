@@ -35,8 +35,9 @@ const RoleGuard = () => {
 
     if (!user) {
       if (!commonAccess && isLoggedOut) {
-        router.push("/login");
-        toast.error("로그인이 필요합니다!");
+        router.push("/login").then(() => {
+          toast.error("로그인이 필요합니다!");
+        });
       }
     } else {
       if (
