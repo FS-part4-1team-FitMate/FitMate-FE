@@ -111,7 +111,10 @@ function ProfileEdit() {
       setUser((prev) => userDataLS.user);
       localStorage.setItem("userData", JSON.stringify(userDataLS));
       queryClient.invalidateQueries({
-        queryKey: ["profile", user?.id],
+        queryKey: ["user-info", user?.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["trainer-info", user?.id],
       });
       router.push("/user/profile");
     } catch (err) {
