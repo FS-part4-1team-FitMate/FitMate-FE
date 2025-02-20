@@ -1,9 +1,9 @@
 import { useSetUser } from "@/contexts/UserProvider";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Role } from "@/types/types";
+import { Role, User } from "@/types/types";
 import Loading from "@/components/Common/Loading";
 import PopUp, { CustomError } from "@/components/Common/PopUp";
 
@@ -34,9 +34,9 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (context)
       initialQuery: {
         accessToken: accessToken as string,
         refreshToken: refreshToken as string,
-        user: user as string,
+        user: decodeURIComponent(user as string),
         hasProfile: hasProfile as string,
-        message: message as string,
+        message: decodeURIComponent(message as string),
       },
     },
   };
@@ -48,27 +48,9 @@ function SNSLogIn({ initialQuery }: PageProps) {
   const [error, setError] = useState<CustomError>(null);
 
   const message = initialQuery?.message;
-  if (message) {
-    setError({
-      message: decodeURIComponent(message),
-      onCancel: () => {
-        router.push(`/login`);
-      },
-    });
-    toast.error(decodeURIComponent(message));
-    setTimeout(() => {
-      router.replace("/login");
-    }, 7000);
-    return (
-      <>
-        <Loading />
-        <PopUp error={error} setError={setError} onlyCancel={true} />
-      </>
-    );
-  }
   const accessToken = initialQuery?.accessToken;
   const refreshToken = initialQuery?.refreshToken;
-  let user;
+  let user: User;
   try {
     user = JSON.parse(initialQuery?.user!);
   } catch (err) {
@@ -80,31 +62,48 @@ function SNSLogIn({ initialQuery }: PageProps) {
     hasProfile = true;
   }
 
-  if (accessToken && refreshToken && user) {
-    localStorage.setItem(
-      "userData",
-      JSON.stringify({ accessToken, refreshToken, user, hasProfile }),
-    );
+  useEffect(() => {
+    if (message) {
+      toast.error(message);
+      const toLoginSetTimeout = setTimeout(() => {
+        router.replace("/login");
+      }, 7000);
+      setError({
+        message,
+        onCancel: () => {
+          clearTimeout(toLoginSetTimeout);
+          router.push(`/login`);
+        },
+      });
+      return;
+    }
 
-    // 사용자 정보 업데이트
-    setUser({ ...user, hasProfile });
-    toast.success("로그인에 성공하였습니다.");
+    if (accessToken && refreshToken && user) {
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({ accessToken, refreshToken, user, hasProfile }),
+      );
 
-    // 권한에 따라 페이지 이동
-    if (user.role === Role.USER) {
-      if (user.hasProfile) {
-        router.replace("/user/my-lesson/active-lesson");
-      } else {
-        router.replace("/user/profile/regist");
-      }
-    } else if (user.role === Role.TRAINER) {
-      if (user.hasProfile) {
-        router.replace("/trainer/received-request");
-      } else {
-        router.replace(`/trainer/${user.id}/profile/regist`);
+      // 사용자 정보 업데이트
+      setUser({ ...user, hasProfile });
+      toast.success("로그인에 성공하였습니다.");
+
+      // 권한에 따라 페이지 이동
+      if (user.role === Role.USER) {
+        if (user.hasProfile) {
+          router.replace("/user/my-lesson/active-lesson");
+        } else {
+          router.replace("/user/profile/regist");
+        }
+      } else if (user.role === Role.TRAINER) {
+        if (user.hasProfile) {
+          router.replace("/trainer/received-request");
+        } else {
+          router.replace(`/trainer/${user.id}/profile/regist`);
+        }
       }
     }
-  }
+  }, []);
 
   return (
     <>

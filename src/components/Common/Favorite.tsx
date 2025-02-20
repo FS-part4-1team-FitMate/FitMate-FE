@@ -2,9 +2,9 @@ import { useUser } from "@/contexts/UserProvider";
 import { ic_like_active_sm, ic_like_inactive_sm } from "@/imageExports";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useGetFavoriteInfo } from "@/lib/api/queries/trainer";
-import { getFavorite, toggleFavorite } from "@/lib/api/userService";
+import { toggleFavorite } from "@/lib/api/userService";
 
 interface Props {
   trainerId: string;

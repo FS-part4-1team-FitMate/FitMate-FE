@@ -8,9 +8,10 @@ interface Props {
   className?: string;
   register?: UseFormRegisterReturn;
   placeholder: string;
+  disabled?: boolean;
 }
 
-function Input({ id, label, type, className, register, placeholder }: Props) {
+function Input({ id, label, type, className, register, placeholder, disabled = false }: Props) {
   return (
     <div className={profile_menu}>
       <label className="w-full text-lg font-semibold" htmlFor={id}>
@@ -22,6 +23,7 @@ function Input({ id, label, type, className, register, placeholder }: Props) {
         type={type}
         id={id}
         placeholder={placeholder}
+        disabled={disabled}
       />
     </div>
   );

@@ -16,32 +16,36 @@ interface MyProfileMenusProps {
 function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusProps) {
   return (
     <div className="absolute top-[30px] right-0 w-[20rem] bg-white border border-gray-300 rounded-xl z-10 shadow-card">
-      <div className="flex items-center gap-4 w-full py-[10px] px-8">
-        <Image
-          className="object-cover rounded-full w-[24px] h-[24px]"
-          src={
-            profileData?.profileImagePresignedUrl
-              ? profileData.profileImagePresignedUrl
-              : ic_profile_default_sm
-          }
-          alt="Profile Image"
-          width={24}
-          height={24}
-        />
-        <h1 className="text-2lg font-semibold">{user?.nickname}</h1>
-      </div>
-      <div className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer">
-        <Link
-          href={user?.role === Role.TRAINER ? `/trainer/${user?.id}/profile` : "/user/profile"}
-          className={
-            router.pathname.endsWith("profile")
-              ? `${active_class} flex justify-center items-center gap-[10px]`
-              : "flex justify-center items-center gap-[10px]"
-          }
-        >
-          <span>마이페이지</span>
-        </Link>
-      </div>
+      {user && user?.id && user?.hasProfile && (
+        <>
+          <div className="flex items-center gap-4 w-full py-[10px] px-8">
+            <Image
+              className="object-cover rounded-full w-[24px] h-[24px]"
+              src={
+                profileData?.profileImagePresignedUrl
+                  ? profileData.profileImagePresignedUrl
+                  : ic_profile_default_sm
+              }
+              alt="Profile Image"
+              width={24}
+              height={24}
+            />
+            <h1 className="text-2lg font-semibold">{user?.nickname}</h1>
+          </div>
+          <div className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer">
+            <Link
+              href={user?.role === Role.TRAINER ? `/trainer/${user?.id}/profile` : "/user/profile"}
+              className={
+                router.pathname.endsWith("profile")
+                  ? `${active_class} flex justify-center items-center gap-[10px]`
+                  : "flex justify-center items-center gap-[10px]"
+              }
+            >
+              <span>마이페이지</span>
+            </Link>
+          </div>
+        </>
+      )}
       <div
         className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer"
         onClick={() => {
@@ -70,7 +74,7 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
           프로필&nbsp;{user?.hasProfile ? "수정" : "등록"}
         </div>
       </div>
-      {user.role === Role.USER && (
+      {user && user?.id && user?.hasProfile && user.role === Role.USER && (
         <div
           className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer"
           onClick={() => {
@@ -82,7 +86,7 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
           </div>
         </div>
       )}
-      {user.role === Role.USER && (
+      {user && user?.id && user?.hasProfile && user.role === Role.USER && (
         <div
           className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer"
           onClick={() => {

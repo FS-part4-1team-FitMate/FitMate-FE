@@ -69,6 +69,7 @@ function ProfileEdit() {
       setUser({
         ...user,
         ...profileData,
+        hasProfile: !!profileData,
       });
       reset(profileData.profile);
       setSelectedRegion(profileData.profile.region);
@@ -101,15 +102,12 @@ function ProfileEdit() {
     }
     try {
       delete changedData.updatedAt;
-      const userData = await patchProfile(user?.id!, changedData);
-      if (userData && "profileImagePresignedUrl" in userData) {
-        const result = await axios.put(
-          userData.profileImagePresignedUrl as string,
-          profileImageFileToUpload,
-        );
+      const userProfile = await patchProfile(user?.id!, changedData);
+      if (userProfile && "profileImagePresignedUrl" in userProfile) {
+        await axios.put(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
       const userDataLS = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = { ...user, ...userData };
+      userDataLS.user = { ...userDataLS.user, ...userProfile, hasProfile: !!userProfile };
       setUser((prev) => userDataLS.user);
       localStorage.setItem("userData", JSON.stringify(userDataLS));
       queryClient.invalidateQueries({

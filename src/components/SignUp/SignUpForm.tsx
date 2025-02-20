@@ -81,7 +81,7 @@ function SignUpForm({ role }: Props) {
         setError({ message: userData.message });
       }
       if (userData && "user" in userData) {
-        setUser(userData.user);
+        setUser({ ...userData.user, hasProfile: false });
         localStorage.setItem("userData", JSON.stringify(userData));
         if (userData.user.role === Role.USER) {
           router.push(`/user/profile/regist`);
@@ -153,11 +153,14 @@ function SignUpForm({ role }: Props) {
               },
             })}
             placeholder="이메일을 입력해 주세요."
+            disabled={!!emailVerified}
           />
           {errors.email && <p className={error_class}>{errors.email.message}</p>}
         </div>
         <Button
           className="inline-block text-md bg-blue-300 text-white w-fit py-2 px-4 rounded-full"
+          type="button"
+          disabled={!!emailVerified}
           onClick={() => {
             const msg = sendEmailVeriKey(watch("email"));
             setEmailVeriKeyOpen(true);
@@ -190,6 +193,7 @@ function SignUpForm({ role }: Props) {
                 <Button
                   className="inline-block text-md bg-blue-300 text-white py-1 px-4 rounded-full"
                   type="button"
+                  disabled={!!emailVerified}
                   onClick={async () => {
                     const res = await checkEmailVeriKey({
                       email: watch("email"),
