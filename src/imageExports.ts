@@ -49,6 +49,7 @@ import ic_menu_md from "@/assets/ic/ic_menu_md.svg";
 import ic_menu_sm from "@/assets/ic/ic_menu_sm.svg";
 import ic_naver_md from "@/assets/ic/ic_naver_md.svg";
 import ic_naver_sm from "@/assets/ic/ic_naver_sm.svg";
+import ic_no_access from "@/assets/ic/ic_no_access.svg";
 import ic_noti from "@/assets/ic/ic_noti.svg";
 import ic_noti_empty from "@/assets/ic/ic_noti_empty.svg";
 import ic_profile_default_sm from "@/assets/ic/ic_profile-default-sm.svg";
@@ -107,6 +108,7 @@ import share_ic_kakao_xs from "@/assets/share/ic_kakao_xs.svg";
 export {
   img_404,
   ic_chat,
+  ic_no_access,
   ic_fitness,
   ic_sports,
   ic_rehab,

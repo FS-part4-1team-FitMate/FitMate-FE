@@ -1,4 +1,5 @@
 import { ic_chat } from "@/imageExports";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -77,6 +78,9 @@ export default function DetailPendingRequest() {
 
   return (
     <div className="flex flex-col gap-[1.6rem] mx-auto pb-40 pc:gap-[2.4rem] pc:max-w-[140rem]">
+      <Head>
+        <title>견적 상세 정보 | 핏메이트</title>
+      </Head>
       <Title title="견적 상세" />
       <div className="flex flex-col w-full m-auto px-8 pc:flex-row pc:justify-between">
         <div className="flex flex-col gap-[2.4rem] w-full pc:pr-16 pc:gap-16">
@@ -89,6 +93,11 @@ export default function DetailPendingRequest() {
           <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
             <p className="text-lg font-semibold pc:text-2xl">견적가</p>
             <p className="text-xl font-bold pc:text-3xl">{formatPrice(quoteInfo?.price)}원</p>
+          </div>
+          <HorizontalLine width="100%" />
+          <div className="flex flex-col gap-[1.6rem] pc:gap-[3.2rem]">
+            <p className="text-lg font-semibold pc:text-2xl">견적 메시지</p>
+            <p className="text-lg pc:text-xl">{quoteInfo.message}</p>
           </div>
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">

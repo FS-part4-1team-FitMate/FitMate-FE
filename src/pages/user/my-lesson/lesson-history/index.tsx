@@ -1,4 +1,5 @@
 import { useUser } from "@/contexts/UserProvider";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
@@ -18,6 +19,7 @@ export default function LessonHistory() {
   const tabs = [
     { label: "대기중인 레슨", value: "PENDING" },
     { label: "만료된 레슨", value: "EXPIRED" },
+    { label: "취소된 레슨", value: "CANCELED" },
   ];
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function LessonHistory() {
   };
 
   const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
-
+  console.log(myLessonList);
   if (isLoading) return <Loading />;
   if (isError) return toast.error("레슨 내역을 불러오는 중 에러가 발생했어요! 😢");
 
@@ -80,6 +82,9 @@ export default function LessonHistory() {
 
   return (
     <div className="flex flex-col h-screen bg-bg-100 pc:flex-row">
+      <Head>
+        <title>레슨 내역 | 핏메이트</title>
+      </Head>
       <div className="flex flex-row items-start gap-4 border-b border-line-100 bg-white shadow-card pc:flex-col pc:p-8 pc:border-r">
         {tabs.map((tab) => (
           <Button

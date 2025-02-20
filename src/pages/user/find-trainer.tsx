@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -71,6 +72,9 @@ export default function FindTrainer() {
 
   return (
     <div className="flex flex-col m-auto pb-16 pc:max-w-[140rem] tablet:max-w-[74.5rem] mobile:max-w-[37.5rem]">
+      <Head>
+        <title>강사님 찾기 | 핏메이트</title>
+      </Head>
       <div className="hidden pc:block">
         <Title title="강사님 찾기" />
       </div>

@@ -48,7 +48,7 @@ function LogIn() {
         const userData = JSON.parse(localStorage.getItem("userData")!);
         if (user.role === Role.USER) {
           if (user.hasProfile) {
-            router.push("/user/my-lesson/active-lesson");
+            router.push("/user/my-lesson/lesson-history");
           } else {
             router.push("/user/profile/regist");
           }

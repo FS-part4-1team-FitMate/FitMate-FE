@@ -2,6 +2,7 @@ import { useUser } from "@/contexts/UserProvider";
 import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
 import { reverse } from "dns";
+import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -85,12 +86,15 @@ export default function ReceivedRequest() {
   });
 
   return (
-    <div className="flex flex-col gap-[2.4rem] max-w-[192rem] m-auto pb-40">
+    <div className="flex flex-col gap-[2.4rem] m-auto pb-40 pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]">
+      <Head>
+        <title>받은 요청 | 핏메이트</title>
+      </Head>
       <Title title="받은 요청" />
       <div
         className={clsx(
           "flex flex-col w-full mx-auto py-[2.4rem] px-8",
-          "pc:flex-row pc:gap-[10rem] pc:max-w-[140rem] tablet:max-w-[74.4rem] mobile:max-w-[37.5rem]",
+          "pc:flex-row pc:gap-[10rem]",
         )}
       >
         <div className="flex flex-col gap-[4.6rem]">

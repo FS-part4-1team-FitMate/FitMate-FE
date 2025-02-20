@@ -15,6 +15,7 @@ export interface Trainer {
   nickname: string;
   email: string;
   profile: {
+    name: string | null;
     profileImage: string | null;
     intro: string;
     lessonType: LessonType[];

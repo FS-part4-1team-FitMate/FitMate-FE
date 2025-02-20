@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import clsx from "clsx";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetMyLessonList } from "@/lib/api/queries/lesson";
@@ -29,6 +30,9 @@ export default function ActiveLesson() {
 
   return (
     <>
+      <Head>
+        <title>진행 중인 레슨 | 핏메이트</title>
+      </Head>
       {activeLesson.length > 0 ? (
         <div className="flex flex-col max-w-[192rem] h-screen m-auto py-16 px-4 bg-bg-100 pc:py-[6.4rem] pc:px-8">
           {activeLesson.map((lesson) => (

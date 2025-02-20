@@ -1,4 +1,5 @@
 import { useUser } from "@/contexts/UserProvider";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroller";
@@ -31,6 +32,9 @@ export default function PastLesson() {
 
   return (
     <>
+      <Head>
+        <title>받았던 레슨 | 핏메이트</title>
+      </Head>
       {pastList.length > 0 ? (
         <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
           <div className="flex flex-col gap-16 max-w-[192rem] m-auto py-16 bg-bg-100 pc:py-[6.4rem] pc:px-16 tablet:px-16 mobile:px-0">

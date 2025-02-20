@@ -32,7 +32,7 @@ export default function FindTrainerCard({
         </div>
         <p className="text-md font-semibold pc:text-2xl">{trainer?.profile?.intro}</p>
         <TrainerInfo
-          name={trainer?.nickname}
+          name={trainer?.profile.name}
           rating={trainer?.profile?.rating || 0}
           reviewCount={trainer?.profile?.reviewCount || 0}
           experience={trainer?.profile?.experience || 0}
