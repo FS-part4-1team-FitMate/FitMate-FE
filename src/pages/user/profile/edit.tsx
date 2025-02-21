@@ -118,22 +118,29 @@ function ProfileEdit() {
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
         await axios.put(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
-      const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = {
-        ...userDataLS.user,
-        ...userProfile,
-        hasProfile: !!userProfile?.profile?.id,
-      };
-      userDataLS.hasProfile = !!userProfile?.profile?.id;
-      setUser(() => userDataLS.user);
-      localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
-      queryClient.invalidateQueries({
-        queryKey: ["user-info", user?.id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["trainer-info", user?.id],
-      });
-      router.push("/user/profile");
+      try {
+        const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...userProfile,
+          hasProfile: !!userProfile?.profile?.id,
+        };
+        userDataLS.hasProfile = !!userProfile?.profile?.id;
+        setUser(() => userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
+        queryClient.invalidateQueries({
+          queryKey: ["user-info", user?.id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["trainer-info", user?.id],
+        });
+        router.push("/user/profile");
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("userData");
+        setUser(null);
+        router.push(`/login`);
+      }
     } catch (err) {
       setError({ message: (err as Error).message });
     }
