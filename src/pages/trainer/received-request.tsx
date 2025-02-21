@@ -1,7 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
-import { reverse } from "dns";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -79,10 +78,12 @@ export default function ReceivedRequest() {
   const receivedList = data?.pages.flatMap((page) => page.list) ?? [];
   const filteredList = receivedList?.filter((lesson) => {
     if (lesson.isDirectQuote) {
-      lesson.directQuoteRequests?.filter((request) => {
-        return request.status !== "REJECTED";
-      });
-    } else return true;
+      const validRequests = lesson.directQuoteRequests?.filter(
+        (request) => request.status !== "REJECTED",
+      );
+      return validRequests?.length > 0;
+    }
+    return true;
   });
 
   return (
