@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useGetUser } from "@/lib/api/queries/user";
 import formatDate from "@/lib/utils/formatDate";
 import formatPrice from "@/lib/utils/formatPrice";
 import { Quote } from "@/types/quote";
@@ -9,13 +10,10 @@ import LessonInfo from "../Common/Card/LessonInfo";
 import QuotePrice from "../Common/Card/QuotePrice";
 import { HorizontalLine } from "../Common/Line";
 
-/**
- *
- * @TODO replace any
- */
-
 export default function SentRequestCard({ item }: { item: Quote }) {
   const lessonRequest = item.lessonRequest;
+  const { data: userData } = useGetUser(lessonRequest?.userId as string);
+
   return (
     <CardContainer width="100%" gap="1.6rem">
       <Link href={`/trainer/managing-request/sent-request/${item.lessonRequestId}`}>
@@ -23,7 +21,7 @@ export default function SentRequestCard({ item }: { item: Quote }) {
           <ChipLessonType lessonType={lessonRequest?.lessonType as LessonType} />
         </div>
         <div className="flex flex-col gap-[1.8rem] py-[1.6rem] px-[1.8rem]">
-          <p className="text-xl font-semibold">{lessonRequest?.user?.nickname} 고객님</p>
+          <p className="text-xl font-semibold">{userData?.profile.name} 고객님</p>
           <HorizontalLine width="100%" />
           <LessonInfo
             startDate={lessonRequest?.startDate ? formatDate(lessonRequest.startDate) : "날짜 없음"}
