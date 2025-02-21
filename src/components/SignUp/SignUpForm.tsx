@@ -13,7 +13,7 @@ import {
   sendEmailVeriKey,
 } from "@/lib/api/authService";
 import { EMAIL_REGEX, PWD_REGEX, error_class } from "@/types/constants";
-import { Role } from "@/types/types";
+import { LSUserData, Role } from "@/types/types";
 import PopUp from "@/components/Common/PopUp";
 import Button from "../Common/Button";
 import Input from "../Common/Input";
@@ -82,7 +82,7 @@ function SignUpForm({ role }: Props) {
       }
       if (userData && "user" in userData) {
         setUser({ ...userData.user, hasProfile: false });
-        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("userData", JSON.stringify(userData as LSUserData));
         if (userData.user.role === Role.USER) {
           router.push(`/user/profile/regist`);
         } else if (userData.user.role === Role.TRAINER) {

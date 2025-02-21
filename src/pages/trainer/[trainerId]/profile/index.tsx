@@ -99,7 +99,7 @@ function Profile({ initialQuery }: PageProps) {
           기본 정보
         </p>
         <div className="flex gap-[16px] mb-[12px]">
-          <Image
+          <img
             src={
               trainerProfile?.profileImagePresignedUrl
                 ? trainerProfile.profileImagePresignedUrl
@@ -175,7 +175,7 @@ function Profile({ initialQuery }: PageProps) {
         <div className="w-fit my-4 px-4 border border-blue-300 rounded-full text-blue-300 text-lg font-bold bg-blue-100">
           자격증
         </div>
-        <Image
+        <img
           src={
             trainerProfile?.certificationPresignedUrl
               ? trainerProfile.certificationPresignedUrl

@@ -1,13 +1,15 @@
 import { useNotifications } from "@/contexts/NotificationProvider";
 import { useSetUser, useUser } from "@/contexts/UserProvider";
 import { Device, useViewport } from "@/contexts/ViewportProvider";
-import { ic_menu, ic_noti, ic_noti_empty, ic_profile_default_sm, logo_xl } from "@/imageExports";
+import { ic_menu, ic_noti, ic_noti_empty, ic_profile_default_sm } from "@/imageExports";
 import "dotenv/config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useGetNotiList, useReadNotiMutation } from "@/lib/api/queries/notification";
 import { useGetUser } from "@/lib/api/queries/user";
+import { LSUserData } from "@/types/types";
+import PopUp, { CustomError } from "../Common/PopUp";
 import LogInButton from "./LogInButton";
 import Logo from "./Logo";
 import Menus from "./Menus";
@@ -25,17 +27,16 @@ function GNB() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [notiIsOpen, setNotiIsOpen] = useState(false);
   const [myProfileIsOpen, setMyProfileIsOpen] = useState(false);
-  const { data: profileData, isLoading, isError } = useGetUser(user?.id!);
+  const { data: profileData } = useGetUser(user?.id!);
   const {
     data: notiData,
     fetchNextPage: fetchNextNotiPage,
     hasNextPage: hasNextNotiPage,
-    isLoading: isNotiLoading,
-    isError: isNotiError,
   } = useGetNotiList(user?.id!, { page: 1, limit: 5, order: "created_at", sort: "desc" });
   const notiContext = useNotifications();
   const readNotiMutation = useReadNotiMutation(notiContext);
   const [hasNoti, setHasNoti] = useState<boolean>(true);
+  const [error, setError] = useState<CustomError>(null);
 
   const handleOutsideClick = (e: MouseEvent) => {
     if (refMyProfile.current && !refMyProfile.current.contains(e.target as Node)) {
@@ -57,11 +58,21 @@ function GNB() {
 
   useEffect(() => {
     if (user && profileData) {
-      setUser({
-        ...user,
-        ...profileData,
-        hasProfile: !!profileData.profile.id,
-      });
+      try {
+        const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...profileData,
+          hasProfile: !!profileData?.profile.id,
+        };
+        setUser(() => userDataLS.user);
+        userDataLS.hasProfile = !!profileData?.profile.id;
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
+        router.replace(router.asPath);
+      } catch (err) {
+        console.error(err);
+        setError({ message: (err as Error).message });
+      }
     }
   }, [profileData]);
 
@@ -75,6 +86,7 @@ function GNB() {
   if (viewport.device === Device.PC || viewport.device === Device.TABLET) {
     return (
       <header className="bg-white text-slate-950 flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100 pc:px-[200px]">
+        <PopUp error={error} setError={setError} onlyCancel={true} />
         <div className="flex justify-start items-center gap-[16px]">
           <Logo />
           <ul className="flex justify-start items-center gap-[16px] text-lg">
@@ -110,7 +122,7 @@ function GNB() {
                   className="cursor-pointer flex justify-end items-center gap-[8px]"
                   onClick={() => setMyProfileIsOpen((prev) => !prev)}
                 >
-                  <Image
+                  <img
                     className="object-cover rounded-full w-[24px] h-[24px]"
                     src={
                       profileData?.profileImagePresignedUrl
@@ -143,6 +155,7 @@ function GNB() {
 
   return (
     <header className="bg-white text-slate-950 flex justify-between items-center p-[8px] border-b-[1px] border-solid border-line-100">
+      <PopUp error={error} setError={setError} onlyCancel={true} />
       <div className="flex justify-start items-center">
         <Logo />
       </div>
@@ -171,7 +184,7 @@ function GNB() {
                 </div>
               )}
               <div ref={refMyProfile} className="relative cursor-pointer">
-                <Image
+                <img
                   className="object-cover rounded-full w-[24px] h-[24px]"
                   src={
                     profileData?.profileImagePresignedUrl

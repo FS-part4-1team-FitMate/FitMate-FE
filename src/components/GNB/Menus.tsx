@@ -64,6 +64,20 @@ function Menus({ addClass, user, router }: MenusProps) {
             FitChat
           </Link>
         </li>
+        <li
+          className={
+            addClass
+              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
+              : ""
+          }
+        >
+          <Link
+            href="/ai-chatbot"
+            className={router.pathname.startsWith("/ai-chatbot") ? active_class : ""}
+          >
+            AI 챗봇
+          </Link>
+        </li>
       </>
     );
   } else if (user && user?.role === Role.TRAINER) {
@@ -104,6 +118,20 @@ function Menus({ addClass, user, router }: MenusProps) {
         >
           <Link href="/chat" className={router.pathname.startsWith("/chat") ? active_class : ""}>
             FitChat
+          </Link>
+        </li>
+        <li
+          className={
+            addClass
+              ? "w-[140px] h-auto text-lg border-t-[1px] border-solid border-slate-400 flex justify-center items-center py-[10px]"
+              : ""
+          }
+        >
+          <Link
+            href="/ai-chatbot"
+            className={router.pathname.startsWith("/ai-chatbot") ? active_class : ""}
+          >
+            AI 챗봇
           </Link>
         </li>
       </>
