@@ -156,12 +156,12 @@ function ProfileEdit() {
           message: "프로필이 수정되었습니다.",
           onCancel: () => (window.location.href = `/trainer/${user?.id}/profile`),
         });
-        router.push(`/trainer/${user?.id}/profile`);
+        await router.push(`/trainer/${user?.id}/profile`);
       } catch (err) {
         console.error(err);
         localStorage.removeItem("userData");
         setUser(null);
-        router.push(`/login`);
+        await router.push(`/login`);
       }
     } catch (err) {
       setError({ message: (err as Error).message });
@@ -436,8 +436,8 @@ function ProfileEdit() {
           <Button
             type="button"
             className="hover:bg-blue-100 w-full border border-blue-300 bg-white text-blue-300 font-bold"
-            onClick={() => {
-              router.push(`/trainer/${trainerId}/profile`);
+            onClick={async () => {
+              await router.push(`/trainer/${trainerId}/profile`);
             }}
           >
             취소하기
