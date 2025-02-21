@@ -29,7 +29,7 @@ export default function FavoriteTrainerCard({
   if (size === "lg") {
     return (
       <CardContainer width="100%" gap="1.6rem">
-        <div className="w-fit">
+        <div className="flex items-center gap-4 w-fit">
           {(lessonType ?? []).map((type: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={type} />
           ))}
@@ -50,7 +50,7 @@ export default function FavoriteTrainerCard({
   if (size === "sm") {
     return (
       <CardContainer width="32.7rem" gap="1.6rem" size="sm">
-        <div className="w-fit">
+        <div className="flex items-center gap-4 w-fit">
           {lessonType.map((type: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={type} />
           ))}

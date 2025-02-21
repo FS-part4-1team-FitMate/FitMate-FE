@@ -24,7 +24,7 @@ export default function FindTrainerCard({
   if (trainer) {
     return (
       <CardContainer width="100%" gap="1.6rem">
-        <div className="flex gap-[0.8rem] h-8 pc:gap-[1.2rem]">
+        <div className="flex gap-[0.8rem] pc:gap-[1.2rem]">
           {trainer?.profile?.lessonType?.map((lessonType: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={lessonType} />
           ))}
