@@ -88,6 +88,7 @@ function ProfileEdit() {
   const onSubmit = async (data: FormType) => {
     try {
       const profile: ProfileEdittable = profileData?.profile!;
+      console.log("profile", profile);
       const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
         const typedKey = key as keyof ProfileEdittable;
         const newValue = data[typedKey];
@@ -113,6 +114,7 @@ function ProfileEdit() {
 
       delete changedData.updatedAt;
       const userProfile = await patchProfile(user?.id!, changedData);
+      console.log("userProfile", userProfile);
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
         await axios.put(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
