@@ -26,12 +26,12 @@ function ChatBot() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const onSubmit = async (data: { message: string }) => {
     if (isSubmitting) return;
+    setInput("");
     setIsSubmitting(true);
     setMessages((prev) => [...prev, { id: "user", message: data.message }]);
     const response = await postChatBotMsg(data.message);
     setMessages((prev) => [...prev, { id: "bot", message: response.response }]);
     setIsSubmitting(false);
-    setInput("");
   };
 
   return (
