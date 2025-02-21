@@ -1,3 +1,4 @@
+import { useUser } from "@/contexts/UserProvider";
 import { img_non_review_md } from "@/imageExports";
 import clsx from "clsx";
 import Head from "next/head";
@@ -18,6 +19,7 @@ import TrainerReview from "@/components/DetailTrainer/TrainerReview";
 
 export default function DetailTrainer() {
   const router = useRouter();
+  const user = useUser();
   const { trainerId } = router.query;
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -93,10 +95,10 @@ export default function DetailTrainer() {
           </>
         )}
       </div>
-      <div className="flex flex-col gap-[2.4rem] pc:gap-16">
-        <TrainerControl profile={trainerInfo} />
+      <div className="flex flex-col gap-[2.4rem] max-w-[35.3rem] w-full pc:gap-16">
+        {user && <TrainerControl profile={trainerInfo} />}
         <div className="hidden flex-col gap-16 pc:flex">
-          <HorizontalLine width="100%" />
+          {user && <HorizontalLine width="100%" />}
           <ShareSNS label="나만 알기엔 아쉬운 강사님인가요?" trainerInfo={trainerInfo} />
         </div>
       </div>
