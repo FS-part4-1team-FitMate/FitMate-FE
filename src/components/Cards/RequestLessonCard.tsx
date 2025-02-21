@@ -141,7 +141,7 @@ export default function RequestLessonCard({
         <Button
           onClick={handleSendQuoteClick}
           className={clsx(
-            "flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50",
+            "hover:bg-blue-700 flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold text-gray-50",
             isSendQuote ? "bg-gray-300 cursor-default" : "bg-blue-300",
           )}
         >
@@ -151,7 +151,7 @@ export default function RequestLessonCard({
         {item.isDirectQuote === true && (
           <Button
             onClick={() => setIsRejectedModalOpen(true)}
-            className={`flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
+            className={`hover:bg-blue-100 flex-1 gap-4 h-[6.4rem] p-[1.6rem] rounded-[1.6rem] text-xl font-semibold border border-blue-300 text-blue-300 bg-gray-50`}
           >
             반려
           </Button>
