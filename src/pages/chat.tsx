@@ -5,6 +5,7 @@ import ChatRoom from "@/components/Chat/ChatRoom";
 import socket from "@/lib/utils/socket";
 import { ChatRoomType, Message } from "@/types/chat";
 import { useUser } from "@/contexts/UserProvider";
+import toast from "react-hot-toast";
 
 export default function Chat() {
   const [chatRooms, setChatRooms] = useState<ChatRoomType[]>([]);
@@ -43,28 +44,30 @@ export default function Chat() {
 
   useEffect(() => {
     if (!selectedRoom) return;
-
+  
     async function fetchMessages() {
       try {
         if (!selectedRoom?.roomId) return;
-
         const messages = await getChatMessages(selectedRoom.roomId, 1, 50);
         setMessageList(messages);
       } catch (error) {
         console.error("🚨 메시지 불러오기 실패:", error);
       }
     }
-
+  
     fetchMessages();
-
+  
+    console.log("🔗 WebSocket 연결: 방 입장", selectedRoom.roomId);
     socket.emit("joinRoom", selectedRoom.roomId);
+  
     socket.on("receiveMessage", async (msg: Message) => {
       console.log("📩 새로운 메시지 도착:", msg);
-      const updatedMessages = await getChatMessages(selectedRoom.roomId, 1, 50);
-      setMessageList(updatedMessages);
+  
+      setMessageList((prevMessages) => [...prevMessages, msg]);
     });
-
+  
     return () => {
+      console.log("🚪 WebSocket 연결 해제: 방 나감", selectedRoom.roomId);
       socket.emit("leaveRoom", selectedRoom.roomId);
       socket.off("receiveMessage");
     };
@@ -100,7 +103,7 @@ export default function Chat() {
       setChatRooms((prevRooms) => prevRooms.filter((room) => room.roomId !== selectedRoom.roomId));
       setSelectedRoom(null);
     } catch (error) {
-      console.error("나가기 실패:", error);
+      toast.error("이미 닫힌 방이에요!");
     }
   };
 
