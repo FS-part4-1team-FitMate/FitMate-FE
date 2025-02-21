@@ -26,8 +26,8 @@ const regions = [
 export default function ReceivedRequest() {
   const [isModalopen, setIsModalOpen] = useState<boolean>(false);
   const [params, setParams] = useState<LessonParams>({
-    order: "lesson_time",
-    sort: "asc",
+    order: "start_date",
+    sort: "desc",
     lesson_type: "",
     gender: "",
     region: "",
