@@ -29,7 +29,9 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
               width={24}
               height={24}
             />
-            <h1 className="text-2lg font-semibold">{user?.nickname}</h1>
+            <h1 className="text-lg font-semibold">
+              {user?.profile?.name} ({user?.nickname})
+            </h1>
           </div>
           <div className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer">
             <Link
