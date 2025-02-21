@@ -8,6 +8,7 @@ import LessonCount from "./LessonCount";
 import Rating from "./Rating";
 
 interface TrainerInfoProps {
+  profileImage?: string | null;
   name?: string | null;
   rating?: number | null;
   reviewCount?: number | null;
@@ -19,6 +20,7 @@ interface TrainerInfoProps {
 }
 
 export default function TrainerInfo({
+  profileImage,
   name,
   rating,
   reviewCount,
@@ -42,7 +44,7 @@ export default function TrainerInfo({
     return (
       <div className={container}>
         <Image
-          className={img_profile}
+          className={profileImage ? profileImage : img_profile}
           src={ic_profile_default_md}
           objectFit="contain"
           width={56}
@@ -83,7 +85,7 @@ export default function TrainerInfo({
       <div className="flex items-center gap-[1.2rem] w-full p-4 border border-line-100 rounded-[0.6rem] shadow-card">
         <Image
           className="border-2 border-blue-400 w-[4.6rem] h-[4.6rem] rounded-full"
-          src={ic_profile_default_md}
+          src={profileImage ? profileImage : ic_profile_default_md}
           objectFit="contain"
           width={56}
           height={56}

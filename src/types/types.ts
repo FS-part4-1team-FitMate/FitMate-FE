@@ -179,7 +179,7 @@ export type Profile = {
   userId?: string | null;
   name: string;
   phone?: string | null;
-  profileImage?: string | FileList | null;
+  profileImage?: string | null;
   profileImageCount?: number | null;
   contentType?: string | null;
   gender: Gender;
