@@ -92,43 +92,44 @@ function ProfileEdit() {
   }, [profileData]);
 
   const onSubmit = async (data: FormType) => {
-    // data.region = selectedRegion;
-    const profile: ProfileEdittable = user?.profile!;
-    const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
-      const typedKey = key as keyof ProfileEdittable;
-      const newValue = data[typedKey];
-      if (newValue !== undefined && newValue !== profile?.[typedKey]) {
-        return { ...acc, [typedKey]: newValue };
-      }
-      return acc;
-    }, {});
-    if (data.region !== selectedRegion) {
-      changedData.region = selectedRegion;
-    }
-    if (changedData.experience) {
-      changedData.experience = Number(Number(changedData.experience).toFixed(0));
-    }
-    let profileImageFileToUpload;
-    if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
-      const profileImage = changedData.profileImage;
-      if (profileImage instanceof FileList && profileImage[0]?.name) {
-        profileImageFileToUpload = profileImage[0];
-        changedData.profileImageCount = 1;
-        changedData.contentType = profileImage[0].type;
-        delete changedData.profileImage;
-      }
-    }
-    let certificationFileToUpload;
-    if (changedData && "certification" in changedData && changedData?.certification?.length) {
-      const certification = changedData.certification;
-      if (certification instanceof FileList && certification[0]?.name) {
-        certificationFileToUpload = certification[0];
-        changedData.certificationCount = 1;
-        changedData.contentType = certification[0].type;
-        delete changedData.certification;
-      }
-    }
     try {
+      // data.region = selectedRegion;
+      const profile: ProfileEdittable = user?.profile!;
+      const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
+        const typedKey = key as keyof ProfileEdittable;
+        const newValue = data[typedKey];
+        if (newValue !== undefined && newValue !== profile?.[typedKey]) {
+          return { ...acc, [typedKey]: newValue };
+        }
+        return acc;
+      }, {});
+      if (data.region !== selectedRegion) {
+        changedData.region = selectedRegion;
+      }
+      if (changedData.experience) {
+        changedData.experience = Number(Number(changedData.experience).toFixed(0));
+      }
+      let profileImageFileToUpload;
+      if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
+        const profileImage = changedData.profileImage;
+        if (profileImage instanceof FileList && profileImage[0]?.name) {
+          profileImageFileToUpload = profileImage[0];
+          changedData.profileImageCount = 1;
+          changedData.contentType = profileImage[0].type;
+          delete changedData.profileImage;
+        }
+      }
+      let certificationFileToUpload;
+      if (changedData && "certification" in changedData && changedData?.certification?.length) {
+        const certification = changedData.certification;
+        if (certification instanceof FileList && certification[0]?.name) {
+          certificationFileToUpload = certification[0];
+          changedData.certificationCount = 1;
+          changedData.contentType = certification[0].type;
+          delete changedData.certification;
+        }
+      }
+
       delete changedData.updatedAt;
       const userProfile = await patchProfile(user?.id!, changedData);
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
