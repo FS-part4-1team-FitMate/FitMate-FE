@@ -14,7 +14,7 @@ import { Gender, LSUserData, LessonType, ProfileEdittable, Region } from "@/type
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import Loading from "@/components/Common/Loading";
-import PopUp from "@/components/Common/PopUp";
+import PopUp, { CustomError } from "@/components/Common/PopUp";
 import Textarea from "@/components/Common/Textarea";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
@@ -38,9 +38,7 @@ function ProfileEdit() {
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
   const setUser = useSetUser();
-  const [error, setError] = useState<
-    null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
-  >(null);
+  const [error, setError] = useState<CustomError>(null);
   const {
     register,
     // watch,
@@ -92,43 +90,44 @@ function ProfileEdit() {
   }, [profileData]);
 
   const onSubmit = async (data: FormType) => {
-    // data.region = selectedRegion;
-    const profile: ProfileEdittable = user?.profile!;
-    const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
-      const typedKey = key as keyof ProfileEdittable;
-      const newValue = data[typedKey];
-      if (newValue !== undefined && newValue !== profile?.[typedKey]) {
-        return { ...acc, [typedKey]: newValue };
-      }
-      return acc;
-    }, {});
-    if (data.region !== selectedRegion) {
-      changedData.region = selectedRegion;
-    }
-    if (changedData.experience) {
-      changedData.experience = Number(Number(changedData.experience).toFixed(0));
-    }
-    let profileImageFileToUpload;
-    if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
-      const profileImage = changedData.profileImage;
-      if (profileImage instanceof FileList && profileImage[0]?.name) {
-        profileImageFileToUpload = profileImage[0];
-        changedData.profileImageCount = 1;
-        changedData.contentType = profileImage[0].type;
-        delete changedData.profileImage;
-      }
-    }
-    let certificationFileToUpload;
-    if (changedData && "certification" in changedData && changedData?.certification?.length) {
-      const certification = changedData.certification;
-      if (certification instanceof FileList && certification[0]?.name) {
-        certificationFileToUpload = certification[0];
-        changedData.certificationCount = 1;
-        changedData.contentType = certification[0].type;
-        delete changedData.certification;
-      }
-    }
     try {
+      // data.region = selectedRegion;
+      const profile: ProfileEdittable = profileData?.profile!;
+      const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
+        const typedKey = key as keyof ProfileEdittable;
+        const newValue = data[typedKey];
+        if (newValue !== undefined && newValue !== profile?.[typedKey]) {
+          return { ...acc, [typedKey]: newValue };
+        }
+        return acc;
+      }, {});
+      if (data.region !== selectedRegion) {
+        changedData.region = selectedRegion;
+      }
+      if (changedData.experience) {
+        changedData.experience = Number(Number(changedData.experience).toFixed(0));
+      }
+      let profileImageFileToUpload;
+      if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
+        const profileImage = changedData.profileImage;
+        if (profileImage instanceof FileList && profileImage[0]?.name) {
+          profileImageFileToUpload = profileImage[0];
+          changedData.profileImageCount = 1;
+          changedData.contentType = profileImage[0].type;
+          delete changedData.profileImage;
+        }
+      }
+      let certificationFileToUpload;
+      if (changedData && "certification" in changedData && changedData?.certification?.length) {
+        const certification = changedData.certification;
+        if (certification instanceof FileList && certification[0]?.name) {
+          certificationFileToUpload = certification[0];
+          changedData.certificationCount = 1;
+          changedData.contentType = certification[0].type;
+          delete changedData.certification;
+        }
+      }
+
       delete changedData.updatedAt;
       const userProfile = await patchProfile(user?.id!, changedData);
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
@@ -142,9 +141,9 @@ function ProfileEdit() {
         userDataLS.user = {
           ...userDataLS.user,
           ...userProfile,
-          hasProfile: !!userProfile?.user?.profile?.id,
+          hasProfile: !!userProfile?.profile?.id,
         };
-        userDataLS.hasProfile = !!userProfile?.user?.profile?.id;
+        userDataLS.hasProfile = !!userProfile?.profile?.id;
         setUser(() => userDataLS.user);
         localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
         queryClient.invalidateQueries({
@@ -153,12 +152,16 @@ function ProfileEdit() {
         queryClient.invalidateQueries({
           queryKey: ["trainer-info", user?.id],
         });
-        router.push(`/trainer/${user?.id}/profile`);
+        setError({
+          message: "프로필이 수정되었습니다.",
+          onCancel: () => (window.location.href = `/trainer/${user?.id}/profile`),
+        });
+        await router.push(`/trainer/${user?.id}/profile`);
       } catch (err) {
         console.error(err);
         localStorage.removeItem("userData");
         setUser(null);
-        router.push(`/login`);
+        await router.push(`/login`);
       }
     } catch (err) {
       setError({ message: (err as Error).message });
@@ -433,15 +436,15 @@ function ProfileEdit() {
           <Button
             type="button"
             className="hover:bg-blue-100 w-full border border-blue-300 bg-white text-blue-300 font-bold"
-            onClick={() => {
-              router.push(`/trainer/${trainerId}/profile`);
+            onClick={async () => {
+              await router.push(`/trainer/${trainerId}/profile`);
             }}
           >
             취소하기
           </Button>
         </div>
       </main>
-      <PopUp error={error} setError={setError} />
+      <PopUp error={error} setError={setError} onlyCancel={true} />
     </form>
   );
 }

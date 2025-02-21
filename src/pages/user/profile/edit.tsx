@@ -15,7 +15,7 @@ import { Gender, LSUserData, LessonType, ProfileEdittable, Region } from "@/type
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import Loading from "@/components/Common/Loading";
-import PopUp from "@/components/Common/PopUp";
+import PopUp, { CustomError } from "@/components/Common/PopUp";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
@@ -37,9 +37,7 @@ function ProfileEdit() {
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
   const setUser = useSetUser();
-  const [error, setError] = useState<
-    null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
-  >(null);
+  const [error, setError] = useState<CustomError>(null);
   const {
     register,
     // watch,
@@ -86,51 +84,65 @@ function ProfileEdit() {
   }, [profileData]);
 
   const onSubmit = async (data: FormType) => {
-    const profile: ProfileEdittable = user?.profile!;
-    const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
-      const typedKey = key as keyof ProfileEdittable;
-      const newValue = data[typedKey];
-      if (newValue !== undefined && !deepEqual(newValue, profile?.[typedKey])) {
-        return { ...acc, [typedKey]: newValue };
-      }
-      return acc;
-    }, {});
-    if (!deepEqual(data.region, selectedRegion)) {
-      changedData.region = selectedRegion;
-    }
-    let profileImageFileToUpload;
-    if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
-      const profileImage = changedData.profileImage;
-      console.log(profileImage);
-      if (profileImage instanceof FileList && profileImage[0]?.name) {
-        profileImageFileToUpload = profileImage[0];
-        changedData.profileImageCount = 1;
-        changedData.contentType = profileImage[0].type;
-        delete changedData.profileImage;
-      }
-    }
     try {
+      const profile: ProfileEdittable = profileData?.profile!;
+      console.log("profile", profile);
+      const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
+        const typedKey = key as keyof ProfileEdittable;
+        const newValue = data[typedKey];
+        if (newValue !== undefined && !deepEqual(newValue, profile?.[typedKey])) {
+          return { ...acc, [typedKey]: newValue };
+        }
+        return acc;
+      }, {});
+      if (!deepEqual(data.region, selectedRegion)) {
+        changedData.region = selectedRegion;
+      }
+      let profileImageFileToUpload;
+      if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
+        const profileImage = changedData.profileImage;
+        console.log(profileImage);
+        if (profileImage instanceof FileList && profileImage[0]?.name) {
+          profileImageFileToUpload = profileImage[0];
+          changedData.profileImageCount = 1;
+          changedData.contentType = profileImage[0].type;
+          delete changedData.profileImage;
+        }
+      }
+
       delete changedData.updatedAt;
       const userProfile = await patchProfile(user?.id!, changedData);
+      console.log("userProfile", userProfile);
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
         await axios.put(userProfile.profileImagePresignedUrl as string, profileImageFileToUpload);
       }
-      const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
-      userDataLS.user = {
-        ...userDataLS.user,
-        ...userProfile,
-        hasProfile: !!userProfile?.user.profile?.id,
-      };
-      userDataLS.hasProfile = !!userProfile?.user.profile?.id;
-      setUser(() => userDataLS.user);
-      localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
-      queryClient.invalidateQueries({
-        queryKey: ["user-info", user?.id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["trainer-info", user?.id],
-      });
-      router.push("/user/profile");
+      try {
+        const userDataLS: LSUserData = JSON.parse(localStorage.getItem("userData")!);
+        userDataLS.user = {
+          ...userDataLS.user,
+          ...userProfile,
+          hasProfile: !!userProfile?.profile?.id,
+        };
+        userDataLS.hasProfile = !!userProfile?.profile?.id;
+        setUser(() => userDataLS.user);
+        localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
+        queryClient.invalidateQueries({
+          queryKey: ["user-info", user?.id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["trainer-info", user?.id],
+        });
+        setError({
+          message: "프로필이 수정되었습니다.",
+          onCancel: () => (window.location.href = "/user/profile"),
+        });
+        await router.push("/user/profile");
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("userData");
+        setUser(null);
+        await router.push(`/login`);
+      }
     } catch (err) {
       setError({ message: (err as Error).message });
     }
@@ -337,15 +349,15 @@ function ProfileEdit() {
           <Button
             type="button"
             className="hover:bg-blue-100 w-full h-[5.4rem] border border-blue-300 bg-white text-blue-300 font-bold"
-            onClick={() => {
-              router.push(`/user/profile`);
+            onClick={async () => {
+              await router.push(`/user/profile`);
             }}
           >
             취소하기
           </Button>
         </div>
       </main>
-      <PopUp error={error} setError={setError} />
+      <PopUp error={error} setError={setError} onlyCancel={true} />
     </form>
   );
 }

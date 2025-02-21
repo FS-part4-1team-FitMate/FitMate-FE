@@ -24,7 +24,7 @@ export async function patchProfile(
   userId: string,
   data: Partial<ProfileEdittable>,
 ): Promise<{
-  user: User;
+  profile: Profile;
 }> {
   try {
     const res = await patch<Partial<ProfileEdittable>>(`/profile/${userId}`, data);

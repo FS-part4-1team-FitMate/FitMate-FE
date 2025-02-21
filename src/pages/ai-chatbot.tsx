@@ -26,12 +26,12 @@ function ChatBot() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const onSubmit = async (data: { message: string }) => {
     if (isSubmitting) return;
+    setInput("");
     setIsSubmitting(true);
     setMessages((prev) => [...prev, { id: "user", message: data.message }]);
     const response = await postChatBotMsg(data.message);
     setMessages((prev) => [...prev, { id: "bot", message: response.response }]);
     setIsSubmitting(false);
-    setInput("");
   };
 
   return (
@@ -70,6 +70,20 @@ function ChatBot() {
               })}
               placeholder="질문을 입력해 주세요."
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Process") {
+                  return;
+                }
+                if (e.key === "Enter") {
+                  if (e.shiftKey) {
+                    e.preventDefault();
+                    setInput((prev) => prev + "\n");
+                  } else {
+                    e.preventDefault();
+                    onSubmit({ message: input });
+                  }
+                }
+              }}
               value={input}
               className="bg-blue-300 text-lg text-white placeholder:text-white rounded-xl min-h-[160px] max-h-[300px] p-5 border-[1px] border-solid border-gray-300 overflow-y-auto"
             ></textarea>
