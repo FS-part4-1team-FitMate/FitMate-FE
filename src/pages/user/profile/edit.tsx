@@ -122,9 +122,9 @@ function ProfileEdit() {
       userDataLS.user = {
         ...userDataLS.user,
         ...userProfile,
-        hasProfile: !!userProfile?.user.profile?.id,
+        hasProfile: !!userProfile?.profile?.id,
       };
-      userDataLS.hasProfile = !!userProfile?.user.profile?.id;
+      userDataLS.hasProfile = !!userProfile?.profile?.id;
       setUser(() => userDataLS.user);
       localStorage.setItem("userData", JSON.stringify(userDataLS as LSUserData));
       queryClient.invalidateQueries({
