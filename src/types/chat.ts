@@ -15,7 +15,7 @@ export interface ChatRoomType {
     participant2Profile?: {
       name: string;
     }
-    MyId?: string;
+    myId?: string;
     isMe?: boolean;
     participantName?: string;
     MyName?: string;
