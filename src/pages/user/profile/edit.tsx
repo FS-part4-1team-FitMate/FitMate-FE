@@ -132,7 +132,10 @@ function ProfileEdit() {
         queryClient.invalidateQueries({
           queryKey: ["trainer-info", user?.id],
         });
-        setError({ message: "프로필이 수정되었습니다." });
+        setError({
+          message: "프로필이 수정되었습니다.",
+          onCancel: () => router.push("/user/profile"),
+        });
         router.push("/user/profile");
       } catch (err) {
         console.error(err);
@@ -354,7 +357,7 @@ function ProfileEdit() {
           </Button>
         </div>
       </main>
-      <PopUp error={error} setError={setError} />
+      <PopUp error={error} setError={setError} onlyCancel={true} />
     </form>
   );
 }
