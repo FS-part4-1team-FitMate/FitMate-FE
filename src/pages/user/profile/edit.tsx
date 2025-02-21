@@ -15,7 +15,7 @@ import { Gender, LSUserData, LessonType, ProfileEdittable, Region } from "@/type
 import Button from "@/components/Common/Button";
 import Input from "@/components/Common/Input";
 import Loading from "@/components/Common/Loading";
-import PopUp from "@/components/Common/PopUp";
+import PopUp, { CustomError } from "@/components/Common/PopUp";
 import Regions from "@/components/Profile/Regions";
 import ImageUploader from "@/components/SignUp/ImageUploader";
 
@@ -37,9 +37,7 @@ function ProfileEdit() {
   const [selectedRegion, setSelectedRegion] = useState<Region[]>([]);
   const user = useUser();
   const setUser = useSetUser();
-  const [error, setError] = useState<
-    null | Error | { message: string; onOK?: () => void; onCancel?: () => void }
-  >(null);
+  const [error, setError] = useState<CustomError>(null);
   const {
     register,
     // watch,
@@ -134,6 +132,7 @@ function ProfileEdit() {
         queryClient.invalidateQueries({
           queryKey: ["trainer-info", user?.id],
         });
+        setError({ message: "프로필이 수정되었습니다." });
         router.push("/user/profile");
       } catch (err) {
         console.error(err);
