@@ -25,6 +25,7 @@ function Favorite({ trainerId, noneCount = false }: Props) {
       queryClient.invalidateQueries(["favorite", trainerId]);
     },
     onError: (error) => {
+      queryClient.invalidateQueries(["favorite", trainerId]);
       console.error(error);
     },
   });
