@@ -154,7 +154,7 @@ function ProfileEdit() {
         });
         setError({
           message: "프로필이 수정되었습니다.",
-          onCancel: () => router.push(`/trainer/${user?.id}/profile`),
+          onCancel: () => (window.location.href = `/trainer/${user?.id}/profile`),
         });
         router.push(`/trainer/${user?.id}/profile`);
       } catch (err) {
