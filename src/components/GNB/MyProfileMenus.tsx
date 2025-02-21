@@ -2,7 +2,6 @@ import { ic_profile_default_sm } from "@/imageExports";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { active_class } from "@/types/constants";
 import { ProfileData, Role, User } from "@/types/types";
 
@@ -14,8 +13,6 @@ interface MyProfileMenusProps {
 }
 
 function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusProps) {
-  const queryClient = useQueryClient();
-
   return (
     <div className="absolute top-[30px] right-0 w-[20rem] bg-white border border-gray-300 rounded-xl z-10 shadow-card">
       {user && user?.id && user?.hasProfile && (
