@@ -80,7 +80,7 @@ function ChatBot() {
                     setInput((prev) => prev + "\n");
                   } else {
                     e.preventDefault();
-                    handleSubmit(onSubmit)();
+                    onSubmit({ message: input });
                   }
                 }
               }}
