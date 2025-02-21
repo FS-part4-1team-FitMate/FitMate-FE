@@ -86,30 +86,31 @@ function ProfileEdit() {
   }, [profileData]);
 
   const onSubmit = async (data: FormType) => {
-    const profile: ProfileEdittable = user?.profile!;
-    const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
-      const typedKey = key as keyof ProfileEdittable;
-      const newValue = data[typedKey];
-      if (newValue !== undefined && !deepEqual(newValue, profile?.[typedKey])) {
-        return { ...acc, [typedKey]: newValue };
-      }
-      return acc;
-    }, {});
-    if (!deepEqual(data.region, selectedRegion)) {
-      changedData.region = selectedRegion;
-    }
-    let profileImageFileToUpload;
-    if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
-      const profileImage = changedData.profileImage;
-      console.log(profileImage);
-      if (profileImage instanceof FileList && profileImage[0]?.name) {
-        profileImageFileToUpload = profileImage[0];
-        changedData.profileImageCount = 1;
-        changedData.contentType = profileImage[0].type;
-        delete changedData.profileImage;
-      }
-    }
     try {
+      const profile: ProfileEdittable = user?.profile!;
+      const changedData = Object.keys(data).reduce<Partial<ProfileEdittable>>((acc, key) => {
+        const typedKey = key as keyof ProfileEdittable;
+        const newValue = data[typedKey];
+        if (newValue !== undefined && !deepEqual(newValue, profile?.[typedKey])) {
+          return { ...acc, [typedKey]: newValue };
+        }
+        return acc;
+      }, {});
+      if (!deepEqual(data.region, selectedRegion)) {
+        changedData.region = selectedRegion;
+      }
+      let profileImageFileToUpload;
+      if (changedData && "profileImage" in changedData && changedData?.profileImage?.length) {
+        const profileImage = changedData.profileImage;
+        console.log(profileImage);
+        if (profileImage instanceof FileList && profileImage[0]?.name) {
+          profileImageFileToUpload = profileImage[0];
+          changedData.profileImageCount = 1;
+          changedData.contentType = profileImage[0].type;
+          delete changedData.profileImage;
+        }
+      }
+
       delete changedData.updatedAt;
       const userProfile = await patchProfile(user?.id!, changedData);
       if (userProfile && "profileImagePresignedUrl" in userProfile) {
