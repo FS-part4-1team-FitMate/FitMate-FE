@@ -58,7 +58,7 @@ export default function FindTrainerCard({
         </div>
         <p className="text-md font-semibold pc:text-2xl">{profile?.intro}</p>
         <TrainerInfo
-          profileImage={profile?.profileImage || ""}
+          profileImage={""}
           name={profile?.name || ""}
           rating={profile?.rating || 0}
           reviewCount={profile.reviewCount || 0}
