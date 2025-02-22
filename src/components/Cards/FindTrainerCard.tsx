@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+import { useGetUser } from "@/lib/api/queries/user";
 import { FavoriteInfo, Trainer } from "@/types/trainer";
 import { LessonRequestStatus, LessonType, Profile, RequestType } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
@@ -5,6 +7,7 @@ import ChipRequest from "../Chip/ChipRequest";
 import ChipRequestStatus from "../Chip/ChipRequestStatus";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
+import Loading from "../Common/Loading";
 
 interface FindTrainerCardProps {
   trainer?: Trainer;
@@ -21,6 +24,15 @@ export default function FindTrainerCard({
   request,
   favoriteInfo,
 }: FindTrainerCardProps) {
+  const {
+    data: profileData,
+    isLoading,
+    isError,
+  } = useGetUser((trainer?.id as string) || (profile?.userId as string));
+
+  if (isLoading) return <Loading />;
+  if (isError) return toast.error("프로필 데이터를 불러오는 중 에러가 발생했어요! 😢");
+
   if (trainer) {
     return (
       <CardContainer width="100%" gap="1.6rem">
@@ -32,7 +44,7 @@ export default function FindTrainerCard({
         </div>
         <p className="text-md font-semibold pc:text-2xl">{trainer?.profile?.intro}</p>
         <TrainerInfo
-          profileImage={trainer?.profile?.profileImage}
+          profileImage={profileData?.profileImagePresignedUrl}
           name={trainer?.profile?.name}
           rating={trainer?.profile?.rating || 0}
           reviewCount={trainer?.profile?.reviewCount || 0}
@@ -58,7 +70,7 @@ export default function FindTrainerCard({
         </div>
         <p className="text-md font-semibold pc:text-2xl">{profile?.intro}</p>
         <TrainerInfo
-          profileImage={""}
+          profileImage={profileData?.profileImagePresignedUrl}
           name={profile?.name || ""}
           rating={profile?.rating || 0}
           reviewCount={profile.reviewCount || 0}
