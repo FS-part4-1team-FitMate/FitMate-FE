@@ -29,6 +29,7 @@ export default function QuoteCard({ myLesson, quote }: { myLesson: Lesson; quote
       </div>
       <p className="text-black-300 text-md font-semibold pc:text-2xl">{trainerInfo?.intro}</p>
       <TrainerInfo
+        profileImage={trainer?.profileImagePresignedUrl}
         name={trainerInfo.name}
         rating={trainerInfo.rating}
         reviewCount={trainerInfo.reviewCount}

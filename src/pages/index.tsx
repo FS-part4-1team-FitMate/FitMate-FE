@@ -245,7 +245,7 @@ export default function Home() {
           지금 바로 시작해보세요!
         </h1>
         <div className="flex flex-col items-center gap-8 w-[30rem] pc:flex-row">
-          <Link className="flex-1" href="/login">
+          <Link className="pc:flex-1 w-[12rem]" href="/login">
             <button
               onClick={handlebuttonClick}
               className="hover:bg-blue-600 login relative flex-1 w-full p-4 rounded-[1.6rem] text-2lg text-white font-semibold shadow-card bg-blue-300 overflow-hidden"
@@ -253,7 +253,7 @@ export default function Home() {
               로그인
             </button>
           </Link>
-          <Link className="flex-1" href="/user/signup">
+          <Link className="pc:flex-1 w-[12rem]" href="/user/signup">
             <button
               onClick={handlebuttonClick}
               className="hover:bg-blue-200 hover:text-white signup relative w-full p-4 border rounded-[1.6rem] border-blue-300 text-blue-300 text-2lg font-semibold shadow-card bg-blue-100 overflow-hidden"

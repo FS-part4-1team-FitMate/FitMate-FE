@@ -18,8 +18,11 @@ export default function ListHeader({ totalCount, setIsModalOpen, setParams }: Li
 
   // 정렬 처리 함수
   const handleSortChange = (order: string, sort: string) => {
-    setParams({ order });
-    setParams({ sort });
+    setParams((prevParams) => ({
+      ...prevParams,
+      order,
+      sort,
+    }));
   };
 
   return (

@@ -28,6 +28,7 @@ export default function ActiveLessonCard({ item, quote }: { item: Lesson; quote:
         {item.isDirectQuote && <ChipRequest requestType={RequestType.SPECIFIC} />}
       </div>
       <TrainerInfo
+        profileImage={trainer?.profileImagePresignedUrl}
         name={trainerInfo.name}
         rating={trainerInfo.rating}
         reviewCount={trainerInfo.reviewCount}

@@ -1,9 +1,10 @@
-import { LessonType } from "@/types/types";
+import { LessonType, ProfileData } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 interface FindTrainerCardProps {
+  profileData?: ProfileData;
   name: string;
   rating: number;
   reviewCount: number;
@@ -16,6 +17,7 @@ interface FindTrainerCardProps {
 }
 
 export default function FavoriteTrainerCard({
+  profileData,
   name,
   rating,
   reviewCount,
@@ -29,12 +31,13 @@ export default function FavoriteTrainerCard({
   if (size === "lg") {
     return (
       <CardContainer width="100%" gap="1.6rem">
-        <div className="w-fit">
+        <div className="flex items-center gap-4 w-fit">
           {(lessonType ?? []).map((type: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={type} />
           ))}
         </div>
         <TrainerInfo
+          profileImage={profileData?.profileImagePresignedUrl}
           name={name}
           rating={rating || 0}
           reviewCount={reviewCount || 0}
@@ -50,12 +53,13 @@ export default function FavoriteTrainerCard({
   if (size === "sm") {
     return (
       <CardContainer width="32.7rem" gap="1.6rem" size="sm">
-        <div className="w-fit">
+        <div className="flex items-center gap-4 w-fit">
           {lessonType.map((type: LessonType, index: number) => (
             <ChipLessonType key={index} lessonType={type} />
           ))}
         </div>
         <TrainerInfo
+          profileImage={profileData?.profileImagePresignedUrl}
           name={name}
           rating={rating || 0}
           reviewCount={reviewCount || 0}
