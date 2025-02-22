@@ -1,9 +1,10 @@
-import { LessonType } from "@/types/types";
+import { LessonType, ProfileData } from "@/types/types";
 import ChipLessonType from "../Chip/ChipLessonType";
 import CardContainer from "../Common/Card/CardContainer";
 import TrainerInfo from "../Common/Card/TrainerInfo/TrainerInfo";
 
 interface FindTrainerCardProps {
+  profileData?: ProfileData;
   name: string;
   rating: number;
   reviewCount: number;
@@ -16,6 +17,7 @@ interface FindTrainerCardProps {
 }
 
 export default function FavoriteTrainerCard({
+  profileData,
   name,
   rating,
   reviewCount,
@@ -35,6 +37,7 @@ export default function FavoriteTrainerCard({
           ))}
         </div>
         <TrainerInfo
+          profileImage={profileData?.profileImagePresignedUrl}
           name={name}
           rating={rating || 0}
           reviewCount={reviewCount || 0}
@@ -56,6 +59,7 @@ export default function FavoriteTrainerCard({
           ))}
         </div>
         <TrainerInfo
+          profileImage={profileData?.profileImagePresignedUrl}
           name={name}
           rating={rating || 0}
           reviewCount={reviewCount || 0}

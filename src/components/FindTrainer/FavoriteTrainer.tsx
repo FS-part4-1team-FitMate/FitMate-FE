@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useGetFavoriteTrainer } from "@/lib/api/queries/trainer";
+import { useGetUser } from "@/lib/api/queries/user";
 import { Trainer } from "@/types/trainer";
 import FavoriteTrainerCard from "../Cards/FavoriteTrainerCard";
 import Loading from "../Common/Loading";
@@ -16,11 +17,18 @@ export default function FavoriteTrainer() {
   }, [user]);
 
   const { data, isLoading, isError } = useGetFavoriteTrainer(userId || "", { page: 1, limit: 3 });
+  const {
+    data: profileData,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useGetUser(userId as string);
 
   const trainerList = data?.trainers ?? [];
 
-  if (isLoading && userId) return <Loading />;
-  if (isError) return toast.error("찜한 강사님 목록을 불러오는 중 에러가 발생했어요! 😢");
+  if (isLoading && isProfileLoading && userId) return <Loading />;
+  if (isError && isProfileError) {
+    return toast.error("찜한 강사님 목록을 불러오는 중 에러가 발생했어요! 😢");
+  }
 
   return (
     <div className={clsx(!userId ? "hidden" : "flex flex-col gap-[1.6rem] w-[32.7rem]")}>
@@ -28,6 +36,7 @@ export default function FavoriteTrainer() {
       {trainerList.map((trainer: Trainer) => (
         <FavoriteTrainerCard
           key={trainer.id}
+          profileData={profileData}
           name={trainer?.profile.name || ""}
           rating={trainer.profile.rating}
           reviewCount={trainer.profile.reviewCount}
