@@ -59,6 +59,7 @@ export default function PendingLessonCard({ item, quote }: { item: Lesson; quote
         </div>
         <div className="flex flex-col gap-8">
           <TrainerInfo
+            profileImage={trainer?.profileImagePresignedUrl}
             name={trainerInfo?.name}
             rating={trainerInfo?.rating || 0}
             reviewCount={trainerInfo?.reviewCount || 0}

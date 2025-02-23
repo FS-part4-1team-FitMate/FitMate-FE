@@ -38,8 +38,12 @@ export default function FindTrainer() {
 
   // 정렬 처리 함수
   const handleSortChange = (order: string, sort: string) => {
-    setParams({ order });
-    setParams({ sort });
+    console.log(order, sort);
+    setParams((prevParams) => ({
+      ...prevParams,
+      order,
+      sort,
+    }));
   };
 
   // 필터 처리 함수

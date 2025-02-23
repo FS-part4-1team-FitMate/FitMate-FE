@@ -47,7 +47,7 @@ export default function LessonHistory() {
   };
 
   const myLessonList = data?.pages?.flatMap((page) => page.list) ?? [];
-  console.log(myLessonList);
+
   if (isLoading) return <Loading />;
   if (isError) return toast.error("레슨 내역을 불러오는 중 에러가 발생했어요! 😢");
 
