@@ -135,6 +135,12 @@ function SignUpForm({ role }: Props) {
             type="text"
             register={register("nickname", {
               required: "닉네임을 입력해 주세요.",
+              validate: (value) => {
+                if (value.length > 10) {
+                  return "10자리 이하로 입력해주세요.";
+                }
+                return true;
+              },
             })}
             placeholder="닉네임을 입력해 주세요."
           />

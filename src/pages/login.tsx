@@ -43,6 +43,10 @@ function LogIn() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    if (localStorage.getItem("userData") === null) {
+      setUser(null);
+      return;
+    }
     if (user?.id) {
       try {
         if (user.role === Role.USER) {

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { postChatBotMsg } from "@/lib/api/chatbotService";
 import Button from "@/components/Common/Button";
-import Textarea from "@/components/Common/Textarea";
 
 function ChatBot() {
   const [messages, setMessages] = useState<{ id: string; message: string }[]>([

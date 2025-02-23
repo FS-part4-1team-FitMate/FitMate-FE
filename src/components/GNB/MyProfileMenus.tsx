@@ -1,5 +1,4 @@
 import { ic_profile_default_sm } from "@/imageExports";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
@@ -30,7 +29,9 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
               width={24}
               height={24}
             />
-            <h1 className="text-2lg font-semibold">{user?.nickname}</h1>
+            <h1 className="text-lg font-semibold">
+              {user?.profile?.name} ({user?.nickname})
+            </h1>
           </div>
           <div className="hover:bg-bg-200 w-full h-auto text-lg flex items-center py-[10px] px-8 cursor-pointer">
             <Link
@@ -100,10 +101,10 @@ function MyProfileMenus({ user, profileData, setUser, router }: MyProfileMenusPr
       )}
       <div
         className="hover:bg-bg-200 hover:rounded-b-xl w-full h-auto border-t text-gray-500 text-lg font-semibold flex justify-center items-center py-[10px] px-8 cursor-pointer"
-        onClick={() => {
+        onClick={async () => {
           localStorage.removeItem("userData");
           setUser(null);
-          router.push("/login");
+          await router.push("/login");
         }}
       >
         로그아웃

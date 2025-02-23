@@ -133,7 +133,9 @@ function GNB() {
                     width={24}
                     height={24}
                   />
-                  <span className="text-md font-medium">{user?.nickname}</span>
+                  <span className="text-md font-medium">
+                    {user?.profile?.name} ({user?.nickname})
+                  </span>
                 </div>
                 {myProfileIsOpen && (
                   <MyProfileMenus
