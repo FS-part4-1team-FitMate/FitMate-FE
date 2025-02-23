@@ -1,6 +1,5 @@
 import { ic_profile_default_md } from "@/imageExports";
 import clsx from "clsx";
-import Image from "next/image";
 import { VerticalLine } from "../../Line";
 import Experience from "./Experience";
 import Favorite from "./Favorite";
@@ -43,10 +42,9 @@ export default function TrainerInfo({
   if (size === "lg") {
     return (
       <div className={container}>
-        <Image
-          className={profileImage ? profileImage : img_profile}
-          src={ic_profile_default_md}
-          objectFit="contain"
+        <img
+          className="border-2 border-blue-400 w-[4.6rem] h-[4.6rem] rounded-full"
+          src={profileImage ? profileImage : img_profile}
           width={56}
           height={56}
           alt="프로필 사진"
@@ -83,10 +81,9 @@ export default function TrainerInfo({
   if (size === "sm") {
     return (
       <div className="flex items-center gap-[1.2rem] w-full p-4 border border-line-100 rounded-[0.6rem] shadow-card">
-        <Image
+        <img
           className="border-2 border-blue-400 w-[4.6rem] h-[4.6rem] rounded-full"
           src={profileImage ? profileImage : ic_profile_default_md}
-          objectFit="contain"
           width={56}
           height={56}
           alt="프로필 사진"

@@ -20,10 +20,10 @@ const sortMapping: SortMapping = {
   "레슨 빠른 순": ["start_date", "desc"],
   "레슨 느린 순": ["start_date", "asc"],
   "최근 요청 순": ["created_at", "desc"],
-  "리뷰 많은 순": ["reviewCount", "asc"],
-  "평점 높은 순": ["rating", "asc"],
-  "경력 높은 순": ["experience", "asc"],
-  "확정 횟수 많은 순": ["lessonCount", "asc"],
+  "리뷰 많은 순": ["reviewCount", "desc"],
+  "평점 높은 순": ["rating", "desc"],
+  "경력 높은 순": ["experience", "desc"],
+  "확정 횟수 많은 순": ["lessonCount", "desc"],
 };
 
 export default function Dropdown({
