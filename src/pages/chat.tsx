@@ -32,9 +32,7 @@ export default function Chat() {
             isMe,
           };
         });
-
         setChatRooms(formattedRooms);
-        console.log("formatted", formattedRooms)
       } catch (error) {
         console.error("🚨 채팅방 목록 불러오기 실패:", error);
       }
@@ -56,18 +54,12 @@ export default function Chat() {
     }
   
     fetchMessages();
-  
-    console.log("🔗 WebSocket 연결: 방 입장", selectedRoom.roomId);
     socket.emit("joinRoom", selectedRoom.roomId);
-  
     socket.on("receiveMessage", async (msg: Message) => {
-      console.log("📩 새로운 메시지 도착:", msg);
-  
       setMessageList((prevMessages) => [...prevMessages, msg]);
     });
   
     return () => {
-      console.log("🚪 WebSocket 연결 해제: 방 나감", selectedRoom.roomId);
       socket.emit("leaveRoom", selectedRoom.roomId);
       socket.off("receiveMessage");
     };

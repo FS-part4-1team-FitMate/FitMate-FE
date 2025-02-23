@@ -68,7 +68,6 @@ export const getReviewableQuotes = async ({
   const response = await get("/quotes/reviewable", {
     params: { page, limit },
   });
-  console.log(response.data);
   return {
     list: response.data.list,
     totalCount: response.data.totalCount,
@@ -81,7 +80,6 @@ export const getMyReviews = async (): Promise<{
 }> => {
   try {
     const response = await get("/reviews/me");
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("내 리뷰를 불러오는 중 오류 발생:", error);

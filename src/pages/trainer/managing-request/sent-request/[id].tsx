@@ -22,7 +22,6 @@ export default function DetailRequest() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["quote-info", lessonRequestId],
     queryFn: () => {
-      console.log("API 요청 실행됨:", lessonRequestId);
       return getDetailRequest(lessonRequestId as string);
     },
     enabled: !!lessonRequestId,
