@@ -38,6 +38,7 @@ function ChatBot() {
     if (mainRef.current) {
       mainRef.current.scrollTop = mainRef.current.scrollHeight;
     }
+    window.scrollTo(0, document.body.scrollHeight);
   }, [messages]);
 
   return (
