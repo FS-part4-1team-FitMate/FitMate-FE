@@ -69,7 +69,7 @@ export default function DetailPastRequest() {
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">
             <QuoteInfo lesson={lessonData} />
-            {quoteInfo.status !== LessonRequestStatus.COMPLETED && (
+            {quoteInfo.status !== LessonRequestStatus.ACCEPTED && (
               <div className="flex items-center gap-[1.6rem] py-[2.4rem] px-[3.2rem] border border-blue-200 rounded-[1.2rem] bg-blue-100">
                 <Image src={ic_info_md} width={24} height={24} alt="느낌표" />
                 <p className="text-blue-300 text-lg font-regular">확정하지 않은 견적이에요!</p>
