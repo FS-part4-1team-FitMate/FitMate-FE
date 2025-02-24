@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { filter_trans } from "@/types/dropdown";
 import { FilterList, PastLessonFilterList, SortList } from "./DropdownList";
@@ -84,7 +85,7 @@ export default function Dropdown({
         <label className="hidden text-2lg font-medium pc:block">어떤 서비스가 필요하세요?</label>
       );
     } else {
-      return <label className="text-nowrap text-xl font-medium">지역</label>;
+      return <label className="px-4 text-nowrap text-lg pc:text-xl font-medium">지역</label>;
     }
   };
 
@@ -116,7 +117,12 @@ export default function Dropdown({
 
   if (type === "filter") {
     return (
-      <div className="relative flex flex-col w-40 pc:w-full">
+      <div
+        className={clsx(
+          "relative flex flex-col",
+          filterType === "region" ? "w-full" : "w-40 pc:w-full",
+        )}
+      >
         <div className="flex flex-col gap-[1.6rem]">
           {getLabel()}
           <FilterMenu
