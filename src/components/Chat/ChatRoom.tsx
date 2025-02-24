@@ -1,12 +1,12 @@
-import { img_non_review_md } from "@/imageExports";
-import Image from "next/image";
-import { MutableRefObject, useState } from "react";
-import { ChatRoomType } from "@/types/chat";
 import InputField from "@/components/Chat/InputField";
 import MessageContainer from "@/components/Chat/MessageContainer";
+import { img_non_review_md } from "@/imageExports";
+import Image from "next/image";
+import { useState } from "react";
+import { ChatRoomType } from "@/types/chat";
+
 
 interface ChatRoomProps {
-  msgContainerRef: MutableRefObject<HTMLDivElement>;
   selectedRoom: ChatRoomType | null;
   messageList: {
     senderId: string;
@@ -19,13 +19,7 @@ interface ChatRoomProps {
   onLeaveRoom: () => void;
 }
 
-export default function ChatRoom({
-  msgContainerRef,
-  selectedRoom,
-  messageList,
-  onSendMessage,
-  onLeaveRoom,
-}: ChatRoomProps) {
+export default function ChatRoom({ selectedRoom, messageList, onSendMessage, onLeaveRoom }: ChatRoomProps) {
   const [message, setMessage] = useState("");
 
   if (!selectedRoom) {
@@ -46,15 +40,11 @@ export default function ChatRoom({
         </button>
       </div>
 
-      <div ref={msgContainerRef} className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4">
         <MessageContainer messageList={messageList} />
       </div>
       <div className="p-4 border-t border-gray-300">
-        <InputField
-          message={message}
-          setMessage={setMessage}
-          sendMessage={() => onSendMessage(message)}
-        />
+        <InputField message={message} setMessage={setMessage} sendMessage={() => onSendMessage(message)} />
       </div>
     </div>
   );
