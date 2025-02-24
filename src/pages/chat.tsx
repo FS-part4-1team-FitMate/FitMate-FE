@@ -1,11 +1,11 @@
-import { useUser } from "@/contexts/UserProvider";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { getChatMessages, getChatRooms, leaveChatRoom, sendMessage } from "@/lib/api/chatService";
-import socket from "@/lib/utils/socket";
-import { ChatRoomType, Message } from "@/types/chat";
+import { getChatRooms, getChatMessages, sendMessage, leaveChatRoom } from "@/lib/api/chatService";
 import ChatList from "@/components/Chat/ChatList";
 import ChatRoom from "@/components/Chat/ChatRoom";
+import socket from "@/lib/utils/socket";
+import { ChatRoomType, Message } from "@/types/chat";
+import { useUser } from "@/contexts/UserProvider";
+import toast from "react-hot-toast";
 
 export default function Chat() {
   const [chatRooms, setChatRooms] = useState<ChatRoomType[]>([]);
@@ -15,12 +15,12 @@ export default function Chat() {
 
   useEffect(() => {
     if (!user?.id) return;
-
+  
     async function fetchRooms() {
       try {
         const rooms = await getChatRooms();
         console.log("rooms", rooms);
-
+  
         const formattedRooms = rooms.map((room: ChatRoomType) => {
           const isMe = user?.id === room.participant1;
           return {
@@ -34,7 +34,7 @@ export default function Chat() {
         });
 
         setChatRooms(formattedRooms);
-        console.log("formatted", formattedRooms);
+        console.log("formatted", formattedRooms)
       } catch (error) {
         console.error("🚨 채팅방 목록 불러오기 실패:", error);
       }
@@ -44,7 +44,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (!selectedRoom) return;
-
+  
     async function fetchMessages() {
       try {
         if (!selectedRoom?.roomId) return;
@@ -54,24 +54,26 @@ export default function Chat() {
         console.error("🚨 메시지 불러오기 실패:", error);
       }
     }
-
+  
     fetchMessages();
-
+  
     console.log("🔗 WebSocket 연결: 방 입장", selectedRoom.roomId);
     socket.emit("joinRoom", selectedRoom.roomId);
-
+  
     socket.on("receiveMessage", async (msg: Message) => {
       console.log("📩 새로운 메시지 도착:", msg);
-
+  
       setMessageList((prevMessages) => [...prevMessages, msg]);
     });
-
+  
     return () => {
       console.log("🚪 WebSocket 연결 해제: 방 나감", selectedRoom.roomId);
       socket.emit("leaveRoom", selectedRoom.roomId);
       socket.off("receiveMessage");
     };
   }, [selectedRoom]);
+
+  
 
   const handleSendMessage = async (message: string) => {
     if (!selectedRoom || !user) return;
@@ -87,7 +89,7 @@ export default function Chat() {
     socket.emit("sendMessage", newMessage);
 
     try {
-      await sendMessage(selectedRoom.roomId, message);
+      await sendMessage(selectedRoom.participant, message);
     } catch (error) {
       console.error(error);
     }
@@ -108,12 +110,7 @@ export default function Chat() {
   return (
     <div className="flex h-[94.6vh]">
       <ChatList chatRooms={chatRooms} selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
-      <ChatRoom
-        selectedRoom={selectedRoom}
-        messageList={messageList}
-        onSendMessage={handleSendMessage}
-        onLeaveRoom={handleLeaveRoom}
-      />
+      <ChatRoom selectedRoom={selectedRoom} messageList={messageList} onSendMessage={handleSendMessage} onLeaveRoom={handleLeaveRoom} />
     </div>
   );
 }
