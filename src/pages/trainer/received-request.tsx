@@ -1,6 +1,5 @@
 import { useUser } from "@/contexts/UserProvider";
 import { img_non_review_md } from "@/imageExports";
-import clsx from "clsx";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -11,7 +10,6 @@ import { FilterCheck, LessonParams } from "@/types/lesson";
 import RequestLessonCard from "@/components/Cards/RequestLessonCard";
 import Loading from "@/components/Common/Loading";
 import Title from "@/components/Common/Title";
-import MobileFilter from "@/components/Modal/MobileFilter";
 import LessonFilter from "@/components/ReceivedRequest/LessonFilter";
 import ListHeader from "@/components/ReceivedRequest/ListHeader";
 
@@ -92,21 +90,12 @@ export default function ReceivedRequest() {
         <title>받은 요청 | 핏메이트</title>
       </Head>
       <Title title="받은 요청" />
-      <div
-        className={clsx(
-          "flex flex-col w-full mx-auto py-[2.4rem] px-8",
-          "pc:flex-row pc:gap-[10rem]",
-        )}
-      >
-        <div className="flex flex-col gap-[4.6rem]">
+      <div className="flex flex-row gap-8 w-full mx-auto py-[2.4rem] px-4 pc:px-8 pc:gap-[10rem]">
+        <div className="flex flex-col gap-[4.6rem] w-fit">
           <LessonFilter setParams={setParams} checked={checked} setChecked={setChecked} />
         </div>
         <div className="flex flex-col gap-[3.2rem] w-full">
-          <ListHeader
-            totalCount={filteredList.length ?? 0}
-            setIsModalOpen={setIsModalOpen}
-            setParams={setParams}
-          />
+          <ListHeader totalCount={filteredList.length ?? 0} setParams={setParams} />
           <InfiniteScroll hasMore={hasNextPage} loadMore={() => fetchNextPage()}>
             {receivedList.length > 0 ? (
               filteredList.map((item) => {
@@ -117,22 +106,17 @@ export default function ReceivedRequest() {
                 );
               })
             ) : (
-              <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-[8rem]">
+              <div className="flex flex-col justify-center items-center gap-[2.4rem] py-[24rem] px-16 pc:px-[8rem]">
                 <Image src={img_non_review_md} alt="non-request" />
-                <h1 className="text-gray-400 text-lg font-regular">등록된 요청이 없어요!</h1>
+                <h1 className="text-center text-gray-400 text-lg font-regular">
+                  등록된 요청이
+                  <br className="block pc:hidden" /> 없어요!
+                </h1>
               </div>
             )}
           </InfiniteScroll>
         </div>
       </div>
-      {isModalopen && (
-        <MobileFilter
-          setParams={setParams}
-          closeModal={() => setIsModalOpen(false)}
-          checked={checked}
-          setChecked={setChecked}
-        />
-      )}
     </div>
   );
 }
