@@ -16,10 +16,9 @@ export async function createLessonRequest(data: FormattedData): Promise<any> {
     pageParam,
     trainer_id,
     limit,
-    status,
-  }: { pageParam: number, trainer_id: string, limit: number, status: string }): Promise<any> {
+  }: { pageParam: number, trainer_id: string, limit: number }): Promise<any> {
     try {
-      const response = await get(`/quotes?trainer_id=${trainer_id}&limit=${limit}&page=${pageParam}&status=${status}`);
+      const response = await get(`/quotes?trainer_id=${trainer_id}&limit=${limit}&page=${pageParam}`);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch sent requests:", error);

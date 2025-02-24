@@ -1,5 +1,5 @@
 import { Lesson } from "@/types/lesson";
-import { LessonSubType, LessonType, LocationType } from "./types";
+import { LessonRequestStatus, LessonSubType, LessonType, LocationType, QuoteStatus } from "./types";
 
 
 export interface QuoteData {
@@ -27,7 +27,7 @@ export interface Quote {
   lessonRequest?: Lesson;
   price: number;
   message?: string;
-  status: string;
+  status: LessonRequestStatus;
   rejectionReason?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -60,7 +60,7 @@ export interface QuoteDetail {
     trainerId: string;
     lessonRequestId: string;
     price: number;
-    status: string;
+    status: QuoteStatus;
     createdAt: string;
     updatedAt: string;
     lessonRequest: QuoteSummary;
