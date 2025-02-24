@@ -81,7 +81,7 @@ export default function Chat() {
     socket.emit("sendMessage", newMessage);
 
     try {
-      await sendMessage(selectedRoom.participant, message);
+      await sendMessage(selectedRoom.roomId, message);
     } catch (error) {
       console.error(error);
     }

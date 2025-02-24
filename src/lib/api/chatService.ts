@@ -24,9 +24,9 @@ export async function createOrGetChatRoom(participantId: string | undefined) {
 }
 
 // 🔹 메시지 보내기
-export async function sendMessage(receiverId: string | undefined, message: string) {
+export async function sendMessage(roomId: string | undefined, message: string) {
     try {
-      const res = await post("/chat/send", { receiverId, message });
+      const res = await post("/chat/send", { roomId, message });
       return res.data;
     } catch (error) {
       console.error("메시지 전송 중 오류 발생:", error);
