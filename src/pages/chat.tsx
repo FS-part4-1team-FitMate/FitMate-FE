@@ -63,7 +63,6 @@ export default function Chat() {
 
   const handleNewMessage = useCallback((msg: Message) => {
     setMessageList((prevMessages) => [...prevMessages, msg]);
-    console.log("msg", msg);
   }, []);
 
   useEffect(() => {
