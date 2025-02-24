@@ -1,5 +1,5 @@
 import { useUser } from "@/contexts/UserProvider";
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { getChatMessages, getChatRooms, leaveChatRoom, sendMessage } from "@/lib/api/chatService";
 import socket from "@/lib/utils/socket";
@@ -8,6 +8,7 @@ import ChatList from "@/components/Chat/ChatList";
 import ChatRoom from "@/components/Chat/ChatRoom";
 
 export default function Chat() {
+  const msgContainerRef = useRef<HTMLDivElement>(null);
   const [chatRooms, setChatRooms] = useState<ChatRoomType[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<ChatRoomType | null>(null);
   const [messageList, setMessageList] = useState<Message[]>([]);
@@ -73,6 +74,12 @@ export default function Chat() {
     };
   }, [selectedRoom]);
 
+  useEffect(() => {
+    if (msgContainerRef.current) {
+      msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight;
+    }
+  }, [messageList]);
+
   const handleSendMessage = async (message: string) => {
     if (!selectedRoom || !user) return;
 
@@ -109,6 +116,7 @@ export default function Chat() {
     <div className="flex h-[94.6vh]">
       <ChatList chatRooms={chatRooms} selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
       <ChatRoom
+        msgContainerRef={msgContainerRef as MutableRefObject<HTMLDivElement>}
         selectedRoom={selectedRoom}
         messageList={messageList}
         onSendMessage={handleSendMessage}
