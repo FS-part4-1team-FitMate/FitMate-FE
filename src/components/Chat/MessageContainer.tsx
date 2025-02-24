@@ -15,7 +15,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({ messageList }) => {
 
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView(); // ✅ 부드럽게 스크롤 이동
+      lastMessageRef.current.scrollIntoView();
     }
   }, [messageList]);
 
