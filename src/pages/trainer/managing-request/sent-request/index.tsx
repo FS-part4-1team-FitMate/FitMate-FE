@@ -5,13 +5,13 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getSentRequest } from "@/lib/api/requestService";
 import SentRequestCard from "@/components/Cards/SentRequestCard";
+import { Quote } from "@/types/quote";
 
 type SentRequestQueryKey = [
   string,
   {
     trainer_id?: string;
     limit?: number;
-    status?: string;
   },
 ];
 
@@ -24,7 +24,6 @@ export default function SentRequest() {
     {
       trainer_id: trainerId,
       limit: 10,
-      status: "ACCEPTED",
     },
   ];
 
@@ -38,7 +37,6 @@ export default function SentRequest() {
         pageParam,
         trainer_id: trainerId,
         limit: 10,
-        status: "ACCEPTED",
       });
     },
     {
@@ -46,6 +44,8 @@ export default function SentRequest() {
       getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextPage : undefined),
     },
   );
+
+  console.log(data)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -70,7 +70,7 @@ export default function SentRequest() {
         <div className="pc:max-w-[140rem] tablet:max-w-[72rem] mx-auto grid grid-cols-1 gap-4 pc:grid-cols-2">
           {data.pages.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
-              {page?.list?.map((quote: any) => <SentRequestCard key={quote.id} item={quote} />)}
+              {page?.list?.map((quote: Quote) => <SentRequestCard key={quote.id} item={quote} />)}
             </React.Fragment>
           ))}
         </div>
