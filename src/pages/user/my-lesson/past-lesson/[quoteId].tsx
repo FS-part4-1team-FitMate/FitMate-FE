@@ -7,6 +7,7 @@ import { useGetLesson } from "@/lib/api/queries/lesson";
 import { useGetQuote } from "@/lib/api/queries/quote";
 import { useGetTrainer } from "@/lib/api/queries/trainer";
 import formatPrice from "@/lib/utils/formatPrice";
+import { LessonRequestStatus } from "@/types/types";
 import FindTrainerCard from "@/components/Cards/FindTrainerCard";
 import { HorizontalLine } from "@/components/Common/Line";
 import Loading from "@/components/Common/Loading";
@@ -68,7 +69,7 @@ export default function DetailPastRequest() {
           <HorizontalLine width="100%" />
           <div className="flex flex-col gap-16">
             <QuoteInfo lesson={lessonData} />
-            {quoteInfo.status !== "ACCEPTED" && (
+            {quoteInfo.status !== LessonRequestStatus.COMPLETED && (
               <div className="flex items-center gap-[1.6rem] py-[2.4rem] px-[3.2rem] border border-blue-200 rounded-[1.2rem] bg-blue-100">
                 <Image src={ic_info_md} width={24} height={24} alt="느낌표" />
                 <p className="text-blue-300 text-lg font-regular">확정하지 않은 견적이에요!</p>
