@@ -33,7 +33,7 @@ export default function LessonFilter({ setParams, checked, setChecked }: LessonF
   };
 
   return (
-    <div className="hidden flex-col gap-[5rem] pc:flex">
+    <div className="flex flex-col gap-4 w-[13rem] pc:gap-[5rem] pc:w-[32.8rem]">
       <CheckboxFilter
         label="운동 유형"
         options={serviceFilter}

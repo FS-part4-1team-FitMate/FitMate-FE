@@ -1,5 +1,4 @@
 import { ic_square_check_active_md, ic_square_check_inactive_md } from "@/imageExports";
-import clsx from "clsx";
 import Image from "next/image";
 import { filter_trans } from "@/types/dropdown";
 import { FilterCheck } from "@/types/lesson";
@@ -61,17 +60,12 @@ export default function CheckboxFilter({
   };
 
   return (
-    <div className="flex flex-col gap-[2.4rem]">
-      <div className="flex pc:justify-between w-[32.8rem] py-[1.6rem] px-4 border-b border-line-200">
-        <h1 className="text-nowrap text-xl font-medium">{label}</h1>
-        <div
-          className={clsx(
-            "flex flex-row-reverse justify-between items-center w-full",
-            "pc:flex-row pc:justify-end",
-          )}
-        >
+    <div className="flex flex-col gap-2 pc:gap-[2.4rem]">
+      <div className="flex flex-col pc:flex-row justify-between w-full py-[1.6rem] px-4 border-b border-line-200">
+        <h1 className="text-nowrap text-lg pc:text-xl font-medium">{label}</h1>
+        <div className="flex flex-row-reverse justify-between pc:flex-row pc:justify-end items-center w-full">
           <Image
-            className="cursor-pointer"
+            className="cursor-pointer w-[2.4rem] h-[2.4rem] pc:w-[3.6rem] pc:h-[3.6rem]"
             src={
               options.every((option) => isChecked[option])
                 ? ic_square_check_active_md
@@ -82,20 +76,18 @@ export default function CheckboxFilter({
             onClick={handleSelectAll}
             alt="체크박스"
           />
-          <p className="text-gray-300 text-lg font-normal pc:text-2lg">전체선택</p>
+          <p className="text-gray-300 text-md font-normal pc:text-2lg">전체선택</p>
         </div>
       </div>
-      <div className={filterType === "region" ? "grid grid-cols-3" : "flex flex-col gap-[1.6rem]"}>
+      <div className="flex flex-col pc:gap-[1.6rem]">
         {options.map((option, index) => (
           <div
             key={index}
             className="flex justify-between items-center p-[1.6rem] tablet:px-4 mobile:px-4 border-b border-line-100"
           >
-            <p className="text-lg font-medium pc:text-2lg">
-              {filterType === "region" ? `${filter_trans(option)}` : `${filter_trans(option)}`}
-            </p>
+            <p className="text-md font-medium pc:text-2lg">{filter_trans(option)}</p>
             <Image
-              className="cursor-pointer"
+              className="cursor-pointer w-[2.4rem] h-[2.4rem] pc:w-[3.6rem] pc:h-[3.6rem]"
               src={isChecked[option] ? ic_square_check_active_md : ic_square_check_inactive_md}
               width={36}
               height={36}

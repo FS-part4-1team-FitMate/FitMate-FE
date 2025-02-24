@@ -6,11 +6,10 @@ import Dropdown from "../Dropdown/Dropdown";
 
 interface ListHeaderProps {
   totalCount: number;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setParams: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-export default function ListHeader({ totalCount, setIsModalOpen, setParams }: ListHeaderProps) {
+export default function ListHeader({ totalCount, setParams }: ListHeaderProps) {
   // 검색 처리 함수
   const handleSearch = (keyword: string) => {
     setParams({ keyword });
@@ -30,12 +29,7 @@ export default function ListHeader({ totalCount, setIsModalOpen, setParams }: Li
       <Search onSearch={handleSearch} />
       <div className="flex justify-between items-center">
         <p className="text-sm font-medium pc:text-lg">전체 {totalCount}건</p>
-        <div className="flex gap-[0.4rem]">
-          <Dropdown setSortOrder={handleSortChange} options={userSort} type="sort" />
-          <div className="block pc:hidden" onClick={() => setIsModalOpen(true)}>
-            <Image src={ic_filter_active_sm} width={32} height={32} alt="모바일 필터" />
-          </div>
-        </div>
+        <Dropdown setSortOrder={handleSortChange} options={userSort} type="sort" />
       </div>
     </div>
   );
