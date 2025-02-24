@@ -31,7 +31,6 @@ export async function getQuoteList({
 // 견적 상세 조회
 export async function getQuote(quoteId: string) {
   const res = await get(`/quotes/${quoteId}`);
-  console.log(res.data)
   return res.data;
 }
 

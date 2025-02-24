@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getChatRooms, getChatMessages, sendMessage, leaveChatRoom } from "@/lib/api/chatService";
 import ChatList from "@/components/Chat/ChatList";
 import ChatRoom from "@/components/Chat/ChatRoom";
@@ -15,12 +15,12 @@ export default function Chat() {
 
   useEffect(() => {
     if (!user?.id) return;
-  
+
     async function fetchRooms() {
       try {
         const rooms = await getChatRooms();
         console.log("rooms", rooms);
-  
+
         const formattedRooms = rooms.map((room: ChatRoomType) => {
           const isMe = user?.id === room.participant1;
           return {
@@ -32,9 +32,7 @@ export default function Chat() {
             isMe,
           };
         });
-
         setChatRooms(formattedRooms);
-        console.log("formatted", formattedRooms)
       } catch (error) {
         console.error("🚨 채팅방 목록 불러오기 실패:", error);
       }
@@ -44,8 +42,8 @@ export default function Chat() {
 
   useEffect(() => {
     if (!selectedRoom) return;
-  
-    async function fetchMessages() {
+
+    const fetchMessages = async () => {
       try {
         if (!selectedRoom?.roomId) return;
         const messages = await getChatMessages(selectedRoom.roomId, 1, 50);
@@ -53,27 +51,28 @@ export default function Chat() {
       } catch (error) {
         console.error("🚨 메시지 불러오기 실패:", error);
       }
-    }
-  
+    };
+
     fetchMessages();
-  
-    console.log("🔗 WebSocket 연결: 방 입장", selectedRoom.roomId);
     socket.emit("joinRoom", selectedRoom.roomId);
-  
-    socket.on("receiveMessage", async (msg: Message) => {
-      console.log("📩 새로운 메시지 도착:", msg);
-  
-      setMessageList((prevMessages) => [...prevMessages, msg]);
-    });
-  
+    
     return () => {
-      console.log("🚪 WebSocket 연결 해제: 방 나감", selectedRoom.roomId);
       socket.emit("leaveRoom", selectedRoom.roomId);
-      socket.off("receiveMessage");
     };
   }, [selectedRoom]);
 
-  
+  const handleNewMessage = useCallback((msg: Message) => {
+    setMessageList((prevMessages) => [...prevMessages, msg]);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedRoom) return;
+    socket.on("receiveMessage", handleNewMessage);
+
+    return () => {
+      socket.off("receiveMessage", handleNewMessage);
+    };
+  }, [selectedRoom, handleNewMessage]);
 
   const handleSendMessage = async (message: string) => {
     if (!selectedRoom || !user) return;
@@ -83,13 +82,11 @@ export default function Chat() {
       message,
       createdAt: new Date().toISOString(),
     };
-
-    setMessageList((prev) => [...prev, { ...newMessage, createdAt: new Date().toISOString() }]);
-
-    socket.emit("sendMessage", newMessage);
+    setMessageList((prev) => [...prev, newMessage]);
+    socket.emit("sendMessage", { roomId: selectedRoom.roomId, ...newMessage });
 
     try {
-      await sendMessage(selectedRoom.participant, message);
+      await sendMessage(selectedRoom.roomId, message);
     } catch (error) {
       console.error(error);
     }

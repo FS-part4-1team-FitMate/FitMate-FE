@@ -4,10 +4,8 @@ import { get, post } from "./method";
 export async function createLessonRequest(data: FormattedData): Promise<any> {
   try {
     const response = await post("/lessons", data);
-    console.log(data)
     return response.data;
   } catch (err: any) {
-    console.log(data)
     console.error("🚨 레슨 요청 에러:", err.response?.data);
     throw err.response?.data?.message || "알 수 없는 오류가 발생했습니다.";
   }
@@ -17,11 +15,11 @@ export async function createLessonRequest(data: FormattedData): Promise<any> {
   export async function getSentRequest({
     pageParam,
     trainer_id,
-    limit
-  }: { pageParam: number, trainer_id: string, limit: number }): Promise<any> {
+    limit,
+    status,
+  }: { pageParam: number, trainer_id: string, limit: number, status: string }): Promise<any> {
     try {
-      const response = await get(`/quotes?trainer_id=${trainer_id}&limit=${limit}&page=${pageParam}`);
-      console.log(response.data)
+      const response = await get(`/quotes?trainer_id=${trainer_id}&limit=${limit}&page=${pageParam}&status=${status}`);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch sent requests:", error);
@@ -34,13 +32,8 @@ export async function createLessonRequest(data: FormattedData): Promise<any> {
       console.error("lessonRequestId is undefined, request aborted.");
       return Promise.reject("lessonRequestId is undefined");
     }
-  
     try {
-      console.log(`Requesting: /quotes?lesson_request_id=${lessonRequestId}`);
-  
       const response = await get(`/quotes?lesson_request_id=${lessonRequestId}`);
-  
-      console.log("Response Data:", response.data);
       return response.data;
     } catch (error) {
       console.error("API request failed:", error);

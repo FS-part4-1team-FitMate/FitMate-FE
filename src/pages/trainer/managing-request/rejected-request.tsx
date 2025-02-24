@@ -16,11 +16,8 @@ type rejectedRequestQueryKey = [
 
 export default function RejectedRequest() {
   const observerRef = useRef<HTMLDivElement | null>(null);
-
   const user = useUser();
   const trainerId = user?.id;
-
-  console.log("trainerId:", trainerId);
   const queryKey: rejectedRequestQueryKey = [
     "rejectedRequest",
     {

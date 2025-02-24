@@ -11,6 +11,7 @@ type SentRequestQueryKey = [
   {
     trainer_id?: string;
     limit?: number;
+    status?: string;
   },
 ];
 
@@ -18,15 +19,12 @@ export default function SentRequest() {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const user = useUser();
   const trainerId = user?.id;
-
-  console.log("현재 로그인된 사용자:", user);
-  console.log("Trainer ID:", trainerId);
-
   const queryKey: SentRequestQueryKey = [
     "sentRequest",
     {
       trainer_id: trainerId,
       limit: 10,
+      status: "ACCEPTED",
     },
   ];
 
@@ -40,6 +38,7 @@ export default function SentRequest() {
         pageParam,
         trainer_id: trainerId,
         limit: 10,
+        status: "ACCEPTED",
       });
     },
     {
