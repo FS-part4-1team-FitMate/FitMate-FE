@@ -64,7 +64,7 @@ export default function Tab() {
     return (
       <div className={tab_container}>
         <div className={isActiveMenu("/trainer/managing-request/sent-request")}>
-          <Link href="/trainer/managing-request/sent-request">보낸 견적 조회</Link>
+          <Link href="/trainer/managing-request/sent-request">확정 견적 조회</Link>
         </div>
         <div className={isActiveMenu("/trainer/managing-request/rejected-request")}>
           <Link href="/trainer/managing-request/rejected-request">반려 요청</Link>

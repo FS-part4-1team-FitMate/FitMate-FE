@@ -1,13 +1,20 @@
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
-// 환경 변수에서 WebSocket URL 가져오기
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const socket = io(`${SOCKET_URL}/socket.io/`, {
+const socket = io(`${SOCKET_URL}`, {
   transports: ["websocket"],
   reconnectionAttempts: 3,
   timeout: 5000,
   withCredentials: true
+});
+
+socket.on("connect", () => {
+  console.log("WebSocket 연결");
+});
+
+socket.on("connect_error", (err) => {
+  console.error("WebSocket 연결 실패:", err);
 });
 
 export default socket;
