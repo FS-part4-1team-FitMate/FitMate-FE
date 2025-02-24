@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { postChatBotMsg } from "@/lib/api/chatbotService";
 import Button from "@/components/Common/Button";
 
 function ChatBot() {
+  const mainRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<{ id: string; message: string }[]>([
     {
       id: "bot",
@@ -33,8 +34,17 @@ function ChatBot() {
     setIsSubmitting(false);
   };
 
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTop = mainRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <main className="flex flex-col space-y-6 bg-gray-100 min-h-screen pb-16">
+    <main
+      ref={mainRef}
+      className="flex flex-col space-y-6 bg-gray-100 h-auto pb-16 overflow-y-auto"
+    >
       <div className="bg-white p-10 w-full space-y-6 px-8 pc:px-[20rem]">
         <h1 className="text-xl">AI 챗봇과 대화하기</h1>
         <div className="w-full bg-gray-200 rounded-full h-2.5"></div>
