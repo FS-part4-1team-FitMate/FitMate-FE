@@ -1,5 +1,6 @@
 import { Socket, io } from "socket.io-client";
 import { useEffect, useRef } from "react";
+import "dotenv/config";
 
 export const useSocket = () => {
   const socket = useRef<Socket | null>(null);
