@@ -1,3 +1,4 @@
+import { useUser } from "@/contexts/UserProvider";
 import { img_non_review_md } from "@/imageExports";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,12 +6,11 @@ import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getFavoriteTrainers } from "@/lib/api/trainerService";
 import FavoriteTrainerCard from "@/components/Cards/FavoriteTrainerCard";
-import { useUser } from "@/contexts/UserProvider";
 
 export default function LikedTrainer() {
   const observerRef = useRef<HTMLDivElement | null>(null);
-    const user = useUser();
-    const userId = user?.id;
+  const user = useUser();
+  const userId = user?.id;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
     ["favoriteTrainers", userId],
@@ -48,6 +48,7 @@ export default function LikedTrainer() {
                 {page?.trainers?.map((trainer: any) => (
                   <Link href={`/user/detail-trainer/${trainer.id}`}>
                     <FavoriteTrainerCard
+                      profileData={trainer.profile}
                       key={trainer.id}
                       name={trainer.profile.name}
                       rating={trainer.profile?.rating || 0}
