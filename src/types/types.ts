@@ -154,6 +154,7 @@ export const requestType_trans = {
 };
 
 export enum LessonRequestStatus {
+  ACCEPTED = "ACCEPTED",
   PENDING = "PENDING",
   COMPLETED = "COMPLETED",
   CANCELED = "CANCELED",
@@ -161,6 +162,7 @@ export enum LessonRequestStatus {
 }
 
 export const lessonRequestStatus_trans = {
+  [LessonRequestStatus.ACCEPTED]: "견적 수락됨",
   [LessonRequestStatus.PENDING]: "견적 대기중",
   [LessonRequestStatus.COMPLETED]: "확정 견적",
   [LessonRequestStatus.CANCELED]: "견적 취소됨",
