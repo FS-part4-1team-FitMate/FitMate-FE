@@ -51,12 +51,13 @@ export const useGetMyLessons = ({ status }: LessonParams) => {
 export const useGetMyLessonList = (userId: string, { limit, status }: LessonParams) => {
   return useInfiniteQuery<LessonResult>(
     ["my-lesson", userId, { limit, status }],
-    ({ pageParam = 1 }) =>
-      getMyLessonRequest({
+    ({ pageParam = 1 }) => {
+      return getMyLessonRequest({
         page: pageParam,
         limit,
         status,
-      }),
+      })
+    },
     {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.hasMore ? allPages.length + 1 : undefined;
