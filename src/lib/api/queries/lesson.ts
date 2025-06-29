@@ -20,8 +20,8 @@ export const useGetReceivedLesson = (
       userId,
       { keyword, order, sort, status, lesson_type, gender, region, has_direct_quote },
     ],
-    ({ pageParam = 1 }) =>
-      getReceiveRequest({
+    ({ pageParam = 1 }) => {
+      return getReceiveRequest({
         page: pageParam,
         limit: 5,
         keyword,
@@ -32,7 +32,8 @@ export const useGetReceivedLesson = (
         gender,
         region,
         has_direct_quote,
-      }),
+      });
+    },
     {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.hasMore ? allPages.length + 1 : undefined;
